@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nado.rlzy.db.mapper.HrAcctMapper">
+    <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrAcct">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="UserId" property="userid" jdbcType="INTEGER"/>
+        <result column="AcctBalance" property="acctbalance" jdbcType="DECIMAL"/>
+        <result column="IceBalance" property="icebalance" jdbcType="DECIMAL"/>
+        <result column="DeleteFlag" property="deleteflag" jdbcType="TINYINT"/>
+        <result column="modifyTime" property="modifytime" jdbcType="TIMESTAMP"/>
+        <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    Id, UserId, AcctBalance, IceBalance, DeleteFlag, modifyTime, CreateTime
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from hr_acct
+        where Id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hr_acct
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insertSelective" parameterType="com.nado.rlzy.db.pojo.HrAcct">
+        insert into hr_acct
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                Id,
+            </if>
+            <if test="userid != null">
+                UserId,
+            </if>
+            <if test="acctbalance != null">
+                AcctBalance,
+            </if>
+            <if test="icebalance != null">
+                IceBalance,
+            </if>
+            <if test="deleteflag != null">
+                DeleteFlag,
+            </if>
+            <if test="modifytime != null">
+                modifyTime,
+            </if>
+            <if test="createtime != null">
+                CreateTime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userid != null">
+                #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="acctbalance != null">
+                #{acctbalance,jdbcType=DECIMAL},
+            </if>
+            <if test="icebalance != null">
+                #{icebalance,jdbcType=DECIMAL},
+            </if>
+            <if test="deleteflag != null">
+                #{deleteflag,jdbcType=TINYINT},
+            </if>
+            <if test="modifytime != null">
+                #{modifytime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createtime != null">
+                #{createtime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.nado.rlzy.db.pojo.HrAcct">
+        update hr_acct
+        <set>
+            <if test="userid != null">
+                UserId = #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="acctbalance != null">
+                AcctBalance = #{acctbalance,jdbcType=DECIMAL},
+            </if>
+            <if test="icebalance != null">
+                IceBalance = #{icebalance,jdbcType=DECIMAL},
+            </if>
+            <if test="deleteflag != null">
+                DeleteFlag = #{deleteflag,jdbcType=TINYINT},
+            </if>
+            <if test="modifytime != null">
+                modifyTime = #{modifytime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createtime != null">
+                CreateTime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where Id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <update id="directAdmission">
+        update hr_acct
+        <set>
+            AcctBalance = (AcctBalance +
+            <if test="null != money">
+                #{money}
+            </if>
+            )
+            <where>
+                DeleteFlag = 0
+                <if test="null != userId">
+                    and UserId = #{userId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="returnMoney">
+        update hr_acct
+        <set>
+            <if test="null != money">
+                AcctBalance = AcctBalance + #{money}
+            </if>
+            where DeleteFlag = 0
+            <if test="null != userId">
+                and UserId = #{userId}
+            </if>
+        </set>
+    </update>
+</mapper>

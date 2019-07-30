@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--控制台输出-->
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 日志输出编码 -->
+        <!--<Encoding>UTF-8</Encoding>-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>
+                [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level %logger{50} - %msg%n
+            </pattern>
+        </layout>
+    </appender>
+
+    <!--文件日志：输出全部日志到文件 -->
+    <appender name="fileLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<Encoding>UTF-8</Encoding>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>C:/work/Log/rlzy.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--keep 30 days' worth of history-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>
+                [%d{yyyy-MM-dd_HH:mm:ss.SSS}] [%thread] %-5level %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!--日志输出级别-->
+    <logger name="org.springframework.scheduling" level="INFO">
+        <appender-ref ref="consoleLog"/>
+        <appender-ref ref="fileLog"/>
+    </logger>
+
+    <!--&lt;!&ndash; 1. 输出SQL 到控制台和文件&ndash;&gt;-->
+    <!--<logger name="org.hibernate.SQL" additivity="false" >-->
+    <!--<level value="DEBUG" />-->
+    <!--<appender-ref ref="consoleLog"/>-->
+    <!--<appender-ref ref="fileLog"/>-->
+    <!--</logger>-->
+
+    <!--&lt;!&ndash; 2. 输出SQL 的参数到控制台和文件&ndash;&gt;-->
+    <!--<logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="TRACE" >-->
+    <!--<level value="TRACE" />-->
+    <!--<appender-ref ref="consoleLog"/>-->
+    <!--<appender-ref ref="fileLog"/>-->
+    <!--</logger>-->
+
+    <root level="INFO">
+        <appender-ref ref="consoleLog"/>
+        <appender-ref ref="fileLog"/>
+    </root>
+</configuration>

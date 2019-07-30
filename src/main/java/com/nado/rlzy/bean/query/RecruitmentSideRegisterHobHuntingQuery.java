@@ -1,0 +1,67 @@
+package com.nado.rlzy.bean.query;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.nado.rlzy.base.BaseQuery;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+
+/**
+ * @ClassName 求职端登录注册入参
+ * @Description TODO
+ * @Author lushuaiyu
+ * @Data 2019/7/29 9:34
+ * @Version 1.0
+ */
+@Data
+public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
+
+    @ApiModelProperty(value = "性别")
+    private Integer sex;
+    @ApiModelProperty(value = "学历")
+    private String education;
+
+    @ApiModelProperty(value = "毕业时间")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime graduationTime;
+
+    @ApiModelProperty(value = "专业")
+    private String profession;
+
+    @ApiModelProperty(value = "意向岗位")
+    private String registrationPositionId;
+
+    @ApiModelProperty(value = "到岗时间")
+    private LocalDateTime arrivalTime;
+    @ApiModelProperty(value = "期望工资上限")
+    private String expectedSalaryUpper;
+
+    @ApiModelProperty(value = "期望工资下限")
+    private String expectedSalaryLower;
+
+    @ApiModelProperty(value = "是否公开")
+    private Integer itIsPublic;
+
+    @ApiModelProperty(value = "是否获取平台帮助 (0: 获取 1: 不获取)")
+    private Integer agreePlatformHelp;
+
+    @ApiModelProperty(value = "推荐人意向岗位")
+    private String postIdStr;
+
+    @ApiModelProperty(value = "推荐人数上限")
+    private Integer recommendNoUpper;
+
+    @ApiModelProperty(value = "推荐人数上限")
+    private Integer recommendNoLower;
+
+    @ApiModelProperty(value = "推荐说明")
+    private String recommendInfo;
+
+    @ApiModelProperty(value = "图片上传")
+    private MultipartFile file;
+}

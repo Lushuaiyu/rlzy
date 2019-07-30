@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nado.rlzy.db.mapper.HrComplaintMapper">
+    <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrComplaint">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="brief_chapter_id" jdbcType="INTEGER" property="briefChapterId"/>
+        <result column="complaint_type_id" jdbcType="VARCHAR" property="complaintTypeId"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="evidence" jdbcType="VARCHAR" property="evidence"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, brief_chapter_id, complaint_type_id, description, evidence, name, phone, status, 
+    delete_flag, create_time
+  </sql>
+    <select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hr_complaint
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+    <insert id="save" parameterType="com.nado.rlzy.db.pojo.HrComplaint">
+        insert into hr_complaint
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="briefChapterId != null">
+                brief_chapter_id,
+            </if>
+            <if test="complaintTypeId != null">
+                complaint_type_id,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="evidence != null">
+                evidence,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="null != userId">
+                user_id,
+            </if>
+            <if test="null != signUpId">
+                sign_up_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="briefChapterId != null">
+                #{briefChapterId,jdbcType=INTEGER},
+            </if>
+            <if test="complaintTypeId != null">
+                #{complaintTypeId,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="evidence != null">
+                #{evidence,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="null != userId">
+                #{userId},
+            </if>
+            <if test="null != signUpId">
+                #{signUpId},
+            </if>
+        </trim>
+
+    </insert>
+    <update id="update" parameterType="com.nado.rlzy.db.pojo.HrComplaint">
+        update hr_complaint
+        <set>
+            <if test="briefChapterId != null">
+                brief_chapter_id = #{briefChapterId,jdbcType=INTEGER},
+            </if>
+            <if test="complaintTypeId != null">
+                complaint_type_id = #{complaintTypeId,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="evidence != null">
+                evidence = #{evidence,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = 1,
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateStatusById">
+        update hr_complaint
+        <set>
+            status = 4
+            <where>
+             delete_flag = 0
+             <if test="null != complaintId">
+            and id = #{complaintId}
+             </if>
+            </where>
+        </set>
+    </update>
+
+
+    <select id="searchComplaintRecord" resultType="com.nado.rlzy.bean.dto.ComplaintDto">
+        select c.id,
+        g.GroupName as groupName,
+        c.brief_chapter_id as briefChapterId,
+        c.status,
+        c.create_time as createTime,
+        s.id as signUpId
+        from hr_complaint c
+        left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
+        left join hr_briefchapter b on c.brief_chapter_id = b.Id and b.DeleteFlag = 0
+        left join hr_group g on b.RecruitedCompanyId = g.Id and g.DeleteFlag = 0
+        left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
+        <where>
+            c.delete_flag = 0
+            <if test="null != userId">
+                and u.id = #{userId}
+            </if>
+            <if test="null != typeId">
+                and u.type = #{typeId}
+            </if>
+        </where>
+    </select>
+    <select id="complaint" resultType="com.nado.rlzy.bean.dto.ComplaintDto">
+        select s.user_name,
+        c.id,
+        g.GroupName,
+        ct.complaint_type,
+        c.description,
+        c.evidence,
+        c.brief_chapter_id
+        from hr_complaint c
+        left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
+        left join hr_complainttype ct on c.complaint_type_id = ct.id and ct.delete_flag = 0
+        left join hr_briefchapter b on s.brief_chapter_id = b.id and b.DeleteFlag = 0
+        left join hr_group g on b.RecruitedCompanyId = g.Id and c.delete_flag = 0
+        left join hr_user u on s.user_id = u.id and u.DeleteFlag = 0
+        <where>
+            c.delete_flag = 0
+            <if test="null != complaintId">
+                and c.id = #{complaintId}
+            </if>
+        </where>
+    </select>
+    <select id="complaintStart" resultMap="BaseResultMap">
+        select s.user_name as signUserName,
+        u.UserName as userName,
+        s.id,
+        s.user_id,
+        g.GroupName,
+        ct.complaint_type as complaintType,
+        c.description,
+        c.evidence
+        from hr_complaint c
+        left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
+        left join hr_complainttype ct on c.complaint_type_id = ct.id and ct.delete_flag = 0
+        left join hr_briefchapter b on s.brief_chapter_id = b.id and b.DeleteFlag = 0
+        left join hr_group g on b.RecruitedCompanyId = g.Id and c.delete_flag = 0
+        left join hr_user u on s.user_id = u.id and u.DeleteFlag = 0
+        where c.delete_flag = 0
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+        <if test="null != typeId">
+            and u.type = #{typeId}
+        </if>
+        <if test="null != briefchapterId">
+            and b.id = #{briefchapterId}
+        </if>
+    </select>
+    <select id="creditCenter" resultType="com.nado.rlzy.bean.dto.ComplaintDto">
+        select ct.complaint_type as complaintType,
+        co.create_time as createTime,
+        co.id
+        from hr_complaint co
+        left join
+        hr_complainttype ct on co.complaint_type_id = ct.id and ct.delete_flag = 0
+        <where>
+            co.delete_flag = 0
+            <if test="null != status">
+                and co.status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="queryParams" resultMap="BaseResultMap">
+        select * from hr_complaint where delete_flag = 0
+    </select>
+
+</mapper>

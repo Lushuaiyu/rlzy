@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nado.rlzy.db.mapper.CollectMapper" >
+  <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.Collect" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="briefchapter_id" property="briefchapterId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="sign_up_id" property="signUpId" jdbcType="INTEGER" />
+  </resultMap>
+
+
+
+
+
+    <insert id="addBriefchapter" parameterType="com.nado.rlzy.db.pojo.Collect" >
+    insert into collect
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="briefchapterId != null" >
+        briefchapter_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+
+      <if test="deleteFlag != null" >
+        delete_flag,
+      </if>
+      <if test="signUpId != null" >
+        sign_up_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="briefchapterId != null" >
+        #{briefchapterId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="deleteFlag != null" >
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="signUpId != null" >
+        #{signUpId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nado.rlzy.db.pojo.Collect"  >
+    update collect
+    <set >
+      <if test="briefchapterId != null" >
+        briefchapter_id = #{briefchapterId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="signUpId != null" >
+        sign_up_id = #{signUpId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where
+     <if test="null != briefchapterId">
+       briefchapter_id = #{briefchapterId}
+     </if>
+     <if test="null != userId">
+       and user_id = #{userId}
+     </if>
+     <if test="null != signUpId">
+       and sign_up_id = #{signUpId}
+     </if>
+     where
+     <if test="null != userId">
+     user_id = #{userId}
+     </if>
+     <if test="null != signUpId">
+     and sign_up_id = #{signUpId}
+     </if>
+        and delete_flag = 0
+  </update>
+
+</mapper>

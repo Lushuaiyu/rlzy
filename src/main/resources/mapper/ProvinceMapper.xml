@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nado.rlzy.db.mapper.ProvinceMapper">
+    <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.Province">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="provinceID" property="provinceID" jdbcType="VARCHAR"/>
+        <result column="province" property="province" jdbcType="VARCHAR"/>
+        <collection property="citys" resultMap="cityList" ofType="com.nado.rlzy.db.pojo.City"/>
+
+    </resultMap>
+    <resultMap type="com.nado.rlzy.db.pojo.City" id="cityList">
+        <id column="syId" property="id"/>
+        <result property="cityID" column="cityID"/>
+        <result property="city" column="city"/>
+        <collection property="areas" resultMap="area" ofType="com.nado.rlzy.db.pojo.Area"/>
+    </resultMap>
+
+    <resultMap type="com.nado.rlzy.db.pojo.Area" id="area">
+        <id column="saId" property="id"/>
+        <result property="areaID" column="areaID"/>
+        <result property="area" column="area"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, provinceID, province
+    </sql>
+    <select id="getPCA" resultMap="BaseResultMap">
+        SELECT sa.id saId,sa.father saFather,sa.area,sa.areaID,yp.* FROM sp_hat_area
+		sa,(SELECT sy.id syId,sy.father syFather,sy.city,sy.cityID,sp.id
+		spId,sp.province,sp.provinceID
+		FROM sp_hat_city sy,sp_hat_province sp WHERE sy.father=sp.provinceID ) yp
+		WHERE sa.father=yp.cityID
+    </select>
+
+</mapper>

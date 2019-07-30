@@ -1,0 +1,638 @@
+package com.nado.rlzy.controller;
+
+import com.nado.rlzy.base.BaseController;
+import com.nado.rlzy.bean.dto.ComplaintDto;
+import com.nado.rlzy.bean.model.CommonResult;
+import com.nado.rlzy.bean.model.Result;
+import com.nado.rlzy.bean.model.ResultInfo;
+import com.nado.rlzy.bean.query.BriefcharpterQuery;
+import com.nado.rlzy.bean.query.ComplaintQuery;
+import com.nado.rlzy.db.pojo.*;
+import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.service.JobSearchHomePageService;
+import com.nado.rlzy.service.PersonCenterService;
+import io.swagger.annotations.*;
+import lombok.var;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+/**
+ * @ClassName 求职端首页
+ * @Description TODO
+ * @Author lushuaiyu
+ * @Data 2019/6/28 17:04
+ * @Version 1.0
+ */
+@Controller
+@RequestMapping(value = "homepage")
+@Api(description = "求职端首页controller")
+public class JobSearchHomePageController extends BaseController {
+
+    @Autowired
+    private JobSearchHomePageService service;
+
+    @Autowired
+    private PersonCenterService centerService;
+
+    /**
+     * 查询招聘简章
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.bean.frontEnd.BriefcharpterFront>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:42 2019/7/3
+     * @Param [pageNum, limit, query]
+     **/
+    @RequestMapping(value = "queryBriefcharpterDtoByParams")
+    @ResponseBody
+    @ApiOperation(notes = "查询招聘简章", value = "查询招聘简章", httpMethod = "POST")
+    @ApiImplicitParam(name = "query", value = "入参, 详情见 BriefcharpterQuery", dataType = "BriefcharpterQuery", required = true)
+    public Result<HrBriefchapter> queryBriefcharpterDtoByParams(BriefcharpterQuery query) {
+
+        List<HrBriefchapter> vals = service.queryBriefcharpterDtoByParams(query);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(vals);
+        return result;
+
+    }
+
+    /**
+     * 查询招聘简章详情
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:19 2019/7/4
+     * @Param [query]
+     **/
+    @RequestMapping(value = "queryBriefcharpterDetileByParams")
+    @ResponseBody
+    @ApiOperation(notes = "查询招聘简章详情", value = "查询招聘简章详情", httpMethod = "POST")
+    @ApiImplicitParam(name = "query", value = "入参", dataType = "BriefcharpterQuery", required = true)
+    public Result<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = service.queryBriefcharpterDetileByParams(query);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+
+    }
+
+    /**
+     * 长白班按返费高低排 概览
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:22 2019/7/4
+     * @Param [query]
+     **/
+    @RequestMapping(value = "queryBriefcharpterByLongLive")
+    @ResponseBody
+    @ApiOperation(notes = "长白班按返费高低排 概览", value = "长白班按返费高低排 概览", httpMethod = "POST")
+    @ApiImplicitParam(name = "query", value = "入参", dataType = "BriefcharpterQuery", required = true)
+    public Result<HrBriefchapter> queryBriefcharpterByLongLive(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = service.queryBriefcharpterByLongLive(query);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+    }
+
+    /**
+     * 有吃住按返费高低排 概览
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:24 2019/7/4
+     * @Param [query]
+     **/
+    @RequestMapping(value = "queryBriefcharpterByLongEat")
+    @ResponseBody
+    @ApiOperation(notes = "有吃住按返费高低排 概览", value = "有吃住按返费高低排 概览", httpMethod = "POST")
+    @ApiImplicitParam(value = "query", name = "入参", dataType = "BriefcharpterQuery", required = true)
+    public Result<HrBriefchapter> queryBriefcharpterByLongEat(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = service.queryBriefcharpterByLongEat(query);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+
+    }
+
+    /**
+     * 推荐费top10
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 19:16 2019/7/4
+     * @Param [query]
+     **/
+    @RequestMapping(value = "recommendedFeeTop10")
+    @ResponseBody
+    @ApiOperation(notes = "推荐费top10", value = "推荐费top10", httpMethod = "POST")
+    @ApiImplicitParam(name = "query", value = "入参", dataType = "BriefcharpterQuery", required = true)
+    public Result<HrBriefchapter> recommendedFeeTop10(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = service.recommendedFeeTop10(query);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+    }
+
+
+    /**
+     * 学生专区
+     *
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:36 2019/7/5
+     * @Param [query]
+     **/
+    @RequestMapping(value = "studentDivision")
+    @ResponseBody
+    @ApiOperation(notes = "学生专区", value = "学生专区", httpMethod = "POST")
+    @ApiImplicitParam(name = "query", value = "入参", dataType = "BriefcharpterQuery", required = true)
+    public Result<HrBriefchapter> studentDivision(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = service.studentDivision(query);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+
+    }
+
+
+    /**
+     * 工资排行榜
+     *
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:36 2019/7/5
+     * @Param [query]
+     **/
+    @RequestMapping(value = "salaryLeaderboard")
+    @ResponseBody
+    @ApiOperation(notes = "工资排行榜", value = "工资排行榜", httpMethod = "POST")
+    @ApiImplicitParam(name = "query", value = "入参", dataType = "BriefcharpterQuery", required = true)
+    public Result<HrBriefchapter> salaryLeaderboard(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = service.salaryLeaderboard(query);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+
+    }
+
+
+    /**
+     * 企业直招
+     *
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:11 2019/7/8
+     * @Param [query]
+     **/
+    @RequestMapping(value = "directBusiness")
+    @ResponseBody
+    @ApiOperation(notes = "企业直招", value = "企业直招", httpMethod = "POST")
+    @ApiImplicitParam(name = "query", value = "入参", dataType = "BriefcharpterQuery", required = true)
+    public Result<HrBriefchapter> directBusiness(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = service.directBusiness(query);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+
+    }
+
+    /**
+     * 直接录取
+     *
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:11 2019/7/8
+     * @Param [query]
+     **/
+    @RequestMapping(value = "directAdmission")
+    @ResponseBody
+    @ApiOperation(notes = "直接录取", value = "直接录取", httpMethod = "POST")
+    @ApiImplicitParam(name = "query", value = "入参", dataType = "BriefcharpterQuery", required = true)
+    public Result<HrBriefchapter> directAdmission(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = service.directAdmission(query);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+
+    }
+
+
+
+    @RequestMapping(value = "coHomePage")
+    @ResponseBody
+    @ApiOperation(notes = "求职端 首页 公司主页", value = "求职端 首页 公司主页", httpMethod = "POST")
+    @ApiImplicitParam(value = "groupId", name = "代招单位id", dataType = "Integer", required = true)
+    public Result<HrGroup> coHomePage(Integer groupId) {
+        Result<HrGroup> result = new Result<>();
+        List<HrGroup> groups = service.coHomePage(groupId);
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(groups);
+        return result;
+
+    }
+
+    /**
+     * 查询报名者的名字
+     *
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrSignUp>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:42 2019/7/11
+     * @Param []
+     **/
+    @RequestMapping("querySignUpUserName")
+    @ResponseBody
+    @ApiOperation(notes = "查询报名者的名字", value = "查询报名者的名字" , httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "type", name = "登录用户的身份", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
+    })
+    public Result<HrSignUp> querySignUpUserName(Integer type, Integer userId) {
+        List<HrSignUp> ups = service.querySignUpUserName(type, userId);
+        Result<HrSignUp> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(ups);
+        return result;
+
+
+    }
+
+    /**
+     * 根据报名者的名字查求职状态
+     *
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrSignUp>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:22 2019/7/11
+     * @Param [jobUserName]
+     **/
+    @RequestMapping("querySignUpStatus")
+    @ResponseBody
+    @ApiOperation(notes = "根据报名者的名字查求职状态", value = "根据报名者的名字查求职状态" , httpMethod = "POST")
+    @ApiImplicitParam(value = "jobUserName", name = "求职状态", dataType = "integer", required = true)
+
+    public Result<HrSignUp> querySignUpStatus(String jobUserName) {
+        List<HrSignUp> hrSignUps = service.querySignUpStatus(jobUserName);
+        Result<HrSignUp> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(hrSignUps);
+        return result;
+
+    }
+
+    /**
+     * 1待面试 7已面试 进入到待面试的状态
+     *
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:09 2019/7/11
+     * @Param [signUpStatus]
+     **/
+    @RequestMapping(value = "queryBriefchapterBySignUpStatus")
+    @ResponseBody
+    @ApiOperation(value = "根据求职状态查询简章 1待面试 7已面试 进入到待面试的状态", notes = "根据求职状态查询简章 1待面试 7已面试 进入到待面试的状态" , httpMethod = "POST")
+    @ApiImplicitParam(value = "signUpStatus", name = "求职状态", dataType = "Integer", required = true)
+    public Result<HrBriefchapter> queryBriefchapterBySignUpStatus(Integer signUpStatus) {
+        List<HrBriefchapter> list = service.queryBriefchapterBySignUpStatus(signUpStatus);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+    }
+
+    /**
+     * 取消报名
+     *
+     * @return com.nado.rlzy.bean.model.ResultInfo
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 9:56 2019/7/12
+     * @Param [signUpId]
+     **/
+    @RequestMapping(value = "cancelRegistration")
+    @ResponseBody
+    @ApiOperation(value = "取消报名", notes = "取消报名", httpMethod = "POST")
+    @ApiImplicitParam(value = "signUpId", name = "报名表主键id", dataType = "Integer", required = true)
+    public ResultInfo cancelRegistration(Integer signUpId) {
+        service.cancelRegistration(signUpId);
+        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+
+    }
+
+    @RequestMapping(value = "IWantToSignUp")
+    @ResponseBody
+    @ApiOperation(value = "我要报名 身份是本人, 返回1 报名成功", notes = "我要报名 身份是本人, 返回1 报名成功", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "Integer", required = true)
+    })
+
+    public CommonResult IWantToSignUp(Integer userId, Integer briefChapterId) {
+        int count = service.IWantToSignUp(userId, briefChapterId);
+
+
+        return CommonResult.success(count);
+
+
+    }
+
+    /**
+     * 添加收藏
+     *
+     * @return com.nado.rlzy.bean.model.ResultInfo
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:02 2019/7/8
+     * @Param [collect]
+     **/
+    @PostMapping(value = "addBriefchapter")
+    @ResponseBody
+    @ApiOperation(notes = "添加收藏", value = "添加收藏", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "briefchapterId", name = "简章id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
+    })
+    public ResultInfo addBriefchapter(Collect collect) {
+        service.addBriefchapter(collect);
+        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+
+    }
+
+    /**
+     * 招聘端 取消收藏
+     *
+     * @return com.nado.rlzy.bean.model.ResultInfo
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:02 2019/7/8
+     * @Param [briefchapterId, userId]
+     **/
+    @RequestMapping(value = "updateCollectStatus")
+    @ResponseBody
+
+    @ApiOperation(notes = "取消收藏", value = "取消收藏", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "briefchapterId", name = "简章id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
+    })
+
+    public ResultInfo updateCollectStatus(Collect collect) {
+        service.updateCollectStatus(collect);
+        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+
+    }
+
+    /**
+     * 新增报名表
+     *
+     * @return com.nado.rlzy.bean.model.ResultInfo
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:13 2019/7/8
+     * @Param []
+     **/
+    @RequestMapping(value = "addSignUp")
+    @ResponseBody
+    @ApiOperation(notes = "新增报名表", value = "新增报名表", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "userName", name = "求职者姓名", dataType = "string", required = true),
+            @ApiImplicitParam(value = "sex", name = "求职者性别", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "education", name = "学历", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "graduationTime", name = "毕业时间", dataType = "date", required = true),
+            @ApiImplicitParam(value = "profession", name = "专业", dataType = "string", required = true),
+            @ApiImplicitParam(value = "registrationPositionId", name = "意向岗位id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "arrivalTime", name = "到岗时间", dataType = "date", required = true),
+            @ApiImplicitParam(value = "expectedSalaryLower", name = "工资上限", dataType = "string", required = true),
+            @ApiImplicitParam(value = "expectedSalaryUpper", name = "工资下限", dataType = "string", required = true),
+            @ApiImplicitParam(value = "relation", name = "年龄", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "itIsPublic", name = "是否公开", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "agreePlatformHelp", name = "是否获取平台帮助", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
+
+    })
+    public ResultInfo addSignUp(HrSignUp signUp) {
+        service.addSignUpTable(signUp);
+        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+    }
+
+    /**
+     * 添加自定义分组
+     *
+     * @return com.nado.rlzy.bean.model.ResultInfo
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 18:42 2019/7/8
+     * @Param [record]
+     **/
+    @RequestMapping(value = "insertSelective")
+    @ResponseBody
+    @ApiOperation(notes = "添加自定义分组", value = "添加自定义分组", httpMethod = "POST")
+    @ApiImplicitParam(value = "groupName", name = "分组名称", dataType = "string", required = true)
+    public ResultInfo insertSelective(MySignUpTable record) {
+        service.insertSelective(record);
+        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+
+    }
+
+    /**
+     * 查询职位
+     *
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrPost>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:38 2019/7/8
+     * @Param []
+     **/
+    @RequestMapping(value = "selectPostNameByPost")
+    @ResponseBody
+    @ApiOperation(notes = "查询职位", value = "查询职位", httpMethod = "POST")
+    @ApiParam(value = "查询职位")
+    public Result<HrPost> selectPostNameByPost() {
+        List<HrPost> hrPosts = service.selectPostNameByPost();
+        Result<HrPost> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(hrPosts);
+        return result;
+    }
+
+    /**
+     * 开始投诉 查询要投诉的内容
+     *
+     * @param userId
+     * @param typeId
+     * @param briefchapterId
+     * @return
+     */
+    @RequestMapping(value = "complaintStart")
+    @ResponseBody
+    @ApiOperation(notes = "开始投诉 查询要投诉的内容", value = "开始投诉 查询要投诉的内容", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "typeId", name = "类型id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "briefchapterId", name = "简章id", dataType = "Integer", required = true)
+    })
+    public Result<ComplaintDto> complaintStart(Integer userId, Integer typeId, Integer briefchapterId) {
+        Result<ComplaintDto> result = new Result<>();
+        List<ComplaintDto> dtos = service.complaintStart(userId, typeId, briefchapterId);
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(dtos);
+        return result;
+    }
+
+    /**
+     * 添加投诉
+     *
+     * @return com.nado.rlzy.bean.model.ResultInfo
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:09 2019/7/11
+     * @Param [query, file]
+     **/
+    @RequestMapping(value = "addComplaint")
+    @ResponseBody
+    @ApiOperation(notes = "添加投诉", value = "添加投诉", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "name", name = "投诉人", dataType = "string", required = true),
+            @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "complaintTypeId", name = "投诉类型", dataType = "string", required = true),
+            @ApiImplicitParam(value = "description", name = "问题描述", dataType = "string", required = true),
+            @ApiImplicitParam(value = "evidence", name = "投诉凭证", dataType = "string", required = true),
+    })
+    public ResultInfo addComplaint(ComplaintQuery query, MultipartFile file) {
+        String head = centerService.updateHead(file);
+        service.addComplaint(query, head);
+        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+    }
+    @RequestMapping(value = "atThePosition")
+    @ResponseBody
+    @ApiOperation(notes = "在招职位", value = "在招职位", httpMethod = "POST")
+    @ApiImplicitParam(value = "groupId", name = "公司id", dataType = "Integer", required = true)
+    public Result<HrBriefchapter> atThePosition(Integer groupId) {
+        List<HrBriefchapter> list = service.atThePosition(groupId);
+        Result<HrBriefchapter> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+
+    }
+
+    /**
+     * 投诉撤回
+     * @return com.nado.rlzy.bean.model.ResultInfo
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:04 2019/7/11
+     * @Param [query]
+     **/
+    @RequestMapping(value = "complaintWithdrawn")
+    @ResponseBody
+    @ApiOperation(notes = "投诉撤回", value = "投诉撤回", httpMethod = "POST")
+    @ApiImplicitParam(value = "id", name = "投诉id", dataType = "integer", required = true)
+    public ResultInfo complaintWithdrawn(ComplaintQuery query) {
+        service.complaintWithdrawn(query);
+        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+    }
+
+    @RequestMapping(value = "searchGroupingInformation")
+    @ResponseBody
+    @ApiOperation(notes = "查询我的求职表分组", value = "查询我的求职表分组", httpMethod = "POST")
+    public Result<MySignUpTable> searchGroupingInformation() {
+        List<MySignUpTable> tables = service.searchGroupingInformation();
+        Result<MySignUpTable> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(tables);
+        return result;
+
+    }
+
+    @RequestMapping(value = "grouper")
+    @ResponseBody
+    @ApiOperation(notes = "查询 每一个分组的求职者", value = "查询 每一个分组的求职者", httpMethod = "POST")
+    @ApiImplicitParam(value = "status", name = "求职端 我的求职表 分组类型", dataType = "integer", required = true)
+    public Result<HrSignUp> grouper(Integer status) {
+        List<HrSignUp> grouper = service.grouper(status);
+        Result<HrSignUp> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(grouper);
+        return  result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "selectSignUpTableBySignUpName")
+    @ApiOperation(value = "求职端 求职表 我的求职表 通过姓名 搜索 报名表", notes = "求职端 求职表 我的求职表 通过姓名 搜索 报名表", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "signUpName", name = "求职者姓名", dataType = "string", required = true),
+            @ApiImplicitParam(value = "status", name = "分组类型", dataType = "integer", required = true)
+    })
+    public Result<HrSignUp> selectSignUpTableBySignUpName( String signUpName, Integer status){
+        List<HrSignUp> ups = service.selectSignUpTableBySignUpName(signUpName, status);
+        Result<HrSignUp> result = new Result<>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(ups);
+        return result;
+    }
+
+    @RequestMapping(value = "confirmRegistration")
+    @ResponseBody
+    @ApiOperation(value = "求职端 求职表 我的求职表 确认报名", notes = "求职端 求职表 我的求职表 确认报名", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "id", name = "报名表id", dataType = "integer []", required = true)
+    })
+    public CommonResult confirmRegistration(Integer briefChapterId, Integer [] id) {
+        int registration = service.confirmRegistration(briefChapterId, id);
+        return CommonResult.success(registration, RlzyConstant.OPS_SUCCESS_MSG);
+    }
+
+    @RequestMapping(value = "creditCenter")
+    @ResponseBody
+    @ApiImplicitParam(value = "status", name = "投诉状态", dataType = "integer", required = true)
+    @ApiOperation(notes = "招聘端 信用中心 投诉待处理 已撤销", value = "招聘端 信用中心 投诉待处理 已撤销", httpMethod = "POST")
+    public Result<ComplaintDto> creditCenter(Integer status) {
+        var list = service.creditCenter(status);
+        var result = new Result<ComplaintDto>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+    }
+}

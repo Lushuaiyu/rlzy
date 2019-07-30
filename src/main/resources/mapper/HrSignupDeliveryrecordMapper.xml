@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nado.rlzy.db.mapper.HrSignupDeliveryrecordMapper">
+    <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="signup_id" jdbcType="INTEGER" property="signupId"/>
+        <result column="brief_chapter_id" jdbcType="INTEGER" property="briefChapterId"/>
+        <result column="job_status" jdbcType="INTEGER" property="jobStatus"/>
+        <result column="no_pass_reason" jdbcType="INTEGER" property="noPassReason"/>
+        <result column="no_report_reason" jdbcType="INTEGER" property="noReportReason"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+    <update id="IWantToSignUp">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 0,
+            <if test="null != briefChapterId">
+                sd.brief_chapter_id = #{briefChapterId}
+            </if>
+
+            <where>
+                si.delete_flag = 0
+                and sd.delete_flag = 0
+                <if test="null != userId">
+                    and si.user_id = #{userId}
+                </if>
+            </where>
+        </set>
+    </update>
+</mapper>

@@ -1,0 +1,1027 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nado.rlzy.db.mapper.HrSignUpMapper">
+    <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrSignUp">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="group_id" property="groupId" jdbcType="INTEGER"/>
+        <result column="brief_chapter_id" property="briefChapterId" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="INTEGER"/>
+        <result column="id_card" property="idCard" jdbcType="VARCHAR"/>
+        <result column="education" property="education" jdbcType="VARCHAR"/>
+        <result column="graduation_time" property="graduationTime" jdbcType="DATE"/>
+        <result column="profession" property="profession" jdbcType="VARCHAR"/>
+        <result column="arrival_time" property="arrivalTime" jdbcType="DATE"/>
+        <result column="expected_salary_upper" property="expectedSalaryUpper" jdbcType="DECIMAL"/>
+        <result column="expected_salary_lower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
+        <result column="enter_time" property="enterTime" jdbcType="TIMESTAMP"/>
+        <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
+        <result column="no_pass_reason" property="noPassReason" jdbcType="INTEGER"/>
+        <result column="delete_flag" property="deleteFlag" jdbcType="TINYINT"/>
+        <result column="registration_position_id" property="registrationPositionId" jdbcType="VARCHAR"/>
+        <result column="age" property="age" jdbcType="INTEGER"/>
+        <result column="relation" property="relation" jdbcType="INTEGER"/>
+        <result column="group_name" property="groupName" jdbcType="VARCHAR"/>
+        <result column="Name" property="postName" jdbcType="VARCHAR"/>
+        <result column="signId" property="signId" jdbcType="INTEGER"/>
+        <result column="it_is_public" property="itIsPublic" jdbcType="INTEGER"/>
+        <result column="agree_platform_help" property="agreePlatformHelp" jdbcType="INTEGER"/>
+        <result column="HeadImage" property="headImage" jdbcType="VARCHAR"/>
+        <result column="RecommendNoLower" property="recommendNoLower" jdbcType="VARCHAR"/>
+        <result column="RecommendNoUpper" property="recommendNoUpper" jdbcType="VARCHAR"/>
+        <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
+        <result column="value" property="value" jdbcType="DECIMAL"/>
+        <result column="interviewTime" property="interviewTime" jdbcType="DATE"/>
+        <result column="registerTime" property="registerTime" jdbcType="DATE"/>
+        <collection property="rebat" resultMap="rebaterecord" ofType="com.nado.rlzy.db.pojo.HrRebaterecord"/>
+        <collection property="chapter" resultMap="chapterMap" ofType="com.nado.rlzy.db.pojo.HrBriefchapter"/>
+    </resultMap>
+    <resultMap id="rebaterecord" type="com.nado.rlzy.db.pojo.HrRebaterecord">
+        <result column="rebateOne" property="rebateOne" jdbcType="TIMESTAMP"/>
+        <result column="RebateType" property="rebateType" jdbcType="INTEGER"/>
+        <result column="RebateTime" property="rebateTime" jdbcType="DATE"/>
+        <result column="RebateMale" property="rebateMale" jdbcType="DECIMAL"/>
+        <result column="RebateFemale" property="rebateFemale" jdbcType="DECIMAL"/>
+        <result column="BriefChapterId" property="briefchapterId" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="CreateTime" property="createTime" jdbcType="DATE"/>
+        <result column="rebateId" property="id" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="chapterMap" type="com.nado.rlzy.db.pojo.HrBriefchapter">
+        <result column="brief_chapter_id" property="id" jdbcType="INTEGER"/>
+
+    </resultMap>
+    <insert id="insertSe" parameterType="com.nado.rlzy.db.pojo.HrSignUp">
+        insert into hr_signup
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="groupId != null">
+                group_id,
+            </if>
+            <if test="briefChapterId != null">
+                brief_chapter_id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="idCard != null">
+                id_card,
+            </if>
+            <if test="education != null">
+                education,
+            </if>
+            <if test="graduationTime != null">
+                graduation_time,
+            </if>
+            <if test="profession != null">
+                profession,
+            </if>
+            <if test="arrivalTime != null">
+                arrival_time,
+            </if>
+            <if test="expectedSalaryUpper != null">
+                expected_salary_upper,
+            </if>
+            <if test="expectedSalaryLower != null">
+                expected_salary_lower,
+            </if>
+            <if test="enterTime != null">
+                enter_time,
+            </if>
+            <if test="jobStatus != null">
+                job_status,
+            </if>
+            <if test="noPassReason != null">
+                no_pass_reason,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+            <if test="registrationPositionId != null">
+                registration_position_id,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+            <if test="relation != null">
+                relation,
+            </if>
+            <if test="null != itIsPublic">
+                it_is_public,
+            </if>
+            <if test="null != agreePlatformHelp">
+                agree_platform_help,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="groupId != null">
+                #{groupId,jdbcType=INTEGER},
+            </if>
+            <if test="briefChapterId != null">
+                #{briefChapterId,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="idCard != null">
+                #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="education != null">
+                #{education,jdbcType=VARCHAR},
+            </if>
+            <if test="graduationTime != null">
+                #{graduationTime,jdbcType=DATE},
+            </if>
+            <if test="profession != null">
+                #{profession,jdbcType=VARCHAR},
+            </if>
+            <if test="arrivalTime != null">
+                #{arrivalTime,jdbcType=DATE},
+            </if>
+            <if test="expectedSalaryUpper != null">
+                #{expectedSalaryUpper,jdbcType=VARCHAR},
+            </if>
+            <if test="expectedSalaryLower != null">
+                #{expectedSalaryLower,jdbcType=VARCHAR},
+            </if>
+            <if test="enterTime != null">
+                #{enterTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="jobStatus != null">
+                #{jobStatus,jdbcType=INTEGER},
+            </if>
+            <if test="noPassReason != null">
+                #{noPassReason,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=TINYINT},
+            </if>
+            <if test="registrationPositionId != null">
+                #{registrationPositionId,jdbcType=INTEGER},
+            </if>
+            <if test="age != null">
+                #{age,jdbcType=INTEGER},
+            </if>
+            <if test="relation != null">
+                #{relation,jdbcType=INTEGER},
+            </if>
+            <if test="null != itIsPublic">
+                #{itIsPublic},
+            </if>
+            <if test="null != agreePlatformHelp">
+                #{agreePlatformHelp}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBy">
+        update hr_signup
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <!--  <if test="groupId != null">
+                  group_id = #{groupId,jdbcType=INTEGER},
+              </if>-->
+            <if test="briefChapterId != null">
+                brief_chapter_id = #{briefChapterId,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="idCard != null">
+                id_card = #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="education != null">
+                education = #{education,jdbcType=VARCHAR},
+            </if>
+            <if test="graduationTime != null">
+                graduation_time = #{graduationTime,jdbcType=DATE},
+            </if>
+            <if test="profession != null">
+                profession = #{profession,jdbcType=VARCHAR},
+            </if>
+            <if test="arrivalTime != null">
+                arrival_time = #{arrivalTime,jdbcType=DATE},
+            </if>
+            <if test="expectedSalaryUpper != null">
+                expected_salary_upper = #{expectedSalaryUpper,jdbcType=VARCHAR},
+            </if>
+            <if test="expectedSalaryLower != null">
+                expected_salary_lower = #{expectedSalaryLower,jdbcType=VARCHAR},
+            </if>
+            <if test="enterTime != null">
+                enter_time = #{enterTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="jobStatus != null">
+                job_status = 0,
+            </if>
+            <if test="noPassReason != null">
+                no_pass_reason = #{noPassReason,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=TINYINT},
+            </if>
+            <if test="registrationPositionId != null">
+                registration_position_id = #{registrationPositionId,jdbcType=INTEGER},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="relation != null">
+                relation = #{relation,jdbcType=INTEGER},
+            </if>
+        </set>
+        where
+        delete_flag = 0
+        <if test="null != userId">
+            and user_id = #{userId}
+        </if>
+    </update>
+    <update id="updatePesronInformation" parameterType="com.nado.rlzy.db.pojo.HrSignUp">
+        update hr_signup
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId,jdbcType=INTEGER},
+            </if>
+            <if test="briefChapterId != null">
+                brief_chapter_id = #{briefChapterId,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="idCard != null">
+                id_card = #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="education != null">
+                education = #{education,jdbcType=VARCHAR},
+            </if>
+            <if test="graduationTime != null">
+                graduation_time = #{graduationTime,jdbcType=DATE},
+            </if>
+            <if test="profession != null">
+                profession = #{profession,jdbcType=VARCHAR},
+            </if>
+            <if test="arrivalTime != null">
+                arrival_time = #{arrivalTime,jdbcType=DATE},
+            </if>
+            <if test="expectedSalaryUpper != null">
+                expected_salary_upper = #{expectedSalaryUpper,jdbcType=VARCHAR},
+            </if>
+            <if test="expectedSalaryLower != null">
+                expected_salary_lower = #{expectedSalaryLower,jdbcType=VARCHAR},
+            </if>
+            <if test="enterTime != null">
+                enter_time = #{enterTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="jobStatus != null">
+                job_status = #{jobStatus,jdbcType=INTEGER},
+            </if>
+            <if test="noPassReason != null">
+                no_pass_reason = #{noPassReason,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=TINYINT},
+            </if>
+            <if test="registrationPositionId != null">
+                registration_position_id = #{registrationPositionId,jdbcType=INTEGER},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="relation != null">
+                relation = #{relation,jdbcType=INTEGER},
+            </if>
+        </set>
+        where delete_flag = 0
+        <if test="null != userId">
+            and user_id = #{userId}
+        </if>
+    </update>
+    <update id="cancelRegistration">
+        update hr_signup
+        <set>
+            delete_flag = 1
+            <where>
+                <if test="null != signUpId">
+                    id = #{signUpId}
+                </if>
+            </where>
+        </set>
+
+    </update>
+
+    <update id="invitationToRegister">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 5
+            <where>
+                si.delete_flag = 0
+                and si.id = sd.signup_id
+                and sd.delete_flag = 0
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="notSuitable">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 4
+            <where>
+                si.delete_flag = 0
+                and sd.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="invitationInterview">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 7
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+
+    <!--<update id="updateJobStatusByTask">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 10
+            <where>
+                si.delete_flag = 0
+                and sd.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id in
+                    <foreach collection="id" item="item" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            </where>
+        </set>
+    </update>-->
+
+    <update id="updateJobStatusInterviewed">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 8
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+
+    </update>
+    <update id="updateJobStatus">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 10
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="updateJobStatusConfirmationReport">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 11
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="updateJobStatusConfirmationReportByTask">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 11
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id in
+                    <foreach collection="list" item="item" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="updateJobStatusReport">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 9
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="waitingForCommissionToBecomeARebate">
+        update hr_rebaterecord
+        <set>
+            status = 1
+            <where>
+                DeleteFlag = 0 and status = 0
+            </where>
+        </set>
+    </update>
+    <update id="reportNotSuitable">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 4
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="recruitmentDetailsInvitationInterview">
+        update hhr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 7
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="recruitmentDetailsDirectAdmission">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 2
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="recruitmentInterviewd">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 10
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="recruitmentNoInterviewd">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 8
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="noReportedReason">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            <if test="null != reason">
+                sd.no_report_reason = #{reason}
+
+            </if>
+            <where>
+                sd.delete_flag = 0
+                and si.delete_flag = 0
+                and si.id = sd.signup_id
+                <if test="null != signUpId">
+                    and si.id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+
+    <update id="confirmRegistration">
+        update hr_signup_deliveryrecord sd, hr_signup si
+        <set>
+            sd.job_status = 0
+        </set>
+        <where>
+            sd.delete_flag = 0
+            and si.delete_flag = 0
+            and si.id = sd.signup_id
+            <if test="null != briefChapterId">
+                and sd.brief_chapter_id = #{briefChapterId}
+            </if>
+            and si.id in
+            <foreach collection="id" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </update>
+
+
+    <select id="selectJobListOverview" resultType="com.nado.rlzy.bean.dto.JobListDto"
+            parameterType="com.nado.rlzy.bean.query.JobListQuery">
+
+        select s.user_name as userName,
+        s.id as id,
+        s.age as age,
+        u.UserName as commendName,
+        sd.job_status as jobStatus,
+        s.arrival_time as arrivalTime,
+        ifnull(b.id, '0') as noSingUp,
+
+        from hr_signup s
+        left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
+        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.DeleteFlag = 0 and s.brief_chapter_id = #{briefChapterId}
+        left join options o on s.relation = o.id
+        <where>
+            s.delete_flag = 0
+            <if test="null != sex">
+                and s.sex = #{sex}
+            </if>
+            <if test="null != education and '' != education">
+                and s.education = #{education}
+            </if>
+            <if test="null != profession and '' != profession">
+                and s.profession = #{profession}
+            </if>
+            <if test="null != age and '' != age">
+                and s.age = #{age}
+            </if>
+
+            <if test="null != arrivalTime">
+                and arrival_time between now() and adddate(now(), interval #{arrivalTime} day)
+            </if>
+            <if test="null != graduationTime">
+                and YEAR(graduation_time) = YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
+            </if>
+
+            <if test="null != graduationTime and graduationTime == 3">
+                and YEAR(graduation_time) &lt;= YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
+            </if>
+        </where>
+
+
+    </select>
+    <select id="selectJobList" resultType="com.nado.rlzy.bean.dto.JobListDto"
+            parameterType="com.nado.rlzy.bean.query.JobListQuery">
+        select
+        s.id as id,
+        p.Name as name,
+        s.user_name as userName,
+        u.Id as userId,
+        s.sex as sex,
+        s.id_card as cardId,
+        s.education as education,
+        s.arrival_time as arrivalTime,
+        s.graduation_time as graduationTime,
+        s.expected_salary_lower as expectedSalaryLower,
+        s.expected_salary_upper as expectedSalaryUpper,
+        sd.job_status as jobStatus,
+        ifnull(b.Id, 0) as noSignUp,
+        s.relation as relation,
+        sd.brief_chapter_id as briefChapterId
+        from hr_signup s
+        left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
+        left join hr_user u on s.user_id = u.Id
+        left join hr_post p on s.registration_position_id = p.Id
+        left join options o on s.relation = o.id
+        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and sd.brief_chapter_id = #{briefChapterId}
+
+        where
+        s.delete_flag = 0
+        and p.DeleteFlag = 0
+        and o.deleteFlag = 0
+        <if test="null != sex">
+            and s.sex = #{sex}
+        </if>
+        <if test="null != education and '' != education">
+            and s.education = #{education}
+        </if>
+        <if test="null != profession and '' != profession">
+            and s.profession = #{profession}
+        </if>
+        <if test="null != age and '' != age">
+            and s.age = #{age}
+        </if>
+
+        <if test="null != arrivalTime">
+            and arrival_time between now() and adddate(now(), interval #{arrivalTime} day)
+        </if>
+        <if test="null != graduationTime">
+            and YEAR(graduation_time) = YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
+        </if>
+
+        <if test="null != graduationTime and graduationTime == 3">
+            and YEAR(graduation_time) &lt;= YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
+        </if>
+        <if test="null != id">
+            and s.id = #{id}
+        </if>
+
+
+    </select>
+    <select id="selectCollectListOverview" resultType="com.nado.rlzy.bean.dto.JobListDto">
+        select s.user_name         as userName,
+       s.age               as age,
+       u.UserName          as commendName,
+       s.job_status        as jobStatus,
+       s.arrival_time      as arrivalTime,
+       s.graduation_time   as graduationTime,
+       s.id,
+       IFNULL(b.id, '0') as noSignUp
+        from collect c
+         left join hr_signup s on c.sign_up_id = s.id
+         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
+
+         left join hr_user u on c.user_id = u.Id
+         left join options o on s.relation = o.id
+         left join hr_briefchapter b on c.briefchapter_id = b.Id and c.briefchapter_id = 2
+        where c.delete_flag = 0 and c.user_id = #{userId} order by c.create_time desc
+    </select>
+    <select id="selectCollectList" resultMap="BaseResultMap">
+        select p.Name                  as name,
+       s.user_name             as userName,
+       s.sex                   as sex,
+       s.id_card               as cardId,
+       s.education             as education,
+       s.arrival_time          as arrivalTime,
+       s.graduation_time       as graduationTime,
+       s.expected_salary_lower as expectedSalaryLower,
+       s.expected_salary_upper as expectedSalaryUpper,
+       s.job_status            as jobStatus,
+       ifnull(b.Id, 0)         as noSignUp,
+       s.relation              as relation
+        from collect c
+         left join hr_signup s on c.sign_up_id = s.id
+        left join hr_user u on c.user_id = u.Id
+         left join hr_post p on s.registration_position_id = p.Id
+         left join options o on s.relation = o.id
+         left join hr_briefchapter b on c.briefchapter_id = b.Id and c.briefchapter_id = 2 where c.delete_flag = 0
+    </select>
+    <select id="selectSignUpTable" resultMap="BaseResultMap">
+        select
+        msut.id
+        ,s.user_name,
+        s.sex,
+        s.id_card,
+        s.education,
+        s.graduation_time,
+        s.profession,
+        s.arrival_time,
+        s.expected_salary_upper,
+        s.expected_salary_lower,
+        s.relation,
+        s.it_is_public,
+        s.agree_platform_help,
+        p.Name,
+        s.id as signId ,
+        s.user_id
+        from my_sign_up_table msut
+        left join hr_signup s on msut.sign_id = s.id
+        left join hr_post p on s.registration_position_id = p.Id
+        <where>
+
+            <if test="null != signId">
+                s.id = #{signId}
+            </if>
+            <if test="null != userId">
+                and s.user_id = #{userId}
+
+            </if>
+        </where>
+
+    </select>
+    <select id="selectSignUp" resultMap="BaseResultMap">
+        select s.user_name, s.user_id, msut.sign_id as signId from my_sign_up_table msut
+        left join hr_signup s on msut.sign_id = s.id
+        left join hr_post p on s.registration_position_id = p.Id
+        <where>
+            <if test="null != userId">
+                s.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="personalInformation" resultMap="BaseResultMap">
+        select u.UserName as user_name,
+        u.HeadImage,
+        s.sex,
+        s.id_card,
+        s.education,
+        s.graduation_time,
+        s.profession,
+        p.Name,
+        s.arrival_time,
+        s.expected_salary_lower,
+        s.expected_salary_upper,
+        s.it_is_public,
+        s.agree_platform_help,
+        s.registration_position_id
+        from hr_user u
+        left join hr_signup s on u.Id = s.user_id
+        left join hr_post p on s.registration_position_id = p.Id
+        <where>
+            u.DeleteFlag = 0
+
+            and u.type = 1
+            <if test="null != userId">
+                and u.Id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="personalInformationReferrer" resultMap="BaseResultMap">
+        select u.HeadImage,
+        u.UserName as user_name,
+        s.id_card,
+        s.relation,
+        s.registration_position_id,
+        u.RecommendNoLower,
+        u.RecommendNoUpper,
+        u.RecommendInfo,
+        s.it_is_public,
+        s.agree_platform_help
+        from hr_user u
+        left join hr_signup s on u.Id = s.user_id and s.delete_flag = 0
+        left join hr_post p on s.registration_position_id = p.Id and s.delete_flag = 0
+        <where>
+            u.DeleteFlag = 0
+            and u.type = 2
+            <if test="null != userId">
+                and u.Id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="searchSignUpUserName" resultMap="BaseResultMap">
+        select si.user_name, si.id
+        from hr_signup si
+        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
+        <where>
+            si.delete_flag = 0
+            <if test="null != briefChapterId">
+                and sd.brief_chapter_id = #{briefChapterId}
+            </if>
+        </where>
+    </select>
+    <select id="querySignUpUserName" resultMap="BaseResultMap">
+        select distinct s.user_name
+        from hr_signup s
+        left join hr_user u on s.user_id = u.Id
+        <where>
+            s.delete_flag = 0
+            <if test="null != type">
+                and u.type = #{type}
+
+            </if>
+            <if test="null != userId">
+                and u.Id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="querySignUpStatus" resultMap="BaseResultMap">
+        select sd.job_status, sd.brief_chapter_id, si.user_name, sd.signup_id, sd.brief_chapter_id
+        from hr_signup si
+        inner join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
+        inner join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        <where>
+            si.delete_flag = 0
+            <if test="null != jobUserName">
+                and si.user_name = #{jobUserName}
+            </if>
+        </where>
+    </select>
+    <select id="countSignUpNum" resultType="com.nado.rlzy.bean.dto.SignUpNumberDto">
+        select a.girlNum, b.boyNum, c.man_num as manNum, d.women_num as womenNum
+        from (select count(*) as girlNum from hr_signup where delete_flag = 0 and sex = 0
+        <if test="null != briefchapter">
+            and brief_chapter_id = #{briefchapter}
+        </if>
+        ) a,
+        (select count(*) as boyNum from hr_signup where delete_flag = 0 and sex = 1
+        <if test="null != briefchapter">
+            and brief_chapter_id = #{briefchapter}
+        </if>
+        ) b,
+        (select man_num from hr_briefchapter where DeleteFlag = 0
+        <if test="null != briefchapter">
+            and Id = #{briefchapter}
+        </if>
+        ) c,
+        (select women_num from hr_briefchapter where DeleteFlag = 0
+        <if test="null != briefchapter">
+            and id = #{briefchapter}
+        </if>
+        ) d;
+    </select>
+    <select id="SearchdirectAdmission" resultMap="BaseResultMap">
+        select
+        <if test="sex == 1">
+            re.RebateMale as value,
+        </if>
+        <if test="sex == 0">
+            re.RebateFemale as value,
+        </if>
+        br.interviewTime
+        from hr_signup si
+        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
+        left join hr_rebaterecord re on sd.brief_chapter_id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_briefchapter br on sd.brief_chapter_id = br.Id and br.DeleteFlag = 0
+        <where>
+            si.delete_flag = 0
+            <if test="null != signUpId">
+                and si.id = #{signUpId}
+            </if>
+            and re.RebateType = 0;
+        </where>
+
+    </select>
+    <select id="recruitmentDetailsOverview" resultMap="BaseResultMap">
+        select s.user_name,
+        s.user_name as ben_ren,
+        s.age,
+        s.arrival_time,
+        u.UserName,
+        s.agree_platform_help,
+        b.interviewTime,
+        b.registerTime,
+        r.RebateTime,
+        r.status,
+        sd.no_pass_reason,
+        s.id,
+        sd.job_status,
+        r.CreateTime,
+        s.sex,
+        r.RebateType,
+        s.user_id
+        from hr_signup s
+        left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
+        left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.DeleteFlag = 0
+        left join hr_rebaterecord r on sd.brief_chapter_id = r.BriefChapterId and r.DeleteFlag = 0
+        <where>
+            s.delete_flag = 0
+            and sd.job_status in
+            <if test="null != list">
+                <foreach collection="list" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            order by r.CreateTime desc
+        </where>
+    </select>
+    <select id="signUpId" resultMap="BaseResultMap">
+        select si.id from hr_signup si
+        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0 and sd.job_status = 1
+        <where>
+            si.delete_flag = 0
+        </where>
+    </select>
+    <select id="signUpIdByReport" resultMap="BaseResultMap">
+        select si.id from hr_signup si
+        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0 and sd.job_status = 2
+        <where>
+            si.delete_flag = 0
+        </where>
+    </select>
+    <select id="selectRebateTime" resultMap="BaseResultMap">
+        select CreateTime from hr_rebaterecord
+        <where>
+            DeleteFlag = 0 and status = 1
+        </where>
+
+
+    </select>
+    <select id="recruitmentInterviewOver" resultType="com.nado.rlzy.db.pojo.HrSignUp">
+        select
+        b.registerTime
+        from hr_signup s
+        left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
+        left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.DeleteFlag = 0
+        left join hr_rebaterecord r on sd.brief_chapter_id = r.BriefChapterId and r.status = 0 and r.DeleteFlag = 0
+        <where>
+            s.delete_flag = 0
+            order by r.CreateTime desc
+        </where>
+    </select>
+    <select id="rebate" resultMap="BaseResultMap">
+        select re.status,
+        re.RebateFemale,
+        re.RebateMale,
+        re.CreateTime,
+        re.RebateType,
+        si.id,
+        si.user_id,
+        re.Id as rebateId
+        from hr_rebaterecord re
+        left join hr_briefchapter br on re.BriefChapterId = br.id and br.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        left join hr_user u on si.user_id = u.Id and si.delete_flag = 0
+        <where>
+            re.DeleteFlag = 0
+            <if test="null != userId">
+                and u.Id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="grouper" resultMap="BaseResultMap">
+        select si.user_name
+        from my_sign_up_table st
+        left join hr_signup si on si.id = st.sign_id and st.delete_flag = 0
+        <where>
+            si.delete_flag = 0
+            <if test="null != status">
+                and st.status = #{status}
+            </if>
+        </where>
+
+    </select>
+    <select id="selectSignUpTableBySignUpName" resultMap="BaseResultMap">
+        select si.user_name
+        from hr_signup si
+        left join my_sign_up_table sut on si.id = sut.sign_id and sut.delete_flag = 0
+        <where>
+            si.delete_flag = 0
+            <if test="null != signUpName">
+                and si.user_name like concat('%', #{signUpName}, '%')
+            </if>
+            <if test="null != status">
+                and sut.status = #{status}
+            </if>
+        </where>
+    </select>
+
+</mapper>

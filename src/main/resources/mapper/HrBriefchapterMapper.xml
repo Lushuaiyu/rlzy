@@ -1,0 +1,1208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nado.rlzy.db.mapper.HrBriefchapterMapper">
+    <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrBriefchapter">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="RecruitedCompanyId" property="recruitedcompanyId" jdbcType="INTEGER"/>
+
+        <result column="Name" property="postName" jdbcType="VARCHAR"/>
+
+        <result column="recruitingNo" property="recruitingNo" jdbcType="INTEGER"/>
+        <result column="Rebate" property="rebate" jdbcType="INTEGER"/>
+        <result column="avgSalary" property="avgSalary" jdbcType="INTEGER"/>
+        <result column="detailSalary" property="detailSalary" jdbcType="VARCHAR"/>
+        <result column="detailSalaryWay" property="detailSalaryWay" jdbcType="VARCHAR"/>
+        <result column="hobby" property="hobbyId" jdbcType="VARCHAR"/>
+
+        <result column="education" property="educationId" jdbcType="VARCHAR"/>
+        <result column="profession" property="professionId" jdbcType="VARCHAR"/>
+
+        <result column="experience" property="experienceId" jdbcType="VARCHAR"/>
+        <result column="welfareId" property="welfareId" jdbcType="VARCHAR"/>
+        <result column="postDetail" property="postDetail" jdbcType="VARCHAR"/>
+        <result column="interviewTime" property="interviewTime" jdbcType="TIMESTAMP"/>
+        <result column="interviewAddress" property="interviewAddress" jdbcType="VARCHAR"/>
+        <result column="interviewAddressFlag" property="interviewAddressFlag" jdbcType="INTEGER"/>
+
+
+        <result column="registerTime" property="registerTime" jdbcType="DATE"/>
+        <result column="contractWay" property="contractWay" jdbcType="INTEGER"/>
+
+        <result column="contractStartTime" property="contractStartTime" jdbcType="DATE"/>
+
+        <result column="contractTime" property="contractTime" jdbcType="VARCHAR"/>
+
+        <result column="contractWayDetailId" property="contractWayDetailId" jdbcType="VARCHAR"/>
+
+        <result column="hireWay" property="hireWay" jdbcType="INTEGER"/>
+        <result column="userId" property="userId" jdbcType="INTEGER"/>
+        <result column="Status" property="status" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="workWay" property="workWayId" jdbcType="VARCHAR"/>
+        <result column="workTimeArrange" property="workTimeArrangeId" jdbcType="VARCHAR"/>
+        <result column="overtimeTime" property="overtimeTimeId" jdbcType="VARCHAR"/>
+        <result column="clothingReguirementId" property="clothingReguirementId" jdbcType="VARCHAR"/>
+        <result column="noEmployerAddress" property="noEmployerAddress" jdbcType="VARCHAR"/>
+
+
+        <result column="CheckedTime" property="checkedtime" jdbcType="TIMESTAMP"/>
+        <result column="readNum" property="readnum" jdbcType="INTEGER"/>
+        <result column="manNum" property="manNum" jdbcType="INTEGER"/>
+        <result column="womenNum" property="womenNum" jdbcType="INTEGER"/>
+        <result column="manAgeId" property="manAgeId" jdbcType="INTEGER"/>
+        <result column="Rebate" property="rebate" jdbcType="INTEGER"/>
+        <result column="womenAgeId" property="womenAgeId" jdbcType="INTEGER"/>
+        <result column="womenAgeId" property="womenAgeId" jdbcType="INTEGER"/>
+
+
+        <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="DeleteFlag" property="deleteflag" jdbcType="TINYINT"/>
+        <result column="postName" property="postName" jdbcType="VARCHAR"/>
+        <result column="recruitedCompany" property="recruitedCompany" jdbcType="VARCHAR"/>
+        <result column="certifier" property="certifier" jdbcType="VARCHAR"/>
+        <result column="groupAddress" property="groupAddress" jdbcType="VARCHAR"/>
+
+        <result column="groupAddress2" property="groupAddress2" jdbcType="VARCHAR"/>
+
+        <result column="welfareId" property="welfareId" jdbcType="VARCHAR"/>
+        <result column="welfare" property="welfare" jdbcType="VARCHAR"/>
+        <result column="rebateStatus" property="rebateStatus" jdbcType="INTEGER"/>
+        <result column="readNum" property="readNum" jdbcType="INTEGER"/>
+        <result column="no_pass_reason" property="noPassReason" jdbcType="INTEGER"/>
+        <result column="sex" property="sex" jdbcType="INTEGER"/>
+
+
+        <!--
+                <association property="post" javaType="com.nado.rlzy.db.pojo.HrPost" >
+                    <id column="Id" property="_id" jdbcType="INTEGER"/>
+                    <result column="Name" property="postName" jdbcType="VARCHAR"/>
+
+                </association>-->
+        <collection property="rebat" resultMap="rebaterecord" ofType="com.nado.rlzy.db.pojo.HrRebaterecord"/>
+        <!--        <collection property="group" resultMap="groupp" ofType="com.nado.rlzy.db.pojo.HrGroup"/>-->
+
+    </resultMap>
+    <resultMap type="com.nado.rlzy.db.pojo.HrRebaterecord" id="rebaterecord">
+        <result column="rebateOne" property="rebateOne" jdbcType="TIMESTAMP"/>
+        <result column="RebateType" property="rebateType" jdbcType="INTEGER"/>
+        <result column="RebateTime" property="rebateTime" jdbcType="DATE"/>
+        <result column="RebateMale" property="rebateMale" jdbcType="DECIMAL"/>
+        <result column="RebateFemale" property="rebateFemale" jdbcType="DECIMAL"/>
+        <result column="BriefChapterId" property="briefchapterId" jdbcType="INTEGER"/>
+        <result column="CreateTime" property="createTime" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--<resultMap id="groupp" type="com.nado.rlzy.db.pojo.HrGroup">
+        <result column="rebateOne" property="rebateOne" jdbcType="TIMESTAMP"/>
+
+    </resultMap>-->
+    <sql id="Base_Column_List">
+        Id, RecruitedCompanyId, PostId, jobNatureId, RecruitingNo, avgSalary, detailSalary,
+        detailSalaryWay, educationId, experienceId, welfareId, PostDetail, interviewTime,
+        interviewAddress, registerTime, contractWay, contractTime, hireWay, Rebate, userId,
+        Status, remark, CheckedTime, readNum, CreateTime, DeleteFlag, new_column
+    </sql>
+    <insert id="save" parameterType="com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery">
+        insert into hr_briefchapter
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                Id,
+            </if>
+            <if test="recruitedcompanyid != null">
+                RecruitedCompanyId,
+            </if>
+            <if test="postid != null">
+                PostId,
+            </if>
+            <if test="jobnatureid != null">
+                jobNatureId,
+            </if>
+            <if test="recruitingno != null">
+                RecruitingNo,
+            </if>
+            <if test="avgsalary != null">
+                avgSalary,
+            </if>
+            <if test="detailsalary != null">
+                detailSalary,
+            </if>
+            <if test="detailsalaryway != null">
+                detailSalaryWay,
+            </if>
+            <if test="educationid != null">
+                educationId,
+            </if>
+            <if test="experienceid != null">
+                experienceId,
+            </if>
+            <if test="welfareid != null">
+                welfareId,
+            </if>
+            <if test="postdetail != null">
+                PostDetail,
+            </if>
+            <if test="interviewtime != null">
+                interviewTime,
+            </if>
+            <if test="interviewaddress != null">
+                interviewAddress,
+            </if>
+            <if test="registertime != null">
+                registerTime,
+            </if>
+            <if test="contractway != null">
+                contractWay,
+            </if>
+            <if test="contracttime != null">
+                contractTime,
+            </if>
+            <if test="hireway != null">
+                hireWay,
+            </if>
+            <if test="rebate != null">
+                Rebate,
+            </if>
+            <if test="userid != null">
+                userId,
+            </if>
+            <if test="status != null">
+                Status,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="checkedtime != null">
+                CheckedTime,
+            </if>
+            <if test="readnum != null">
+                readNum,
+            </if>
+            <if test="createtime != null">
+                CreateTime,
+            </if>
+            <if test="deleteflag != null">
+                DeleteFlag,
+            </if>
+            <if test="newColumn != null">
+                new_column,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="recruitedcompanyid != null">
+                #{recruitedcompanyid,jdbcType=INTEGER},
+            </if>
+            <if test="postid != null">
+                #{postid,jdbcType=INTEGER},
+            </if>
+            <if test="jobnatureid != null">
+                #{jobnatureid,jdbcType=VARCHAR},
+            </if>
+            <if test="recruitingno != null">
+                #{recruitingno,jdbcType=INTEGER},
+            </if>
+            <if test="avgsalary != null">
+                #{avgsalary,jdbcType=VARCHAR},
+            </if>
+            <if test="detailsalary != null">
+                #{detailsalary,jdbcType=VARCHAR},
+            </if>
+            <if test="detailsalaryway != null">
+                #{detailsalaryway,jdbcType=VARCHAR},
+            </if>
+            <if test="educationid != null">
+                #{educationid,jdbcType=VARCHAR},
+            </if>
+            <if test="experienceid != null">
+                #{experienceid,jdbcType=VARCHAR},
+            </if>
+            <if test="welfareid != null">
+                #{welfareid,jdbcType=VARCHAR},
+            </if>
+            <if test="postdetail != null">
+                #{postdetail,jdbcType=VARCHAR},
+            </if>
+            <if test="interviewtime != null">
+                #{interviewtime,jdbcType=VARCHAR},
+            </if>
+            <if test="interviewaddress != null">
+                #{interviewaddress,jdbcType=INTEGER},
+            </if>
+            <if test="registertime != null">
+                #{registertime,jdbcType=VARCHAR},
+            </if>
+            <if test="contractway != null">
+                #{contractway,jdbcType=INTEGER},
+            </if>
+            <if test="contracttime != null">
+                #{contracttime,jdbcType=VARCHAR},
+            </if>
+            <if test="hireway != null">
+                #{hireway,jdbcType=INTEGER},
+            </if>
+            <if test="rebate != null">
+                #{rebate,jdbcType=TINYINT},
+            </if>
+            <if test="userid != null">
+                #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="checkedtime != null">
+                #{checkedtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="readnum != null">
+                #{readnum,jdbcType=INTEGER},
+            </if>
+            <if test="createtime != null">
+                #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteflag != null">
+                #{deleteflag,jdbcType=TINYINT},
+            </if>
+            <if test="newColumn != null">
+                #{newColumn,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery">
+        update hr_briefchapter
+        <set>
+            <if test="recruitedcompanyid != null">
+                RecruitedCompanyId = #{recruitedcompanyid,jdbcType=INTEGER},
+            </if>
+            <if test="postid != null">
+                PostId = #{postid,jdbcType=INTEGER},
+            </if>
+            <if test="jobnatureid != null">
+                jobNatureId = #{jobnatureid,jdbcType=VARCHAR},
+            </if>
+            <if test="recruitingno != null">
+                RecruitingNo = #{recruitingno,jdbcType=INTEGER},
+            </if>
+            <if test="avgsalary != null">
+                avgSalary = #{avgsalary,jdbcType=VARCHAR},
+            </if>
+            <if test="detailsalary != null">
+                detailSalary = #{detailsalary,jdbcType=VARCHAR},
+            </if>
+            <if test="detailsalaryway != null">
+                detailSalaryWay = #{detailsalaryway,jdbcType=VARCHAR},
+            </if>
+            <if test="educationid != null">
+                educationId = #{educationid,jdbcType=VARCHAR},
+            </if>
+            <if test="experienceid != null">
+                experienceId = #{experienceid,jdbcType=VARCHAR},
+            </if>
+            <if test="welfareid != null">
+                welfareId = #{welfareid,jdbcType=VARCHAR},
+            </if>
+            <if test="postdetail != null">
+                PostDetail = #{postdetail,jdbcType=VARCHAR},
+            </if>
+
+            <if test="interviewtime != null">
+                interviewTime = #{interviewtime,jdbcType=VARCHAR},
+            </if>
+            <if test="interviewaddress != null">
+                interviewAddress = #{interviewaddress,jdbcType=INTEGER},
+            </if>
+            <if test="registertime != null">
+                registerTime = #{registertime,jdbcType=VARCHAR},
+            </if>
+            <if test="contractway != null">
+                contractWay = #{contractway,jdbcType=INTEGER},
+            </if>
+            <if test="contracttime != null">
+                contractTime = #{contracttime,jdbcType=VARCHAR},
+            </if>
+            <if test="hireway != null">
+                hireWay = #{hireway,jdbcType=INTEGER},
+            </if>
+            <if test="rebate != null">
+                Rebate = #{rebate,jdbcType=TINYINT},
+            </if>
+            <if test="userid != null">
+                userId = #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                Status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="checkedtime != null">
+                CheckedTime = #{checkedtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="readnum != null">
+                readNum = #{readnum,jdbcType=INTEGER},
+            </if>
+            <if test="createtime != null">
+                CreateTime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteflag != null">
+                DeleteFlag = #{deleteflag,jdbcType=TINYINT},
+            </if>
+            <if test="newColumn != null">
+                new_column = #{newColumn,jdbcType=INTEGER},
+            </if>
+        </set>
+        where Id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateNumberRecruits">
+        update hr_briefchapter
+        <set>
+            <if test="null != manNum">
+                man_num = #{manNum},
+            </if>
+            <if test="null != womenNum">
+                women_num = #{womenNum}
+            </if>
+            <where>
+                DeleteFlag = 0
+                <if test="null != status">
+                    and Status = #{status}
+                </if>
+                <if test="null != briefchapter">
+                    and id = #{briefchapter}
+                </if>
+            </where>
+        </set>
+
+    </update>
+    <update id="updateStatus">
+        update hr_briefchapter
+        <set>
+            Status = 0
+            <where>
+                DeleteFlag = 0
+                <if test="null != briefchapter">
+                    and Id = #{briefchapter}
+                </if>
+            </where>
+        </set>
+    </update>
+    <select id="queryBriefcharpterDtoByParams" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+        select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0
+        <if test="null != certifier and '' != certifier">
+            and grr.GroupName like concat('%', #{certifier}, '%')
+        </if>
+        <if test="null != postName and '' != postName">
+            and po.Name like concat('%', #{postName}, '%')
+        </if>
+        <if test="null != sex">
+            and si.sex = #{sex}
+        </if>
+        <if test="null != manAgeId">
+            and br.man_age_id = #{manAgeId}
+        </if>
+        <if test="null != womenAgeId">
+            and br.women_age_id = #{womenAgeId}
+        </if>
+        <if test="null != contractWayDetailId and '' != contractWayDetailId">
+            and br.contract_way_detail_id like concat('%', #{contractWayDetailId}, '%')
+        </if>
+        <if test="null != professionId and '' != professionId ">
+            and br.profession_id like concat('%', #{professionId}, '%')
+        </if>
+
+
+        <if test="null != educationId">
+            and br.educationId in
+            <foreach collection="educationId" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="null != experienceId and '' != experienceId">
+            and br.experienceId = #{experienceId}
+        </if>
+        <if test="null != workWayId and '' != workWayId">
+            and br.work_way_id = #{workWayId}
+        </if>
+        <if test="null != workTimeArrangeId and '' != workTimeArrangeId">
+            and br.work_time_arrange_id = #{workTimeArrangeId}
+        </if>
+        <if test="null != clothingRequirementId and '' != clothingRequirementId ">
+            and br.clothing_requirement_id = #{clothingRequirementId}
+        </if>
+        <if test="null != interviewAddress and '' != interviewAddress ">
+            and grr.GroupName like concat('%', #{interviewAddress}, '%')
+        </if>
+        <if test="null != interviewAddress2 and '' != interviewAddress2">
+            and gr.GroupName like concat ('%', #{interviewAddress2}, '%')
+        </if>
+        <if test="null != hobbyId and '' != hobbyId">
+            and br.hobby_id like concat ('%', #{hobbyId}, '%')
+        </if>
+        <if test="null != overtimeTimeId ">
+            and br.overtime_times_id = #{overtimeTimeId}
+        </if>
+        <if test="null != welfareId and '' != welfareId">
+            and br.welfareId like concat('%', #{welfareId}, '%')
+        </if>
+        <if test="null != interviewStartTime and '' != interviewStartTime and null != interviewEndTime and '' != interviewEndTime ">
+            and br.interviewTime between #{interviewStartTime} and #{interviewEndTime}
+        </if>
+        <if test="null != registerStartTime and '' != registerStartTime and null != registerEndTime and '' != registerEndTime">
+            and br.registerTime between #{registerStartTime} and #{registerEndTime}
+        </if>
+        <if test="null != contractWay">
+            and br.contractWay = #{contractWay}
+        </if>
+
+        order by br.CreateTime desc
+    </select>
+    <select id="queryCountByparams" resultType="_int"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+        select count(*)
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id
+        left join hr_post po on br.PostId = po.Id
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId
+        where br.DeleteFlag = 0
+        <if test="null != certifier and '' != certifier">
+            and grr.GroupName = #{certifier}
+        </if>
+        <if test="null != postName and '' != postName">
+
+
+            and po.Name = #{postName}
+        </if>
+
+
+    </select>
+    <select id="queryReleaseBriefcharpterByparams" resultType="com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto"
+            parameterType="com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery">
+        select gr.GroupName as recruitedCompany,
+        grr.id as grrId,
+        grr.GroupName as certifier,
+
+        p.Name as postName,
+        br.PostId as postId,
+
+        br.profession_id as professionId,
+        br.detailSalaryWay as detailsalaryWay,
+        (SELECT GROUP_CONCAT(op.age_min)
+        FROM options op
+        WHERE FIND_IN_SET(op.id, br.man_age_id)) as manAgeMin,
+        (SELECT GROUP_CONCAT(op.id)
+        FROM options op
+        WHERE FIND_IN_SET(op.id, br.man_age_id)) as manAgeId,
+        (SELECT GROUP_CONCAT(op.age_max)
+        FROM options op
+        WHERE FIND_IN_SET(op.id, br.man_age_id)) as manAgeMax,
+
+
+        (SELECT GROUP_CONCAT(op.id)
+        FROM options op
+        WHERE FIND_IN_SET(op.id, br.women_age_id)) as womenAgeId,
+
+        (SELECT GROUP_CONCAT(op.age_min)
+        FROM options op
+        WHERE FIND_IN_SET(op.id, br.women_age_id)) as womenAgeMin,
+        (SELECT GROUP_CONCAT(op.age_max)
+        FROM options op
+        WHERE FIND_IN_SET(op.id, br.women_age_id)) as womenAgeMax,
+
+        (SELECT GROUP_CONCAT(op.overtime_time_min)
+        FROM options op
+        WHERE FIND_IN_SET(op.id, br.overtime_times_id)) as overtimeTimesMin,
+        (SELECT GROUP_CONCAT(op.overtime_time_max)
+        FROM options op
+        WHERE FIND_IN_SET(op.id, br.overtime_times_id)) as overtimeTimesMax,
+        br.overtime_times_id as overtimeTimeId,
+
+        br.PostDetail as postDetail,
+        br.interviewTime as interviewTime,
+        gr.GroupAddress as groupAddress,
+        br.registerTime as registerTime,
+        br.contractTime as contractTime,
+        br.hireWay as hireWay,
+        br.accept_recommended_resume as acceptRecommendedResume,
+        (SELECT GROUP_CONCAT(op.content)
+        FROM options op
+        WHERE br.contractWay = 0
+        and FIND_IN_SET(op.id, br.contract_way_detail_id)) as RecruitmentUnit,
+        (SELECT GROUP_CONCAT(op.content)
+        FROM options op
+        WHERE br.contractWay = 1
+        and FIND_IN_SET(op.id, br.contract_way_detail_id)) as EmploymentUnit,
+        br.contractWay as contractWay,
+        br.contract_way_detail_id as contractWayDetailId,
+        br.man_num as manNum,
+        br.women_num as womenNum,
+        br.work_address as workAddress
+        from hr_briefchapter br
+        left join hr_user user on br.userId = user.Id and user.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post p on br.PostId = p.Id and p.DeleteFlag = 0
+        <where>
+            br.DeleteFlag = 0
+
+            <if test=" null != status and '' != status ">
+                and br.Status = #{status}
+            </if>
+        </where>
+
+
+    </select>
+
+
+    <select id="queryPersonCo" resultType="com.nado.rlzy.bean.dto.PersonCoDto">
+
+        select gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        user.type as type,
+        gr.GroupAddress as recruitedCompanyAddress,
+        grr.GroupAddress as certifierAddress,
+        gr.person_num as recPersonNum,
+        grr.person_num as certifierNum,
+        gr.co_policy as recCoPolicy,
+        grr.co_policy as certifierPolicy,
+        gr.Status as recStatus,
+        grr.Status as cerStatus,
+        gr.BusinessLicense as busLicenseRec,
+        grr.BusinessLicense as busLincenseCer
+        from hr_group gr
+        left join hr_briefchapter br on br.userId = gr.CertifierId and br.DeleteFlag = 0
+        inner join hr_group grr on grr.id = br.RecruitedCompanyId and grr.DeleteFlag = 0
+        left join hr_user user on user.id = br.userId
+        where gr.DeleteFlag = 0
+
+        <if test="null != status">
+            and user.type = #{status}
+        </if>
+
+        and user.DeleteFlag = 0
+
+
+    </select>
+
+
+    <select id="checkManAge" resultType="com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto">
+        select distinct o.age_min as manAgeMin,
+        o.age_max as manAgeMax,
+        o.id as manAgeId
+        from options o
+        inner join hr_briefchapter b on o.id = b.man_age_id
+
+        <where>
+            o.deleteFlag = 0
+            <if test="null != manAgeId">
+                and o.type = #{manAgeId}
+            </if>
+        </where>
+    </select>
+    <select id="checkWomenAge" resultType="com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto">
+        select distinct o.age_min as womenAgeMin, o.age_max as womenAgeMax, o.id as womenAgeId
+        from options o
+        inner join hr_briefchapter b on o.id = b.women_age_id
+        <where>
+            o.deleteFlag = 0
+            <if test="null != womenAgeId">
+                and o.type = #{womenAgeId}
+            </if>
+
+        </where>
+
+    </select>
+    <select id="checkOvertimeTime" resultType="com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto">
+        select distinct o.overtime_time_min as overtimeTimesMin,
+        o.overtime_time_max as overtimeTimesMax,
+        o.id as overtimeTimeId
+        from options o
+        inner join hr_briefchapter b on o.id = b.overtime_times_id
+
+        <where>
+            o.deleteFlag = 0
+            <if test="null != overtimeTimeId">
+                and o.type = #{overtimeTimeId}
+            </if>
+
+        </where>
+
+    </select>
+
+
+    <select id="queryBriefcharpterDetileByParams" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+        select po.Name as postName,
+        br.id as id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        br.hireWay as hireWay,
+        br.man_num as manNum,
+        br.women_num as womenNum,
+        br.man_age_id as manAgeId,
+        br.Rebate,
+        gr.Id as groupId,
+        br.women_age_id as womenAgeId,
+        br.educationId as education,
+        br.experienceId as experience,
+        br.profession_id as profession,
+        br.work_way_id as workWay,
+        br.work_time_arrange_id as workTimeArrange,
+        br.overtime_times_id as overtimeTime,
+        br.clothing_requirement_id as clothingReguirementId,
+        br.hobby_id as hobby,
+        br.interviewAddress as interviewAddressFlag ,
+        br.no_employer_address as noEmployerAddress,
+        br.PostDetail as postDetail,
+        br.registerTime as registerTime,
+        gr.interview_address as interviewAddress,
+        gr.GroupAddress as groupAddress2,
+        br.registerTime as registerTime,
+        br.contractWay as contractWay,
+        br.contract_way_detail_id as contractWayDetail,
+        br.contract_start_time as contractStartTime,
+        br.contractTime,
+        br.readNum as readNum,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status
+        from hr_briefchapter br
+        left join
+        hr_group gr
+        on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
+        where br.DeleteFlag = 0
+        <!-- <if test="null != rebateStatus">
+             br.Rebate = #{rebateStatus}
+         </if>-->
+        <if test="null != sex">
+            and si.sex = #{sex}
+        </if>
+        <if test="null != manAgeId">
+            and br.man_age_id = #{manAgeId}
+        </if>
+        <if test="null != womenAgeId">
+            and br.women_age_id = #{womenAgeId}
+        </if>
+        <if test="null != postName and '' != postName">
+            and po.Name = #{postName}
+        </if>
+        <if test="null != contractWayDetailId and '' != contractWayDetailId">
+            and br.contract_way_detail_id like concat('%', #{contractWayDetailId}, '%')
+        </if>
+        <if test="null != professionId and '' != professionId ">
+            and br.profession_id like concat('%', #{professionId}, '%')
+        </if>
+        <if test="null != educationId and '' != educationId">
+            and br.educationId in(#{educationId})
+        </if>
+        <if test="null != experienceId and '' != experienceId">
+            and br.experienceId = #{experienceId}
+        </if>
+        <if test="null != workWayId and '' != workWayId">
+            and br.work_way_id = #{workWayId}
+        </if>
+        <if test="null != workTimeArrangeId and '' != workTimeArrangeId">
+            and br.work_time_arrange_id = #{workTimeArrangeId}
+        </if>
+        <if test="null != clothingRequirementId and '' != clothingRequirementId ">
+            and br.clothing_requirement_id = #{clothingRequirementId}
+        </if>
+        <if test="null != interviewAddress and '' != interviewAddress ">
+            and grr.GroupName like concat('%', #{interviewAddress}, '%')
+        </if>
+        <if test="null != interviewAddress2 and '' != interviewAddress2">
+            and gr.GroupName like concat('%', #{interviewAddress2}, '%')
+        </if>
+        <if test="null != hobbyId and '' != hobbyId">
+            and br.hobby_id like concat('%', #{hobbyId}, '%')
+        </if>
+        <if test="null != overtimeTimeId ">
+            and br.overtime_times_id = #{overtimeTimeId}
+        </if>
+        <if test="null != welfareId and '' != welfareId">
+            and br.welfareId like concat('%', #{welfareId}, '%')
+        </if>
+        <if test="null != interviewStartTime and '' != interviewStartTime and null != interviewEndTime and '' != interviewEndTime ">
+            and br.interviewTime between #{interviewStartTime} and #{interviewEndTime}
+        </if>
+        <if test="null != registerStartTime and '' != registerStartTime and null != registerEndTime and '' != registerEndTime">
+            and br.registerTime between #{registerStartTime} and #{registerEndTime}
+        </if>
+        <if test="null != contractWay">
+            and br.contractWay = #{contractWay}
+        </if>
+        <if test="null != briefcharpterId ">
+            and br.Id = #{briefcharpterId}
+        </if>
+
+
+    </select>
+    <select id="queryBriefcharpterByLongLive" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+ select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        re.status,
+         (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0 and br.work_time_arrange_id = 30 order by rebateOne desc
+
+    </select>
+    <select id="queryBriefcharpterByLongEat" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+
+        select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0 and br.welfareId like concat('%', 4, '%') order by rebateOne desc
+
+    </select>
+    <select id="recommendedFeeTop10" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+        select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+         (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+       left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0 order by rebateOne desc , br.CreateTime asc
+    </select>
+    <select id="studentDivision" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+
+        select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        br.contract_way_detail_id as contractWayDetailId,
+       (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0 and br.contract_way_detail_id in (44,67,68) order by rebateOne desc
+
+
+
+    </select>
+    <select id="salaryLeaderboard" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+            select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        br.contract_way_detail_id as contractWayDetailId,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0 order by br.avgSalary desc
+
+
+    </select>
+    <select id="directBusiness" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+        select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        br.contract_way_detail_id as contractWayDetailId,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0 and br.contractWay = 1 order by rebateOne desc
+
+
+
+
+    </select>
+    <select id="directAdmission" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+        select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        br.contract_way_detail_id as contractWayDetailId,
+         (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0 and br.hireWay = 1 or br.hireWay = 0 order by rebateOne desc
+    </select>
+    <select id="recruitmentBrochureCollection" resultMap="BaseResultMap">
+        select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType
+        from collect c left join hr_briefchapter br on c.briefchapter_id = br.Id
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0 and c.user_id = #{userId} and c.delete_flag = 0 and c.delete_flag = 0
+         order by c.create_time desc
+
+    </select>
+    <select id="atThePosition" resultMap="BaseResultMap">
+        select po.Name as postName,
+        br.id,
+        gr.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status,
+        br.Rebate as rebateStatus
+        from collect c
+        left join hr_briefchapter br on c.briefchapter_id = br.Id
+        left join
+        hr_group gr on br.userId = gr.CertifierId
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0
+        and c.delete_flag = 0
+        and c.delete_flag = 0
+        <if test="null != groupId">
+            and gr.id = #{groupId}
+        </if>
+        order by c.create_time desc;
+
+    </select>
+    <select id="queryBriefchapterBySignUpStatus" resultMap="BaseResultMap">
+        select br.id as id,
+        si.id as signUpId,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfare,
+        re.status,
+        re.RebateType,
+        re.CreateTime,
+        re.RebateFemale,
+        re.RebateMale,
+        re.BriefChapterId,
+        si.sex,
+        br.registerTime,
+        br.interviewTime,
+        sd.no_pass_reason
+        from hr_briefchapter br
+        left join
+        hr_group gr
+        on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0
+        <if test="null != signUpStatus">
+            and sd.job_status = #{signUpStatus}
+        </if>
+    </select>
+    <select id="myRelease" resultMap="BaseResultMap">
+
+        select po.Name as postName,
+        br.id,
+        gr.GroupName as recruitedCompany,
+        grr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.Status,
+        br.detailSalary as detailSalary,
+        br.detailSalaryWay as detailSalaryWay,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(op.content) FROM options op WHERE FIND_IN_SET(op.id, br.welfareId)) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status,
+        br.Rebate as rebateStatus,
+        ifnull(re.BriefChapterId, 0)
+        from hr_briefchapter br
+        left join
+        hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_post po on br.PostId = po.Id and po.DeleteFlag = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.DeleteFlag = 0
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+        <if test="null != typeId">
+            and u.type = #{typeId}
+        </if>
+        <if test="null != status">
+            and br.Status = #{status}
+        </if>
+    </select>
+
+
+</mapper>
