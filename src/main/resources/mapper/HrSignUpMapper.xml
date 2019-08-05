@@ -6,7 +6,8 @@
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
         <result column="group_id" property="groupId" jdbcType="INTEGER"/>
         <result column="brief_chapter_id" property="briefChapterId" jdbcType="INTEGER"/>
-        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="user_name" property="signUpName" jdbcType="VARCHAR"/>
+        <result column="userName" property="userName" jdbcType="VARCHAR"/>
         <result column="sex" property="sex" jdbcType="INTEGER"/>
         <result column="id_card" property="idCard" jdbcType="VARCHAR"/>
         <result column="education" property="education" jdbcType="VARCHAR"/>
@@ -588,6 +589,51 @@
             </foreach>
         </where>
     </update>
+    <update id="rebateOne">
+        update hr_rebaterecord
+        <set>
+            status = 1
+            <where>
+                DeleteFlag = 0
+                <if test="null != rebateId">
+                    and Id = #{rebateId}
+                </if>
+            </where>
+
+        </set>
+    </update>
+    <update id="rebateAdd" parameterType="com.nado.rlzy.bean.query.RebateQuery">
+        update hr_acct
+        <set>
+            AcctBalance = (AcctBalance + #{addMoney} )
+            <where>
+                DeleteFlag = 0
+                <if test="null != userId">
+                    and UserId = #{userId}
+                </if>
+                <if test="null != signUpId">
+                    and sign_up_id = #{signUpId}
+                </if>
+            </where>
+        </set>
+    </update>
+    <update id="rebateSubtraction" parameterType="com.nado.rlzy.bean.query.RebateQuery">
+        update hr_acct
+        <set>
+            IceBalance = (IceBalance - #{subtraction})
+            <where>
+                DeleteFlag = 0
+                <if test="null != userId">
+                    and UserId = #{userId}
+                </if>
+                <if test="null!= signUpId">
+                    and sign_up_id = #{signUpId}
+                </if>
+
+            </where>
+
+        </set>
+    </update>
 
 
     <select id="selectJobListOverview" resultType="com.nado.rlzy.bean.dto.JobListDto"
@@ -600,12 +646,11 @@
         sd.job_status as jobStatus,
         s.arrival_time as arrivalTime,
         ifnull(b.id, '0') as noSingUp,
-
+        u.type
         from hr_signup s
         left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.DeleteFlag = 0 and s.brief_chapter_id = #{briefChapterId}
-        left join options o on s.relation = o.id
+        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.DeleteFlag = 0
         <where>
             s.delete_flag = 0
             <if test="null != sex">
@@ -631,17 +676,19 @@
             <if test="null != graduationTime and graduationTime == 3">
                 and YEAR(graduation_time) &lt;= YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
             </if>
+            <if test="null != relation">
+                and s.relation = #{relation}
+            </if>
+            and (u.type = 1 or u.type = 2)
         </where>
 
 
     </select>
     <select id="selectJobList" resultType="com.nado.rlzy.bean.dto.JobListDto"
             parameterType="com.nado.rlzy.bean.query.JobListQuery">
-        select
-        s.id as id,
-        p.Name as name,
-        s.user_name as userName,
-        u.Id as userId,
+        select s.user_name as userName,
+        s.id as signUpId,
+        s.user_id as userId,
         s.sex as sex,
         s.id_card as cardId,
         s.education as education,
@@ -652,44 +699,23 @@
         sd.job_status as jobStatus,
         ifnull(b.Id, 0) as noSignUp,
         s.relation as relation,
-        sd.brief_chapter_id as briefChapterId
-        from hr_signup s
-        left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_user u on s.user_id = u.Id
-        left join hr_post p on s.registration_position_id = p.Id
-        left join options o on s.relation = o.id
-        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and sd.brief_chapter_id = #{briefChapterId}
-
+        sd.brief_chapter_id as briefChapterId,
+        b.Id as briefChapterId,
+        dii.name as postName
+        FROM hr_signup s
+        LEFT JOIN hr_signup_deliveryrecord sd
+        ON s.id = sd.signup_id and sd.delete_flag = 0
+        LEFT JOIN hr_briefchapter b
+        ON sd.brief_chapter_id = b.Id and
+        b.DeleteFlag = 0
+        LEFT JOIN hr_dictionary_item dii
+        ON b.PostId = dii.value and dii.status = 1 and pId = 1
         where
         s.delete_flag = 0
-        and p.DeleteFlag = 0
-        and o.deleteFlag = 0
-        <if test="null != sex">
-            and s.sex = #{sex}
-        </if>
-        <if test="null != education and '' != education">
-            and s.education = #{education}
-        </if>
-        <if test="null != profession and '' != profession">
-            and s.profession = #{profession}
-        </if>
-        <if test="null != age and '' != age">
-            and s.age = #{age}
-        </if>
-
-        <if test="null != arrivalTime">
-            and arrival_time between now() and adddate(now(), interval #{arrivalTime} day)
-        </if>
-        <if test="null != graduationTime">
-            and YEAR(graduation_time) = YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
-        </if>
-
-        <if test="null != graduationTime and graduationTime == 3">
-            and YEAR(graduation_time) &lt;= YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
-        </if>
         <if test="null != id">
             and s.id = #{id}
         </if>
+        group by s.user_name
 
 
     </select>
@@ -697,7 +723,7 @@
         select s.user_name         as userName,
        s.age               as age,
        u.UserName          as commendName,
-       s.job_status        as jobStatus,
+       sd.job_status        as jobStatus,
        s.arrival_time      as arrivalTime,
        s.graduation_time   as graduationTime,
        s.id,
@@ -705,14 +731,13 @@
         from collect c
          left join hr_signup s on c.sign_up_id = s.id
          left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-
          left join hr_user u on c.user_id = u.Id
          left join options o on s.relation = o.id
          left join hr_briefchapter b on c.briefchapter_id = b.Id and c.briefchapter_id = 2
         where c.delete_flag = 0 and c.user_id = #{userId} order by c.create_time desc
     </select>
     <select id="selectCollectList" resultMap="BaseResultMap">
-        select p.Name                  as name,
+       select dii.name,
        s.user_name             as userName,
        s.sex                   as sex,
        s.id_card               as cardId,
@@ -721,20 +746,20 @@
        s.graduation_time       as graduationTime,
        s.expected_salary_lower as expectedSalaryLower,
        s.expected_salary_upper as expectedSalaryUpper,
-       s.job_status            as jobStatus,
+       sd.job_status           as jobStatus,
        ifnull(b.Id, 0)         as noSignUp,
        s.relation              as relation
         from collect c
-         left join hr_signup s on c.sign_up_id = s.id
-        left join hr_user u on c.user_id = u.Id
-         left join hr_post p on s.registration_position_id = p.Id
-         left join options o on s.relation = o.id
-         left join hr_briefchapter b on c.briefchapter_id = b.Id and c.briefchapter_id = 2 where c.delete_flag = 0
+                 left join hr_signup s on c.sign_up_id = s.id
+                 left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
+                 left join hr_user u on c.user_id = u.Id and u.DeleteFlag = 0
+                 left join hr_briefchapter b on c.briefchapter_id = b.Id and b.DeleteFlag = 0
+                 left join hr_dictionary_item dii on b.PostId = dii.value and dii.status = 1 and dii.pId = 1
+        where c.delete_flag = 0
     </select>
     <select id="selectSignUpTable" resultMap="BaseResultMap">
-        select
-        msut.id
-        ,s.user_name,
+        select msut.id,
+        s.user_name,
         s.sex,
         s.id_card,
         s.education,
@@ -746,12 +771,14 @@
         s.relation,
         s.it_is_public,
         s.agree_platform_help,
-        p.Name,
-        s.id as signId ,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, s.registration_position_id)
+        and d.pId = 1) as Name,
+        s.id as signId,
         s.user_id
         from my_sign_up_table msut
         left join hr_signup s on msut.sign_id = s.id
-        left join hr_post p on s.registration_position_id = p.Id
         <where>
 
             <if test="null != signId">
@@ -767,7 +794,6 @@
     <select id="selectSignUp" resultMap="BaseResultMap">
         select s.user_name, s.user_id, msut.sign_id as signId from my_sign_up_table msut
         left join hr_signup s on msut.sign_id = s.id
-        left join hr_post p on s.registration_position_id = p.Id
         <where>
             <if test="null != userId">
                 s.user_id = #{userId}
@@ -782,7 +808,10 @@
         s.education,
         s.graduation_time,
         s.profession,
-        p.Name,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, s.registration_position_id)
+        and d.pId = 1) as Name,
         s.arrival_time,
         s.expected_salary_lower,
         s.expected_salary_upper,
@@ -791,7 +820,6 @@
         s.registration_position_id
         from hr_user u
         left join hr_signup s on u.Id = s.user_id
-        left join hr_post p on s.registration_position_id = p.Id
         <where>
             u.DeleteFlag = 0
 
@@ -814,7 +842,6 @@
         s.agree_platform_help
         from hr_user u
         left join hr_signup s on u.Id = s.user_id and s.delete_flag = 0
-        left join hr_post p on s.registration_position_id = p.Id and s.delete_flag = 0
         <where>
             u.DeleteFlag = 0
             and u.type = 2
@@ -824,15 +851,23 @@
         </where>
     </select>
     <select id="searchSignUpUserName" resultMap="BaseResultMap">
-        select si.user_name, si.id
+        select si.user_name,
+        u.UserName as userName,
+        si.id
         from hr_signup si
         left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
+        left join hr_user u on si.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.DeleteFlag = 0
         <where>
             si.delete_flag = 0
             <if test="null != briefChapterId">
-                and sd.brief_chapter_id = #{briefChapterId}
+                and br.Id = #{briefChapterId}
+            </if>
+            <if test="null != userId">
+                and u.id = #{userId}
             </if>
         </where>
+
     </select>
     <select id="querySignUpUserName" resultMap="BaseResultMap">
         select distinct s.user_name
@@ -1023,5 +1058,24 @@
             </if>
         </where>
     </select>
+    <select id="queryComplaintPerson" resultType="com.nado.rlzy.bean.dto.ComplaintPage">
+            select si.user_name as signName,
+           si.id
+    from hr_signup si
+             left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
+             left join hr_user u on si.user_id = u.Id and u.DeleteFlag = 0
+             left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.DeleteFlag = 0
+    where si.delete_flag = 0
+    <if test="null != brieId">
+      and br.id = #{brieId}
+    </if>
+    <if test="null != typeId">
+      and u.type = #{typeId}
+    </if>
+    <if test="null != userId">
+      and u.id = #{userId}
+    </if>
+    </select>
+
 
 </mapper>

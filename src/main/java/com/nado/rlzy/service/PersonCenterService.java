@@ -1,7 +1,6 @@
 package com.nado.rlzy.service;
 
 import com.nado.rlzy.bean.dto.ComplaintDto;
-import com.nado.rlzy.bean.frontEnd.PersonCoFront;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
 import com.nado.rlzy.db.pojo.Feedback;
@@ -10,7 +9,9 @@ import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.exception.ImgException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName 招聘端 个人中心service
@@ -22,14 +23,14 @@ import java.util.List;
 public interface PersonCenterService {
 
     /**
-     * 查询我的企业
+     * 查询我的企业 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:48 2019/7/1
      * @Param [status] 状态
      * @return java.util.List<com.nado.rlzy.bean.dto.PersonCoDto>
      **/
-    List<PersonCoFront> queryPersonCo(Integer status);
+    Map<String, Object> queryPersonCo(Integer userId);
 
 
     /**
@@ -105,7 +106,7 @@ public interface PersonCenterService {
      * @param typeId 类型id
      * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
      **/
-    List<ComplaintDto> searchComplaintRecord( Integer userId, Integer typeId);
+    HashMap<Object, Object> searchComplaintRecord(Integer userId, Integer typeId);
 
     /**
      * 查看投诉详情

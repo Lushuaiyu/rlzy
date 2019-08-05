@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -161,6 +163,13 @@ public class StringUtil {
 
     public static boolean isEmpty(String input) {
         return input == null || input.equals("") || input.matches("value is null");
+    }
+
+    public static LocalDateTime strToLocalDateTime(String str){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(str, formatter);
+
+
     }
 
 

@@ -79,7 +79,7 @@ public class UserController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "switchIdentity")
-    @ApiOperation(value = "切换身份", notes = "切换身份", httpMethod = "POST")
+    @ApiOperation(value = "用户切换身份", notes = "用户切换身份", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "type", name = "身份类型", dataType = "Integer", required = true)

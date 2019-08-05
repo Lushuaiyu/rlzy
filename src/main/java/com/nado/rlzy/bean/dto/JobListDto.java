@@ -21,6 +21,9 @@ import java.time.LocalDateTime;
 @ApiModel(description = "查询求职列表dto")
 public class JobListDto {
 
+
+    @ApiModelProperty(value = "求职表id")
+    private Integer signUpId;
     @ApiModelProperty(value = "简章id")
     private Integer briefChapterId;
 
@@ -73,6 +76,9 @@ public class JobListDto {
 
     @ApiModelProperty(value = "与推荐者的关系")
     private Integer relation;
+
+    @ApiModelProperty(value = "身份: 推荐人还是本人求职")
+    private Integer type;
 
 
 

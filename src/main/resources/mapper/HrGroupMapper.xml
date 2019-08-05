@@ -36,241 +36,35 @@
 
 
     </resultMap>
-    <sql id="Base_Column_List">
-        Id, GroupName, GroupInfo, legalPerson, socialCreditCode, registrationPlace, GroupAddress,
-        IdentifyTime, CertificationUnitId, BusinessLicense, HelpProve, remark, Status, GroupTypeId,
-        CertifierId, foulNum, CreateTime, DeleteFlag, Pid
-    </sql>
-    <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select
-        <include refid="Base_Column_List"/>
-        from hr_group
-        where Id = #{groupId,jdbcType=INTEGER}
-    </select>
-
-    <insert id="save" parameterType="com.nado.rlzy.db.pojo.HrGroup">
-        insert into hr_group
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="groupId != null">
-                Id,
-            </if>
-            <if test="groupname != null">
-                GroupName,
-            </if>
-            <if test="groupinfo != null">
-                GroupInfo,
-            </if>
-            <if test="legalperson != null">
-                legalPerson,
-            </if>
-            <if test="socialcreditcode != null">
-                socialCreditCode,
-            </if>
-            <if test="registrationplace != null">
-                registrationPlace,
-            </if>
-            <if test="interviewAddress != null">
-                interview_address,
-            </if>
-            <if test="groupaddress != null">
-                GroupAddress,
-            </if>
-            <if test="identifytime != null">
-                IdentifyTime,
-            </if>
-            <if test="certificationunitid != null">
-                CertificationUnitId,
-            </if>
-            <if test="businesslicense != null">
-                BusinessLicense,
-            </if>
-            <if test="helpprove != null">
-                HelpProve,
-            </if>
-            <if test="remark != null">
-                remark,
-            </if>
-            <if test="status != null">
-                Status,
-            </if>
-            <if test="grouptypeid != null">
-                GroupTypeId,
-            </if>
-            <if test="certifierid != null">
-                CertifierId,
-            </if>
-            <if test="foulnum != null">
-                foulNum,
-            </if>
-            <if test="createtime != null">
-                CreateTime,
-            </if>
-            <if test="deleteflag != null">
-                DeleteFlag,
-            </if>
-            <if test="pid != null">
-                Pid,
-            </if>
-            <if test="personNum != null">
-                person_num,
-            </if>
-            <if test="coPolicy != null">
-                co_policy,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="groupId != null">
-                #{groupId,jdbcType=INTEGER},
-            </if>
-            <if test="groupname != null">
-                #{groupname,jdbcType=VARCHAR},
-            </if>
-            <if test="groupinfo != null">
-                #{groupinfo,jdbcType=VARCHAR},
-            </if>
-            <if test="legalperson != null">
-                #{legalperson,jdbcType=VARCHAR},
-            </if>
-            <if test="socialcreditcode != null">
-                #{socialcreditcode,jdbcType=VARCHAR},
-            </if>
-            <if test="registrationplace != null">
-                #{registrationplace,jdbcType=VARCHAR},
-            </if>
-            <if test="groupaddress != null">
-                #{groupaddress,jdbcType=VARCHAR},
-            </if>
-            <if test="identifytime != null">
-                #{identifytime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="certificationunitid != null">
-                #{certificationunitid,jdbcType=INTEGER},
-            </if>
-            <if test="businesslicense != null">
-                #{businesslicense,jdbcType=VARCHAR},
-            </if>
-            <if test="helpprove != null">
-                #{helpprove,jdbcType=VARCHAR},
-            </if>
-            <if test="remark != null">
-                #{remark,jdbcType=VARCHAR},
-            </if>
-            <if test="interviewAddress != null">
-                #{interviewAddress, jdbcType=VARCHAR},
-            </if>
-            <if test="status != null">
-                #{status,jdbcType=INTEGER},
-            </if>
-            <if test="grouptypeid != null">
-                #{grouptypeid,jdbcType=INTEGER},
-            </if>
-            <if test="certifierid != null">
-                #{certifierid,jdbcType=INTEGER},
-            </if>
-            <if test="foulnum != null">
-                #{foulnum,jdbcType=INTEGER},
-            </if>
-            <if test="createtime != null">
-                #{createtime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="deleteflag != null">
-                #{deleteflag,jdbcType=TINYINT},
-            </if>
-            <if test="pid != null">
-                #{pid,jdbcType=INTEGER},
-            </if>
-            <if test="personNum != null">
-                #{personNum},
-            </if>
-            <if test="null != coPolicy">
-                #{coPolicy},
-            </if>
-        </trim>
-    </insert>
-    <update id="update" parameterType="com.nado.rlzy.db.pojo.HrGroup">
-        update hr_group
-        <set>
-            <if test="groupname != null">
-                GroupName = #{groupname,jdbcType=VARCHAR},
-            </if>
-            <if test="groupinfo != null">
-                GroupInfo = #{groupinfo,jdbcType=VARCHAR},
-            </if>
-            <if test="legalperson != null">
-                legalPerson = #{legalperson,jdbcType=VARCHAR},
-            </if>
-            <if test="socialcreditcode != null">
-                socialCreditCode = #{socialcreditcode,jdbcType=VARCHAR},
-            </if>
-            <if test="interviewAddress != null">
-                interview_address = #{interviewAddress, jdbcType=VARCHAR},
-            </if>
-            <if test="registrationplace != null">
-                registrationPlace = #{registrationplace,jdbcType=VARCHAR},
-            </if>
-            <if test="groupaddress != null">
-                GroupAddress = #{groupaddress,jdbcType=VARCHAR},
-            </if>
-            <if test="identifytime != null">
-                IdentifyTime = #{identifytime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="certificationunitid != null">
-                CertificationUnitId = #{certificationunitid,jdbcType=INTEGER},
-            </if>
-            <if test="businesslicense != null">
-                BusinessLicense = #{businesslicense,jdbcType=VARCHAR},
-            </if>
-            <if test="helpprove != null">
-                HelpProve = #{helpprove,jdbcType=VARCHAR},
-            </if>
-            <if test="remark != null">
-                remark = #{remark,jdbcType=VARCHAR},
-            </if>
-            <if test="status != null">
-                Status = #{status,jdbcType=INTEGER},
-            </if>
-            <if test="grouptypeid != null">
-                GroupTypeId = #{grouptypeid,jdbcType=INTEGER},
-            </if>
-            <if test="certifierid != null">
-                CertifierId = #{certifierid,jdbcType=INTEGER},
-            </if>
-            <if test="foulnum != null">
-                foulNum = #{foulnum,jdbcType=INTEGER},
-            </if>
-            <if test="createtime != null">
-                CreateTime = #{createtime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="deleteflag != null">
-                DeleteFlag = #{deleteflag,jdbcType=TINYINT},
-            </if>
-            <if test="pid != null">
-                Pid = #{pid,jdbcType=INTEGER},
-            </if>
-            <if test="null != coPolicy">
-                co_policy = #{coPolicy},
-            </if>
-            <if test="null != personNum">
-                person_num = #{personNum},
-            </if>
-        </set>
-        where Id = #{groupId,jdbcType=INTEGER}
-    </update>
 
     <select id="coHomePage" resultMap="BaseResultMap">
         select g.GroupName,
-       g.co_policy,
-       g.person_num,
-       g.GroupAddress,
-       g.GroupInfo,
-       b.id as brId,
-       g.id
+        g.co_policy,
+        g.person_num,
+        g.GroupAddress,
+        g.GroupInfo,
+        b.id as brId,
+        g.id
         from hr_group g
-         left join hr_briefchapter b on g.CertifierId = b.userId
-         <where>
-             <if test="null != groupId">
-                 g.Id = #{groupId}
-             </if>
-         </where>
+        left join hr_briefchapter b on g.CertifierId = b.userId
+        <where>
+            <if test="null != groupId">
+                g.Id = #{groupId}
+            </if>
+        </where>
+    </select>
+    <select id="selectGroupName" resultType="hrGroup">
+        select g.Id, g.GroupName
+        from hr_group g
+        left join hr_user u on g.CertifierId = u.id and u.DeleteFlag = 0
+        <where>
+            g.DeleteFlag = 0
+            <if test="null != type">
+                and u.type = 6
+            </if>
+            <if test="null != userId">
+                and u.id = 8
+            </if>
+        </where>
     </select>
 </mapper>

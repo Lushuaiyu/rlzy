@@ -2,13 +2,14 @@ package com.nado.rlzy.db.mapper;
 
 import com.nado.rlzy.db.pojo.Collect;
 import org.springframework.stereotype.Repository;
+import tk.mybatis.mapper.common.Mapper;
 
 @Repository
-public interface CollectMapper {
+public interface CollectMapper extends Mapper<Collect> {
 
 
     /**
-     *  招聘端 添加收藏
+     *  添加收藏
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:47 2019/7/8

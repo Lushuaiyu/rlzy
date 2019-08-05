@@ -1,6 +1,5 @@
 package com.nado.rlzy.bean.dto;
 
-import com.nado.rlzy.db.pojo.HrPost;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -56,5 +55,4 @@ public class HiringPostDto {
     @ApiModelProperty(value = "返佣金额")
     private List<HrRebaterecord> rebate;
 
-    private HrPost post;
 }

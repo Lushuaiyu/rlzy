@@ -38,6 +38,8 @@ public class ComplaintDto {
     @ApiModelProperty(value = "被推荐者(求职者)")
     private String signUserName;
 
+
+
     @ApiModelProperty(value = "投诉人")
     private List<ComplaintModel> complaintModels;
 
@@ -60,7 +62,7 @@ public class ComplaintDto {
     private String phone;
 
     @ApiModelProperty(value = "投诉状态")
-    private Integer status;
+    private String status;
 
     @ApiModelProperty(value = "是否删除")
     private Integer deleteFlag;

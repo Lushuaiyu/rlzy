@@ -7,9 +7,11 @@ import com.nado.rlzy.bean.query.RecruitmentSideRegisterHobHuntingQuery;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterQuery;
 import com.nado.rlzy.db.mapper.HrGroupMapper;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
+import com.nado.rlzy.db.mapper.HrSignupDeliveryrecordMapper;
 import com.nado.rlzy.db.mapper.HrUserMapper;
 import com.nado.rlzy.db.pojo.HrGroup;
 import com.nado.rlzy.db.pojo.HrSignUp;
+import com.nado.rlzy.db.pojo.HrSignupDeliveryrecord;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.UserService;
@@ -24,6 +26,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -37,7 +40,7 @@ import java.time.LocalDateTime;
 @Service
 @Import(RlzyApplication.class)
 public class UserServiceImpl implements UserService {
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
     @Autowired
     private RedisTemplate redisTemplate;
@@ -45,11 +48,14 @@ public class UserServiceImpl implements UserService {
     @Value("${yuntongxun.templateId}")
     private String templateId;
 
-    @Autowired
+    @Resource
     private HrGroupMapper groupMapper;
 
-    @Autowired
+    @Resource
     private HrSignUpMapper signUpMapper;
+
+    @Resource
+    private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
 
 
     @Override
@@ -106,10 +112,18 @@ public class UserServiceImpl implements UserService {
         Integer userId = initUser(query.getPhone(), query.getPassword(),
                 query.getImageHead(), query.getUserName(), query.getIdCard(), query.getUnitType());
 
-        //初始化 企业信息
-        initGroup(userId, query.getGroupName(), query.getGroupAddress(), query.getGroupInfo(),
-                query.getBusinessLicense(), query.getEnterpriseLicense(), query.getRegistrantCertificate(),
-                query.getSocialCreditCode(), query.getLegalPerson(), query.getRegistrationPlace());
+        if (query.getUnitType().equals(5)) {
+            //初始化 企业信息 招聘单位
+            initGroup(userId, query.getGroupName(), query.getGroupAddress(), query.getGroupInfo(),
+                    query.getBusinessLicense(), query.getEnterpriseLicense(), query.getRegistrantCertificate(),
+                    query.getSocialCreditCode(), query.getLegalPerson(), query.getRegistrationPlace(), query.getUnitType());
+        } else {
+            //代招单位
+            initGroup(userId, query.getGroupName(), query.getGroupAddress(), query.getGroupInfo(),
+                    query.getBusinessLicense(), query.getEnterpriseLicense(), query.getRegistrantCertificate(),
+                    query.getSocialCreditCode(), query.getLegalPerson(), query.getRegistrationPlace(), query.getUnitType());
+
+        }
 
 
         return 0;
@@ -118,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
     private void initGroup(Integer userId, String groupName, String groupAddress, String groupInfo,
                            String businessLicense, String enterpriseLicense, String registrantCertificate,
-                           String socialCreditCode, String legalPerson, String registrationPlace) {
+                           String socialCreditCode, String legalPerson, String registrationPlace, Integer unitType) {
         HrGroup group = new HrGroup();
         group.setGroupname(groupName);
         group.setGroupaddress(groupAddress);
@@ -132,6 +146,12 @@ public class UserServiceImpl implements UserService {
         group.setCertifierid(userId);
         group.setStatus(1);
         group.setCreatetime(LocalDateTime.now());
+        if (unitType.equals(5)) {
+            group.setType(1);
+        } else {
+            group.setType(0);
+        }
+        group.setGroupStatus(0);
         Assert.isFalse(groupMapper.insertSelective(group) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
@@ -212,11 +232,11 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public int registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
         //校验参数
-       /* checkJobHunting(query.getPhone(), query.getCode(), query.getPassword(), query.getConfirmPassword(),
+        checkJobHunting(query.getPhone(), query.getCode(), query.getPassword(), query.getConfirmPassword(),
                 query.getUnitType(), query.getImageHead(), query.getUserName(), query.getSex(), query.getIdCard(),
                 query.getEducation(), query.getGraduationTime(), query.getProfession(), query.getRegistrationPositionId(), query.getArrivalTime(),
                 query.getExpectedSalaryLower(), query.getExpectedSalaryUpper(), query.getItIsPublic(), query.getAgreePlatformHelp(),
-                query.getPostIdStr(), query.getRecommendNoLower(), query.getRecommendNoUpper(), query.getRecommendInfo());*/
+                query.getPostIdStr(), query.getRecommendNoLower(), query.getRecommendNoUpper(), query.getRecommendInfo());
         //查缓存 判断验证码
         String key = "phone::" + query.getPhone() + "templateCode::" + templateId;
         //判断 key 过期时间
@@ -233,16 +253,31 @@ public class UserServiceImpl implements UserService {
             //本人
             Integer userId = initUserJobHunt(query.getPhone(), query.getPassword(),
                     query.getImageHead(), query.getUserName(), query.getIdCard(), query.getUnitType(),
-                    query.getSex());
+                    query.getSex(), query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(), query.getProfession(), query.getArrivalTime(),
+                    query.getExpectedSalaryLower(), query.getExpectedSalaryUpper());
 
-            initSignUp(userId, query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(), query.getProfession(), query.getArrivalTime(),
+            //报名表
+            Integer signUpId = initSignUp(userId, query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(), query.getProfession(), query.getArrivalTime(),
                     query.getExpectedSalaryLower(), query.getExpectedSalaryUpper(), query.getItIsPublic(), query.getAgreePlatformHelp());
+            //报名表投递记录表
+            initSignUpDeliveryrecord(signUpId, query.getJobStatus());
+
         } else {
             //推荐人
             initUserReferrer(query.getImageHead(), query.getUserName(), query.getIdCard(), query.getPostIdStr(), query.getRecommendNoUpper(),
                     query.getRecommendNoLower(), query.getRecommendInfo(), query.getItIsPublic(), query.getAgreePlatformHelp());
+
         }
         return 1;
+    }
+
+    private void initSignUpDeliveryrecord(Integer signUpId, Integer jobStatus) {
+        HrSignupDeliveryrecord deliveryrecord = new HrSignupDeliveryrecord();
+        deliveryrecord.setSignupId(signUpId);
+        deliveryrecord.setCreateTime(LocalDateTime.now());
+        deliveryrecord.setDeleteFlag(0);
+        signupDeliveryrecordMapper.insertSelective(deliveryrecord);
+        Assert.isFalse(signupDeliveryrecordMapper.insertSelective(deliveryrecord) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
     private void initUserReferrer(String imageHead, String userName, String idCard,
@@ -262,9 +297,9 @@ public class UserServiceImpl implements UserService {
         Assert.isFalse(userMapper.insertSelective(user) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
-    private void initSignUp(Integer userId, String education, LocalDateTime graduationTime,
-                            String registrationPositionId, String profession, LocalDateTime arrivalTime,
-                            String expectedSalaryLower, String expectedSalaryUpper, Integer itIsPublic, Integer agreePlatformHelp) {
+    private Integer initSignUp(Integer userId, String education, String graduationTime,
+                               String registrationPositionId, String profession, String arrivalTime,
+                               String expectedSalaryLower, String expectedSalaryUpper, Integer itIsPublic, Integer agreePlatformHelp) {
         HrSignUp signUp = new HrSignUp();
         signUp.setEducation(education);
         signUp.setUserId(userId);
@@ -280,9 +315,13 @@ public class UserServiceImpl implements UserService {
         signUp.setAgreePlatformHelp(agreePlatformHelp);
         signUp.setCreateTime(LocalDateTime.now());
         Assert.isFalse(signUpMapper.insertSelective(signUp) < 1, RlzyConstant.OPS_FAILED_MSG);
+        return signUp.getId();
     }
 
-    private Integer initUserJobHunt(String phone, String password, String imageHead, String userName, String idCard, Integer unitType, Integer sex) {
+    private Integer initUserJobHunt(String phone, String password, String imageHead, String userName, String idCard, Integer unitType,
+                                    Integer sex, String education, String graduationTime,
+                                    String registrationPositionId, String profession, String arrivalTime,
+                                    String expectedSalaryLower, String expectedSalaryUpper) {
         HrUser user = new HrUser();
         user.setMobile(phone);
         user.setPassword(password);
@@ -292,6 +331,15 @@ public class UserServiceImpl implements UserService {
         user.setType(unitType);
         user.setSex(sex);
         user.setRegisterTime(LocalDateTime.now());
+        user.setEducation(education);
+        user.setGraduationTime(graduationTime);
+        user.setPostIdStr(registrationPositionId);
+        user.setProfession(profession);
+        user.setArrivalTime(arrivalTime);
+        BigDecimal lowerExpectedSalary = StringUtil.decimal(expectedSalaryLower);
+        user.setExpectedSalaryLower(lowerExpectedSalary);
+        BigDecimal upperExpectedSalary = StringUtil.decimal(expectedSalaryUpper);
+        user.setExpectedSalaryUpper(upperExpectedSalary);
 
         Assert.isFalse(userMapper.insertSelective(user) < 1, RlzyConstant.OPS_FAILED_MSG);
         return Integer.valueOf(user.getId());
@@ -299,8 +347,8 @@ public class UserServiceImpl implements UserService {
 
     private void checkJobHunting(String phone, String code, String password, String confirmPassword,
                                  Integer unitType, String imageHead, String userName, Integer sex,
-                                 String idCard, String education, LocalDateTime graduationTime,
-                                 String profession, String registrationPositionId, LocalDateTime arrivalTime,
+                                 String idCard, String education, String graduationTime,
+                                 String profession, String registrationPositionId, String arrivalTime,
                                  String expectedSalaryLower, String expectedSalaryUpper, Integer itIsPublic,
                                  Integer agreePlatformHelp, String postIdStr, Integer recommendNoLower, Integer recommendNoUpper, String recommendInfo) {
         PhoneUtil.phone(phone);

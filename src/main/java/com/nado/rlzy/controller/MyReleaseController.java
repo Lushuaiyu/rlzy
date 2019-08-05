@@ -1,32 +1,30 @@
 package com.nado.rlzy.controller;
 
 import com.nado.rlzy.base.BaseController;
-import com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto;
 import com.nado.rlzy.bean.dto.SignUpNumberDto;
-import com.nado.rlzy.bean.frontEnd.ReleaseBriefcharpterFront;
 import com.nado.rlzy.bean.model.CommonResult;
 import com.nado.rlzy.bean.model.Result;
 import com.nado.rlzy.bean.model.ResultInfo;
+import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.EditBriefchapterQuery;
+import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
-import com.nado.rlzy.db.pojo.HrBriefchapter;
-import com.nado.rlzy.db.pojo.HrSignUp;
-import com.nado.rlzy.db.pojo.Options;
-import com.nado.rlzy.db.pojo.Province;
+import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.MyReleaseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName 招聘端 我的发布 controller
@@ -52,15 +50,14 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "status", name = "状态", dataType = "Integer", required = true)
 
     })
-    public Result<HrBriefchapter> myRelease(Integer userId, Integer typeId, Integer status) {
+    public ResultJson myRelease(Integer userId, Integer typeId, Integer status) {
+        Map<String, Object> map = service.myRelease(userId, typeId, status);
 
-        List<HrBriefchapter> list = service.myRelease(userId, typeId, status);
-        Result<HrBriefchapter> result = new Result<>();
+        ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
+        result.setData(map);
         return result;
-
     }
 
     /**
@@ -86,7 +83,7 @@ public class MyReleaseController extends BaseController {
 
     }
 
-    @RequestMapping(value = "queryReleaseBriefcharpterByparams")
+   /* @RequestMapping(value = "queryReleaseBriefcharpterByparams")
     @ResponseBody
     @ApiOperation(notes = "查询 发布招聘简章的内容", value = "查询 发布招聘简章的内容", httpMethod = "POST")
     @ApiImplicitParam(name = "status", value = "求职者还是推荐者", dataType = "Integer", required = true)
@@ -99,7 +96,7 @@ public class MyReleaseController extends BaseController {
         return result;
 
 
-    }
+    }*/
 
     /**
      * 编辑 发布简章 招聘端
@@ -123,49 +120,6 @@ public class MyReleaseController extends BaseController {
         service.saveUser(query, type);
         return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
 
-
-    }
-
-    @RequestMapping(value = "checkManAge")
-    @ResponseBody
-    @ApiOperation(notes = "男生年龄", value = "男生年龄", httpMethod = "POST")
-    @ApiImplicitParam(name = "manAgeId", value = "男生年龄", dataType = "integer", required = true)
-    public Result<ReleaseBriefcharpterDto> checkManAge(Integer manAgeId) {
-        List<ReleaseBriefcharpterDto> list = service.checkManAge(manAgeId);
-        Result<ReleaseBriefcharpterDto> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
-        return result;
-
-    }
-
-
-    @RequestMapping(value = "checkWomenAge")
-    @ResponseBody
-    @ApiOperation(notes = "女生年龄", value = "女生年龄", httpMethod = "POST")
-    @ApiImplicitParam(name = "womenAgeId", value = "女生年龄" , dataType = "integer", required = true)
-    public Result<ReleaseBriefcharpterDto> checkWomenAge(Integer womenAgeId) {
-        List<ReleaseBriefcharpterDto> list = service.checkWomenAge(womenAgeId);
-        Result<ReleaseBriefcharpterDto> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
-        return result;
-
-    }
-
-    @RequestMapping(value = "checkOvertimeTime")
-    @ResponseBody
-    @ApiOperation(notes = "加班时长", value = "加班时长", httpMethod = "POST")
-    @ApiImplicitParam(name = "overtimeTimeId", value = "加班时长" , dataType = "integer", required = true)
-    public Result<ReleaseBriefcharpterDto> checkOvertimeTime(Integer overtimeTimeId) {
-        List<ReleaseBriefcharpterDto> list = service.checkOvertimeTime(overtimeTimeId);
-        Result<ReleaseBriefcharpterDto> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
-        return result;
 
     }
 
@@ -238,7 +192,6 @@ public class MyReleaseController extends BaseController {
         return CommonResult.success(admission, RlzyConstant.OPS_SUCCESS_MSG);
 
     }
-
 
 
     @RequestMapping(value = "reportNotSuitable")
@@ -332,7 +285,7 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "reason", name = "未报到原因", dataType = "integer", required = true)
     })
-    public CommonResult noReportedReason( Integer reason, Integer signUpId){
+    public CommonResult noReportedReason(Integer reason, Integer signUpId) {
         int count = service.noReportedReason(reason, signUpId);
         return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
     }
@@ -365,15 +318,18 @@ public class MyReleaseController extends BaseController {
 
     @RequestMapping(value = "alreadyRebate")
     @ResponseBody
-    @ApiOperation(value = "招聘详情 待返佣 返佣计划", notes = "招聘详情 待返佣 返佣计划", httpMethod = "POST")
+    @ApiOperation(value = "招聘详情 待返佣 返佣计划(如果返佣的是求职者本人 不需要signUpId 如果是推荐人推荐的求职者 则需要signUpId)", notes = "招聘详情 待返佣 返佣计划", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userId", name = "招聘单位 id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "signUpUserId", name = "求职者 或者是推荐人的用户id0", dataType = "integer", required = true),
             @ApiImplicitParam(value = "addMoney", name = "增加的钱 和 减少的钱 必须保持一致", dataType = "BigDecimal", required = true),
-            @ApiImplicitParam(value = "subtraction", name = "减少的钱 和添加的钱必须保持一致", dataType = "BigDecimal", required = true)
+            @ApiImplicitParam(value = "subtraction", name = "减少的钱 和添加的钱必须保持一致", dataType = "BigDecimal", required = true),
+            @ApiImplicitParam(value = "rebateId", name = "返佣id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "signUpId", name = "报名表id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "typeId", name = "身份id", dataType = "integer", required = true)
+
     })
-    public CommonResult alreadyRebate(Integer userId, Integer signUpUserId, BigDecimal addMoney, BigDecimal subtraction) {
-        int count = service.rebate(userId, signUpUserId, addMoney, subtraction);
+    public CommonResult alreadyRebate(RebateQuery query) {
+        int count = service.rebate(query);
         return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
     }
 
@@ -403,9 +359,9 @@ public class MyReleaseController extends BaseController {
     @ResponseBody
     @ApiOperation(notes = "根据类型查询前端选项内容", value = "根据类型查询前端选项内容", httpMethod = "POST")
     @ApiImplicitParam(value = "type", name = "配置表类型", dataType = "Integer", required = true)
-    public Result<Options> selectContentByType(Integer type) {
-        List<Options> options = service.selectContentByType(type);
-        Result<Options> result = new Result<>();
+    public Result<HrDictionaryItem> selectContentByType(String type) {
+        List<HrDictionaryItem> options = service.selectContentByType(type);
+        Result<HrDictionaryItem> result = new Result<>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(options);
@@ -417,7 +373,7 @@ public class MyReleaseController extends BaseController {
     @ResponseBody()
     @ApiOperation(value = "招聘端 我的发布 编辑简章", notes = "招聘端 我的发布 编辑简章", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "编辑简章 入参 详见 EditBriefchapter", dataType = "EditBriefchapter", required = true)
-    public CommonResult editBriefchapterMyRelease(EditBriefchapterQuery query){
+    public CommonResult editBriefchapterMyRelease(EditBriefchapterQuery query) {
         Integer count = service.editBriefchapterMyRelease(query);
         return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
 
@@ -425,15 +381,30 @@ public class MyReleaseController extends BaseController {
 
     @RequestMapping(value = "updateJobStatusInterviewed")
     @ResponseBody
-    @ApiOperation(value = "把待面试盖为未面试")
+    @ApiOperation(value = "把待面试盖为未面试", notes = "把待面试盖为未面试", httpMethod = "POST")
     @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integer", required = true)
-    public CommonResult  updateJobStatusInterviewed(Integer signUpId){
+    public CommonResult updateJobStatusInterviewed(Integer signUpId) {
         Integer interviewed = service.updateJobStatusInterviewed(signUpId);
         return CommonResult.success(interviewed, RlzyConstant.OPS_SUCCESS_MSG);
-
     }
 
+    @RequestMapping(value = "selectGroupName")
+    @ResponseBody
+    @ApiOperation(value = "", notes = "", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "type", name = "企业类型 5 招聘企业, 6 代招企业", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id 7是招聘企业 8 9 是代招企业")
+    })
+    public Result<HrGroup> selectGroupName(Integer type, Integer userId) {
+        var list = service.selectGroupName(type, userId);
+        var result = new Result<HrGroup>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
 
+
+    }
 
 
 }

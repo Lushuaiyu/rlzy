@@ -1,11 +1,10 @@
 package com.nado.rlzy.service.impl;
 
 import cn.hutool.core.lang.Assert;
-import com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto;
 import com.nado.rlzy.bean.dto.SignUpNumberDto;
-import com.nado.rlzy.bean.frontEnd.ReleaseBriefcharpterFront;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.EditBriefchapterQuery;
+import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
@@ -15,16 +14,17 @@ import com.nado.rlzy.utils.CollectorsUtil;
 import com.nado.rlzy.utils.StringUtil;
 import com.nado.rlzy.utils.ValidationUtil;
 import lombok.var;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,20 +53,22 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     private HrSignUpMapper signUpMapper;
 
     @Autowired
-    private HrPostMapper postMapper;
-
-    @Autowired
     private HrAcctMapper acctMapper;
     @Autowired
     private HrAcctDetailMapper acctDetailMapper;
 
     @Autowired
-    private OptionsMapper options;
+    private HrDictionaryItemMapper dictionaryItemMapper;
+
+    @Autowired
+    private HrGroupMapper groupMapper;
+
 
     @Override
-    public List<HrBriefchapter> myRelease(Integer userId, Integer typeId, Integer status) {
+    public Map<String, Object> myRelease(Integer userId, Integer typeId, Integer status) {
         List<HrBriefchapter> list = mapper.myRelease(userId, typeId, status);
-        return list.stream().map(dto -> {
+        List<HrBriefchapter> hrBriefchapters = mapper.myReleaseRecruitment(userId, typeId, status);
+        List<HrBriefchapter> collect = list.stream().map(dto -> {
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             System.out.println(map);
@@ -78,109 +80,28 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             });
             return dto;
         }).collect(Collectors.toList());
-    }
+        List<HrBriefchapter> briefchapterList = hrBriefchapters.stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                            CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    System.out.println(map);
 
-    @Override
-    public List<ReleaseBriefcharpterFront> queryReleaseBriefcharpterByparams(ReleaseBriefcharpterQuery query) {
-        List<ReleaseBriefcharpterDto> list = mapper.queryReleaseBriefcharpterByparams(query);
-        return list.stream().map(dto -> {
-            ReleaseBriefcharpterFront front = new ReleaseBriefcharpterFront();
-            //对象拷贝, 把dto copy到front
-            BeanUtils.copyProperties(dto, front);
-            //数据类型转换 start
-            Integer resume = dto.getAcceptRecommendedResume();
-            String res = StringUtil.toString(resume);
-            front.setAcceptRecommendedResume(res);
+                    //对返佣金额进行 foreach 操作, set到返回的结果集里
 
-            Integer hireWay = dto.getHireWay();
-            String hir = StringUtil.toString(hireWay);
-            front.setHireWay(hir);
+                    map.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
 
-            Integer manAgeMax = dto.getManAgeMax();
-            String manMax = StringUtil.toString(manAgeMax);
-            front.setManAgeMax(manMax);
-
-            Integer manAgeMin = dto.getManAgeMin();
-            String manMin = StringUtil.toString(manAgeMin);
-            front.setManAgeMin(manMin);
-
-            Integer overtimeTimesMax = dto.getOvertimeTimesMax();
-            String overmax = StringUtil.toString(overtimeTimesMax);
-            front.setOvertimeTimesMax(overmax);
-
-            Integer overtimeTimesMin = dto.getOvertimeTimesMin();
-            String overMin = StringUtil.toString(overtimeTimesMin);
-            front.setOvertimeTimesMin(overMin);
-
-
-            Integer womenAgeMax = dto.getWomenAgeMax();
-            String womenMax = StringUtil.toString(womenAgeMax);
-            front.setWomenAgeMax(womenMax);
-
-            Integer womenAgeMin = dto.getWomenAgeMin();
-            String womenMin = StringUtil.toString(womenAgeMin);
-            front.setWomenAgeMin(womenMin);
-
-            Integer manNum = dto.getManNum();
-            String maNum = StringUtil.toString(manNum);
-            front.setManNum(maNum);
-
-            Integer womenNum = dto.getWomenNum();
-            String woNum = StringUtil.toString(womenNum);
-            front.setWomenNum(woNum);
-
-
-            Integer contractWay = dto.getContractWay();
-            String s1 = StringUtil.toString(contractWay);
-            front.setContractWay(s1);
-
-            // 数据拷贝 数据类型转换 end
-
-            //字符串分割 start
-            if (StringUtils.isNotBlank(front.getWelfare())) {
-                String welfare = front.getWelfare();
-                String[] split = welfare.split(",");
-                String welfare1 = String.join(",", split);
-                front.setWelfare(welfare1);
-            }
-
-
-            if (StringUtils.isNotBlank(front.getProfessionName())) {
-                String professionName = front.getProfessionName();
-                String[] pro = professionName.split(",");
-                String profess = String.join(",", pro);
-                front.setProfessionName(profess);
-            }
-
-
-            if (StringUtils.isNotBlank(front.getRecruitedCompany())) {
-                String recruitedCompany = front.getRecruitedCompany();
-                String[] re = recruitedCompany.split(",");
-                String r = String.join(",", re);
-                front.setRecruitedCompany(r);
-            }
-
-            if (StringUtils.isNotBlank(front.getEmploymentUnit())) {
-                String unit = front.getEmploymentUnit();
-                String[] split = unit.split(",");
-                String join = String.join(",", split);
-                front.setEmploymentUnit(join);
-            }
-
-            if (StringUtils.isNotBlank(front.getRecruitmentUnit())) {
-                String unit = front.getRecruitmentUnit();
-                String[] split = unit.split(",");
-                String join = String.join(",", split);
-                front.setEmploymentUnit(join);
-            }
-
-
-            //字符串分割 end
-            return front;
-
-        }).collect(Collectors.toList());
+                })
+                .collect(Collectors.toList());
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("myRelease", collect);
+        map.put("myReleaseRecruitment", briefchapterList);
+        return map;
 
     }
+
 
     @Override
     public List<Province> getPCA() {
@@ -192,30 +113,25 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     @Transactional(rollbackFor = Exception.class)
     public void saveUser(ReleaseBriefcharpterQuery query, Integer type) {
         //简章表
-        initBriefcharpter(query);
+        //initBriefcharpter(query);
         //职位表
-        initPost(query);
-
-
+        //TODO
         HrRebaterecord rebaterecord = new HrRebaterecord();
         HrBriefchapter briefchapter = new HrBriefchapter();
-
-
+        //招聘单位
         if (type.equals(5)) {
             //招聘单位 briefchapter.setRecruitedcompanyid( 组织表主键id);
-            briefchapter.setRecruitedcompanyId(query.getRecruitedCompanyId());
+           // briefchapter.setRecruitedcompanyId(query.getRecruitedCompanyId());
             //简章表
             initBriefcharpter(query);
             //职位表
-            initPost(query);
+            //TODO
             //有返佣 前台到后台
             if (query.getRebateStatus().equals(1)) {
-
                 //简章表id
                 rebaterecord.setBriefchapterId(briefchapter.getId());
                 //返佣类型 面试
                 if (query.getRebateType().equals(0)) {
-
                     String male = query.getRebateMale();
                     BigDecimal decimal = StringUtil.decimal(male);
                     String female = query.getRebateFemale();
@@ -224,7 +140,6 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     rebaterecord.setRebateMale(decimal);
                     rebaterecord.setRebateFemale(decimal1);
                     rebaterecord.setCreateTime(new Date());
-
                 }
                 //返佣类型 报道
                 if (query.getRebateType().equals(1)) {
@@ -236,7 +151,6 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     rebaterecord.setRebateMale(decimal);
                     rebaterecord.setRebateFemale(decimal1);
                     rebaterecord.setCreateTime(new Date());
-
                 }
                 //返佣类型 入职
                 if (query.getRebateType().equals(2)) {
@@ -249,15 +163,11 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     rebaterecord.setRebateMale(decimal);
                     rebaterecord.setRebateFemale(decimal1);
                     rebaterecord.setCreateTime(new Date());
-
-
                 }
-
             } else {
                 briefchapter.setRebateStatus(0);
-
             }
-
+            //代招单位
         } else if (type.equals(6)) {
             //代招单位
             //TODO 当前登录用户的主键id
@@ -266,15 +176,13 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             //简章表
             initBriefcharpter(query);
             //职位表
-            initPost(query);
+            //TODO
             //有返佣 前台到后台
             if (query.getRebateStatus().equals(1)) {
-
                 //简章表id
                 rebaterecord.setBriefchapterId(briefchapter.getId());
                 //返佣类型
                 if (query.getRebateType().equals(0)) {
-
                     String male = query.getRebateMale();
                     BigDecimal decimal = StringUtil.decimal(male);
                     String female = query.getRebateFemale();
@@ -283,7 +191,6 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     rebaterecord.setRebateMale(decimal);
                     rebaterecord.setRebateFemale(decimal1);
                     rebaterecord.setCreateTime(new Date());
-
                 }
                 if (query.getRebateType().equals(1)) {
                     String male = query.getRebateMale();
@@ -294,7 +201,6 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     rebaterecord.setRebateMale(decimal);
                     rebaterecord.setRebateFemale(decimal1);
                     rebaterecord.setCreateTime(new Date());
-
                 }
                 if (query.getRebateType().equals(2)) {
                     String male = query.getRebateMale();
@@ -306,43 +212,17 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     rebaterecord.setRebateMale(decimal);
                     rebaterecord.setRebateFemale(decimal1);
                     rebaterecord.setCreateTime(new Date());
-
-
                 }
-
             } else {
                 briefchapter.setRebateStatus(0);
-
             }
-
         }
-
-
         if (rebaterecordMapper.insertSelective(query) >= 1) {
             System.out.println("添加成功");
         } else {
             System.out.println("failed");
         }
-
-
     }
-
-
-    @Override
-    public List<ReleaseBriefcharpterDto> checkManAge(Integer manAgeId) {
-        return mapper.checkManAge(manAgeId);
-    }
-
-    @Override
-    public List<ReleaseBriefcharpterDto> checkWomenAge(Integer womenAgeId) {
-        return mapper.checkWomenAge(womenAgeId);
-    }
-
-    @Override
-    public List<ReleaseBriefcharpterDto> checkOvertimeTime(Integer overtimeTimeId) {
-        return mapper.checkOvertimeTime(overtimeTimeId);
-    }
-
 
     @Override
     public List<HrSignUp> recruitmentDetailsOverview(Integer[] jobStatus) {
@@ -383,8 +263,6 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             }).collect(Collectors.toList());
 
             //待返佣
-
-
             return dto;
         }).collect(Collectors.toList());
         return collect;
@@ -486,9 +364,28 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int rebate(Integer userId, Integer signUpUserId, BigDecimal addMoney, BigDecimal subtraction) {
-        signUpMapper.rebateAdd(signUpUserId, addMoney);
-        signUpMapper.rebateSubtraction(userId, subtraction);
+    public int rebate(RebateQuery query) {
+        if (query.getTypeId().equals(1)) {
+            //更改返佣状态
+            signUpMapper.rebateOne(query.getRebateId());
+            // 本人 -- 求职者账户增加钱
+            signUpMapper.rebateAdd(query);
+            // 企业 -- 从企业账户冻结金额扣钱
+            signUpMapper.rebateSubtraction(query);
+
+        } else if (query.getTypeId().equals(2)) {
+            //更改返佣状态
+            signUpMapper.rebateOne(query.getRebateId());
+            // 本人 -- 求职者账户增加钱
+            signUpMapper.rebateAdd(query);
+            // 企业 -- 从企业账户冻结金额扣钱
+            signUpMapper.rebateSubtraction(query);
+        } else {
+            Assert.isFalse(query.getTypeId() != 1 || query.getTypeId() != 2, RlzyConstant.OPS_FAILED_MSG);
+        }
+
+        signUpMapper.rebateAdd(query);
+        signUpMapper.rebateSubtraction(query);
         return 1;
     }
 
@@ -596,20 +493,23 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             detail.setSignupid(signUpId);
             detail.setCreatetime(new Date());
             Assert.isFalse(acctDetailMapper.accountDetailTableAddsReferrerRebate(detail) < 1, RlzyConstant.OPS_FAILED_MSG);
-
         }
-
-
         return 1;
-
-
     }
 
     @Override
-    public List<Options> selectContentByType(Integer type) {
-        return options.selectContentByType(type).stream().collect(Collectors.toList());
+    public List<HrDictionaryItem> selectContentByType(String type) {
 
-
+        // 创建Example
+        Example example = new Example(HrDictionaryItem.class);
+        // 创建Criteria
+        Example.Criteria criteria = example.createCriteria();
+        // 添加条件
+        criteria.andLike("pid", type);
+        List<HrDictionaryItem> items = dictionaryItemMapper.selectByExample(example);
+        List<HrDictionaryItem> collect = items.stream().collect(Collectors.toList());
+        System.out.println(collect);
+        return null;
     }
 
     @Override
@@ -712,21 +612,17 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     }
 
     @Override
+    public List<HrGroup> selectGroupName(Integer type, Integer userId) {
+        return groupMapper.selectGroupName(type, userId).stream()
+        .collect(Collectors.toList());
+    }
+
+    @Override
     public Integer updateJobStatusInterviewed(Integer signUpId) {
         return signUpMapper.updateJobStatusInterviewed(signUpId);
 
     }
 
-
-    private void initPost(ReleaseBriefcharpterQuery query) {
-        HrPost post = new HrPost();
-        post.setName(query.getPostName());
-        if (postMapper.insertSelective(query) >= 1) {
-            System.out.println("添加成功");
-        }
-
-
-    }
 
     private void initBriefcharpter(ReleaseBriefcharpterQuery query) {
         HrBriefchapter dto = new HrBriefchapter();
@@ -739,26 +635,39 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         dto.setExperienceId(query.getExperienceId());
         dto.setWorkWayId(query.getWorkWayId());
         dto.setWorkTimeArrangeId(query.getWorkTimeArrangeId());
-        dto.setClothingRequirementId(query.getClothingRequirementId());
+        dto.setClothingRequirementId(Integer.valueOf(query.getClothingRequirementId()));
         dto.setHobbyId(query.getHobbyId());
         dto.setOvertimeTimeId(query.getOvertimeTimeId());
         dto.setWelfareId(query.getWelfareId());
         dto.setPostDetail(query.getPostDetail());
-        dto.setInterviewTime(query.getInterviewTime());
-        dto.setRegisterTime(query.getRegisterTime());
-
-        dto.setContractTime(query.getContractTime());
+        String interviewTime = query.getInterviewTime();
+        LocalDateTime dateTime = StringUtil.strToLocalDateTime(interviewTime);
+        dto.setInterviewTime(dateTime);
+        String time = query.getRegisterTime();
+        LocalDateTime localDateTime = StringUtil.strToLocalDateTime(time);
+        dto.setRegisterTime(localDateTime);
+        String contractTime = query.getContractTime();
+        LocalDateTime localDateTime1 = StringUtil.strToLocalDateTime(contractTime);
+        dto.setContractTime(localDateTime1);
         dto.setHireWay(query.getHireWay());
         dto.setAcceptRecommendedResume(query.getAcceptRecommendedResume());
+
 
         dto.setContractWay(query.getContractWay());
         dto.setManNum(query.getManNum());
         dto.setWomenNum(query.getWomenNum());
+        dto.setUserId(query.getUserId());
         if (query.getContractWay() == 0) {
-            dto.setContractWayDetailId(query.getContractWayDetailId());
-
+            //招聘单位
+            dto.setContractWayDetailId(Integer.valueOf(query.getContractWayDetailId()));
         } else if (query.getContractWay() == 1) {
-            dto.setContractWayDetailId(query.getContractWayDetailId());
+            //用工单位
+            dto.setContractWayDetailId(Integer.valueOf(query.getContractWayDetailId()));
+        } else if(query.getContractWay() == 2) {
+            //厂方指定劳务公司
+            dto.setContractWayDetailId(Integer.valueOf(query.getContractWayDetailId()));
+        }else {
+            System.out.println("o");
         }
         if (mapper.save(query) >= 1) {
             System.out.println("添加成功");

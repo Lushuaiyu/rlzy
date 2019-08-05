@@ -2,18 +2,17 @@ package com.nado.rlzy.db.mapper;
 
 import com.nado.rlzy.db.pojo.HrAcct;
 import org.apache.ibatis.annotations.Param;
+import tk.mybatis.mapper.common.Mapper;
 
 import java.math.BigDecimal;
 
-public interface HrAcctMapper {
-    int deleteByPrimaryKey(Integer id);
+/**
+ * @author lushuaiyu
+ */
+public interface HrAcctMapper extends Mapper<HrAcct> {
 
 
-    int insertSelective(HrAcct record);
 
-    HrAcct selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(HrAcct record);
 
     /**
      * 把面试的钱返给推荐者

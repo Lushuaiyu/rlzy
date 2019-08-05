@@ -3,10 +3,10 @@ package com.nado.rlzy.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.base.BaseController;
 import com.nado.rlzy.bean.dto.ComplaintDto;
-import com.nado.rlzy.bean.frontEnd.PersonCoFront;
 import com.nado.rlzy.bean.model.CommonResult;
 import com.nado.rlzy.bean.model.Result;
 import com.nado.rlzy.bean.model.ResultInfo;
+import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
 import com.nado.rlzy.db.pojo.Feedback;
@@ -51,7 +51,6 @@ public class PersonCenterController extends BaseController {
 
     /**
      * 查询我的企业
-     *
      * @return java.util.List<com.nado.rlzy.bean.frontEnd.PersonCoFront>
      * @Author lushuaiyu
      * @Description //TODO
@@ -60,16 +59,16 @@ public class PersonCenterController extends BaseController {
      **/
     @RequestMapping(value = "queryPersonCo")
     @ResponseBody
-    @ApiImplicitParam(name = "status", value = "登陆者身份", dataType = "Integer", required = true)
-    @ApiOperation(value = "查询我的企业", notes = "代招单位还是招聘单位 5 是招聘单位 6是代招单位", httpMethod = "POST")
-    Result<PersonCoFront> queryPersonCo(Integer status) {
-        List<PersonCoFront> personCoFronts = service.queryPersonCo(status);
+    @ApiOperation(value = "查询我的企业 ", notes = "查询我的企业", httpMethod = "POST")
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
+    public ResultJson queryPersonCo(Integer userId) {
+        Map<String, Object> map = service.queryPersonCo(userId);
+        ResultJson result = new ResultJson();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(map);
 
-        Result<PersonCoFront> personCoFrontResult = new Result<>();
-        personCoFrontResult.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        personCoFrontResult.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        personCoFrontResult.setData(personCoFronts);
-        return personCoFrontResult;
+        return result;
 
 
     }
@@ -231,14 +230,14 @@ public class PersonCenterController extends BaseController {
     @ApiOperation(value = "查询投诉记录", notes = "查询投诉记录", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "typeId", name = "类型id", dataType = "Integer", required = true)
+            @ApiImplicitParam(value = "typeId", name = "用户身份id", dataType = "Integer", required = true)
     })
-    public Result<ComplaintDto> searchComplaintRecord(Integer userId, Integer typeId) {
-        List<ComplaintDto> dtos = service.searchComplaintRecord(userId, typeId);
-        Result<ComplaintDto> result = new Result<>();
+    public ResultJson searchComplaintRecord(Integer userId, Integer typeId) {
+        HashMap<Object, Object> map = service.searchComplaintRecord(userId, typeId);
+        ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(dtos);
+        result.setData(map);
         return result;
     }
 

@@ -59,6 +59,14 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
             String s3 = StringUtil.toString(relation);
             front.setRelation(s3);
 
+            Integer type = dto.getType();
+            String s1 = StringUtil.toString(type);
+            front.setRelation(s1);
+
+            if (dto.getType().equals(1)) {
+                front.setRelation("本人");
+            }
+
 
             return front;
 
@@ -89,7 +97,9 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
             String s4 = StringUtil.toString(relation);
             front.setRelation(s4);
 
-
+            Integer signUpId = dto.getSignUpId();
+            String string = StringUtil.toString(signUpId);
+            front.setSignUpId(string);
             Integer briefChapterId = dto.getBriefChapterId();
             String s2 = StringUtil.toString(briefChapterId);
             front.setBriefChapterId(s2);

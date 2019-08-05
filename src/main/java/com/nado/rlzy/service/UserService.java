@@ -24,7 +24,7 @@ public interface UserService {
     int changePasswoed(String phone, String code, String passWord, Integer userId);
 
     /**
-     * 求职端 用户切换身份
+     *  用户切换身份
      * @param userId 用户id
      * @param type 用户 身份
      * @return

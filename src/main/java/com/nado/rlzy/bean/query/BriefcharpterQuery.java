@@ -20,6 +20,9 @@ public class BriefcharpterQuery extends BaseQuery {
     private Integer briefcharpterId;
 
     @ApiModelProperty(value = "招聘公司")
+    private String recruitedCompany;
+
+    @ApiModelProperty(value = "招聘单位 | 代招单位")
     private String certifier;
 
     @ApiModelProperty(value = "职位")
@@ -54,6 +57,10 @@ public class BriefcharpterQuery extends BaseQuery {
     @ApiModelProperty(value = "招聘企业面试地址 ")
     private String interviewAddress;
 
+
+    @ApiModelProperty(value = "用工形式 学生专区")
+    private Integer [] contractWayDetailId1;
+
     @ApiModelProperty(value = "代招单位面试地址")
     private String interviewAddress2;
 
@@ -61,7 +68,7 @@ public class BriefcharpterQuery extends BaseQuery {
     private String experienceId;
 
     @ApiModelProperty(value = "工作方式id")
-    private String workWayId;
+    private Integer workWayId;
 
     @ApiModelProperty(value = "期望工作地点")
     private String expectAddress;

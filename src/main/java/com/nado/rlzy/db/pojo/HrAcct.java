@@ -1,75 +1,47 @@
 package com.nado.rlzy.db.pojo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
+/**
+ * @author lushuaiyu
+ */
+@Data
+@Table(name = "hr_acct")
+@ApiModel(description = "账户表")
 public class HrAcct {
+    @ApiModelProperty(value = "报名表主键id")
+    @Id
+    @GeneratedValue(generator = "JDBC")
+    @Column(name = "id")
     private Integer id;
 
+    @Column(name = "UserId")
     private Integer userid;
 
+    @Column(name = "AcctBalance")
     private Long acctbalance;
 
+    @Column(name = "IceBalance")
     private Long icebalance;
 
+    @Column(name = "DeleteFlag")
     private Byte deleteflag;
 
+    @Column(name = "modifyTime")
     private Date modifytime;
 
+    @Column(name = "CreateTime")
     private Date createtime;
 
-    public Integer getId() {
-        return id;
-    }
+    @Column(name = "sign_up_id")
+    private Integer signUpId;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserid() {
-        return userid;
-    }
-
-    public void setUserid(Integer userid) {
-        this.userid = userid;
-    }
-
-    public Long getAcctbalance() {
-        return acctbalance;
-    }
-
-    public void setAcctbalance(Long acctbalance) {
-        this.acctbalance = acctbalance;
-    }
-
-    public Long getIcebalance() {
-        return icebalance;
-    }
-
-    public void setIcebalance(Long icebalance) {
-        this.icebalance = icebalance;
-    }
-
-    public Byte getDeleteflag() {
-        return deleteflag;
-    }
-
-    public void setDeleteflag(Byte deleteflag) {
-        this.deleteflag = deleteflag;
-    }
-
-    public Date getModifytime() {
-        return modifytime;
-    }
-
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
-    }
-
-    public Date getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
 }

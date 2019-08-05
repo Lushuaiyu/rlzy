@@ -8,8 +8,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
-
 /**
  * @ClassName 求职端登录注册入参
  * @Description TODO
@@ -28,7 +26,7 @@ public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
     @ApiModelProperty(value = "毕业时间")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime graduationTime;
+    private String graduationTime;
 
     @ApiModelProperty(value = "专业")
     private String profession;
@@ -37,7 +35,7 @@ public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
     private String registrationPositionId;
 
     @ApiModelProperty(value = "到岗时间")
-    private LocalDateTime arrivalTime;
+    private String arrivalTime;
     @ApiModelProperty(value = "期望工资上限")
     private String expectedSalaryUpper;
 
@@ -64,4 +62,16 @@ public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
 
     @ApiModelProperty(value = "图片上传")
     private MultipartFile file;
+
+    @ApiModelProperty(value = "求职状态")
+    private Integer jobStatus;
+
+    @ApiModelProperty(value = "未通过原因")
+    private Integer noPassReason;
+
+    @ApiModelProperty(value = "未报到原因")
+    private Integer noReportReason;
+
+
+
 }

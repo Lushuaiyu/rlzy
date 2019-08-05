@@ -1,8 +1,9 @@
 package com.nado.rlzy.service.impl;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.IdcardUtil;
 import com.nado.rlzy.bean.dto.ComplaintDto;
-import com.nado.rlzy.bean.model.ComplaintModel;
+import com.nado.rlzy.bean.dto.ComplaintPage;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.ComplaintQuery;
 import com.nado.rlzy.db.mapper.*;
@@ -17,10 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +36,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     private HrBriefchapterMapper mapper;
 
     @Autowired
-    HrRebaterecordMapper rebaterecordMapper;
+    private HrRebaterecordMapper rebaterecordMapper;
 
     @Autowired
     private HrGroupMapper groupMapper;
@@ -52,8 +50,6 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     @Autowired
     private MySignUpTableMapper tableMapper;
 
-    @Autowired
-    private HrPostMapper postMapper;
 
     @Autowired
     private HrComplaintMapper complaintMapper;
@@ -61,11 +57,37 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     @Autowired
     private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
 
+    @Autowired
+    private HrAcctMapper acctMapper;
+
+    @Autowired
+    private HrUserMapper userMapper;
+
+    @Autowired
+    private HrDictionaryItemMapper dictionaryItemMapper;
+
     @Override
     public List<HrGroup> coHomePage(Integer groupId) {
         List<HrGroup> list = groupMapper.coHomePage(groupId);
 
         return list.stream().collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HrBriefchapter> queryBriefcharpterByParams(BriefcharpterQuery query) {
+        List<HrBriefchapter> dtos = mapper.queryBriefcharpterByParams(query);
+        //返回结果集
+        return dtos.stream().map(dto -> {
+            //对返佣的简章id 进行分组, 然后对返佣金额进行sum操作
+            Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+            //对返佣金额进行 foreach 操作, set到返回的结果集里
+            map.forEach((k, v) -> {
+                dto.setRebateRecord(v);
+
+            });
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -106,6 +128,32 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
+    public List<HrBriefchapter> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = mapper.queryBriefcharpterDetileRecruitment(query);
+        return list.stream()
+                .map(dto -> {
+                    dto.getRebat()
+                            .stream()
+                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HrBriefchapter> queryBriefcharpterByLongLiveRecruitment(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = mapper.queryBriefcharpterByLongLiveRecruitment(query);
+        return list.stream()
+                .map(dto -> {
+                    dto.getRebat()
+                            .stream()
+                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<HrBriefchapter> queryBriefcharpterByLongLive(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.queryBriefcharpterByLongLive(query);
         return list.stream().map(dto -> {
@@ -119,6 +167,23 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         }).collect(Collectors.toList());
     }
 
+
+    @Override
+    public List<HrBriefchapter> queryBriefcharpterByLongEatRecruitment(BriefcharpterQuery query) {
+        return mapper.queryBriefcharpterByLongEatRecruitment(query)
+                .stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat()
+                            .stream()
+                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    map.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<HrBriefchapter> queryBriefcharpterByLongEat(BriefcharpterQuery query) {
@@ -135,19 +200,50 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
+    public List<HrBriefchapter> recommendedFeeTop10Recruitment(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = mapper.recommendedFeeTop10Recruitment(query);
+        return list.stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat().stream()
+                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    map.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
     public List<HrBriefchapter> recommendedFeeTop10(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.recommendedFeeTop10(query);
-        return list.stream().map(dto -> {
-            Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
-                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
-            System.out.println(map);
+        return list
+                .stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                            CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
 
-            //对返佣金额进行 foreach 操作, set到返回的结果集里
-            map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
-            });
-            return dto;
-        }).collect(Collectors.toList());
+
+                    //对返佣金额进行 foreach 操作, set到返回的结果集里
+                    map.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HrBriefchapter> studentDivisionRecruitment(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = mapper.studentDivisionRecruitment(query);
+        return list.stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat()
+                            .stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    map.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -156,7 +252,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         return vals.stream().map(dto -> {
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
-            System.out.println(map);
+            //System.out.println(map);
 
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
@@ -169,12 +265,29 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
+    public List<HrBriefchapter> salaryLeaderboardRecruitment(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = mapper.salaryLeaderboardRecruitment(query);
+        return list
+                .stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat()
+                            .stream()
+                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    map.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<HrBriefchapter> salaryLeaderboard(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.salaryLeaderboard(query);
         return list.stream().map(dto -> {
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
-            System.out.println(map);
 
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
@@ -185,6 +298,22 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         }).collect(Collectors.toList());
     }
 
+
+    @Override
+    public List<HrBriefchapter> directBusinessRecruitment(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = mapper.directBusinessRecruitment(query);
+        return list.stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> collect = dto.getRebat()
+                            .stream()
+                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    collect.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<HrBriefchapter> directBusiness(BriefcharpterQuery query) {
@@ -202,6 +331,23 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
             return dto;
 
 
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HrBriefchapter> directAdmissionRecruitment(BriefcharpterQuery query) {
+        List<HrBriefchapter> list = mapper.directAdmissionRecruitment(query);
+        return list.stream().map(dto -> {
+            Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+            System.out.println(map);
+
+            //对返佣金额进行 foreach 操作, set到返回的结果集里
+            map.forEach((k, v) -> {
+                dto.setRebateRecord(v);
+
+            });
+            return dto;
         }).collect(Collectors.toList());
     }
 
@@ -235,14 +381,15 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
-    public List<HrBriefchapter> queryBriefchapterBySignUpStatus(Integer signUpStatus) {
+    public Map<Object, Object> queryBriefchapterBySignUpStatus(Integer signUpStatus) {
         List<HrBriefchapter> list = mapper.queryBriefchapterBySignUpStatus(signUpStatus);
+        List<HrBriefchapter> hrBriefchapters = mapper.queryBriefchapterBySignUpstatusRecruitment(signUpStatus);
         //TODO
-        return list.stream().map(dto -> {
+        List<HrBriefchapter> collect = list.stream().map(dto -> {
             Map<Integer, BigDecimal> map = dto.getRebat().stream().map(r -> {
                 if (dto.getSex().equals(0)) {
                     r.setRebateOne(r.getRebateFemale());
-                }else  {
+                } else {
                     r.setRebateOne(r.getRebateMale());
                 }
                 return r;
@@ -257,6 +404,32 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
             });
             return dto;
         }).collect(Collectors.toList());
+
+        List<HrBriefchapter> list1 = hrBriefchapters.stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat()
+                            .stream().map(r -> {
+                                if (dto.getSex().equals(0)) {
+                                    r.setRebateOne(r.getRebateFemale());
+                                } else {
+                                    r.setRebateOne(r.getRebateMale());
+                                }
+                                return r;
+
+
+                            }).collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    map.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        HashMap<Object, Object> map = new HashMap<>();
+        map.put("queryBriefchapterBySignUpStatus", collect);
+        map.put("queryBriefchapterBySignUpstatusRecruitment", list1);
+        return map;
+
 
     }
 
@@ -277,44 +450,93 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void addBriefchapter(Collect collect) {
+    public void addCancelBriefchapter(Collect collect) {
         Collect co = new Collect();
+        if (collect.getFlag().equals(0)) {
         co.setUserId(collect.getUserId());
         co.setBriefchapterId(collect.getBriefchapterId());
         co.setCreateTime(new Date());
         Assert.isTrue(collectMapper.addBriefchapter(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
+        } else if (collect.getFlag().equals(1)){
+            co.setDeleteFlag(1);
+            Assert.isTrue(collectMapper.updateByPrimaryKeySelective(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
+        }
+
 
 
     }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateCollectStatus(Collect collect) {
-        Assert.isFalse(null == collect.getBriefchapterId(), RlzyConstant.NULL_PARAM);
-        Assert.isFalse(null == collect.getUserId(), RlzyConstant.NULL_PARAM);
-        collect.setDeleteFlag(1);
-        Assert.isTrue(collectMapper.updateByPrimaryKeySelective(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
-    }
-
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void addSignUpTable(HrSignUp query) {
+        HrSignUp up = new HrSignUp();
 
         //校验参数
-      /*  checkAddSignUp(query.getUserName(), query.getSex(), query.getEducation(), query.getGraduationTime(),
+        checkAddSignUp(query.getUserName(), query.getSex(), query.getEducation(), query.getGraduationTime(),
                 query.getProfession(), query.getRegistrationPositionId(), query.getArrivalTime(), query.getExpectedSalaryLower(),
                 query.getExpectedSalaryUpper(),
-                query.getRelation(), query.getItIsPublic(), query.getAgreePlatformHelp(), query.getUserId());*/
+                query.getRelation(), query.getItIsPublic(), query.getAgreePlatformHelp(), query.getUserId(), query.getIdCard());
+        //初始化参数
+        Integer userId = initSignUp(query.getUserName(), query.getSex(), query.getEducation(), query.getGraduationTime(),
+                query.getProfession(), query.getRegistrationPositionId(), query.getArrivalTime(), query.getExpectedSalaryLower(),
+                query.getExpectedSalaryUpper(),
+                query.getRelation(), query.getItIsPublic(), query.getAgreePlatformHelp(), query.getUserId(), query.getIdCard());
 
+        if (query.getTypeId().equals(1)) {
 
-        Assert.isFalse(signUpMapper.insertSelective(query) < 1, "参数添加失败");
+            //初始化参数
+            initSignUpDeliveryrecord(up, userId);
+
+            Assert.isFalse(signUpMapper.insertSelective(query) < 1, "参数添加失败");
+        } else {
+
+            HrAcct acct = new HrAcct();
+            acct.setSignUpId(userId);
+            Assert.isFalse(acctMapper.insertSelective(acct) < 1, "参数添加失败");
+
+        }
+
 
     }
 
-    private void checkAddSignUp(String userName, Integer sex, String education, LocalDateTime graduationTime, String profession,
-                                String registrationPositionId, LocalDateTime arrivalTime, BigDecimal expectedSalaryLower, BigDecimal expectedSalaryUpper,
-                                Integer relation, Integer itIsPublic, Integer agreePlatformHelp, Integer userId) {
+    private void initSignUpDeliveryrecord(HrSignUp up, Integer userId) {
+        HrSignupDeliveryrecord record = new HrSignupDeliveryrecord();
+        record.setSignupId(userId);
+        record.setCreateTime(LocalDateTime.now());
+        record.setJobStatus(up.getJobStatus());
+        record.setNoPassReason(up.getNoPassReason());
+        record.setNoReportReason(up.getNoReportReason());
+        Assert.isFalse(signupDeliveryrecordMapper.insertSelective(record) < 1, RlzyConstant.OPS_FAILED_MSG);
+    }
+
+    private Integer initSignUp(String userName, Integer sex, String education,
+                               String graduationTime, String profession,
+                               String registrationPositionId, String arrivalTime,
+                               BigDecimal expectedSalaryLower, BigDecimal expectedSalaryUpper,
+                               Integer relation, Integer itIsPublic, Integer agreePlatformHelp,
+                               Integer userId, String idCard) {
+        HrSignUp signUp = new HrSignUp();
+        signUp.setUserName(userName);
+        signUp.setSex(sex);
+        signUp.setEducation(education);
+        signUp.setGraduationTime(graduationTime);
+        signUp.setProfession(profession);
+        signUp.setRegistrationPositionId(registrationPositionId);
+        signUp.setArrivalTime(arrivalTime);
+        signUp.setExpectedSalaryLower(expectedSalaryLower);
+        signUp.setExpectedSalaryUpper(expectedSalaryUpper);
+        signUp.setRelation(relation);
+        signUp.setItIsPublic(itIsPublic);
+        signUp.setAgreePlatformHelp(agreePlatformHelp);
+        signUp.setUserId(userId);
+        signUp.setIdCard(idCard);
+        Assert.isFalse(signUpMapper.insertSelective(signUp) < 1, "参数添加失败");
+        return signUp.getId();
+    }
+
+    private void checkAddSignUp(String userName, Integer sex, String education, String graduationTime, String profession,
+                                String registrationPositionId, String arrivalTime, BigDecimal expectedSalaryLower, BigDecimal expectedSalaryUpper,
+                                Integer relation, Integer itIsPublic, Integer agreePlatformHelp, Integer userId, String idCard) {
         Assert.isFalse(StringUtils.isBlank(userName), "用户名不能为空");
         Assert.isFalse(null == sex, "性别不能为空");
         Assert.isFalse(StringUtils.isBlank(education), "学历不能为空");
@@ -329,6 +551,8 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         Assert.isFalse(null == agreePlatformHelp, "是否获取平台帮助不能为空");
         Assert.isFalse(null == userId, "用户id不能为空");
         //Assert.isFalse(null == briefchapterId, "简章id不能为空");
+        boolean card = IdcardUtil.isValidCard(idCard);
+        Assert.isFalse(false == card, "身份证输入不正确");
     }
 
     @Override
@@ -345,26 +569,6 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     }
 
-    @Override
-    public List<HrPost> selectPostNameByPost() {
-        return postMapper.selectPostNameByPost().stream().collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ComplaintDto> complaintStart(Integer userId, Integer typeId, Integer briefchapterId) {
-        List<ComplaintDto> dtos = complaintMapper.complaintStart(userId, typeId, briefchapterId);
-        return dtos.stream().map(dto -> {
-            List<ComplaintModel> list = new ArrayList<>();
-            ComplaintModel model = new ComplaintModel();
-            model.setUserName(dto.getUserName());
-            model.setSignUserName(dto.getSignUserName());
-            list.add(model);
-            dto.setComplaintModels(list);
-            return dto;
-        }).collect(Collectors.toList());
-
-
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -453,6 +657,28 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         List<Integer> collect = Stream.of(id).collect(Collectors.toList());
         return signUpMapper.confirmRegistration(briefChapterId, collect);
 
+    }
+
+    @Override
+    public Map<String, List<ComplaintPage>> complaintPage(Integer typeId, Integer userId, Integer brieId, Integer dictionary) {
+        Map<String, List<ComplaintPage>> map = new HashMap<>();
+        if (typeId.equals(1)) {
+            //本人
+            List<ComplaintPage> users = userMapper.selectMyselfName(typeId, userId);
+            List<ComplaintPage> dictionary1 = dictionaryItemMapper.dictionary(dictionary);
+            map.put("selectMyselfName", users);
+            map.put("dictionary", dictionary1);
+        } else {
+            //推荐人
+            List<ComplaintPage> list = userMapper.selectMyselfName(typeId, userId);
+            List<ComplaintPage> person = signUpMapper.queryComplaintPerson(typeId, userId, brieId);
+            List<ComplaintPage> itemList = dictionaryItemMapper.dictionary(dictionary);
+            map.put("selectMyselfName", list);
+            map.put("queryComplaintPerson", person);
+            map.put("dictionary", itemList);
+
+        }
+        return map;
     }
 
     @Override

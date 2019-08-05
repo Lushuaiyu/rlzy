@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
+import java.time.LocalDateTime;
 @Data
 @Table(name = "hr_signup_deliveryrecord")
 public class HrSignupDeliveryrecord {
@@ -51,7 +51,7 @@ public class HrSignupDeliveryrecord {
      * 创建时间
      */
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 0 未删除 1 已删除

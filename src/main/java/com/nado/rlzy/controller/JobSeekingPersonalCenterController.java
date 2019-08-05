@@ -1,6 +1,7 @@
 package com.nado.rlzy.controller;
 
 import com.nado.rlzy.bean.model.Result;
+import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.platform.annotation.UserLoginToken;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName 求职端 个人中心 Controller
@@ -31,7 +34,7 @@ public class JobSeekingPersonalCenterController {
     @Autowired
     private JobSeekingPersonalCenterService service;
     /**
-     * 简章收藏概览
+     * 简章收藏
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
@@ -42,19 +45,25 @@ public class JobSeekingPersonalCenterController {
     @RequestMapping(value = "recruitmentBrochureCollection")
     @ResponseBody
     @ApiOperation(notes = "简章收藏概览", value = "简章收藏概览", httpMethod = "POST")
-    @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
-    public Result<HrBriefchapter> recruitmentBrochureCollection(Integer userId) {
-        List<HrBriefchapter> list = service.recruitmentBrochureCollection(userId);
-        Result<HrBriefchapter> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
-        return result;
-
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "用户身份 1 是本人 2是推荐人", dataType = "Integer", required = true)
+    })
+    public ResultJson recruitmentBrochureCollection(Integer userId, Integer type) {
+        List<HrBriefchapter> list = service.recruitmentBrochureCollection(userId, type);
+        List<HrBriefchapter> vals = service.recruitmentBrochureCollectionRecruitment(userId, type);
+        HashMap<Object, Object> map = new HashMap<>();
+        map.put("recruitmentBrochureCollection", list);
+        map.put("recruitmentBrochureCollectionRecruitment", vals);
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(map);
+        return resultJson;
     }
 
     /**
-     * 查查询我的报名表详情
+     * 查询我的报名表详情 可能废弃
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrSignUp>
      * @Author lushuaiyu
@@ -105,14 +114,18 @@ public class JobSeekingPersonalCenterController {
 
     @RequestMapping(value = "searchSignUpUserName")
     @ResponseBody
-    @ApiOperation(notes = "查询投诉人 投诉人是报名该简章的求职者", value = "查询投诉人 投诉人是报名该简章的求职者", httpMethod = "POST")
-    @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "Integer", required = true)
-    public Result<HrSignUp> searchSignUpUserName(Integer briefChapterId) {
-        List<HrSignUp> ups = service.searchSignUpUserName(briefChapterId);
-        Result<HrSignUp> result = new Result<>();
+    @ApiOperation(notes = "查询投诉人 投诉人是报名该简章的求职者 typeid = 1 本人 2 推荐人", value = "查询投诉人 投诉人是报名该简章的求职者", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "typeId", name = "用户身份id", dataType = "Integer", required = true)
+    })
+    public ResultJson searchSignUpUserName(Integer briefChapterId, Integer userId, Integer typeId) {
+        Map<Object, Object> map = service.searchSignUpUserName(briefChapterId, userId, typeId);
+        ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(ups);
+        result.setData(map);
         return result;
 
     }

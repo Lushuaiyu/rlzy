@@ -1,11 +1,13 @@
 package com.nado.rlzy.service;
 
 import com.nado.rlzy.bean.dto.ComplaintDto;
+import com.nado.rlzy.bean.dto.ComplaintPage;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.ComplaintQuery;
 import com.nado.rlzy.db.pojo.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName 求职端首页
@@ -27,7 +29,7 @@ public interface JobSearchHomePageService {
     List<HrGroup> coHomePage(Integer groupId);
 
     /**
-     * 查询招聘简章
+     * 招聘简章查询接口 代招单位  全部职位
      *
      * @return java.util.List<com.nado.rlzy.bean.frontEnd.BriefcharpterFront>
      * @Author lushuaiyu
@@ -36,6 +38,17 @@ public interface JobSearchHomePageService {
      * @Param [query] 入参
      **/
     List<HrBriefchapter> queryBriefcharpterDtoByParams(BriefcharpterQuery query);
+
+
+    /**
+     * 招聘简章查询接口 招聘单位 全部职位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:06 2019/8/2
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> queryBriefcharpterByParams(BriefcharpterQuery query);
 
     /**
      * 求职端 首页 报名表 查询报名者的名字
@@ -50,7 +63,7 @@ public interface JobSearchHomePageService {
     List<HrSignUp> querySignUpUserName(Integer type, Integer userId);
 
     /**
-     * 查询招聘简章详情
+     * 查询招聘简章详情 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:20 2019/7/4
@@ -60,7 +73,17 @@ public interface JobSearchHomePageService {
     List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query);
 
     /**
-     * 长白班按返费高低排 概览
+     * 查询招聘简章详情 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:44 2019/8/2
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query);
+
+    /**
+     * 长白班按返费高低排 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:06 2019/7/4
@@ -69,10 +92,20 @@ public interface JobSearchHomePageService {
      **/
     List<HrBriefchapter> queryBriefcharpterByLongLive(BriefcharpterQuery query);
 
+    /**
+     * 长白班按返费高低排 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 19:46 2019/8/2
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> queryBriefcharpterByLongLiveRecruitment(BriefcharpterQuery query);
+
 
 
     /**
-     * 企业直招专区
+     * 企业直招专区 代招企业
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:02 2019/7/5
@@ -82,7 +115,17 @@ public interface JobSearchHomePageService {
     List<HrBriefchapter> directBusiness(BriefcharpterQuery query);
 
     /**
-     * 直接录取专区
+     * 企业直招专区 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:41 2019/8/2
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> directBusinessRecruitment(BriefcharpterQuery query);
+
+    /**
+     * 直接录取专区 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:25 2019/7/5
@@ -91,9 +134,19 @@ public interface JobSearchHomePageService {
      **/
     List<HrBriefchapter> directAdmission (BriefcharpterQuery query);
 
+    /**
+     * 直接录取专区 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:56 2019/8/2
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> directAdmissionRecruitment(BriefcharpterQuery query);
+
 
     /**
-     * 有吃住按返费高低排 概览
+     * 有吃住按返费高低排 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:15 2019/7/4
@@ -103,7 +156,17 @@ public interface JobSearchHomePageService {
     List<HrBriefchapter> queryBriefcharpterByLongEat(BriefcharpterQuery query);
 
     /**
-     * 推荐费top10
+     * 有吃住按返费高低排 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 20:18 2019/8/2
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> queryBriefcharpterByLongEatRecruitment(BriefcharpterQuery query);
+
+    /**
+     * 推荐费top10 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 18:07 2019/7/4
@@ -113,7 +176,17 @@ public interface JobSearchHomePageService {
     List<HrBriefchapter> recommendedFeeTop10(BriefcharpterQuery query);
 
     /**
-     * 学生专区
+     * 推荐费 toop10 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:17 2019/8/2
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> recommendedFeeTop10Recruitment(BriefcharpterQuery query);
+
+    /**
+     * 学生专区 代招企业
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 19:47 2019/7/4
@@ -123,7 +196,17 @@ public interface JobSearchHomePageService {
     List<HrBriefchapter> studentDivision(BriefcharpterQuery query);
 
     /**
-     * 工资排行榜
+     * 学生专区 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:49 2019/8/2
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> studentDivisionRecruitment(BriefcharpterQuery query);
+
+    /**
+     * 工资排行榜 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 9:57 2019/7/5
@@ -131,6 +214,16 @@ public interface JobSearchHomePageService {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     List<HrBriefchapter> salaryLeaderboard(BriefcharpterQuery query);
+
+    /**
+     * 工资排行榜 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:16 2019/8/2
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> salaryLeaderboardRecruitment(BriefcharpterQuery query);
 
     /**
      * 求职端 首页 我的工作 根据求职者的名字查询求职状态
@@ -153,7 +246,7 @@ public interface JobSearchHomePageService {
      * @Description //TODO
      * @Date 15:40 2019/7/11
      **/
-    List<HrBriefchapter> queryBriefchapterBySignUpStatus(Integer signUpStatus);
+    Map<Object, Object> queryBriefchapterBySignUpStatus(Integer signUpStatus);
 
 
     /**
@@ -181,24 +274,16 @@ public interface JobSearchHomePageService {
     int IWantToSignUp(Integer userId, Integer briefChapterId);
 
     /**
-     * 求职端 添加收藏
+     *  添加收藏 和取消收藏
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:56 2019/7/8
      * @Param [collect]
      * @return void
      **/
-    void addBriefchapter(Collect collect);
+    void addCancelBriefchapter(Collect collect);
 
-    /**
-     * 求职端 取消收藏
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 10:56 2019/7/8
-     * @Param
-     * @return
-     **/
-    void updateCollectStatus(Collect collect);
+
 
     /**
      * 新增求职表
@@ -220,18 +305,10 @@ public interface JobSearchHomePageService {
      **/
     void insertSelective(MySignUpTable record);
 
-    /**
-     * 查询职位
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 17:34 2019/7/8
-     * @Param []
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrPost>
-     **/
-    List<HrPost> selectPostNameByPost();
+
 
     /**
-     * 投诉开始 求职端
+     * 查询投诉 求职端
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:05 2019/7/10
@@ -239,7 +316,7 @@ public interface JobSearchHomePageService {
      * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
      **/
 
-    List<ComplaintDto> complaintStart(Integer userId, Integer typeId, Integer briefchapterId);
+
 
     /**
      * 添加投诉 求职端
@@ -321,6 +398,15 @@ public interface JobSearchHomePageService {
      * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
      **/
     List<ComplaintDto> creditCenter(Integer status);
+
+    /** 投诉页面 前端选择内容
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:15 2019/8/4
+     * @Param [typeId, userId, brieId, dictionary]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    Map<String, List<ComplaintPage>> complaintPage(Integer typeId, Integer userId, Integer brieId, Integer dictionary);
 
 
 

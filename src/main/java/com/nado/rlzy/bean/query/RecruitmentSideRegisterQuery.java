@@ -49,5 +49,14 @@ public class RecruitmentSideRegisterQuery extends BaseQuery {
     @ApiModelProperty(value = "图片上传")
     private MultipartFile file;
 
+    @ApiModelProperty(value = "提交人身份类型")
+    private Integer type;
+
+    @ApiModelProperty(value = "父id")
+    private Integer pid;
+
+    @ApiModelProperty(value = "企业状态 禁用还是启用")
+    private Integer groupStatus;
+
 
 }

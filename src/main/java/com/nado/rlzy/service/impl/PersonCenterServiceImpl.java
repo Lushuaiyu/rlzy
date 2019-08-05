@@ -3,7 +3,6 @@ package com.nado.rlzy.service.impl;
 import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.bean.dto.ComplaintDto;
 import com.nado.rlzy.bean.dto.PersonCoDto;
-import com.nado.rlzy.bean.frontEnd.PersonCoFront;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
 import com.nado.rlzy.db.mapper.*;
@@ -16,7 +15,6 @@ import com.nado.rlzy.platform.exception.ImgException;
 import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.utils.CheckParametersUtil;
 import com.nado.rlzy.utils.OSSClientUtil;
-import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -83,57 +83,19 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
-    public List<PersonCoFront> queryPersonCo(Integer status) {
+    public Map<String, Object> queryPersonCo(Integer userId) {
 
-        List<PersonCoDto> coDtos = mapper.queryPersonCo(status);
-        PersonCoFront front = new PersonCoFront();
-        return coDtos.stream().map(dto -> {
-            //代招单位
-            if (status == 6) {
-                String recruitedCompany = dto.getRecruitedCompany();
-                front.setRecruitedCompany(recruitedCompany);
-
-                String recruitedCompanyAddress = dto.getRecruitedCompanyAddress();
-                front.setRecruitedCompanyAddress(recruitedCompanyAddress);
-
-                String recPersonNum = dto.getRecPersonNum();
-                front.setRecPersonNum(recPersonNum);
-
-                String recCoPolicy = dto.getRecCoPolicy();
-                front.setRecCoPolicy(recCoPolicy);
-
-                Integer recStatus = dto.getRecStatus();
-                String s = StringUtil.toString(recStatus);
-                front.setRecStatus(s);
-
-                String busLicenseRec = dto.getBusLicenseRec();
-                front.setBusLicenseRec(busLicenseRec);
+        List<PersonCoDto> coDtos = mapper.queryPersonCo( userId);
+        List<PersonCoDto> list = mapper.queryPersonCORecruitment(userId);
+        List<PersonCoDto> collect = coDtos.stream().collect(Collectors.toList());
+        List<PersonCoDto> dtos = list.stream().collect(Collectors.toList());
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("queryPersonCo", collect);
+        map.put("queryPersonCORecruitment", dtos);
+        return map;
 
 
-            } else if (status == 5) {
-                String certifier = dto.getCertifier();
-                front.setCertifier(certifier);
 
-                String certifierAddress = dto.getCertifierAddress();
-                front.setCertifierAddress(certifierAddress);
-
-                String certifierNum = dto.getCertifierNum();
-                front.setCertifierNum(certifierNum);
-
-                String certifierPolicy = dto.getCertifierPolicy();
-                front.setCertifierPolicy(certifierPolicy);
-
-                Integer cerStatus = dto.getCerStatus();
-                String s = StringUtil.toString(cerStatus);
-                front.setCerStatus(s);
-
-                String busLincenseCer = dto.getBusLincenseCer();
-                front.setBusLincenseCer(busLincenseCer);
-
-
-            }
-            return front;
-        }).collect(Collectors.toList());
     }
 
     @Override
@@ -150,7 +112,7 @@ public class PersonCenterServiceImpl implements PersonCenterService {
 
 
         hrGroup.setBusinesslicense(url);
-        Assert.isTrue(hrGroupMapper.save(hrGroup) >= 1, RlzyConstant.OPS_FAILED_MSG);
+        Assert.isFalse(hrGroupMapper.insertSelective(hrGroup) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
 
@@ -217,8 +179,15 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
-    public List<ComplaintDto> searchComplaintRecord(Integer userId, Integer typeId) {
-        return complaintMapper.searchComplaintRecord(userId, typeId).stream().collect(Collectors.toList());
+    public HashMap<Object, Object> searchComplaintRecord(Integer userId, Integer typeId) {
+        List<ComplaintDto> collect = complaintMapper.searchComplaintRecord(userId, typeId).stream().collect(Collectors.toList());
+        List<ComplaintDto> dtos = complaintMapper.searchComplaintRecordMyself(userId, typeId)
+                .stream()
+                .collect(Collectors.toList());
+        HashMap<Object, Object> map = new HashMap<>();
+        map.put("searchComplaintRecord", collect);
+        map.put("searchComplaintRecordMyself", dtos);
+        return map;
     }
 
     @Override

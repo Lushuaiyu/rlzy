@@ -72,6 +72,13 @@
         <!--<table tableName="hr_signup_deliveryrecord">
             <generatedKey column="id" sqlStatement="JDBC"/>
         </table>-->
+        <!--<table tableName="attention">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>-->
+     <!--   <table tableName="hr_dictionary_item">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>-->
+
 
     </context>
 </generatorConfiguration>

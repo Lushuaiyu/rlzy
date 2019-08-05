@@ -22,7 +22,8 @@ import java.time.LocalDateTime;
 public class JobListtFront implements Serializable {
     private static final long serialVersionUID = -4520222154602447886L;
 
-    private String id;
+    @ApiModelProperty(value = "求职表id")
+    private String signUpId;
 
     @ApiModelProperty(value = "求职者姓名")
     private String userName;
@@ -52,7 +53,6 @@ public class JobListtFront implements Serializable {
     private String noSignUp;
 
 
-
     @ApiModelProperty(value = "求职者年龄")
     private String age;
 
@@ -78,6 +78,9 @@ public class JobListtFront implements Serializable {
 
     @ApiModelProperty(value = "与推荐者的关系")
     private String relation;
+
+    @ApiModelProperty(value = "身份: 推荐人还是本人求职")
+    private Integer type;
 
 
 }

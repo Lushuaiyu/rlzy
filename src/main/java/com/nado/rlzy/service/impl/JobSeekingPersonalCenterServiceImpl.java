@@ -3,12 +3,17 @@ package com.nado.rlzy.service.impl;
 import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
+import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
+import com.nado.rlzy.utils.CollectorsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +31,37 @@ public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCe
 
     @Autowired
     private HrSignUpMapper signUpMapper;
+
     @Override
-    public List<HrBriefchapter> recruitmentBrochureCollection(Integer userId) {
-        return mapper.recruitmentBrochureCollection(userId).stream().collect(Collectors.toList());
+    public List<HrBriefchapter> recruitmentBrochureCollectionRecruitment(Integer userId, Integer type) {
+        return mapper.recruitmentBrochureCollectionRecruitment(userId, type)
+                .stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat()
+                            .stream()
+                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    map.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HrBriefchapter> recruitmentBrochureCollection(Integer userId, Integer type) {
+        return mapper.recruitmentBrochureCollection(userId, type)
+                .stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat()
+                            .stream()
+                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    map.forEach((k, v) -> {
+                        dto.setRebateRecord(v);
+                    });
+                    return dto;
+                }).collect(Collectors.toList());
 
     }
 
@@ -43,7 +76,13 @@ public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCe
     }
 
     @Override
-    public List<HrSignUp> searchSignUpUserName(Integer briefChapterId) {
-        return signUpMapper.searchSignUpUserName(briefChapterId).stream().collect(Collectors.toList());
+    public Map<Object, Object> searchSignUpUserName(Integer briefChapterId, Integer userId, Integer typeId) {
+        HashMap<Object, Object> map = new HashMap<>();
+
+        if (typeId.equals(1)){
+
+        }
+
+        return map;
     }
 }

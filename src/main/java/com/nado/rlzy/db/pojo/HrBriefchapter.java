@@ -1,11 +1,14 @@
 package com.nado.rlzy.db.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -32,10 +35,10 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "岗位名称")
     private String postName;
 
-    @ApiModelProperty(value = "代招单位")
+    @ApiModelProperty(value = "代招单位下的企业 | 招聘单位")
     private String recruitedCompany;
 
-    @ApiModelProperty(value = "招聘单位")
+    @ApiModelProperty(value = "代招单位")
     private String certifier;
 
     @ApiModelProperty(value = "公司地址")
@@ -44,9 +47,6 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "工作地点")
     private String groupAddress2;
 
-    @ApiModelProperty(value = "工作性质")
-    private String jobnatureId;
-
     @ApiModelProperty(value = "是否返佣 0:无返佣 1:有返佣")
     private Integer rebate;
 
@@ -54,19 +54,19 @@ public class HrBriefchapter {
     private Integer recruitingNo;
 
     @ApiModelProperty(value = "综合工资")
-    private Integer avgSalary;
+    private BigDecimal avgSalary;
 
     @ApiModelProperty(value = "结算工资")
-    private String detailSalary;
+    private BigDecimal detailSalary;
 
     @ApiModelProperty(value = "结算工资方式")
-    private String detailSalaryWay;
+    private Integer detailSalaryWay;
 
     @ApiModelProperty(value = "学历")
     private String educationId;
 
     @ApiModelProperty(value = "经验")
-    private String experienceId;
+    private Integer experienceId;
 
     @ApiModelProperty(value = "福利")
     private String welfareId;
@@ -78,31 +78,40 @@ public class HrBriefchapter {
     private String postDetail;
 
     @ApiModelProperty(value = "面试时间")
-    private String interviewTime;
-
-    @ApiModelProperty(value = "招聘企业面试地址 ")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")    private LocalDateTime interviewTime;
+    @ApiModelProperty(value = "用人单位面试地址")
     private String interviewAddress;
 
+    @ApiModelProperty(value = "非用人单面试地址")
+    private String noEmployerAddress;
 
     @ApiModelProperty(value = "0用人单位 1非用人单位")
     private Integer interviewAddressFlag;
 
     @ApiModelProperty(value = "代招单位面试地址")
     private String interviewAddress2;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "报道时间")
-    private String registerTime;
+    private LocalDateTime registerTime;
 
     @ApiModelProperty(value = "合同签订方")
     private Integer contractWay;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "合同开始时间")
-    private Date contractStartTime;
+    private LocalDateTime contractStartTime;
 
     @ApiModelProperty(value = "合同签订方详情id")
-    private String contractWayDetailId;
+    private Integer contractWayDetailId;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "合同到期时间")
-    private String contractTime;
+    private LocalDateTime contractTime;
 
     @ApiModelProperty(value = "录取方式")
     private Integer hireWay;
@@ -122,17 +131,21 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "备注 审核不通过时会用到")
     private String remark;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "审核通过时间")
-    private Date checkedtime;
+    private LocalDateTime checkedtime;
 
     @ApiModelProperty(value = "浏览次数")
     private Integer readnum;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建时间")
-    private Date createtime;
+    private LocalDateTime createtime;
 
     @ApiModelProperty(value = "删除标识位")
-    private Byte deleteflag;
+    private Integer deleteflag;
 
     @ApiModelProperty(value = "男员工年龄段")
     private Integer manAgeId;
@@ -147,7 +160,7 @@ public class HrBriefchapter {
     private String workTimeArrangeId;
 
     @ApiModelProperty(value = "服装要求")
-    private String clothingRequirementId;
+    private Integer clothingRequirementId;
 
     @ApiModelProperty(value = "兴趣爱好")
     private String hobbyId;
@@ -159,9 +172,7 @@ public class HrBriefchapter {
     private Integer overtimeTimeId;
 
     @ApiModelProperty(value = "着装要求")
-    private String clothingReguirementId;
-
-
+    private Integer clothingReguirementId;
 
     @ApiModelProperty(value = "职位描述")
     private String descriptionJob;
@@ -187,8 +198,6 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "女人招聘数量")
     private Integer womenNum;
 
-    @ApiModelProperty(value = "非用人单位面试地址")
-    private String noEmployerAddress;
 
     @ApiModelProperty(value = "专业id")
     private String professionId;

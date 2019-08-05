@@ -143,10 +143,10 @@
         <set>
             status = 4
             <where>
-             delete_flag = 0
-             <if test="null != complaintId">
-            and id = #{complaintId}
-             </if>
+                delete_flag = 0
+                <if test="null != complaintId">
+                    and id = #{complaintId}
+                </if>
             </where>
         </set>
     </update>
@@ -154,42 +154,50 @@
 
     <select id="searchComplaintRecord" resultType="com.nado.rlzy.bean.dto.ComplaintDto">
         select c.id,
-        g.GroupName as groupName,
+        grr.GroupName as groupName,
         c.brief_chapter_id as briefChapterId,
-        c.status,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, c.status)
+        and d.pId = 25) as status,
         c.create_time as createTime,
         s.id as signUpId
         from hr_complaint c
         left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
         left join hr_briefchapter b on c.brief_chapter_id = b.Id and b.DeleteFlag = 0
-        left join hr_group g on b.RecruitedCompanyId = g.Id and g.DeleteFlag = 0
+        left join hr_group grr on b.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_group gr on b.userId = gr.CertifierId and gr.DeleteFlag = 0
         left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
-        <where>
-            c.delete_flag = 0
-            <if test="null != userId">
-                and u.id = #{userId}
-            </if>
-            <if test="null != typeId">
-                and u.type = #{typeId}
-            </if>
-        </where>
+        where c.delete_flag = 0
+        and grr.Pid = gr.Id
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+        <if test="null != typeId">
+            and u.type = #{typeId}
+        </if>
     </select>
     <select id="complaint" resultType="com.nado.rlzy.bean.dto.ComplaintDto">
         select s.user_name,
         c.id,
-        g.GroupName,
-        ct.complaint_type,
+        grr.GroupName,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, c.status)
+        and d.pId = 24) as complaintType,
         c.description,
         c.evidence,
-        c.brief_chapter_id
+        c.brief_chapter_id,
+        b.Id
         from hr_complaint c
         left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
-        left join hr_complainttype ct on c.complaint_type_id = ct.id and ct.delete_flag = 0
-        left join hr_briefchapter b on s.brief_chapter_id = b.id and b.DeleteFlag = 0
-        left join hr_group g on b.RecruitedCompanyId = g.Id and c.delete_flag = 0
+        left join hr_briefchapter b on c.brief_chapter_id = b.id and b.DeleteFlag = 0
+        left join hr_group grr on b.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_group gr on b.userId = gr.CertifierId and gr.DeleteFlag = 0
         left join hr_user u on s.user_id = u.id and u.DeleteFlag = 0
         <where>
-            c.delete_flag = 0
+            c.delete_flag =0
+            and grr.Pid = gr.Id
             <if test="null != complaintId">
                 and c.id = #{complaintId}
             </if>
@@ -238,5 +246,50 @@
     <select id="queryParams" resultMap="BaseResultMap">
         select * from hr_complaint where delete_flag = 0
     </select>
+    <select id="searchComplaintRecordMyself" resultType="com.nado.rlzy.bean.dto.ComplaintDto">
+        select c.id,
+        gr.GroupName as groupName,
+        c.brief_chapter_id as briefChapterId,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, c.status)
+        and d.pId = 25) as status,
+        c.create_time as createTime
+        from hr_complaint c
+        left join hr_user u on c.user_id = u.id and u.DeleteFlag = 0
+        left join hr_briefchapter br on c.brief_chapter_id = br.id and br.DeleteFlag = 0
 
+        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        where c.delete_flag = 0
+        and gr.type = 1
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+        <if test="null != typeId">
+            and u.type = #{typeId}
+        </if>
+    </select>
+    <select id="complaintRecruitment" resultType="com.nado.rlzy.bean.dto.ComplaintDto">
+        select s.user_name,
+        c.id,
+        gr.GroupName,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, c.status)
+        and d.pId = 24) as complaintType,
+        c.description,
+        c.evidence,
+        c.brief_chapter_id,
+        b.Id
+        from hr_complaint c
+        left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
+        left join hr_briefchapter b on c.brief_chapter_id = b.id and b.DeleteFlag = 0
+        left join hr_group gr on b.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_user u on s.user_id = u.id and u.DeleteFlag = 0
+        where c.delete_flag = 0
+        and gr.type = 1
+        <if test="null != complaintId ">
+            and c.id = #{complaintId}
+        </if>
+    </select>
 </mapper>

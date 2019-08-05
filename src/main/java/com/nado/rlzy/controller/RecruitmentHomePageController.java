@@ -33,7 +33,7 @@ public class RecruitmentHomePageController extends BaseController {
 
 
     /**
-     * 查询求职列表概览
+     * 推荐人名下的求职者 -- 查询求职列表概览
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.bean.frontEnd.JobListtFront>
      * @Author lushuaiyu
@@ -42,13 +42,13 @@ public class RecruitmentHomePageController extends BaseController {
      * @Param [query]
      **/
     @ApiImplicitParams({
-      @ApiImplicitParam(name = "briefChapterId", value = "简章id", dataType = "integer", required = true),
-      @ApiImplicitParam(name = "sex", value = "性别", dataType = "integer", required = true),
-      @ApiImplicitParam(name = "education", value = "学历", dataType = "string", required = true),
-      @ApiImplicitParam(name = "profession", value = "专业", dataType = "string", required = true),
-      @ApiImplicitParam(name = "age", value = "年龄", dataType = "string", required = true),
-      @ApiImplicitParam(name = "arrivalTime", value = "到岗时间", dataType = "date", required = true),
-      @ApiImplicitParam(name = "graduationTime", value = "毕业时间", dataType = "date", required = true),
+            @ApiImplicitParam(name = "sex", value = "性别", dataType = "integer", required = true),
+            @ApiImplicitParam(name = "education", value = "学历", dataType = "string", required = true),
+            @ApiImplicitParam(name = "profession", value = "专业", dataType = "string", required = true),
+            @ApiImplicitParam(name = "age", value = "年龄", dataType = "string", required = true),
+            @ApiImplicitParam(name = "arrivalTime", value = "到岗时间", dataType = "date", required = true),
+            @ApiImplicitParam(name = "graduationTime", value = "毕业时间", dataType = "date", required = true),
+            @ApiImplicitParam(name = "relation", value = "与推荐人关系", dataType = "integer", required = true)
     })
     @ApiOperation(value = "查询求职列表概览", notes = "查询求职列表概览", httpMethod = "POST")
 
@@ -64,7 +64,7 @@ public class RecruitmentHomePageController extends BaseController {
     }
 
     /**
-     * 查询求职列表详情
+     * 推荐人名下的求职者 -- 查询求职列表详情
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.bean.frontEnd.JobListtFront>
      * @Author lushuaiyu
@@ -88,7 +88,7 @@ public class RecruitmentHomePageController extends BaseController {
     }
 
     /**
-     * 添加收藏 概览
+     * 添加收藏 概览 可能用不到
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.bean.frontEnd.JobListtFront>
      * @Author lushuaiyu
@@ -97,7 +97,7 @@ public class RecruitmentHomePageController extends BaseController {
      * @Param [userId]
      **/
     @ApiImplicitParam(name = "userId", value = "用户id", dataType = "Integer", required = true)
-    @ApiOperation(value = "userId", notes = "用户id" , httpMethod = "POST")
+    @ApiOperation(value = "添加收藏 概览", notes = "添加收藏 概览", httpMethod = "POST")
     @RequestMapping(value = "selectCollectListOverview")
     @ResponseBody
     public Result<JobListtFront> selectCollectListOverview(Integer userId) {
@@ -120,8 +120,7 @@ public class RecruitmentHomePageController extends BaseController {
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(fronts);
         return result;
-    }
-*/
+    }*/
 
 
     /**
@@ -151,11 +150,12 @@ public class RecruitmentHomePageController extends BaseController {
 
     /**
      * 招聘端 取消收藏
+     *
+     * @return com.nado.rlzy.bean.model.ResultInfo
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 11:43 2019/7/8
      * @Param [collect]
-     * @return com.nado.rlzy.bean.model.ResultInfo
      **/
 
     @RequestMapping(value = "updateSignUpCollectStatus")
@@ -165,13 +165,11 @@ public class RecruitmentHomePageController extends BaseController {
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "signUpId", name = "求职表id", dataType = "integer", required = true)
     })
-    public ResultInfo updateSignUpCollectStatus(Collect collect){
+    public ResultInfo updateSignUpCollectStatus(Collect collect) {
         service.updateSignUpCollectStatus(collect);
         return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
 
     }
-
-
 
 
 }

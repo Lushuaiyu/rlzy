@@ -98,13 +98,19 @@ public class HrGroup {
     @Transient
     private List<HrBriefchapter> hriefchapter;
 
-    @ApiModelProperty(value = "营业执照")
+    @ApiModelProperty(value = "企业许可证")
     @Column(name = "enterprise_license")
     private String enterpriseLicense;
 
-    @ApiModelProperty(value = "企业许可证")
+    @ApiModelProperty(value = "注册人委托证明")
     @Column(name = "registrant_certificate")
     private String registrantCertificate;
+
+    @Column(name = "type")
+    private Integer type;
+
+    @Column(name = "groupStatus")
+    private Integer groupStatus;
 
 
 }

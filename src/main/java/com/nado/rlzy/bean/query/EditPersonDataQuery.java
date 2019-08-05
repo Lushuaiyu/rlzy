@@ -1,14 +1,10 @@
 package com.nado.rlzy.bean.query;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * @ClassName 编辑个人资料入参
@@ -47,18 +43,16 @@ public class EditPersonDataQuery {
 
     @ApiModelProperty(value = "推荐人的意向岗位")
     private String postIdStr;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
     @ApiModelProperty(value = "毕业时间")
-    private LocalDateTime graduationTime;
+    private String graduationTime;
 
     @ApiModelProperty(value = "专业")
     private String profession;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
     @ApiModelProperty(value = "到岗时间")
-    private LocalDateTime arrivalTime;
+    private String arrivalTime;
 
     @ApiModelProperty(value = "报名岗位id")
     private String registrationPositionId;

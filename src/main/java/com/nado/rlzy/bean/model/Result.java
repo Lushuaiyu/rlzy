@@ -16,7 +16,6 @@ import java.util.List;
 public class Result<T> {
     private String msg;
     private Integer code;
-    //private Integer count;
     private List<T> data;
 
 

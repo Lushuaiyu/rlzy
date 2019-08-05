@@ -13,7 +13,7 @@ import java.util.List;
 public interface HrComplaintMapper extends BaseMapper<HrComplaint> {
 
     /**
-     * 查询投诉记录
+     * 查询投诉记录 投诉简章为代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:24 2019/7/10
@@ -21,11 +21,23 @@ public interface HrComplaintMapper extends BaseMapper<HrComplaint> {
      * @param typeId 类型id
      * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
      **/
-    List<ComplaintDto> searchComplaintRecord(@Param("userId") Integer userId, @Param("typeId") Integer typeId);
+    List<ComplaintDto> searchComplaintRecord(@Param("userId") Integer userId,
+                                             @Param("typeId") Integer typeId);
+
+    /**
+     * 查询投诉记录 投诉简章为  招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:57 2019/8/4
+     * @Param [userId, typeId]
+     * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
+     **/
+    List<ComplaintDto> searchComplaintRecordMyself(@Param("userId") Integer userId,
+                                                   @Param("typeId") Integer typeId);
 
 
     /**
-     * 查看投诉详情
+     * 查看投诉详情 投诉公司是代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 11:49 2019/7/10
@@ -35,7 +47,17 @@ public interface HrComplaintMapper extends BaseMapper<HrComplaint> {
     List<ComplaintDto> complaint(@Param("complaintId") Integer complaintId);
 
     /**
-     * 开始投诉
+     * 查看投诉详情 投诉公司是招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:09 2019/8/4
+     * @Param [complaintId]
+     * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
+     **/
+    List<ComplaintDto> complaintRecruitment(@Param("complaintId") Integer complaintId);
+
+    /**
+     * 求职端 首页 投诉 查询投诉 废弃
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:58 2019/7/10

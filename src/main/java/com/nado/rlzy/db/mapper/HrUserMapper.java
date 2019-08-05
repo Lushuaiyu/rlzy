@@ -1,7 +1,9 @@
 package com.nado.rlzy.db.mapper;
 
+import com.nado.rlzy.bean.dto.ComplaintPage;
 import com.nado.rlzy.db.pojo.HrUser;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
@@ -80,7 +82,7 @@ public interface HrUserMapper extends Mapper<HrUser> {
     int changePassword(@Param("userId") Integer userId, @Param("password") String password);
 
     /**
-     * 求职端 切换身份
+     *  切换身份
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:58 2019/7/16
@@ -101,5 +103,16 @@ public interface HrUserMapper extends Mapper<HrUser> {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrUser>
      **/
     List<HrUser> selectReferrerInfo(@Param("userId") Integer userId, @Param("typeId") Integer typeId);
+
+    /**
+     * 查询推荐人 || 求职者名字
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 12:48 2019/8/4
+     * @Param [type, id]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrUser>
+     **/
+    @Select(value = "select UserName as userName from hr_user where type = #{type} and id = #{userId}")
+    List<ComplaintPage> selectMyselfName(@Param("type") Integer type, @Param("userId") Integer userId);
 
 }

@@ -4,6 +4,7 @@ import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrSignUp;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName 求职端个人中心
@@ -15,14 +16,25 @@ import java.util.List;
 
 public interface JobSeekingPersonalCenterService {
     /**
-     * 简章收藏概览
+     * 简章收藏概览 代招企业
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 18:32 2019/7/5
      * @Param [userId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> recruitmentBrochureCollection(Integer userId);
+    List<HrBriefchapter> recruitmentBrochureCollection(Integer userId, Integer type);
+
+    /**
+     * 简章收藏概览 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 19:09 2019/8/2
+     * @Param [userId, type]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> recruitmentBrochureCollectionRecruitment(Integer userId,  Integer type);
+
 
     /**
      * 查询我的报名表详情
@@ -52,7 +64,7 @@ public interface JobSeekingPersonalCenterService {
      * @param briefChapterId 简章id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
-    List<HrSignUp> searchSignUpUserName(Integer briefChapterId);
+    Map<Object, Object> searchSignUpUserName(Integer briefChapterId, Integer userId, Integer typeId);
 
 
 }

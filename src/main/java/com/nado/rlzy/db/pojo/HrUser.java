@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -120,6 +121,28 @@ public class HrUser {
     @ApiModelProperty(value = "启用 还是禁止")
     private Integer status;
 
+    @ApiModelProperty(value = "学历")
+    @Column(name = "education")
+    private String education;
 
+    @ApiModelProperty(value = "专业")
+    @Column(name = "profession")
+    private String profession;
+
+    @ApiModelProperty(value = "毕业时间")
+    @Column(name = "graduationTime")
+    private String graduationTime;
+
+    @ApiModelProperty(value = "到岗时间")
+    @Column(name = "arrivalTime")
+    private String arrivalTime;
+
+    @ApiModelProperty(value = "期望薪资上限")
+    @Column(name = "expectedSalaryUpper")
+    private BigDecimal expectedSalaryUpper;
+
+    @ApiModelProperty(value = "期望薪资下限")
+    @Column(name = "expectedSalaryLower")
+    private BigDecimal expectedSalaryLower;
 
 }

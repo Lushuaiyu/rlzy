@@ -1,14 +1,15 @@
 package com.nado.rlzy.db.mapper;
 
+import com.nado.rlzy.bean.dto.ComplaintPage;
 import com.nado.rlzy.bean.dto.JobListDto;
 import com.nado.rlzy.bean.dto.SignUpNumberDto;
 import com.nado.rlzy.bean.query.JobListQuery;
+import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface HrSignUpMapper extends Mapper<HrSignUp> {
@@ -47,6 +48,8 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     List<JobListDto> selectJobListOverview(JobListQuery query);
 
 
+
+
     /**
      * 查看求职列表详情
      * @Author lushuaiyu
@@ -59,7 +62,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 添加收藏 概览
+     * 添加收藏 概览 可能用不到
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 18:21 2019/7/2
@@ -71,7 +74,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 添加收藏
+     * 添加收藏 废弃
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 18:26 2019/7/2
@@ -82,7 +85,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 查询报名表详情
+     * 查询报名表详情 可能废弃
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 19:12 2019/7/8
@@ -124,17 +127,19 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     List<HrSignUp> personalInformationReferrer(@Param("userId") Integer userId);
 
     /**
-     * 查询投诉人 投诉人是报名该简章的求职者
+     * 查询投诉人 投诉人是报名该简章的求职者 用户身份是推荐人
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 13:47 2019/7/10
      * @param briefChapterId 简章id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
-    List<HrSignUp> searchSignUpUserName(@Param("briefChapterId") Integer briefChapterId);
+    List<HrSignUp> searchSignUpUserName(@Param("briefChapterId") Integer briefChapterId, @Param("userId") Integer userId);
+
+
 
     /**
-     *  查询报名者的名字
+     *  查询报名者的名字 本人为报名者 和推荐者下的求职者
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 13:44 2019/7/11
@@ -143,6 +148,19 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
     List<HrSignUp> querySignUpUserName(@Param("type") Integer type, @Param("userId") Integer userId);
+
+    /** 查询投诉人 投诉人是推荐人下的投诉人
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:01 2019/8/4
+     * @param typeId 身份类型id
+     * @param userId 用户id
+     * @param brieId 简章id
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     **/
+    List<ComplaintPage> queryComplaintPerson(@Param("typeId") Integer typeId, @Param("userId") Integer userId, @Param("brieId") Integer brieId);
+
+
 
 
     /**
@@ -469,6 +487,17 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     @Update(value = "update hr_rebaterecord set status = 2 where DeleteFlag = 0 and id = #{rebateId}")
     int noRebate(@Param("rebateId") Integer rebateId);
 
+
+/**
+ * 招聘端 招聘详情 待返佣 返佣
+ * @Author lushuaiyu
+ * @Description //TODO
+ * @Date 18:04 2019/7/30
+ * @Param []
+ * @return int
+ **/
+    int rebateOne(@Param("rebateId") Integer rebateId);
+
     /**
      * 招聘单位 扣的返佣的钱
      * @Author lushuaiyu
@@ -477,8 +506,8 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [userId, money]
      * @return int
      **/
-    @Update(value = "update hr_acct set AcctBalance = (AcctBalance + #{money} ) where DeleteFlag = 0 and UserId = #{userId}")
-    int rebateAdd(@Param("userId") Integer userId, @Param("money") BigDecimal money);
+    //@Update(value = "update hr_acct set AcctBalance = (AcctBalance + #{addMoney} ) where DeleteFlag = 0 and UserId = #{userId}")
+    int rebateAdd(RebateQuery query);
 
     /**
      * 求职者 和推荐者 返佣得到的钱
@@ -488,8 +517,8 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [userId, money]
      * @return int
      **/
-    @Update(value = "update hr_acct set IceBalance = (IceBalance - #{money}) where DeleteFlag = 0 and UserId = #{userId}")
-    int rebateSubtraction(Integer userId, @Param("money") BigDecimal money);
+    /*@Update(value = "update hr_acct set IceBalance = (IceBalance - #{subtraction}) where DeleteFlag = 0 and UserId = #{userId}")*/
+    int rebateSubtraction(RebateQuery query);
 
     /**
      * 重置求职者的求职状态

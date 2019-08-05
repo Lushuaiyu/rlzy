@@ -1,27 +1,36 @@
-package com.nado.rlzy.db.pojo;
+package com.nado.rlzy.bean.query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.nado.rlzy.db.pojo.HrBriefchapter;
+import com.nado.rlzy.db.pojo.HrRebaterecord;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @ClassName 新增求职表
+ * @Description TODO
+ * @Author lushuaiyu
+ * @Data 2019/7/30 16:22
+ * @Version 1.0
+ */
+
 @Data
 @ApiModel(description = "报名表")
 @Table(name = "hr_signup")
-public class HrSignUp {
-
+public class SignUpQuery {
     @ApiModelProperty(value = "报名表主键id")
-    @Id
-    @GeneratedValue(generator = "JDBC")
     @Column(name = "id")
     private Integer id;
 
@@ -37,15 +46,9 @@ public class HrSignUp {
     @Transient
     private Integer briefChapterId;
 
-    @ApiModelProperty(value = "报名者的名字")
+    @ApiModelProperty(value = "用户名")
     @Column(name = "user_name")
-    private String signUpName;
-
-    @Transient
-    @ApiModelProperty(value = "登录账号的用户名")
     private String userName;
-
-
 
     @ApiModelProperty(value = "0:女  1:男")
     @Column(name = "sex")
@@ -59,18 +62,21 @@ public class HrSignUp {
     @Column(name = "education")
     private String education;
 
-
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "毕业时间")
     @Column(name = "graduation_time")
-    private String graduationTime;
+    private LocalDateTime graduationTime;
 
     @ApiModelProperty(value = "专业")
     @Column(name = "profession")
     private String profession;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "到岗时间")
     @Column(name = "arrival_time")
-    private String arrivalTime;
+    private LocalDateTime arrivalTime;
 
     @ApiModelProperty(value = "期望薪资上限")
     @Column(name = "expected_salary_upper")
@@ -95,7 +101,8 @@ public class HrSignUp {
     private Integer typeId;
 
     @ApiModelProperty(value = "0不合适 1未面试 2未报道 3面试未通过")
-    @Transient    private Integer noPassReason;
+    @Transient
+    private Integer noPassReason;
 
     @ApiModelProperty(value = "0:未删除  1:已删除")
     @Column(name = "delete_flag")
@@ -150,7 +157,7 @@ public class HrSignUp {
 
     @ApiModelProperty(value = "推荐说明")
     @Transient
-    private String recommendInfo;
+    private Integer recommendInfo;
 
     @ApiModelProperty(value = "招聘端 直接录取 返佣非推荐者")
     @Transient
@@ -159,7 +166,7 @@ public class HrSignUp {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Transient
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "面试时间")
     private Date interviewTime;
 
@@ -182,7 +189,8 @@ public class HrSignUp {
     private Integer reportTimeFlag;
 
     @ApiModelProperty(value = "未报到原因")
-    @Transient    private Integer noReportReason;
+    @Transient
+    private Integer noReportReason;
 
     @ApiModelProperty(value = "报名时间")
     @JsonSerialize(using = LocalDateTimeSerializer.class)

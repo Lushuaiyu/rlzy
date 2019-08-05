@@ -31,7 +31,7 @@ public class BaseQuery {
     @ApiModelProperty(value = "确认密码")
     private String confirmPassword;
 
-    @ApiModelProperty(value = "单位类型 | 身份类型")
+    @ApiModelProperty(value = "单位类型 | 身份类型 1 本人 2 推荐人 5招聘单位 6 代招单位")
     private Integer unitType;
     @ApiModelProperty(value = "头像")
     private String imageHead;

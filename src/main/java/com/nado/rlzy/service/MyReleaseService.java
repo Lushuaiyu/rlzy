@@ -1,17 +1,16 @@
 package com.nado.rlzy.service;
 
-import com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto;
 import com.nado.rlzy.bean.dto.SignUpNumberDto;
-import com.nado.rlzy.bean.frontEnd.ReleaseBriefcharpterFront;
 import com.nado.rlzy.bean.query.EditBriefchapterQuery;
+import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
-import com.nado.rlzy.db.pojo.HrBriefchapter;
+import com.nado.rlzy.db.pojo.HrDictionaryItem;
+import com.nado.rlzy.db.pojo.HrGroup;
 import com.nado.rlzy.db.pojo.HrSignUp;
-import com.nado.rlzy.db.pojo.Options;
 import com.nado.rlzy.db.pojo.Province;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName 招聘端 我的发布
@@ -29,18 +28,9 @@ public interface MyReleaseService {
      * @Param [userId, typeId, status]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> myRelease(Integer userId, Integer typeId, Integer status);
+    Map<String, Object> myRelease(Integer userId, Integer typeId, Integer status);
 
-    /**
-     * 查询发布简章的内容
-     *
-     * @return java.util.List<com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 16:46 2019/6/28
-     * @Param [query] 入参
-     **/
-    List<ReleaseBriefcharpterFront> queryReleaseBriefcharpterByparams(ReleaseBriefcharpterQuery query);
+
 
 
     /**
@@ -64,44 +54,6 @@ public interface MyReleaseService {
      * @Param [query]
      */
     void saveUser(ReleaseBriefcharpterQuery query, Integer type);
-
-
-
-
-
-
-    /**
-     * 男生年龄
-     *
-     * @return java.util.List<com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 11:30 2019/7/3
-     * @Param [manAgeId]
-     **/
-    List<ReleaseBriefcharpterDto> checkManAge(Integer manAgeId);
-
-    /**
-     * 女生年龄
-     *
-     * @return java.util.List<com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 11:31 2019/7/3
-     * @Param [womenAgeId]
-     **/
-    List<ReleaseBriefcharpterDto> checkWomenAge(Integer womenAgeId);
-
-    /**
-     * 加班时长
-     *
-     * @return java.util.List<com.nado.rlzy.bean.dto.ReleaseBriefcharpterDto>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 11:31 2019/7/3
-     * @Param [overtimeTimeId]
-     **/
-    List<ReleaseBriefcharpterDto> checkOvertimeTime(Integer overtimeTimeId);
 
     /**
      * 招聘详情 概览
@@ -249,13 +201,10 @@ public interface MyReleaseService {
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:05 2019/7/19
-     * @param userId 招聘公司的id
-     * @param signUpUserId 求职者 或者推荐人的id
-     * @param addMoney 返佣多少钱
-     * @param subtraction 减掉多少钱
+     * @param query 入参
      * @return int
      **/
-    int rebate(Integer userId, Integer signUpUserId, BigDecimal addMoney, BigDecimal subtraction);
+    int rebate(RebateQuery query);
 
     /**
      * 重置求职者报名状态
@@ -334,7 +283,7 @@ public interface MyReleaseService {
      * @Param [type]
      * @return com.nado.rlzy.db.pojo.Options
      **/
-    List<Options> selectContentByType(Integer type);
+    List<HrDictionaryItem> selectContentByType(String type);
 
     /**
      * 招聘端 我的发布 编辑简章
@@ -355,4 +304,14 @@ public interface MyReleaseService {
      * @return int
      **/
     Integer updateJobStatusInterviewed(Integer signUpId);
+
+    /**
+     * 查询招聘企业名称
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:08 2019/8/1
+     * @Param [type, userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
+     **/
+    List<HrGroup> selectGroupName(Integer type, Integer userId);
 }
