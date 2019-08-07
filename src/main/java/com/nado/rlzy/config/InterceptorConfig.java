@@ -22,7 +22,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor())
-                .addPathPatterns("/**").excludePathPatterns("/login", "/404", "/public/**", "/user/**");;
+                .addPathPatterns("/**");;
     }
 
     /**
@@ -43,7 +43,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public AuthenticationInterceptor authenticationInterceptor() {
         return new AuthenticationInterceptor();
     }
-
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();

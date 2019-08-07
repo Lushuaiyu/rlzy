@@ -1,16 +1,24 @@
 package com.nado.rlzy;
 
+import cn.hutool.core.codec.Base64;
 import com.nado.rlzy.base.BaseTest;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
+import com.nado.rlzy.utils.Base64Utils;
+import com.nado.rlzy.utils.StringUtil;
 import lombok.var;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,7 +98,7 @@ public class Test2 extends BaseTest {
 
     @Test
     public void test5() {
-        System.out.println(mapper.personalInformationReferrer(2));
+        System.out.println(userMapper.personalInformationReferrer(2));
     }
 
     @Test
@@ -127,34 +135,121 @@ public class Test2 extends BaseTest {
         String format = dateTime.format(formatter);
         System.out.println(format);*/
 
-       var str = "1996-04-02 12:03:23";
-       var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-       var dateTime = LocalDateTime.parse(str, formatter);
-       var format = dateTime.format(formatter);
+        var str = "1996-04-02 12:03:23";
+        var st = "2000-02-03";
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        var dateTime = LocalDateTime.parse(str, formatter);
+        var format = dateTime.format(formatter);
+
         System.out.println(format);
     }
 
     @Test
-    public void test9(){
+    public void test9() {
         BriefcharpterQuery query = new BriefcharpterQuery();
         System.out.println(briefchapterMapper.queryBriefcharpterByLongLiveRecruitment(query));
 
     }
 
     @Test
-    public void test10(){
+    public void test10() {
         //System.out.println(briefchapterMapper.queryBriefchapterBySignUpstatusRecruitment(0));
         System.out.println(briefchapterMapper.myReleaseRecruitment(7, 5, 2));
     }
+
     @Test
-    public void test11(){
+    public void test11() {
         System.out.println(complaintMapper.complaintRecruitment(5));
     }
 
     @Test
-    public void test12(){
+    public void test12() {
         System.out.println(dictionaryItemMapper.dictionary(3));
 
 
     }
+
+    @Test
+    public void test13() {
+        String s = Base64Utils.imageToBase64ByOnline("https://lushuaiyu.oss-cn-shanghai.aliyuncs.com/blog/2018-12-31-145741.jpg");
+        //System.out.println(s);
+
+        String decode = Base64.encodeUrlSafe(s);
+        System.out.println(decode);
+    }
+
+    @Test
+    public void test14() {
+        String str = "你好";
+        //string 转 itn[]
+        int[] ints = Arrays.stream(str.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
+        //int[] to List<Integer>
+        List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+        List<Integer> list1 = list.stream()
+                .collect(Collectors.toList());
+        System.out.println(list1);
+    }
+
+    @Test
+    public void test15() throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String s = "2010-10-12";
+        Date date1 = new Date();
+        String format1 = format.format(date1);
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        start.setTime(format.parse(s));
+        end.setTime(format.parse(format1));
+        int i = end.get(Calendar.YEAR) - start.get(Calendar.YEAR);
+        System.out.println(i);
+    }
+
+    @Test
+    public void test16() {
+        BriefcharpterQuery query = new BriefcharpterQuery();
+        List<HrBriefchapter> val = briefchapterMapper.queryBriefcharpterDetileByParams(query);
+        val.stream().map(dto -> {
+            String experienceId = dto.getExperienceId();
+            String[] split = experienceId.split("-");
+            List<String> strings = Arrays.asList(split);
+
+            String s = "";
+            String s1 = "";
+            String ss = "5";
+            String xx = "1";
+
+            if (strings.size() == 2) {
+                s = strings.get(0);
+                s1 = strings.get(1);
+                if (ss.compareTo(s) > 0 && ss.compareTo(s1) <= 0) {
+                    System.out.println(experienceId);
+                }
+            }
+            if (strings.size() == 1) {
+                s = strings.get(0);
+                if (xx.compareTo(s) > 0 || xx.compareTo(s) <= 0) {
+                    System.out.println(s);
+                }
+            }
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Test
+    public void test17() {
+        List<HrUser> hrUsers = userMapper.personalInformation(4);
+        hrUsers.stream()
+                .map(dto -> {
+                    Double salaryLower = dto.getExpectedSalaryLower().doubleValue();
+                    System.out.println(salaryLower);
+                    Double salaryUpper = dto.getExpectedSalaryUpper().doubleValue();
+                    System.out.println(salaryUpper);
+                    String format = StringUtil.decimalFormat(salaryLower);
+                    String format1 = StringUtil.decimalFormat(salaryUpper);
+                    String s = format + "k" + "-" + format1;
+                    dto.setExpectedSalary(s);
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
 }

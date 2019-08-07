@@ -115,4 +115,26 @@ public interface HrUserMapper extends Mapper<HrUser> {
     @Select(value = "select UserName as userName from hr_user where type = #{type} and id = #{userId}")
     List<ComplaintPage> selectMyselfName(@Param("type") Integer type, @Param("userId") Integer userId);
 
+
+    /**
+     * 求职端 本人 个人中心
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:27 2019/7/9
+     * @Param [userId]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    List<HrUser> personalInformation(@Param("userId") Integer userId);
+
+    /**
+     * 招聘端个人资料 推荐人
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:11 2019/7/9
+     * @param  userId 用户id
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     **/
+    List<HrUser> personalInformationReferrer(@Param("userId") Integer userId);
+
+
 }

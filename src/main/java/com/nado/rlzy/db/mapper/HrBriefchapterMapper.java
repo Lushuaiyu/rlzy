@@ -43,7 +43,7 @@ public interface HrBriefchapterMapper {
     List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query);
 
     /**
-     * 招聘简章性情查询 招聘单位
+     * 招聘简章祥情查询 招聘单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 13:53 2019/8/2
@@ -260,25 +260,7 @@ public interface HrBriefchapterMapper {
 
 
 
-    /**
-     * 查询个人企业 代招单位
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 10:37 2019/7/3
-     * @Param status 企业状态
-     * @return java.util.List<com.nado.rlzy.bean.dto.PersonCoDto>
-     **/
-    List<PersonCoDto> queryPersonCo( @Param("userId") Integer userId);
 
-    /**
-     * 查询个人企业 招聘单位
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 9:56 2019/8/3
-     * @Param [userId]
-     * @return java.util.List<com.nado.rlzy.bean.dto.PersonCoDto>
-     **/
-    List<PersonCoDto> queryPersonCORecruitment(Integer userId);
 
     /**
      * 根据求职状态查询简章 代招单位

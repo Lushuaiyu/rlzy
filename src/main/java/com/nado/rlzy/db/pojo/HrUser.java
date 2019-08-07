@@ -145,4 +145,13 @@ public class HrUser {
     @Column(name = "expectedSalaryLower")
     private BigDecimal expectedSalaryLower;
 
+    @ApiModelProperty(value = "推荐人数")
+    @Transient
+    private String recommendedNumber;
+
+    @ApiModelProperty(value = "期望薪资")
+    @Transient
+    private String expectedSalary;
+
+
 }

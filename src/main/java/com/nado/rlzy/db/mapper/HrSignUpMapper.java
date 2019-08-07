@@ -17,6 +17,16 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     int  updateBy(HrSignUp signUp);
 
     /**
+     * 报名表查询所有
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:04 2019/8/5
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     **/
+    List<HrSignUp> queryAll(@Param("userId") Integer userId, @Param("type") Integer type);
+
+    /**
      * 取消报名 求职端
      * @Author lushuaiyu
      * @Description //TODO
@@ -105,26 +115,10 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     List<HrSignUp> selectSignUp(@Param("userId") Integer userId);
 
 
-    /**
-     * 求职端 本人 个人中心
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 10:27 2019/7/9
-     * @Param [userId]
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     **/
-    List<HrSignUp> personalInformation(@Param("userId") Integer userId);
 
 
-    /**
-     * 招聘端个人资料 推荐人
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 11:11 2019/7/9
-     * @Param userId 用户id
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
-     **/
-    List<HrSignUp> personalInformationReferrer(@Param("userId") Integer userId);
+
+
 
     /**
      * 查询投诉人 投诉人是报名该简章的求职者 用户身份是推荐人

@@ -12,6 +12,7 @@ import com.nado.rlzy.service.MessageService;
 import com.nado.rlzy.service.RedisService;
 import com.nado.rlzy.utils.Base64Utils;
 import com.nado.rlzy.utils.CollectorsUtil;
+import com.nado.rlzy.utils.StringUtil;
 import com.nado.rlzy.utils.ValidationUtil;
 import lombok.var;
 import org.apache.commons.lang3.StringUtils;
@@ -227,26 +228,14 @@ public class Test extends BaseTest {
     @org.junit.Test
     public void test13() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String s = "2010-10-12 12:23:56";
+        Date date = StringUtil.StrToDate(s);
 
-        Integer[] c = {2, 4};
-        List<Integer> collect = Stream.of(c).collect(Collectors.toList());
-        List<HrSignUp> hrSignUps = signUpMapper.recruitmentDetailsOverview(collect);
-        hrSignUps.stream().map(hr -> {
-            Date time = hr.getRegisterTime();
-            // 取当前日期。
-            Calendar cale = Calendar.getInstance();
-            cale.setTime(time);
-
-            //晚上8点的时间
-            Calendar calendar = new GregorianCalendar(cale.get(Calendar.YEAR),
-                    cale.get(Calendar.MONTH), cale.get(Calendar.DAY_OF_MONTH), 00, 0, 0);
-            Date date = calendar.getTime();
-            String s1 = format.format(date);
-            System.out.println(s1);
-
-            return hr;
-        }).collect(Collectors.toList());
-
+        Date date1 = new Date();
+        String format1 = format.format(date1);
+        Date date2 = StringUtil.StrToDate(format1);
+        long l = date1.getTime() - date2.getTime();
+        System.out.println(l);
 
     }
 

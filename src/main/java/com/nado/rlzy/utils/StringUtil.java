@@ -20,7 +20,7 @@ import java.util.Date;
 public class StringUtil {
 
     /**
-     * double 转bigDecimal
+     * double 转bigDecimal 保留两位小数
      *
      * @return java.lang.String
      * @Author lushuaiyu
@@ -30,6 +30,11 @@ public class StringUtil {
      **/
     public static String decimalFormat(Double value) {
         DecimalFormat format = new DecimalFormat("0.00");
+        return format.format(value);
+    }
+
+    public static String decimalFormat2(Double value) {
+        DecimalFormat format = new DecimalFormat();
         return format.format(value);
     }
 

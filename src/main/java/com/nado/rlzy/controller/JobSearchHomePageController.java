@@ -59,7 +59,13 @@ public class JobSearchHomePageController extends BaseController {
     @RequestMapping(value = "queryBriefcharpterDtoByParams")
     @ResponseBody
     @ApiOperation(notes = "招聘简章查询接口 全部职位", value = "招聘简章查询接口 全部职位", httpMethod = "POST")
-    @ApiImplicitParam(name = "query", value = "入参, 详情见 BriefcharpterQuery", dataType = "BriefcharpterQuery", required = true)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户id", dataType = "integer", required = true),
+            @ApiImplicitParam(name = "typeId", value = "用户id", dataType = "integer", required = true),
+            @ApiImplicitParam(name = "postId", value = "招聘岗位", dataType = "integer", required = true),
+            @ApiImplicitParam(name = "recruitedCompany", value = "公司名字", dataType = "string", required = true)
+
+    })
     public ResultJson queryBriefcharpterDtoByParams(BriefcharpterQuery query) {
 
         List<HrBriefchapter> vals = service.queryBriefcharpterDtoByParams(query);
@@ -87,7 +93,11 @@ public class JobSearchHomePageController extends BaseController {
     @RequestMapping(value = "queryBriefcharpterDetileByParams")
     @ResponseBody
     @ApiOperation(notes = "查询招聘简章详情", value = "查询招聘简章详情", httpMethod = "POST")
-    @ApiImplicitParam(name = "query", value = "入参", dataType = "BriefcharpterQuery", required = true)
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "type", name = "登陆者身份 1 本人 2 推荐人", dataType = "int", required = true),
+            @ApiImplicitParam(value = "sex", name = "1 男 2 女", dataType = "int", required = true),
+            @ApiImplicitParam(value = "query", name = "其余参数见文档", dataType = "int", required = true)
+    })
     public ResultJson queryBriefcharpterDetileByParams(BriefcharpterQuery query) {
         List<HrBriefchapter> list = service.queryBriefcharpterDetileByParams(query);
         List<HrBriefchapter> list1 = service.queryBriefcharpterDetileRecruitment(query);
@@ -102,10 +112,8 @@ public class JobSearchHomePageController extends BaseController {
         return json;
     }
 
-
     /**
      * 长白班按返费高低排
-     *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
@@ -490,10 +498,8 @@ public class JobSearchHomePageController extends BaseController {
     }
 
 
-
-
     /**
-     * 添加投诉
+     * 添加投诉 求职端 首页 投诉 添加投诉
      *
      * @return com.nado.rlzy.bean.model.ResultInfo
      * @Author lushuaiyu
@@ -510,11 +516,16 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(value = "complaintTypeId", name = "投诉类型", dataType = "string", required = true),
             @ApiImplicitParam(value = "description", name = "问题描述", dataType = "string", required = true),
             @ApiImplicitParam(value = "evidence", name = "投诉凭证", dataType = "string", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
     })
-    public ResultInfo addComplaint(ComplaintQuery query, MultipartFile file) {
+    public ResultJson addComplaint(ComplaintQuery query, MultipartFile file) {
         String head = centerService.updateHead(file);
-        service.addComplaint(query, head);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+        int complaint = service.addComplaint(query, head);
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(complaint);
+        return resultJson;
     }
 
     @RequestMapping(value = "atThePosition")
@@ -625,7 +636,7 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(value = "brieId", name = "简章id ", dataType = "integer", required = true),
             @ApiImplicitParam(value = "dictionary", name = "投诉类型id  dictionary = 24 ", dataType = "integer", required = true)
     })
-    public ResultJson complaintPage (Integer typeId, Integer userId, Integer brieId, Integer dictionary) {
+    public ResultJson complaintPage(Integer typeId, Integer userId, Integer brieId, Integer dictionary) {
         Map<String, List<ComplaintPage>> map = service.complaintPage(typeId, userId, brieId, dictionary);
         ResultJson json = new ResultJson();
         json.setCode(RlzyConstant.OPS_SUCCESS_CODE);

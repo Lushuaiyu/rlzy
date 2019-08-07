@@ -11,12 +11,15 @@ import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.utils.CollectorsUtil;
+import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -76,8 +79,63 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     @Override
     public List<HrBriefchapter> queryBriefcharpterByParams(BriefcharpterQuery query) {
         List<HrBriefchapter> dtos = mapper.queryBriefcharpterByParams(query);
+
         //返回结果集
         return dtos.stream().map(dto -> {
+
+            if (query.getType().equals(1)) {
+                // 身份是本人
+                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
+                //遍历
+                sign.stream()
+                        .map(va -> {
+                            //本人意向岗位
+                            String postName = dto.getPostName();
+                           /* Integer sex = dto.getSex();
+                            Integer manAgeId = dto.getManAgeId();
+                            Integer womenAgeId = dto.getWomenAgeId();
+                            //经验
+                            Integer experienceId = dto.getExperienceId();
+                            //到岗时间
+                            LocalDateTime registerTime = dto.getRegisterTime();*/
+                            String registrationPositionId = va.getRegistrationPositionId();
+                            //逗号分割的 string 转 int array
+                            int[] ints = Arrays.stream(registrationPositionId.split(",")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            //int array 转integer list
+                            List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+                            list.stream()
+                                    .forEach(s -> {
+                                        if (postName.equals(s)) {
+                                            dto.setPostId(dto.getPostId());
+                                        }
+                                    });
+                            return va;
+                        })
+                        .collect(Collectors.toList());
+            } else {
+                //身份是推荐人
+                List<HrSignUp> upList = signUpMapper.queryAll(query.getUserId(), 2);
+                upList.stream()
+                        .map(v -> {
+                            //本人意向岗位
+                            String postName = dto.getPostName();
+
+
+                            String registrationPositionId = v.getRegistrationPositionId();
+                            //逗号分割的 string 转 int array
+                            int[] ints = Arrays.stream(registrationPositionId.split(",")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            //int array 转integer list
+                            List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+                            list.stream()
+                                    .forEach(s -> {
+                                        if (postName.equals(s)) {
+                                            dto.setPostId(dto.getPostId());
+                                        }
+                                    });
+                            return v;
+                        })
+                        .collect(Collectors.toList());
+            }
             //对返佣的简章id 进行分组, 然后对返佣金额进行sum操作
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
@@ -95,25 +153,265 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
         //查询全部招聘简章
         List<HrBriefchapter> dtos = mapper.queryBriefcharpterDtoByParams(query);
+
+
         //返回结果集
         return dtos.stream().map(dto -> {
+
+            if (query.getType().equals(1)) {
+                // 身份是本人
+                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
+                //遍历
+                sign.stream()
+                        .map(va -> {
+                            //本人意向岗位
+                            String postName = dto.getPostName();
+                           /* Integer sex = dto.getSex();
+                            Integer manAgeId = dto.getManAgeId();
+                            Integer womenAgeId = dto.getWomenAgeId();
+                            //到岗时间
+                            LocalDateTime registerTime = dto.getRegisterTime();*/
+                            String registrationPositionId = va.getRegistrationPositionId();
+                            //逗号分割的 string 转 int array
+                            int[] ints = Arrays.stream(registrationPositionId.split(",")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            //int array 转integer list
+                            List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+                            list.stream()
+                                    .forEach(s -> {
+                                        if (postName.equals(s)) {
+                                            dto.setPostId(dto.getPostId());
+                                        }
+                                    });
+                            return va;
+                        })
+                        .collect(Collectors.toList());
+            } else {
+                //身份是推荐人
+                List<HrSignUp> upList = signUpMapper.queryAll(query.getUserId(), 2);
+                upList.stream()
+                        .map(v -> {
+                            //本人意向岗位
+                            String postName = dto.getPostName();
+
+
+                            String registrationPositionId = v.getRegistrationPositionId();
+                            //逗号分割的 string 转 int array
+                            int[] ints = Arrays.stream(registrationPositionId.split(",")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            //int array 转integer list
+                            List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+                            list.stream()
+                                    .forEach(s -> {
+                                        if (postName.equals(s)) {
+                                            dto.setPostId(dto.getPostId());
+                                        }
+                                    });
+                            return v;
+                        })
+                        .collect(Collectors.toList());
+            }
             //对返佣的简章id 进行分组, 然后对返佣金额进行sum操作
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
                 dto.setRebateRecord(v);
-
             });
             return dto;
         }).collect(Collectors.toList());
-
     }
 
     @Override
     public List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query) {
-        List<HrBriefchapter> list = mapper.queryBriefcharpterDetileByParams(query);
-        return list.stream().map(dto -> {
+        List<HrBriefchapter> val = mapper.queryBriefcharpterDetileByParams(query);
+        return val.stream().map(dto -> {
+            if (query.getType().equals(1)) {
+                // 身份是本人
+                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
+                //遍历
+                sign.stream()
+                        .map(va -> {
+                            //本人意向岗位
+                            String postName = dto.getPostName();
+                            //性别
+                            Integer sex = va.getSex();
+                            Integer manNum = dto.getManNum();
+                            Integer womenNum = dto.getWomenNum();
+                            String manAge = dto.getManAge();
+                            String womenAge = dto.getWomenAge();
+                            Integer age = va.getAge();
+                            //到岗时间
+                            Date date = dto.getRegisterTime();
+                            //报名表 到岗时间
+                            String arrivalTime = va.getArrivalTime();
+                            Date strToDate = StringUtil.StrToDate(arrivalTime);
+                            //综合工资
+                            BigDecimal avgSalary = dto.getAvgSalary();
+                            //期望工资下限
+                            BigDecimal salaryLower = va.getExpectedSalaryLower();
+                            //期望工资上限
+                            BigDecimal salaryUpper = va.getExpectedSalaryUpper();
+                            //学历
+                            String educationId = dto.getEducationId();
+                            String education = va.getEducation();
+
+                            //毕业时间
+                            String graduationTime = va.getGraduationTime();
+
+
+                            //经验
+                            String experienceId = dto.getExperienceId();
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                            Date date1 = new Date();
+                            String nowTime = format.format(date1);
+                            Calendar startTime = Calendar.getInstance();
+                            Calendar endTime = Calendar.getInstance();
+                            Integer time = null;
+                            String exTime = "";
+                            try {
+                                startTime.setTime(format.parse(graduationTime));
+                                endTime.setTime(format.parse(nowTime));
+                                //毕业了几年
+                                time = endTime.get(Calendar.YEAR) - startTime.get(Calendar.YEAR);
+                                exTime = String.valueOf(time);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            //意向岗位
+                            String registrationPositionId = va.getRegistrationPositionId();
+
+                            //男生年龄
+                            int[] maAge = Arrays.stream(manAge.split("-")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            List<Integer> manAge1 = Arrays.stream(maAge).boxed().collect(Collectors.toList());
+                            Integer manAgeStart = null;
+                            Integer manAgeEnd = null;
+
+
+                            //女生年龄
+                            int[] woAge = Arrays.stream(womenAge.split("-")).mapToInt(st -> Integer.parseInt(st)).toArray();
+                            List<Integer> womenAge1 = Arrays.stream(woAge).boxed().collect(Collectors.toList());
+                            Integer womenAgeStart = null;
+                            Integer womenAgeEnd = null;
+
+                            //对经验的处理
+                            String regex = ",";
+                            String[] split = experienceId.split(regex);
+                            List<String> ex = Arrays.asList(split);
+                            String experienceStart = "";
+                            String experienceEnd = "";
+
+                            //如果本人性别为男 显示招聘男生的数量
+                            if (sex.equals(1)) {
+                                dto.setManNum(manNum);
+                                //到岗时间
+                                if (date.equals(strToDate)) {
+                                    dto.setRegisterTime(dto.getRegisterTime());
+                                }
+                                if (education.equals(educationId)) {
+                                    dto.setEducationId(dto.getEducationId());
+                                }
+                                //经验要求
+                                if (ex.size() == 1) {
+                                    experienceStart = ex.get(0);
+                                    if (exTime.compareTo(experienceStart) > 0 || exTime.compareTo(experienceStart) <= 0) {
+                                        dto.setExperienceId(experienceStart);
+                                    }
+                                }
+                                if (ex.size() == 2) {
+                                    experienceStart = ex.get(0);
+                                    experienceEnd = ex.get(1);
+                                    if (exTime.compareTo(experienceStart) > 0 && exTime.compareTo(experienceEnd) <= 0){
+
+                                    }
+                                }
+
+                                //综合工资
+                                if (avgSalary.compareTo(salaryLower) > 0 && avgSalary.compareTo(salaryUpper) <= 0) {
+                                    dto.setAvgSalary(dto.getAvgSalary());
+                                }
+
+                                //年龄要求
+
+                                if (manAge1.size() == 1) {
+                                    manAgeStart = manAge1.get(0);
+                                    if (age >= manAgeStart) {
+                                        dto.setManAge(String.valueOf(manAgeStart) + "以上");
+                                    }
+                                }
+                                if (manAge1.size() == 2) {
+                                    manAgeStart = manAge1.get(0);
+                                    manAgeEnd = manAge1.get(1);
+                                    if (age > manAgeStart && age <= manAgeEnd) {
+                                        dto.setManAge(dto.getManAge());
+                                    }
+                                }
+                            } else if (sex.equals(0)) {
+                                //如果本人性别为女 显示招聘女生的数量
+                                dto.setWomenNum(womenNum);
+                                if (arrivalTime.equals(strToDate)) {
+                                    dto.setRegisterTime(dto.getRegisterTime());
+                                }
+                                //综合工资
+                                if (avgSalary.compareTo(salaryLower) > 0 && avgSalary.compareTo(salaryUpper) <= 0) {
+                                    dto.setAvgSalary(dto.getAvgSalary());
+                                }
+
+                                // 女生年龄
+                                if (womenAge1.size() == 1) {
+                                    womenAgeStart = womenAge1.get(0);
+                                    if (age >= womenAgeStart) {
+                                        dto.setWomenAge(String.valueOf(womenAgeStart));
+                                    }
+                                }
+                                if (womenAge1.size() == 2) {
+                                    womenAgeStart = womenAge1.get(0);
+                                    womenAgeEnd = womenAge1.get(1);
+                                    if (age > womenAgeStart && age <= womenAgeEnd) {
+                                        dto.setWomenAge(dto.getWomenAge());
+                                    }
+                                }
+                            } else {
+                                dto.setWomenNum(womenNum);
+                                dto.setManNum(manNum);
+                            }
+
+
+                            //意向岗位
+                            //逗号分割的 string 转 int array
+                            int[] ints = Arrays.stream(registrationPositionId.split(",")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            //int array 转integer list
+                            List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+                            list.stream()
+                                    .forEach(s -> {
+                                        if (postName.equals(s)) {
+                                            dto.setPostId(dto.getPostId());
+                                        }
+                                    });
+                            return va;
+                        })
+                        .collect(Collectors.toList());
+            } else {
+                //身份是推荐人
+                List<HrSignUp> upList = signUpMapper.queryAll(query.getUserId(), 2);
+                upList.stream()
+                        .map(v -> {
+                            //推荐人意向岗位
+                            Integer postId = dto.getPostId();
+                            String registrationPositionId = v.getRegistrationPositionId();
+                            //逗号分割的 string 转 int array
+                            int[] ints = Arrays.stream(registrationPositionId.split(",")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            //int array 转integer list
+                            List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+                            list.stream()
+                                    .forEach(s -> {
+                                        if (postId.equals(s)) {
+                                            dto.setPostId(dto.getPostId());
+                                        }
+                                    });
+                            return v;
+                        })
+                        .collect(Collectors.toList());
+            }
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             //对返佣金额进行 foreach 操作, set到返回的结果集里
@@ -129,14 +427,207 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Override
     public List<HrBriefchapter> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query) {
-        List<HrBriefchapter> list = mapper.queryBriefcharpterDetileRecruitment(query);
-        return list.stream()
-                .map(dto -> {
-                    dto.getRebat()
-                            .stream()
-                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
-                    return dto;
-                }).collect(Collectors.toList());
+        List<HrBriefchapter> val = mapper.queryBriefcharpterDetileRecruitment(query);
+        return val.stream().map(dto -> {
+            if (query.getType().equals(1)) {
+                // 身份是本人
+                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
+                //遍历
+                sign.stream()
+                        .map(va -> {
+                            //本人意向岗位
+                            String postName = dto.getPostName();
+                            //性别
+                            Integer sex = va.getSex();
+                            Integer manNum = dto.getManNum();
+                            Integer womenNum = dto.getWomenNum();
+                            String manAge = dto.getManAge();
+                            String womenAge = dto.getWomenAge();
+                            Integer age = va.getAge();
+                            //到岗时间
+                            Date date = dto.getRegisterTime();
+                            //报名表 到岗时间
+                            String arrivalTime = va.getArrivalTime();
+                            Date strToDate = StringUtil.StrToDate(arrivalTime);
+                            //综合工资
+                            BigDecimal avgSalary = dto.getAvgSalary();
+                            //期望工资下限
+                            BigDecimal salaryLower = va.getExpectedSalaryLower();
+                            //期望工资上限
+                            BigDecimal salaryUpper = va.getExpectedSalaryUpper();
+                            //学历
+                            String educationId = dto.getEducationId();
+                            String education = va.getEducation();
+
+                            //毕业时间
+                            String graduationTime = va.getGraduationTime();
+                            //经验
+                            String experienceId = dto.getExperienceId();
+
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                            Date date1 = new Date();
+                            String nowTime = format.format(date1);
+                            Calendar startTime = Calendar.getInstance();
+                            Calendar endTime = Calendar.getInstance();
+                            Integer time = null;
+                            String exTime = "";
+
+                            try {
+                                startTime.setTime(format.parse(graduationTime));
+                                endTime.setTime(format.parse(nowTime));
+                                //毕业了几年
+                                time = endTime.get(Calendar.YEAR) - startTime.get(Calendar.YEAR);
+                                exTime = String.valueOf(time);
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            //意向岗位
+                            String registrationPositionId = va.getRegistrationPositionId();
+
+                            //男生年龄
+                            int[] maAge = Arrays.stream(manAge.split("-")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            List<Integer> manAge1 = Arrays.stream(maAge).boxed().collect(Collectors.toList());
+                            Integer manAgeStart = null;
+                            Integer manAgeEnd = null;
+
+
+                            //女生年龄
+                            int[] woAge = Arrays.stream(womenAge.split("-")).mapToInt(st -> Integer.parseInt(st)).toArray();
+                            List<Integer> womenAge1 = Arrays.stream(woAge).boxed().collect(Collectors.toList());
+                            Integer womenAgeStart = null;
+                            Integer womenAgeEnd = null;
+
+                            //对经验的处理
+
+                            String[] split = experienceId.split("-");
+                            List<String> ex = Arrays.asList(split);
+                            String experienceStart = "";
+                            String experienceEnd = "";
+
+                            //如果本人性别为男 显示招聘男生的数量
+                            if (sex.equals(1)) {
+                                dto.setManNum(manNum);
+                                //到岗时间
+                                if (date.equals(strToDate)) {
+                                    dto.setRegisterTime(dto.getRegisterTime());
+                                }
+                                if (education.equals(educationId)) {
+                                    dto.setEducationId(dto.getEducationId());
+                                }
+                                //经验要求 ===========================================================
+                                if (ex.size() == 1) {
+                                    experienceStart = ex.get(0);
+                                    if (exTime.compareTo(experienceStart) > 0 || exTime.compareTo(experienceStart) <= 0) {
+                                        dto.setExperienceId(experienceStart);
+                                    }
+                                }
+
+                                if (ex.size() == 2) {
+                                    experienceStart = ex.get(0);
+                                    experienceEnd = ex.get(1);
+                                    if (exTime.compareTo(experienceStart) > 0 && exTime.compareTo(experienceEnd) <= 0) {
+                                        dto.setExperienceId(dto.getExperienceId());
+                                    }
+                                }
+                                //综合工资
+                                if (avgSalary.compareTo(salaryLower) > 0 && avgSalary.compareTo(salaryUpper) <= 0) {
+                                    dto.setAvgSalary(dto.getAvgSalary());
+                                }
+
+                                //年龄要求
+
+                                if (manAge1.size() == 1) {
+                                    manAgeStart = manAge1.get(0);
+                                    if (age >= manAgeStart) {
+                                        dto.setManAge(String.valueOf(manAgeStart));
+                                    }
+                                }
+                                if (manAge1.size() == 2) {
+                                    manAgeStart = manAge1.get(0);
+                                    manAgeEnd = manAge1.get(1);
+                                    if (age > manAgeStart && age <= manAgeEnd) {
+                                        dto.setManAge(dto.getManAge());
+                                    }
+                                }
+                            } else if (sex.equals(0)) {
+                                //如果本人性别为女 显示招聘女生的数量
+                                dto.setWomenNum(womenNum);
+                                if (arrivalTime.equals(strToDate)) {
+                                    dto.setRegisterTime(dto.getRegisterTime());
+                                }
+                                //综合工资
+                                if (avgSalary.compareTo(salaryLower) > 0 && avgSalary.compareTo(salaryUpper) <= 0) {
+                                    dto.setAvgSalary(dto.getAvgSalary());
+                                }
+
+                                // 女生年龄
+                                if (womenAge1.size() == 1) {
+                                    womenAgeStart = womenAge1.get(0);
+                                    if (age >= womenAgeStart) {
+                                        dto.setWomenAge(String.valueOf(womenAgeStart));
+                                    }
+                                }
+                                if (womenAge1.size() == 2) {
+                                    womenAgeStart = womenAge1.get(0);
+                                    womenAgeEnd = womenAge1.get(1);
+                                    if (age > womenAgeStart && age <= womenAgeEnd) {
+                                        dto.setWomenAge(dto.getWomenAge());
+                                    }
+                                }
+                            } else {
+                                dto.setWomenNum(womenNum);
+                                dto.setManNum(manNum);
+                            }
+
+
+                            //意向岗位
+                            //逗号分割的 string 转 int array
+                            int[] ints = Arrays.stream(registrationPositionId.split(",")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            //int array 转integer list
+                            List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+                            list.stream()
+                                    .forEach(s -> {
+                                        if (postName.equals(s)) {
+                                            dto.setPostId(dto.getPostId());
+                                        }
+                                    });
+                            return va;
+                        })
+                        .collect(Collectors.toList());
+            } else {
+                //身份是推荐人
+                List<HrSignUp> upList = signUpMapper.queryAll(query.getUserId(), 2);
+                upList.stream()
+                        .map(v -> {
+                            Integer postId = dto.getPostId();
+                            String registrationPositionId = v.getRegistrationPositionId();
+                            //逗号分割的 string 转 int array
+                            int[] ints = Arrays.stream(registrationPositionId.split(",")).mapToInt(str -> Integer.parseInt(str)).toArray();
+                            //int array 转integer list
+                            List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+                            list.stream()
+                                    .forEach(s -> {
+                                        if (postId.equals(s)) {
+                                            dto.setPostId(dto.getPostId());
+                                        }
+                                    });
+                            return v;
+                        })
+                        .collect(Collectors.toList());
+            }
+            Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+            //对返佣金额进行 foreach 操作, set到返回的结果集里
+            map.forEach((k, v) -> {
+                dto.setRebateRecord(v);
+
+            });
+
+            return dto;
+        }).collect(Collectors.toList());
+
     }
 
     @Override
@@ -453,15 +944,14 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     public void addCancelBriefchapter(Collect collect) {
         Collect co = new Collect();
         if (collect.getFlag().equals(0)) {
-        co.setUserId(collect.getUserId());
-        co.setBriefchapterId(collect.getBriefchapterId());
-        co.setCreateTime(new Date());
-        Assert.isTrue(collectMapper.addBriefchapter(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
-        } else if (collect.getFlag().equals(1)){
+            co.setUserId(collect.getUserId());
+            co.setBriefchapterId(collect.getBriefchapterId());
+            co.setCreateTime(new Date());
+            Assert.isTrue(collectMapper.addBriefchapter(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
+        } else if (collect.getFlag().equals(1)) {
             co.setDeleteFlag(1);
             Assert.isTrue(collectMapper.updateByPrimaryKeySelective(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
         }
-
 
 
     }
@@ -572,31 +1062,25 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addComplaint(ComplaintQuery query, String head) {
+    public int addComplaint(ComplaintQuery query, String head) {
         checkNoNull(query.getName(),
                 query.getBriefChapterId(),
                 query.getComplaintTypeId(),
                 query.getDescription(),
                 query.getEvidence());
-
-
         HrComplaint complaint = new HrComplaint();
-        //如果登录用户是推荐人
-        if (query.getType().equals(2)) {
-            complaint.setUserId(query.getUserId());
-
-        }
         complaint.setName(query.getName());
         complaint.setBriefChapterId(query.getBriefChapterId());
         complaint.setComplaintTypeId(query.getComplaintTypeId());
         complaint.setDescription(query.getDescription());
         complaint.setEvidence(head);
         complaint.setUserId(query.getUserId());
-        complaint.setSignUpId(query.getSignUpId());
+        //complaint.setSignUpId(query.getSignUpId());
         complaint.setCreateTime(LocalDateTime.now());
 
 
         Assert.isFalse(complaintMapper.save(complaint) < 1, RlzyConstant.OPS_FAILED_MSG);
+        return 1;
 
     }
 

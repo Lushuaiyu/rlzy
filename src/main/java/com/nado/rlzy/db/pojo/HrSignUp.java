@@ -146,7 +146,7 @@ public class HrSignUp {
 
     @ApiModelProperty(value = "推荐人数上限")
     @Transient
-    private Integer recommendNoUpper;
+    private String recommendNoUpper;
 
     @ApiModelProperty(value = "推荐说明")
     @Transient
@@ -190,9 +190,10 @@ public class HrSignUp {
     @Column(name = "create_time")
     private LocalDateTime createTime;
 
-    @ApiModelProperty(value = "简章")
     @Transient
     private List<HrBriefchapter> chapter;
+
+
 
 
 }

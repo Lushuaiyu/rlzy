@@ -800,56 +800,8 @@
             </if>
         </where>
     </select>
-    <select id="personalInformation" resultMap="BaseResultMap">
-        select u.UserName as user_name,
-        u.HeadImage,
-        s.sex,
-        s.id_card,
-        s.education,
-        s.graduation_time,
-        s.profession,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, s.registration_position_id)
-        and d.pId = 1) as Name,
-        s.arrival_time,
-        s.expected_salary_lower,
-        s.expected_salary_upper,
-        s.it_is_public,
-        s.agree_platform_help,
-        s.registration_position_id
-        from hr_user u
-        left join hr_signup s on u.Id = s.user_id
-        <where>
-            u.DeleteFlag = 0
 
-            and u.type = 1
-            <if test="null != userId">
-                and u.Id = #{userId}
-            </if>
-        </where>
-    </select>
-    <select id="personalInformationReferrer" resultMap="BaseResultMap">
-        select u.HeadImage,
-        u.UserName as user_name,
-        s.id_card,
-        s.relation,
-        s.registration_position_id,
-        u.RecommendNoLower,
-        u.RecommendNoUpper,
-        u.RecommendInfo,
-        s.it_is_public,
-        s.agree_platform_help
-        from hr_user u
-        left join hr_signup s on u.Id = s.user_id and s.delete_flag = 0
-        <where>
-            u.DeleteFlag = 0
-            and u.type = 2
-            <if test="null != userId">
-                and u.Id = #{userId}
-            </if>
-        </where>
-    </select>
+
     <select id="searchSignUpUserName" resultMap="BaseResultMap">
         select si.user_name,
         u.UserName as userName,
@@ -1059,22 +1011,50 @@
         </where>
     </select>
     <select id="queryComplaintPerson" resultType="com.nado.rlzy.bean.dto.ComplaintPage">
-            select si.user_name as signName,
-           si.id
-    from hr_signup si
-             left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
-             left join hr_user u on si.user_id = u.Id and u.DeleteFlag = 0
-             left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.DeleteFlag = 0
-    where si.delete_flag = 0
-    <if test="null != brieId">
-      and br.id = #{brieId}
-    </if>
-    <if test="null != typeId">
-      and u.type = #{typeId}
-    </if>
-    <if test="null != userId">
-      and u.id = #{userId}
-    </if>
+        select si.user_name as signName,
+        si.id
+        from hr_signup si
+        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
+        left join hr_user u on si.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.DeleteFlag = 0
+        where si.delete_flag = 0
+        <if test="null != brieId">
+            and br.id = #{brieId}
+        </if>
+        <if test="null != typeId">
+            and u.type = #{typeId}
+        </if>
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+    </select>
+    <select id="queryAll" resultMap="BaseResultMap">
+        select si.sex,
+        si.age,
+        si.arrival_time,
+        si.graduation_time,
+        si.expected_salary_lower,
+        si.expected_salary_upper,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, si.education)
+        and d.pId = 2) as education,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, si.registration_position_id)
+        and d.pId = 1) as Name
+        from hr_signup si
+        left join hr_user u on si.user_id = u.Id
+        <where>
+            <if test="null != userId">
+                si.user_id = #{userId}
+            </if>
+            <if test="null != type">
+                and u.type = #{type}
+            </if>
+            and si.delete_flag = 0
+        </where>
+
     </select>
 
 

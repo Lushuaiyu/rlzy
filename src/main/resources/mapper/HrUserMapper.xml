@@ -12,6 +12,9 @@
         <result column="IdCard" property="idCard" jdbcType="VARCHAR"/>
         <result column="RegisterTime" property="registerTime" jdbcType="TIMESTAMP"/>
         <result column="RecommendNoUpper" property="recommendNoUpper" jdbcType="INTEGER"/>
+        <result column="expectedSalaryLower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
+        <result column="expectedSalaryUpper" property="expectedSalaryUpper" jdbcType="DECIMAL"/>
+
         <result column="RecommendNoLower" property="recommendNoLower" jdbcType="INTEGER"/>
         <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
         <result column="RecommenderId" property="recommenderId" jdbcType="INTEGER"/>
@@ -20,6 +23,7 @@
         <result column="DeleteFlag" property="deleteFlag" jdbcType="INTEGER"/>
         <result column="type" property="type" jdbcType="INTEGER"/>
         <result column="isPublic" property="publicIs" jdbcType="INTEGER"/>
+        <result column="agreeHelp" property="agreeHelp" jdbcType="INTEGER"/>
         <collection property="signUp" resultMap="resultMap" ofType="com.nado.rlzy.db.pojo.HrSignUp"/>
 
 
@@ -315,5 +319,58 @@
             and Id = #{userId}
         </if>
 
+    </select>
+
+    <select id="personalInformationReferrer" resultMap="BaseResultMap">
+        select u.HeadImage,
+        u.UserName,
+        u.IdCard,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, u.PostIdStr)
+        and d.pId = 1) as PostIdStr,
+        u.RecommendNoLower,
+        u.RecommendNoUpper,
+        u.RecommendInfo,
+        u.isPublic,
+        u.agreeHelp
+        from hr_user u
+        <where>
+            u.DeleteFlag = 0
+            and u.type = 2
+            and u.DeleteFlag = 0
+            <if test="null != userId">
+                and u.Id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="personalInformation" resultMap="BaseResultMap">
+        select u.UserName,
+        u.HeadImage,
+        u.sex,
+        u.IdCard,
+        u.education,
+        u.graduationTime,
+        u.profession,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, u.PostIdStr)
+        and d.pId = 1) as PostIdStr,
+        u.arrivalTime,
+        u.expectedSalaryLower,
+        u.expectedSalaryUpper,
+        u.isPublic,
+        u.agreeHelp,
+        u.PostIdStr
+        from hr_user u
+        <where>
+            u.DeleteFlag = 0
+
+            and u.type = 1
+            <if test="null != userId">
+                and u.Id = #{userId}
+            </if>
+        </where>
     </select>
 </mapper>

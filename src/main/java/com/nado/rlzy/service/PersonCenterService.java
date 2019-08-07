@@ -1,10 +1,10 @@
 package com.nado.rlzy.service;
 
 import com.nado.rlzy.bean.dto.ComplaintDto;
+import com.nado.rlzy.bean.dto.PersonCoDto;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
 import com.nado.rlzy.db.pojo.Feedback;
-import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.exception.ImgException;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +23,7 @@ import java.util.Map;
 public interface PersonCenterService {
 
     /**
-     * 查询我的企业 代招单位
+     * 查询我的企业
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:48 2019/7/1
@@ -34,14 +34,14 @@ public interface PersonCenterService {
 
 
     /**
-     * 添加企业
+     * 添加企业 招聘端 代招单位 添加企业
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:46 2019/7/1
      * @Param []
      * @return void
      **/
-    void addCo(AddCoQuery query, String url) throws ImgException;
+    int addCo(AddCoQuery query) throws ImgException;
 
 
 
@@ -57,24 +57,24 @@ public interface PersonCenterService {
 
 
     /**
-     * 招聘端个人资料 本人
+     * 求职端 本人个人资料
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:32 2019/7/9
      * @Param [userId]
      * @return java.util.Map<java.lang.String,java.lang.Object>
      **/
-    List<HrSignUp> personalInformation(Integer userId);
+    List<HrUser> personalInformation(Integer userId);
 
     /**
-     * 招聘端个人资料 推荐人
+     * 求职端 推荐人个人资料
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 11:13 2019/7/9
      * @Param [userId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
-    List<HrSignUp> personalInformationReferrer(Integer userId);
+    List<HrUser> personalInformationReferrer(Integer userId);
 
 
 
@@ -147,6 +147,17 @@ public interface PersonCenterService {
      * @return int
      **/
     int myFeedback (String content,  Integer userId, String name, String phone);
+
+    /**
+     * 认证失败说明
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:30 2019/8/7
+     * @param userId 用户id
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    Map<String, List<PersonCoDto>> queryTheAuditFailed(Integer userId);
+
 
 
 

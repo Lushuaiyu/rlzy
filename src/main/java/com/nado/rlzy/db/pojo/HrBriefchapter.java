@@ -6,9 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,7 +68,7 @@ public class HrBriefchapter {
     private String educationId;
 
     @ApiModelProperty(value = "经验")
-    private Integer experienceId;
+    private String experienceId;
 
     @ApiModelProperty(value = "福利")
     private String welfareId;
@@ -92,10 +94,10 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "代招单位面试地址")
     private String interviewAddress2;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "报道时间")
-    private LocalDateTime registerTime;
+    private Date registerTime;
 
     @ApiModelProperty(value = "合同签订方")
     private Integer contractWay;
@@ -147,11 +149,17 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "删除标识位")
     private Integer deleteflag;
 
-    @ApiModelProperty(value = "男员工年龄段")
+    @ApiModelProperty(value = "男员工年龄段id")
     private Integer manAgeId;
 
-    @ApiModelProperty(value = "女员工年龄段")
+    @ApiModelProperty(value = "女员工年龄段id")
     private Integer womenAgeId;
+
+    @ApiModelProperty(value = "男员工年龄段")
+    private String manAge;
+
+    @ApiModelProperty(value = "女员工年龄段")
+    private String womenAge;
 
     @ApiModelProperty(value = "工作方式")
     private String workWayId;

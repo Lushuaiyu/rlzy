@@ -51,7 +51,7 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
     private Integer interviewAddress;
 
     @ApiModelProperty(value = "工作年限id")
-    private Integer experienceId;
+    private String experienceId;
 
     @ApiModelProperty(value = "工作方式id")
     private String workWayId;

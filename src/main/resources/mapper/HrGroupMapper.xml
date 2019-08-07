@@ -27,16 +27,16 @@
         <result column="Pid" property="pid" jdbcType="INTEGER"/>
         <result column="person_num" property="personNum" jdbcType="VARCHAR"/>
         <result column="co_policy" property="coPolicy" jdbcType="VARCHAR"/>
-        <collection property="hriefchapter" resultMap="rebaterecord" ofType="com.nado.rlzy.db.pojo.HrRebaterecord"/>
+        <!--        <collection property="hriefchapter" resultMap="rebaterecord" ofType="com.nado.rlzy.db.pojo.HrRebaterecord"/>-->
 
     </resultMap>
 
-    <resultMap id="rebaterecord" type="com.nado.rlzy.db.pojo.HrBriefchapter">
-        <result column="Id" property="brId" jdbcType="INTEGER"/>
+
+    <!--   <resultMap id="rebaterecord" type="com.nado.rlzy.db.pojo.HrBriefchapter">
+            <result column="Id" property="brId" jdbcType="INTEGER"/>
 
 
-    </resultMap>
-
+        </resultMap>-->
     <select id="coHomePage" resultMap="BaseResultMap">
         select g.GroupName,
         g.co_policy,
@@ -67,4 +67,71 @@
             </if>
         </where>
     </select>
+    <select id="queryAgentEnterprisePid" resultMap="BaseResultMap">
+        select g.Id
+        from hr_group g
+        left join hr_user u on g.CertifierId = u.Id and u.DeleteFlag = 0
+        <where>
+            g.DeleteFlag = 0
+            <if test="null != userId">
+                and u.id = #{userId}
+            </if>
+            and g.type = 0
+        </where>
+    </select>
+
+    <select id="queryPersonCo" resultType="com.nado.rlzy.bean.dto.PersonCoDto">
+
+        select gr.GroupName as certifier,
+        gr.GroupAddress as certifierAddress,
+        gr.person_num as certifierNum,
+        gr.co_policy as certifierPolicy,
+        gr.Status as cerStatus,
+        gr.BusinessLicense as busLincenseCer,
+        u.type,
+        gr.Id
+        from hr_group gr,
+        hr_group grr,
+        hr_user u
+        <where>
+            gr.pid = grr.Id
+            and gr.CertifierId = u.id
+            and grr.CertifierId = u.id
+            and gr.DeleteFlag = 0
+            and grr.DeleteFlag = 0
+            and u.DeleteFlag = 0
+            <if test="null != userId">
+                and u.id = #{userId}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="queryPersonCORecruitment" resultType="com.nado.rlzy.bean.dto.PersonCoDto">
+        select gr.GroupName as certifier,
+        gr.GroupAddress as certifierAddress,
+        gr.person_num as certifierNum,
+        gr.co_policy as certifierPolicy,
+        gr.Status as cerStatus,
+        gr.BusinessLicense as busLincenseCer,
+        u.type,
+        gr.Id
+        from hr_group gr
+        left join hr_user u on gr.CertifierId = u.id and u.DeleteFlag = 0
+        where gr.DeleteFlag = 0
+        and gr.type = 1
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+
+    </select>
+    <select id="queryTheAuditFailed" resultType="map">
+         select g.remark
+            from hr_group g
+                     left join hr_user u on g.CertifierId = u.Id and u.DeleteFlag = 0
+            where g.DeleteFlag = 0
+              and g.Status = 3
+              and u.id = #{userId}
+    </select>
+
 </mapper>

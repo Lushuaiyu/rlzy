@@ -3,6 +3,7 @@ package com.nado.rlzy.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.base.BaseController;
 import com.nado.rlzy.bean.dto.ComplaintDto;
+import com.nado.rlzy.bean.dto.PersonCoDto;
 import com.nado.rlzy.bean.model.CommonResult;
 import com.nado.rlzy.bean.model.Result;
 import com.nado.rlzy.bean.model.ResultInfo;
@@ -10,7 +11,6 @@ import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
 import com.nado.rlzy.db.pojo.Feedback;
-import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.PersonCenterService;
@@ -51,6 +51,7 @@ public class PersonCenterController extends BaseController {
 
     /**
      * 查询我的企业
+     *
      * @return java.util.List<com.nado.rlzy.bean.frontEnd.PersonCoFront>
      * @Author lushuaiyu
      * @Description //TODO
@@ -60,7 +61,7 @@ public class PersonCenterController extends BaseController {
     @RequestMapping(value = "queryPersonCo")
     @ResponseBody
     @ApiOperation(value = "查询我的企业 ", notes = "查询我的企业", httpMethod = "POST")
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
+    @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
     public ResultJson queryPersonCo(Integer userId) {
         Map<String, Object> map = service.queryPersonCo(userId);
         ResultJson result = new ResultJson();
@@ -74,7 +75,8 @@ public class PersonCenterController extends BaseController {
     }
 
     /**
-     * 添加企业
+     * 添加企业 招聘端 代招单位添加企业
+     * headers = "content-type=multipart/form-date") 可能没用
      *
      * @return com.nado.rlzy.bean.model.ResultInfo
      * @Author lushuaiyu
@@ -82,24 +84,30 @@ public class PersonCenterController extends BaseController {
      * @Date 16:10 2019/7/1
      * @Param []
      **/
-    @RequestMapping(value = "addCo", headers = "content-type=multipart/form-date")
+    @RequestMapping(value = "addCo")
     @ResponseBody
     @ApiOperation(value = "添加企业", notes = "添加企业", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "coName", value = "公司名称", dataType = "string", required = true),
             @ApiImplicitParam(name = "coAddress", value = "公司地址", dataType = "string", required = true),
-            @ApiImplicitParam(name = "companyProfil", value = "公司简介", dataType = "string", required = true),
-            @ApiImplicitParam(value = "file", name = "上传图片", dataType = "MultipartFile", required = true)
+            @ApiImplicitParam(name = "CompanyProfile", value = "公司简介", dataType = "string", required = true),
+            @ApiImplicitParam(value = "file", name = "上传图片", dataType = "MultipartFile", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true)
     })
-    public ResultInfo addCo(AddCoQuery query, MultipartFile file) {
+    public ResultJson addCo(AddCoQuery query) {
+        MultipartFile file = query.getFile();
         String url = service.updateHead(file);
-        service.addCo(query, url);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.ADD_SUCESSFUL);
+        query.setBusLicense(url);
+
+        int co = service.addCo(query);
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(co);
+        return resultJson;
+
 
     }
-
-
-    /* */
 
     /**
      * 图片上传demo
@@ -141,30 +149,26 @@ public class PersonCenterController extends BaseController {
      **/
     @RequestMapping(value = "personalInformation")
     @ResponseBody
-    @ApiOperation(notes = "求职端 我的个人中心", value = "求职端 我的个人中心", httpMethod = "POST")
+    @ApiOperation(notes = "求职端 个人中心 个人资料", value = "求职端 个人中心 个人资料", httpMethod = "POST")
     @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
-    public Result<HrSignUp> personalInformation(Integer userId) {
-        Result<HrSignUp> result = new Result<>();
-        List<HrSignUp> ups = service.personalInformation(userId);
+    public Result<HrUser> personalInformation(Integer userId, Integer type) {
+        Result<HrUser> result = new Result<>();
+        if (type.equals(1)) {
+        List<HrUser> ups = service.personalInformation(userId);
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(ups);
         return result;
+        }
+        if (type.equals(2)){
+            List<HrUser> signUps = service.personalInformationReferrer(userId);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(signUps);
+            return result;
+        }
+        return null;
     }
-
-    @RequestMapping("personalInformationReferrer")
-    @ResponseBody
-    @ApiOperation(notes = "推荐人 个人信息", value = "推荐人 个人信息", httpMethod = "POST")
-    @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
-    public Result<HrSignUp> personalInformationReferrer(Integer userId) {
-        List<HrSignUp> signUps = service.personalInformationReferrer(userId);
-        Result<HrSignUp> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(signUps);
-        return result;
-    }
-
     /**
      * 编辑个人信息 个人
      *
@@ -179,7 +183,7 @@ public class PersonCenterController extends BaseController {
     @ApiOperation(value = "编辑个人信息 个人", notes = "编辑个人信息 个人", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "typeId", name = "身份id 登录者是求职者还是推荐者", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "typeId", name = "身份id 登录者是求职者还是推荐者 1 求职者 2 推荐者", dataType = "integer", required = true),
             @ApiImplicitParam(value = "sex", name = "性别 0 女 1 男", dataType = "integer", required = true),
             @ApiImplicitParam(value = "education", name = "学历", dataType = "string", required = true),
             @ApiImplicitParam(value = "graduationTime", name = "毕业时间", dataType = "date", required = true),
@@ -188,8 +192,8 @@ public class PersonCenterController extends BaseController {
             @ApiImplicitParam(value = "ArrivalTime", name = "到岗时间", dataType = "date", required = true),
             @ApiImplicitParam(value = "ExpectedSalaryLower", name = "期望薪资下限", dataType = "string", required = true),
             @ApiImplicitParam(value = "ExpectedSalaryUpper", name = "期望薪资上限", dataType = "string", required = true),
-            @ApiImplicitParam(value = "ItIsPublic", name = "是否公开", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "AgreePlatformHelp", name = "是否需要平台帮助", dataType = "integer", required = true)
+            @ApiImplicitParam(value = "ItIsPublic", name = "是否公开 0 公开 1 不公开", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "AgreePlatformHelp", name = "是否需要平台帮助 0 是 1 否", dataType = "integer", required = true)
     })
     public ResultInfo editPersonData(EditPersonDataQuery query, MultipartFile file) {
         String url = service.updateHead(file);
@@ -293,7 +297,6 @@ public class PersonCenterController extends BaseController {
 
     }
 
-
     @RequestMapping(value = "myFeedback")
     @ResponseBody
     @ApiOperation(value = "招聘端 个人中心 我的反馈", notes = "我的反馈", httpMethod = "POST")
@@ -309,5 +312,17 @@ public class PersonCenterController extends BaseController {
 
     }
 
+    @RequestMapping(value = "queryTheAuditFailed")
+    @ResponseBody
+    @ApiOperation(value = "认证失败说明", notes = "认证失败说明", httpMethod = "POST")
+    @ApiImplicitParam(name = "用户id", value = "userId", required = true)
+    public ResultJson queryTheAuditFailed(Integer userId) {
+        Map<String, List<PersonCoDto>> map = service.queryTheAuditFailed(userId);
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(map);
+        return resultJson;
+    }
 
 }

@@ -15,6 +15,7 @@ import com.nado.rlzy.platform.exception.ImgException;
 import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.utils.CheckParametersUtil;
 import com.nado.rlzy.utils.OSSClientUtil;
+import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,12 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     public static final Logger logger = LoggerFactory.getLogger(PersonCenterServiceImpl.class);
 
     @Override
+    public Map<String, List<PersonCoDto>> queryTheAuditFailed(Integer userId) {
+        return hrGroupMapper.queryTheAuditFailed(userId);
+
+    }
+
+    @Override
     public int myFeedback(String content, Integer userId, String name, String phone) {
         //校验参数
         checkParams(content, userId, name, phone);
@@ -85,34 +92,41 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     @Override
     public Map<String, Object> queryPersonCo(Integer userId) {
 
-        List<PersonCoDto> coDtos = mapper.queryPersonCo( userId);
-        List<PersonCoDto> list = mapper.queryPersonCORecruitment(userId);
+        List<PersonCoDto> coDtos = hrGroupMapper.queryPersonCo(userId);
+        List<PersonCoDto> list = hrGroupMapper.queryPersonCORecruitment(userId);
         List<PersonCoDto> collect = coDtos.stream().collect(Collectors.toList());
         List<PersonCoDto> dtos = list.stream().collect(Collectors.toList());
-        HashMap<String, Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>(16);
         map.put("queryPersonCo", collect);
         map.put("queryPersonCORecruitment", dtos);
         return map;
-
 
 
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addCo(AddCoQuery query, String url) {
+    public int addCo(AddCoQuery query) {
+
+        List<HrGroup> hrGroups = hrGroupMapper.queryAgentEnterprisePid(8);
         //参数校验
-        checkNullParams(query.getCoName(), query.getCoAddress(), query.getCompanyProfile(), query.getBusLicense());
+        checkNullParams(query.getCoName(), query.getCoAddress(),
+                query.getCompanyProfile(), query.getBusLicense());
+        Integer id = hrGroups.get(0).getId();
 
         //添加
         HrGroup hrGroup = new HrGroup();
         hrGroup.setGroupname(query.getCoName());
         hrGroup.setGroupaddress(query.getCoAddress());
         hrGroup.setGroupinfo(query.getCompanyProfile());
-
-
-        hrGroup.setBusinesslicense(url);
-        Assert.isFalse(hrGroupMapper.insertSelective(hrGroup) < 1, RlzyConstant.OPS_FAILED_MSG);
+        hrGroup.setBusinesslicense(query.getBusLicense());
+        hrGroup.setPid(id);
+        hrGroup.setCertifierid(query.getUserId());
+        boolean b = hrGroupMapper.insertSelective(hrGroup) < 1;
+        Assert.isFalse(b, RlzyConstant.OPS_FAILED_MSG);
+        //添加成功 返回1 失败 返回0
+        Integer result = b == false ? 1 : 0;
+        return result;
     }
 
 
@@ -139,15 +153,31 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
-    public List<HrSignUp> personalInformation(Integer userId) {
-        return signUpMapper.personalInformation(userId).stream().collect(Collectors.toList());
+    public List<HrUser> personalInformation(Integer userId) {
+        return userMapper.personalInformation(userId)
+                .stream()
+                .map(dto -> {
+                    Double salaryLower = dto.getExpectedSalaryLower().doubleValue();
+                    Double salaryUpper = dto.getExpectedSalaryUpper().doubleValue();
+                    String format = StringUtil.decimalFormat2(salaryLower);
+                    String format1 = StringUtil.decimalFormat2(salaryUpper);
+                    String s = format + "k" + "-" + format1 + "k";
+                    dto.setExpectedSalary(s);
+                    return dto;
+                }).collect(Collectors.toList());
 
     }
 
     @Override
-    public List<HrSignUp> personalInformationReferrer(Integer userId) {
-        List<HrSignUp> hrSignUps = signUpMapper.personalInformationReferrer(userId);
-        List<HrSignUp> collect = hrSignUps.stream().collect(Collectors.toList());
+    public List<HrUser> personalInformationReferrer(Integer userId) {
+        List<HrUser> hrSignUps = userMapper.personalInformationReferrer(userId);
+        List<HrUser> collect = hrSignUps.stream().map(dto -> {
+            Integer lower = dto.getRecommendNoLower();
+            Integer noUpper = dto.getRecommendNoUpper();
+            String number = lower + "-" + noUpper + "人";
+            dto.setRecommendedNumber(number);
+            return dto;
+        }).collect(Collectors.toList());
         return collect;
     }
 

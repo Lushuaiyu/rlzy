@@ -70,7 +70,7 @@ public interface JobSearchHomePageService {
      * @Param [query]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query);
+    List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query) ;
 
     /**
      * 查询招聘简章详情 招聘单位
@@ -326,7 +326,7 @@ public interface JobSearchHomePageService {
      * @Param [query, head]
      * @return void
      **/
-    void addComplaint(ComplaintQuery query, String head);
+    int addComplaint(ComplaintQuery query, String head);
 
     /**
      * 在招职位

@@ -19,7 +19,7 @@ public class BriefcharpterQuery extends BaseQuery {
     @ApiModelProperty(value = "简章id")
     private Integer briefcharpterId;
 
-    @ApiModelProperty(value = "招聘公司")
+    @ApiModelProperty(value = "招聘公司下的公司")
     private String recruitedCompany;
 
     @ApiModelProperty(value = "招聘单位 | 代招单位")
@@ -27,6 +27,9 @@ public class BriefcharpterQuery extends BaseQuery {
 
     @ApiModelProperty(value = "职位")
     private String postName;
+
+    @ApiModelProperty(value = "用户id")
+    private Integer userId;
 
     @ApiModelProperty(value = "简章状态")
     private Integer status;
@@ -139,6 +142,9 @@ public class BriefcharpterQuery extends BaseQuery {
 
     @ApiModelProperty(value = "返佣类型")
     private Integer rebateType;
+
+    @ApiModelProperty(value = "身份类型")
+    private Integer type;
 
     @ApiModelProperty(value = "返佣时间")
     private String rebateTime;

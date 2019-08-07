@@ -143,12 +143,9 @@ public class UserController extends BaseController {
         return CommonResult.success(registerJobHunting, RlzyConstant.OPS_SUCCESS_MSG);
     }
 
-   /* @UserLoginToken
-    @ApiOperation(value = "test", notes = "test", httpMethod = "POST")
-    @RequestMapping("getMessage")
-    public String getMessage() {
-        return "你已通过验证";
-    }*/
+
+
+
 
 
 }

@@ -27,6 +27,7 @@
 
         <result column="registerTime" property="registerTime" jdbcType="TIMESTAMP"/>
         <result column="contractWay" property="contractWay" jdbcType="INTEGER"/>
+        <result column="signUpId" property="signUpId" jdbcType="INTEGER"/>
 
         <result column="contractStartTime" property="contractStartTime" jdbcType="TIMESTAMP"/>
 
@@ -53,6 +54,8 @@
         <result column="Rebate" property="rebate" jdbcType="INTEGER"/>
         <result column="womenAgeId" property="womenAgeId" jdbcType="INTEGER"/>
         <result column="womenAgeId" property="womenAgeId" jdbcType="INTEGER"/>
+        <result column="womenAge" property="womenAge" jdbcType="VARCHAR"/>
+        <result column="manAge" property="manAge" jdbcType="VARCHAR"/>
 
 
         <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP"/>
@@ -443,8 +446,6 @@
         <if test="null != professionId and '' != professionId ">
             and br.profession_id like concat('%', #{professionId}, '%')
         </if>
-
-
         <if test="null != educationId">
             and br.educationId in
             <foreach collection="educationId" item="item" separator="," open="(" close=")">
@@ -508,31 +509,7 @@
 
     </select>
 
-    <select id="queryPersonCo" resultType="com.nado.rlzy.bean.dto.PersonCoDto">
 
-        select gr.GroupName as certifier,
-        gr.GroupAddress as certifierAddress,
-        gr.person_num as certifierNum,
-        gr.co_policy as certifierPolicy,
-        gr.Status as cerStatus,
-        gr.BusinessLicense as busLincenseCer,
-        u.type
-        from hr_group gr,
-        hr_group grr,
-        hr_user u
-        <where>
-            gr.pid = grr.Id
-            and gr.CertifierId = u.id
-            and grr.CertifierId = u.id
-            and gr.DeleteFlag = 0
-            and grr.DeleteFlag = 0
-            and u.DeleteFlag = 0
-            <if test="null != userId">
-                and u.id = #{userId}
-            </if>
-        </where>
-
-    </select>
 
 
     <select id="queryBriefcharpterDetileByParams" resultMap="BaseResultMap"
@@ -620,7 +597,8 @@
         re.RebateTime,
         re.RebateMale,
         re.RebateFemale,
-        re.status
+        re.status,
+        si.id as signUpId
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
@@ -1075,14 +1053,14 @@
 
     </select>
     <select id="queryBriefchapterBySignUpStatus" resultMap="BaseResultMap">
-        select br.id              as id,
-        si.id              as signUpId,
-        grr.GroupName      as recruitedCompany,
-        gr.GroupName       as certifier,
+        select br.id as id,
+        si.id as signUpId,
+        grr.GroupName as recruitedCompany,
+        gr.GroupName as certifier,
         (case
         when (re.RebateMale >= re.RebateFemale) then re.RebateMale
         when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end)           as rebateOne,
+        end) as rebateOne,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
@@ -1108,15 +1086,15 @@
         and grr.pid = gr.Id
         and gr.type = 0
         <if test="null != signUpStatus">
-        and sd.job_status = #{signUpStatus}
+            and sd.job_status = #{signUpStatus}
         </if>
     </select>
     <select id="myRelease" resultMap="BaseResultMap">
 
         select dii.Name as postName,
         br.id,
-        grr.GroupName      as recruitedCompany,
-        gr.GroupName       as certifier,
+        grr.GroupName as recruitedCompany,
+        gr.GroupName as certifier,
         br.RecruitingNo as recruitingNo,
         gr.GroupAddress as groupAddress,
         br.avgSalary as avgSalary,
@@ -1151,13 +1129,13 @@
         where br.DeleteFlag = 0
         and grr.pid = gr.Id
         <if test="null != userId">
-        and u.id = #{userId}
+            and u.id = #{userId}
         </if>
         <if test="null != typeId">
-        and u.type = #{typeId}
+            and u.type = #{typeId}
         </if>
         <if test="null != status">
-        and br.Status = #{status}
+            and br.Status = #{status}
         </if>
     </select>
     <select id="queryBriefcharpterByParams" resultMap="BaseResultMap"
@@ -1339,7 +1317,8 @@
         re.RebateTime,
         re.RebateMale,
         re.RebateFemale,
-        re.status
+        re.status,
+        si.id as signUpId
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
@@ -1723,13 +1702,13 @@
 
     </select>
     <select id="queryBriefchapterBySignUpstatusRecruitment" resultMap="BaseResultMap">
-        select br.id              as id,
-        si.id              as signUpId,
-        gr.GroupName       as certifier,
+        select br.id as id,
+        si.id as signUpId,
+        gr.GroupName as certifier,
         (case
         when (re.RebateMale >= re.RebateFemale) then re.RebateMale
         when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end)           as rebateOne,
+        end) as rebateOne,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
@@ -1752,54 +1731,38 @@
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
         where br.DeleteFlag = 0 and u.type = 5
         <if test="null != signUpStatus">
-        and sd.job_status = #{signUpStatus}
+            and sd.job_status = #{signUpStatus}
         </if>
 
 
     </select>
-    <select id="queryPersonCORecruitment" resultType="com.nado.rlzy.bean.dto.PersonCoDto">
-        select gr.GroupName as certifier,
-        gr.GroupAddress as certifierAddress,
-        gr.person_num as certifierNum,
-        gr.co_policy as certifierPolicy,
-        gr.Status as cerStatus,
-        gr.BusinessLicense as busLincenseCer,
-        u.type
-        from hr_group gr
-        left join hr_user u on gr.CertifierId = u.id and u.DeleteFlag = 0
-        where gr.DeleteFlag = 0
-        and gr.type = 1
-        <if test="null != userId">
-            and u.Id = #{userId}
-        </if>
 
-    </select>
     <select id="myReleaseRecruitment" resultMap="BaseResultMap">
-        select dii.Name           as postName,
+        select dii.Name as postName,
         br.id,
-        gr.GroupName       as certifier,
-        br.RecruitingNo    as recruitingNo,
-        gr.GroupAddress    as groupAddress,
-        br.avgSalary       as avgSalary,
+        gr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
         br.Rebate,
         br.Status,
-        br.detailSalary    as detailSalary,
+        br.detailSalary as detailSalary,
         br.detailSalaryWay as detailSalaryWay,
         (case
         when (re.RebateMale >= re.RebateFemale) then re.RebateMale
         when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end)           as rebateOne,
+        end) as rebateOne,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        re.RebateType      as rebateType,
+        re.RebateType as rebateType,
         re.BriefChapterId,
         re.RebateTime,
         re.RebateMale,
         re.RebateFemale,
         re.status,
-        br.Rebate          as rebateStatus,
+        br.Rebate as rebateStatus,
         ifnull(re.BriefChapterId, 0)
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0

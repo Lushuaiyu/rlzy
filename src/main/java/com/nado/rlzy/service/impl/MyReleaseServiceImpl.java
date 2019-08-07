@@ -644,8 +644,8 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         LocalDateTime dateTime = StringUtil.strToLocalDateTime(interviewTime);
         dto.setInterviewTime(dateTime);
         String time = query.getRegisterTime();
-        LocalDateTime localDateTime = StringUtil.strToLocalDateTime(time);
-        dto.setRegisterTime(localDateTime);
+        Date date = StringUtil.StrToDate(time);
+        dto.setRegisterTime(date);
         String contractTime = query.getContractTime();
         LocalDateTime localDateTime1 = StringUtil.strToLocalDateTime(contractTime);
         dto.setContractTime(localDateTime1);
