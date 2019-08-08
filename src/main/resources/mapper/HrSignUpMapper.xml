@@ -326,18 +326,7 @@
             and user_id = #{userId}
         </if>
     </update>
-    <update id="cancelRegistration">
-        update hr_signup
-        <set>
-            delete_flag = 1
-            <where>
-                <if test="null != signUpId">
-                    id = #{signUpId}
-                </if>
-            </where>
-        </set>
 
-    </update>
 
     <update id="invitationToRegister">
         update hr_signup_deliveryrecord sd, hr_signup si
@@ -837,7 +826,10 @@
         </where>
     </select>
     <select id="querySignUpStatus" resultMap="BaseResultMap">
-        select sd.job_status, sd.brief_chapter_id, si.user_name, sd.signup_id, sd.brief_chapter_id
+        select sd.job_status,
+        sd.brief_chapter_id,
+        si.user_name,
+        sd.signup_id
         from hr_signup si
         inner join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
         inner join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
@@ -1042,7 +1034,8 @@
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, si.registration_position_id)
-        and d.pId = 1) as Name
+        and d.pId = 1) as registrationPosition,
+        si.registration_position_id
         from hr_signup si
         left join hr_user u on si.user_id = u.Id
         <where>

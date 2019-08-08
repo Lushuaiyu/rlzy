@@ -1,10 +1,17 @@
 package com.nado.rlzy.controller;
 
 import cn.hutool.core.lang.Assert;
+import com.nado.rlzy.bean.model.ResultJson;
+import com.nado.rlzy.db.mapper.HrSignUpMapper;
+import com.nado.rlzy.db.pojo.HrSignUp;
+import com.nado.rlzy.platform.constants.RlzyConstant;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * @ClassName 模拟转账controller
@@ -16,28 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "account")
 public class TestAccountController {
-/*    @Autowired
-    private TestAccoun
-    tService service;
 
-    @RequestMapping("aaa")
-    @ResponseBody
-    public TestAccount getAccount() {
-        //查询账户
-        return service.getAccount();
-    }
-
-    @RequestMapping("add")
-    @ResponseBody
-    public Object addMoney() {
-        try {
-            service.addMoney();
-        } catch (Exception e) {
-            return "发生异常了：" + service.getAccount();
-        }
-        return getAccount();
-    }*/
-
+    @Autowired
+    private HrSignUpMapper signUpMapper;
 
     @RequestMapping(value = "index")
     public String index() {
@@ -51,5 +39,16 @@ public class TestAccountController {
         Assert.isFalse(StringUtils.isBlank(a), "asfdafdfdaf");
         return a;
 
+    }
+
+    @RequestMapping(value = "in")
+    @ResponseBody
+    public ResultJson in(Integer userId, Integer typeId){
+        List<HrSignUp> hrSignUps = signUpMapper.queryAll(userId, typeId);
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(hrSignUps);
+        return resultJson;
     }
 }

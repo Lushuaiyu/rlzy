@@ -185,10 +185,9 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     @Transactional(rollbackFor = Exception.class)
     public void editPersonData(EditPersonDataQuery query, String url) {
 
-        //修改用户表参数
+        //编辑资料
         editInformation(query, url);
-        //修改 报名表参数
-        editInformationSignUp(query);
+
 
 
     }
@@ -198,12 +197,13 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     public void editPersonDataRecommend(EditPersonDataQuery query) {
         HrUser user = new HrUser();
         user.setHeadImage(query.getUrl());
-        user.setRecommenderId(query.getRecommenderId());
+        user.setRecommenderId(query.getUserId());
         user.setPostIdStr(query.getPostIdStr());
         user.setRecommendNoLower(query.getRecommendNoLower());
         user.setRecommendNoUpper(query.getRecommendNoUpper());
         user.setRecommendInfo(query.getRecommendInfo());
         user.setPublicIs(query.getItIsPublic());
+        user.setAgreeHelp(query.getAgreePlatformHelp());
         Assert.isFalse(userMapper.editPersonData(user) < 1, RlzyConstant.OPS_FAILED_MSG);
 
     }
@@ -266,6 +266,16 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     private void editInformation(EditPersonDataQuery query, String url) {
         HrUser hrUser = new HrUser();
         hrUser.setHeadImage(url);
+        hrUser.setSex(query.getSex());
+        hrUser.setEducation(query.getEducation());
+        hrUser.setGraduationTime(query.getGraduationTime());
+        hrUser.setProfession(query.getProfession());
+        hrUser.setPostIdStr(query.getPostIdStr());
+        hrUser.setArrivalTime(query.getArrivalTime());
+        hrUser.setExpectedSalaryLower(query.getExpectedSalaryLower());
+        hrUser.setExpectedSalaryUpper(query.getExpectedSalaryUpper());
+        hrUser.setPublicIs(query.getItIsPublic());
+        hrUser.setAgreeHelp(query.getAgreePlatformHelp());
         Assert.isFalse(userMapper.editPersonData(hrUser) < 1, RlzyConstant.ADD_FAILED);
     }
 

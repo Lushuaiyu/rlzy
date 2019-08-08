@@ -2,10 +2,7 @@ package com.nado.rlzy.db.pojo;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
@@ -31,6 +28,7 @@ public class Collect {
     @Column(name = "sign_up_id")
     private Integer signUpId;
 
+    @Transient
     private Integer flag;
 }
 

@@ -29,20 +29,18 @@ public class ChatController {
 
     @RequestMapping(value = "attention")
     @ResponseBody
-    @ApiOperation(value = "求职端 关注 简章表", notes = "求职端 关注 简章表", httpMethod = "POST")
+    @ApiOperation(value = "求职端 关注|取消关注 简章表", notes = "求职端 关注|取消关注 简章表", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "入参", dataType = "AttentionQuery", required = true)
-    public CommonResult attention(AttentionQuery query){
-        int attention = service.attention(query);
-        return CommonResult.success(attention, RlzyConstant.OPS_SUCCESS_MSG);
-    }
-
-    @RequestMapping(value = "updateAttention")
-    @ResponseBody
-    @ApiOperation(value = "招聘端和求职端 聊天里的取消关注", notes = "招聘端和求职端 聊天里的取消关注", httpMethod = "POST")
-    @ApiImplicitParam(value = "query", name = "入参", dataType = "AttentionQuery", required = true)
-    public CommonResult updateAttention(AttentionQuery query) {
-        int attention = service.updateAttention(query);
-        return CommonResult.success(attention, RlzyConstant.OPS_SUCCESS_MSG);
-
+    public CommonResult attention(AttentionQuery query) {
+        //已关注
+        if (query.getStatus().equals(1)) {
+            int attention = service.attention(query);
+            return CommonResult.success(attention, RlzyConstant.OPS_SUCCESS_MSG);
+        }
+        if (query.getStatus().equals(2)) {
+            int attention = service.updateAttention(query);
+            return CommonResult.success(attention, RlzyConstant.OPS_SUCCESS_MSG);
+        }
+        return null;
     }
 }

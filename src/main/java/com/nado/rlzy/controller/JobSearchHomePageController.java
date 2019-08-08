@@ -23,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,8 +60,8 @@ public class JobSearchHomePageController extends BaseController {
     @ApiOperation(notes = "招聘简章查询接口 全部职位", value = "招聘简章查询接口 全部职位", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(name = "typeId", value = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(name = "postId", value = "招聘岗位", dataType = "integer", required = true),
+            @ApiImplicitParam(name = "type", value = "1 本人 2 推荐人", dataType = "integer", required = true),
+            @ApiImplicitParam(name = "postName", value = "招聘岗位", dataType = "integer", required = true),
             @ApiImplicitParam(name = "recruitedCompany", value = "公司名字", dataType = "string", required = true)
 
     })
@@ -92,11 +91,14 @@ public class JobSearchHomePageController extends BaseController {
      **/
     @RequestMapping(value = "queryBriefcharpterDetileByParams")
     @ResponseBody
-    @ApiOperation(notes = "查询招聘简章详情", value = "查询招聘简章详情", httpMethod = "POST")
+    @ApiOperation(notes = "求职端 首页 -- 查询招聘简章详情", value = "求职端 首页 -- 查询招聘简章详情", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "type", name = "登陆者身份 1 本人 2 推荐人", dataType = "int", required = true),
             @ApiImplicitParam(value = "sex", name = "1 男 2 女", dataType = "int", required = true),
-            @ApiImplicitParam(value = "query", name = "其余参数见文档", dataType = "int", required = true)
+            @ApiImplicitParam(value = "query", name = "其余参数见文档", dataType = "int", required = true),
+            @ApiImplicitParam(value = "id", name = "简章id", dataType = "int", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true)
+
     })
     public ResultJson queryBriefcharpterDetileByParams(BriefcharpterQuery query) {
         List<HrBriefchapter> list = service.queryBriefcharpterDetileByParams(query);
@@ -114,6 +116,7 @@ public class JobSearchHomePageController extends BaseController {
 
     /**
      * 长白班按返费高低排
+     *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
@@ -219,7 +222,7 @@ public class JobSearchHomePageController extends BaseController {
     }
 
     /**
-     * 工资排行榜 代招单位
+     * 工资排行榜
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
@@ -272,7 +275,7 @@ public class JobSearchHomePageController extends BaseController {
     }
 
     /**
-     * 直接录取 代招单位
+     * 直接录取
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
@@ -282,7 +285,7 @@ public class JobSearchHomePageController extends BaseController {
      **/
     @RequestMapping(value = "directAdmission")
     @ResponseBody
-    @ApiOperation(notes = "直接录取 代招单位", value = "直接录取 代招单位", httpMethod = "POST")
+    @ApiOperation(notes = "直接录取", value = "直接录取", httpMethod = "POST")
     @ApiImplicitParam(name = "query", value = "入参", dataType = "BriefcharpterQuery", required = true)
     public ResultJson directAdmission(BriefcharpterQuery query) {
         List<HrBriefchapter> list = service.directAdmission(query);
@@ -308,62 +311,10 @@ public class JobSearchHomePageController extends BaseController {
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(groups);
         return result;
-
     }
 
     /**
-     * 查询报名者的名字
-     *
-     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrSignUp>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 14:42 2019/7/11
-     * @Param []
-     **/
-    @RequestMapping("querySignUpUserName")
-    @ResponseBody
-    @ApiOperation(notes = "查询报名者的名字", value = "查询报名者的名字", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "type", name = "登录用户的身份", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
-    })
-    public Result<HrSignUp> querySignUpUserName(Integer type, Integer userId) {
-        List<HrSignUp> ups = service.querySignUpUserName(type, userId);
-        Result<HrSignUp> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(ups);
-        return result;
-
-
-    }
-
-    /**
-     * 根据报名者的名字查求职状态
-     *
-     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrSignUp>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 15:22 2019/7/11
-     * @Param [jobUserName]
-     **/
-    @RequestMapping("querySignUpStatus")
-    @ResponseBody
-    @ApiOperation(notes = "根据报名者的名字查求职状态", value = "根据报名者的名字查求职状态", httpMethod = "POST")
-    @ApiImplicitParam(value = "jobUserName", name = "求职状态", dataType = "integer", required = true)
-
-    public Result<HrSignUp> querySignUpStatus(String jobUserName) {
-        List<HrSignUp> hrSignUps = service.querySignUpStatus(jobUserName);
-        Result<HrSignUp> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(hrSignUps);
-        return result;
-
-    }
-
-    /**
-     * 1待面试 7已面试 进入到待面试的状态
+     * 求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 7已面试 是进入到待面试阶段
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
@@ -373,10 +324,14 @@ public class JobSearchHomePageController extends BaseController {
      **/
     @RequestMapping(value = "queryBriefchapterBySignUpStatus")
     @ResponseBody
-    @ApiOperation(value = "根据求职状态查询简章 1待面试 7已面试 进入到待面试的状态", notes = "根据求职状态查询简章 1待面试 7已面试 进入到待面试的状态", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpStatus", name = "求职状态", dataType = "Integer", required = true)
-    public ResultJson queryBriefchapterBySignUpStatus(Integer signUpStatus) {
-        Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(signUpStatus);
+    @ApiOperation(value = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 7已面试 是进入到待面试阶段",
+            notes = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 7已面试 是进入到待面试阶段", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "type", name = "登录者身份", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
+    })
+    public ResultJson queryBriefchapterBySignUpStatus(Integer type, Integer userId) {
+        Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(type, userId);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
@@ -384,40 +339,35 @@ public class JobSearchHomePageController extends BaseController {
         return resultJson;
     }
 
-    /**
-     * 取消报名
-     *
-     * @return com.nado.rlzy.bean.model.ResultInfo
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 9:56 2019/7/12
-     * @Param [signUpId]
-     **/
-    @RequestMapping(value = "cancelRegistration")
-    @ResponseBody
-    @ApiOperation(value = "取消报名", notes = "取消报名", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名表主键id", dataType = "Integer", required = true)
-    public ResultInfo cancelRegistration(Integer signUpId) {
-        service.cancelRegistration(signUpId);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
-
-    }
 
     @RequestMapping(value = "IWantToSignUp")
     @ResponseBody
-    @ApiOperation(value = "我要报名 身份是本人, 返回1 报名成功", notes = "我要报名 身份是本人, 返回1 报名成功", httpMethod = "POST")
+    @ApiOperation(value = "我要报名 | 推荐人报名", notes = "我要报名 | 推荐人报名", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "Integer", required = true)
+            @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "signupId", name = "报名id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "1 我要报名 2 推荐人报名", dataType = "Integer", required = true),
     })
 
-    public CommonResult IWantToSignUp(Integer userId, Integer briefChapterId) {
-        int count = service.IWantToSignUp(userId, briefChapterId);
-
-
-        return CommonResult.success(count);
-
-
+    public ResultJson IWantToSignUp(HrSignupDeliveryrecord deliveryrecord) {
+        ResultJson resultJson = new ResultJson();
+        if (deliveryrecord.getType().equals(1)) {
+            //我要报名 本人
+            int count = service.IWantToSignUp(deliveryrecord);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+            return resultJson;
+        }
+        if (deliveryrecord.getType().equals(2)) {
+            //推荐人给被推荐人报名
+            int count = service.referrerToSIgnUp(deliveryrecord);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+            return resultJson;
+        }
+        return null;
     }
 
     /**
@@ -477,7 +427,6 @@ public class JobSearchHomePageController extends BaseController {
         service.addSignUpTable(signUp);
         return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
     }
-
     /**
      * 添加自定义分组
      *
@@ -490,14 +439,18 @@ public class JobSearchHomePageController extends BaseController {
     @RequestMapping(value = "insertSelective")
     @ResponseBody
     @ApiOperation(notes = "添加自定义分组", value = "添加自定义分组", httpMethod = "POST")
-    @ApiImplicitParam(value = "groupName", name = "分组名称", dataType = "string", required = true)
-    public ResultInfo insertSelective(MySignUpTable record) {
-        service.insertSelective(record);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
-
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "groupName", name = "分组名称", dataType = "string", required = true),
+            @ApiImplicitParam(value = "userId", name = "推荐人id", dataType = "string", required = true),
+    })
+    public ResultJson insertSelective(MySignUpTable record) {
+        int i = service.insertSelective(record);
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(i);
+        return resultJson;
     }
-
-
     /**
      * 添加投诉 求职端 首页 投诉 添加投诉
      *
@@ -518,8 +471,8 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(value = "evidence", name = "投诉凭证", dataType = "string", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
     })
-    public ResultJson addComplaint(ComplaintQuery query, MultipartFile file) {
-        String head = centerService.updateHead(file);
+    public ResultJson addComplaint(ComplaintQuery query) {
+        String head = centerService.updateHead(query.getFile());
         int complaint = service.addComplaint(query, head);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
@@ -562,15 +515,15 @@ public class JobSearchHomePageController extends BaseController {
 
     @RequestMapping(value = "searchGroupingInformation")
     @ResponseBody
-    @ApiOperation(notes = "查询我的求职表分组", value = "查询我的求职表分组", httpMethod = "POST")
-    public Result<MySignUpTable> searchGroupingInformation() {
-        List<MySignUpTable> tables = service.searchGroupingInformation();
-        Result<MySignUpTable> result = new Result<>();
+    @ApiOperation(notes = "查询我的求职表分组 推荐人身份才能添加分组", value = "查询我的求职表分组 推荐人身份才能添加分组", httpMethod = "POST")
+    @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true)
+    public ResultJson searchGroupingInformation(Integer userId) {
+        Map<String, Object> tables = service.searchGroupingInformation(userId);
+        ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(tables);
         return result;
-
     }
 
     @RequestMapping(value = "grouper")

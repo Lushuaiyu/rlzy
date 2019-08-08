@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -67,6 +68,8 @@ public class ComplaintQuery {
 
     @ApiModelProperty(value = "求职表主键id")
     private Integer signUpId;
+
+    private MultipartFile file;
 
 
 }

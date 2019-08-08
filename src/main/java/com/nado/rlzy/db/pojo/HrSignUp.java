@@ -42,9 +42,11 @@ public class HrSignUp {
     private String signUpName;
 
     @Transient
+    private Integer mySignUpTableId;
+
+    @Transient
     @ApiModelProperty(value = "登录账号的用户名")
     private String userName;
-
 
 
     @ApiModelProperty(value = "0:女  1:男")
@@ -90,16 +92,22 @@ public class HrSignUp {
     private Integer jobStatus;
 
 
+
+
     @ApiModelProperty(value = "身份类型id")
     @Transient
     private Integer typeId;
 
     @ApiModelProperty(value = "0不合适 1未面试 2未报道 3面试未通过")
-    @Transient    private Integer noPassReason;
+    @Transient
+    private Integer noPassReason;
 
     @ApiModelProperty(value = "0:未删除  1:已删除")
     @Column(name = "delete_flag")
     private Byte deleteFlag;
+
+    @Transient
+    private String registrationPosition;
 
     @ApiModelProperty(value = "报名岗位id")
     @Column(name = "registration_position_id")
@@ -182,7 +190,8 @@ public class HrSignUp {
     private Integer reportTimeFlag;
 
     @ApiModelProperty(value = "未报到原因")
-    @Transient    private Integer noReportReason;
+    @Transient
+    private Integer noReportReason;
 
     @ApiModelProperty(value = "报名时间")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -192,8 +201,6 @@ public class HrSignUp {
 
     @Transient
     private List<HrBriefchapter> chapter;
-
-
 
 
 }

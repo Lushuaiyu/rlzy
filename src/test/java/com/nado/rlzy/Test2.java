@@ -16,10 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -57,6 +54,12 @@ public class Test2 extends BaseTest {
 
     @Autowired
     private HrComplaintMapper complaintMapper;
+
+    @Autowired
+    private HrSignupDeliveryrecordMapper deliveryrecordMapper;
+
+    @Autowired
+    private MySignUpTableMapper tableMapper;
 
     @Test
     public void test1() {
@@ -252,4 +255,18 @@ public class Test2 extends BaseTest {
                 }).collect(Collectors.toList());
     }
 
+    @Test
+    public void test18(){
+       String a = "0-40";
+       String aa = "0-40";
+        if (a.compareTo(aa) == 0) {
+            System.out.println("aa");
+        }
+    }
+
+    @Test
+    public void test19(){
+        List<MySignUpTable> mySignUpTables = tableMapper.searchGroupingdefault();
+        System.out.println(mySignUpTables);
+    }
 }

@@ -123,7 +123,7 @@ public class StringUtil {
      **/
     public static Date StrToDate(String str) {
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
             date = format.parse(str);

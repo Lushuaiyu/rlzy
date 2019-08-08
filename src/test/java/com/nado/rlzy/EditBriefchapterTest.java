@@ -8,6 +8,7 @@ import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.utils.CollectorsUtil;
+import com.nado.rlzy.utils.StringUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -49,8 +50,15 @@ public class EditBriefchapterTest extends BaseTest {
                                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     //对返佣金额进行 foreach 操作, set到返回的结果集里
                     map.forEach((k, v) -> {
-                        m.setRebateRecord(v);
-                    });
+                        BigDecimal mm = v;
+                        double v1 = mm.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            m.setRebateRecord(s);
+                        }else {
+                            m.setRebateRecord("无返佣");
+                        }                    });
                     System.out.println(m.getRebateRecord());
                     return m;
                 })

@@ -54,15 +54,20 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "招聘人数")
     private Integer recruitingNo;
+    private String no;
 
     @ApiModelProperty(value = "综合工资")
     private BigDecimal avgSalary;
 
+    private String avgSalary1;
+
     @ApiModelProperty(value = "结算工资")
     private BigDecimal detailSalary;
 
+    private String detailSalry1;
+
     @ApiModelProperty(value = "结算工资方式")
-    private Integer detailSalaryWay;
+    private String detailSalaryWay;
 
     @ApiModelProperty(value = "学历")
     private String educationId;
@@ -157,9 +162,12 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "男员工年龄段")
     private String manAge;
+    private String manAge1;
 
     @ApiModelProperty(value = "女员工年龄段")
     private String womenAge;
+
+    private String womenAge1;
 
     @ApiModelProperty(value = "工作方式")
     private String workWayId;
@@ -176,8 +184,12 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "求职表id")
     private Integer signUpId;
 
+    private String overtimeTime1;
+
     @ApiModelProperty(value = "加班时长")
     private Integer overtimeTimeId;
+
+
 
     @ApiModelProperty(value = "着装要求")
     private Integer clothingReguirementId;
@@ -202,9 +214,11 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "男人招聘数量")
     private Integer manNum;
+    private String manNum1;
 
     @ApiModelProperty(value = "女人招聘数量")
     private Integer womenNum;
+    private String womenNum1;
 
 
     @ApiModelProperty(value = "专业id")
@@ -223,7 +237,7 @@ public class HrBriefchapter {
     private Integer groupId;
 
     @ApiModelProperty(value = "返佣的钱")
-    private BigDecimal rebateRecord;
+    private String rebateRecord;
 
 
     @ApiModelProperty(value = "报名未通过原因")

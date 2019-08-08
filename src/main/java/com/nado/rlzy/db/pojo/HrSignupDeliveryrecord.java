@@ -2,10 +2,7 @@ package com.nado.rlzy.db.pojo;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 @Data
 @Table(name = "hr_signup_deliveryrecord")
@@ -58,6 +55,9 @@ public class HrSignupDeliveryrecord {
      */
     @Column(name = "delete_flag")
     private Integer deleteFlag;
+
+    @Transient
+    private Integer type;
 
 
 }

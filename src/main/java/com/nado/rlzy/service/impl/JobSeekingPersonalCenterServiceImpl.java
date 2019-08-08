@@ -7,6 +7,7 @@ import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
 import com.nado.rlzy.utils.CollectorsUtil;
+import com.nado.rlzy.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,8 +42,15 @@ public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCe
                             .stream()
                             .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     map.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
-                    });
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        }else {
+                            dto.setRebateRecord("无返佣");
+                        }                    });
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -58,8 +66,15 @@ public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCe
                             .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     map.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
-                    });
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        }else {
+                            dto.setRebateRecord("无返佣");
+                        }                    });
                     return dto;
                 }).collect(Collectors.toList());
 

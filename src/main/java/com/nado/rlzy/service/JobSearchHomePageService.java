@@ -51,18 +51,6 @@ public interface JobSearchHomePageService {
     List<HrBriefchapter> queryBriefcharpterByParams(BriefcharpterQuery query);
 
     /**
-     * 求职端 首页 报名表 查询报名者的名字
-     *
-     * @param type   求职端身份
-     * @param userId 登录用户 id
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 14:38 2019/7/11
-     **/
-    List<HrSignUp> querySignUpUserName(Integer type, Integer userId);
-
-    /**
      * 查询招聘简章详情 代招单位
      * @Author lushuaiyu
      * @Description //TODO
@@ -225,53 +213,41 @@ public interface JobSearchHomePageService {
      **/
     List<HrBriefchapter> salaryLeaderboardRecruitment(BriefcharpterQuery query);
 
-    /**
-     * 求职端 首页 我的工作 根据求职者的名字查询求职状态
-     *
-     * @param jobUserName 求职者姓名
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 15:19 2019/7/11
-     **/
-    List<HrSignUp> querySignUpStatus(String jobUserName);
+
 
 
     /**
-     *  求职端 首页 我的工作 根据求职状态查询简章
+     *  求职端 首页 我的工作 根据求职状态和求职者名字查询简章
      *
-     * @param signUpStatus 求职状态
+     * @param type 登录用户的身份
+     * @param userId 用户id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:40 2019/7/11
      **/
-    Map<Object, Object> queryBriefchapterBySignUpStatus(Integer signUpStatus);
+    Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId);
 
-
-    /**
-     *  求职端 首页 我的工作  取消报名
-     *
-     * @param signUpId 报名id
-     * @return void
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 9:37 2019/7/12
-     **/
-    void cancelRegistration(Integer signUpId);
 
 
     /**
      * 求职端 首页 简章详情 我要报名 身份是本人
-     *
-     * @param userId         用户 id
-     * @param briefChapterId 简章id
      * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:08 2019/7/14
      **/
-    int IWantToSignUp(Integer userId, Integer briefChapterId);
+    int IWantToSignUp(HrSignupDeliveryrecord deliveryrecord);
+
+    /**
+     * 推荐人给被推荐人报名
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:26 2019/8/7
+     * @Param [entites]
+     * @return int
+     **/
+    int referrerToSIgnUp(HrSignupDeliveryrecord deliveryrecord);
 
     /**
      *  添加收藏 和取消收藏
@@ -303,7 +279,7 @@ public interface JobSearchHomePageService {
      * @Param [record, signUpId]
      * @return void
      **/
-    void insertSelective(MySignUpTable record);
+    int insertSelective(MySignUpTable record);
 
 
 
@@ -349,14 +325,14 @@ public interface JobSearchHomePageService {
 
 
     /**
-     * 查询我的求职表分组信息
+     * 查询我的求职表分组 推荐人身份才能添加分组
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:36 2019/7/22
      * @Param []
      * @return java.util.List<com.nado.rlzy.db.pojo.MySignUpTable>
      **/
-    List<MySignUpTable> searchGroupingInformation();
+    Map<String, Object> searchGroupingInformation(Integer userId);
 
     /**
      * 查询 每一个分组的求职者

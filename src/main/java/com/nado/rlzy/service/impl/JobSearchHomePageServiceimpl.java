@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.IdcardUtil;
 import com.nado.rlzy.bean.dto.ComplaintDto;
 import com.nado.rlzy.bean.dto.ComplaintPage;
+import com.nado.rlzy.bean.frontEnd.BriefcharpterFront;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.ComplaintQuery;
 import com.nado.rlzy.db.mapper.*;
@@ -69,6 +70,9 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     @Autowired
     private HrDictionaryItemMapper dictionaryItemMapper;
 
+    @Autowired
+    private MySignUpTableSignUpMapper tableSignUpMapper;
+
     @Override
     public List<HrGroup> coHomePage(Integer groupId) {
         List<HrGroup> list = groupMapper.coHomePage(groupId);
@@ -82,6 +86,17 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
         //返回结果集
         return dtos.stream().map(dto -> {
+            Integer no = dto.getRecruitingNo();
+            dto.setNo(String.valueOf(no + "人"));
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
 
             if (query.getType().equals(1)) {
                 // 身份是本人
@@ -106,7 +121,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                             list.stream()
                                     .forEach(s -> {
                                         if (postName.equals(s)) {
-                                            dto.setPostId(dto.getPostId());
+                                            dto.setPostName(dto.getPostName());
                                         }
                                     });
                             return va;
@@ -129,7 +144,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                             list.stream()
                                     .forEach(s -> {
                                         if (postName.equals(s)) {
-                                            dto.setPostId(dto.getPostId());
+                                            dto.setPostName(dto.getPostName());
                                         }
                                     });
                             return v;
@@ -141,7 +156,15 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
 
             });
             return dto;
@@ -157,20 +180,26 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
         //返回结果集
         return dtos.stream().map(dto -> {
-
+            Integer no = dto.getRecruitingNo();
+            dto.setNo(String.valueOf(no + "人"));
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
             if (query.getType().equals(1)) {
                 // 身份是本人
-                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
+                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), query.getType());
                 //遍历
                 sign.stream()
                         .map(va -> {
                             //本人意向岗位
                             String postName = dto.getPostName();
-                           /* Integer sex = dto.getSex();
-                            Integer manAgeId = dto.getManAgeId();
-                            Integer womenAgeId = dto.getWomenAgeId();
-                            //到岗时间
-                            LocalDateTime registerTime = dto.getRegisterTime();*/
+
                             String registrationPositionId = va.getRegistrationPositionId();
                             //逗号分割的 string 转 int array
                             int[] ints = Arrays.stream(registrationPositionId.split(",")).mapToInt(str -> Integer.parseInt(str)).toArray();
@@ -179,7 +208,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                             list.stream()
                                     .forEach(s -> {
                                         if (postName.equals(s)) {
-                                            dto.setPostId(dto.getPostId());
+                                            dto.setPostName(dto.getPostName());
                                         }
                                     });
                             return va;
@@ -214,7 +243,15 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
         }).collect(Collectors.toList());
@@ -224,9 +261,28 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     public List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query) {
         List<HrBriefchapter> val = mapper.queryBriefcharpterDetileByParams(query);
         return val.stream().map(dto -> {
+            Integer manNum1 = dto.getManNum();
+            dto.setManNum1(manNum1 + "人");
+            Integer womenNum1 = dto.getWomenNum();
+            dto.setWomenNum1(womenNum1 + "人");
+            String manAge2 = dto.getManAge();
+            String womenAge2 = dto.getWomenAge();
+            dto.setManAge1(manAge2 + "岁");
+            dto.setWomenAge1(womenAge2 + "岁");
+            Integer overtimeTime = dto.getOvertimeTimeId();
+            if (overtimeTime == 1) {
+                dto.setOvertimeTime1("较少");
+            } else if (overtimeTime == 2) {
+                dto.setOvertimeTime1("多");
+            } else if (overtimeTime == 3) {
+                dto.setOvertimeTime1("较多");
+            } else {
+                System.out.println("====");
+            }
+
             if (query.getType().equals(1)) {
                 // 身份是本人
-                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
+                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 2);
                 //遍历
                 sign.stream()
                         .map(va -> {
@@ -320,7 +376,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                                 if (ex.size() == 2) {
                                     experienceStart = ex.get(0);
                                     experienceEnd = ex.get(1);
-                                    if (exTime.compareTo(experienceStart) > 0 && exTime.compareTo(experienceEnd) <= 0){
+                                    if (exTime.compareTo(experienceStart) > 0 && exTime.compareTo(experienceEnd) <= 0) {
 
                                     }
                                 }
@@ -335,7 +391,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                                 if (manAge1.size() == 1) {
                                     manAgeStart = manAge1.get(0);
                                     if (age >= manAgeStart) {
-                                        dto.setManAge(String.valueOf(manAgeStart) + "以上");
+                                        dto.setManAge(manAgeStart + "以上");
                                     }
                                 }
                                 if (manAge1.size() == 2) {
@@ -416,7 +472,16 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
+
 
             });
 
@@ -429,6 +494,24 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     public List<HrBriefchapter> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query) {
         List<HrBriefchapter> val = mapper.queryBriefcharpterDetileRecruitment(query);
         return val.stream().map(dto -> {
+            Integer manNum1 = dto.getManNum();
+            dto.setManNum1(manNum1 + "人");
+            Integer womenNum1 = dto.getWomenNum();
+            dto.setWomenNum1(womenNum1 + "人");
+            String manAge2 = dto.getManAge();
+            String womenAge2 = dto.getWomenAge();
+            dto.setManAge1(manAge2 + "岁");
+            dto.setWomenAge1(womenAge2 + "岁");
+            Integer overtimeTime = dto.getOvertimeTimeId();
+            if (overtimeTime == 1) {
+                dto.setOvertimeTime1("较少");
+            } else if (overtimeTime == 2) {
+                dto.setOvertimeTime1("多");
+            } else if (overtimeTime == 3) {
+                dto.setOvertimeTime1("较多");
+            } else {
+                System.out.println("====");
+            }
             if (query.getType().equals(1)) {
                 // 身份是本人
                 List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
@@ -621,7 +704,15 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
 
             });
 
@@ -633,26 +724,71 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     @Override
     public List<HrBriefchapter> queryBriefcharpterByLongLiveRecruitment(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.queryBriefcharpterByLongLiveRecruitment(query);
+        BriefcharpterFront front = new BriefcharpterFront();
         return list.stream()
                 .map(dto -> {
-                    dto.getRebat()
+                    Integer no = dto.getRecruitingNo();
+                    dto.setNo(String.valueOf(no + "人"));
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+                    Map<Integer, BigDecimal> collect = dto.getRebat()
                             .stream()
                             .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    collect.forEach((k, v) -> {
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
+                    });
                     return dto;
                 })
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public List<HrBriefchapter> queryBriefcharpterByLongLive(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.queryBriefcharpterByLongLive(query);
+
         return list.stream().map(dto -> {
+            Integer no = dto.getRecruitingNo();
+            dto.setNo(String.valueOf(no + "人"));
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
         }).collect(Collectors.toList());
@@ -664,12 +800,31 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         return mapper.queryBriefcharpterByLongEatRecruitment(query)
                 .stream()
                 .map(dto -> {
+                    Integer no = dto.getRecruitingNo();
+                    dto.setNo(String.valueOf(no + "人"));
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
                     Map<Integer, BigDecimal> map = dto.getRebat()
                             .stream()
                             .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     map.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
                     });
                     return dto;
                 })
@@ -680,11 +835,30 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     public List<HrBriefchapter> queryBriefcharpterByLongEat(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.queryBriefcharpterByLongEat(query);
         return list.stream().map(dto -> {
+            Integer no = dto.getRecruitingNo();
+            dto.setNo(String.valueOf(no + "人"));
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
         }).collect(Collectors.toList());
@@ -695,10 +869,29 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         List<HrBriefchapter> list = mapper.recommendedFeeTop10Recruitment(query);
         return list.stream()
                 .map(dto -> {
+                    Integer no = dto.getRecruitingNo();
+                    dto.setNo(String.valueOf(no + "人"));
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
                     Map<Integer, BigDecimal> map = dto.getRebat().stream()
                             .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     map.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
                     });
                     return dto;
                 }).collect(Collectors.toList());
@@ -710,13 +903,32 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         return list
                 .stream()
                 .map(dto -> {
+                    Integer no = dto.getRecruitingNo();
+                    dto.setNo(String.valueOf(no + "人"));
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
                     Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                             CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
 
 
                     //对返佣金额进行 foreach 操作, set到返回的结果集里
                     map.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
                     });
                     return dto;
                 }).collect(Collectors.toList());
@@ -727,10 +939,29 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         List<HrBriefchapter> list = mapper.studentDivisionRecruitment(query);
         return list.stream()
                 .map(dto -> {
+                    Integer no = dto.getRecruitingNo();
+                    dto.setNo(String.valueOf(no + "人"));
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
                     Map<Integer, BigDecimal> map = dto.getRebat()
                             .stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     map.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
                     });
                     return dto;
                 })
@@ -741,14 +972,32 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     public List<HrBriefchapter> studentDivision(BriefcharpterQuery query) {
         List<HrBriefchapter> vals = mapper.studentDivision(query);
         return vals.stream().map(dto -> {
+            Integer no = dto.getRecruitingNo();
+            dto.setNo(String.valueOf(no + "人"));
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             //System.out.println(map);
 
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
-
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
 
@@ -761,12 +1010,31 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         return list
                 .stream()
                 .map(dto -> {
+                    Integer no = dto.getRecruitingNo();
+                    dto.setNo(String.valueOf(no + "人"));
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
                     Map<Integer, BigDecimal> map = dto.getRebat()
                             .stream()
                             .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     map.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
                     });
                     return dto;
                 })
@@ -777,13 +1045,31 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     public List<HrBriefchapter> salaryLeaderboard(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.salaryLeaderboard(query);
         return list.stream().map(dto -> {
+            Integer no = dto.getRecruitingNo();
+            dto.setNo(String.valueOf(no + "人"));
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
 
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
-
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
         }).collect(Collectors.toList());
@@ -795,11 +1081,30 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         List<HrBriefchapter> list = mapper.directBusinessRecruitment(query);
         return list.stream()
                 .map(dto -> {
+                    Integer no = dto.getRecruitingNo();
+                    dto.setNo(String.valueOf(no + "人"));
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
                     Map<Integer, BigDecimal> collect = dto.getRebat()
                             .stream()
                             .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     collect.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
                     });
                     return dto;
                 })
@@ -810,14 +1115,32 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     public List<HrBriefchapter> directBusiness(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.directBusiness(query);
         return list.stream().map(dto -> {
+            Integer no = dto.getRecruitingNo();
+            dto.setNo(String.valueOf(no + "人"));
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             System.out.println(map);
 
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
-
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
 
@@ -829,14 +1152,32 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     public List<HrBriefchapter> directAdmissionRecruitment(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.directAdmissionRecruitment(query);
         return list.stream().map(dto -> {
+            Integer no = dto.getRecruitingNo();
+            dto.setNo(String.valueOf(no + "人"));
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             System.out.println(map);
 
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
-
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
         }).collect(Collectors.toList());
@@ -845,36 +1186,60 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     @Override
     public List<HrBriefchapter> directAdmission(BriefcharpterQuery query) {
         return mapper.directAdmission(query).stream().map(dto -> {
+            Integer no = dto.getRecruitingNo();
+            dto.setNo(String.valueOf(no + "人"));
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             System.out.println(map);
 
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
-
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
         }).collect(Collectors.toList());
     }
 
-    @Override
-    public List<HrSignUp> querySignUpUserName(Integer type, Integer userId) {
 
+    @Override
+    public Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId) {
+        //查求职者名字
         List<HrSignUp> hrSignUps = signUpMapper.querySignUpUserName(type, userId);
-        return hrSignUps.stream().collect(Collectors.toList());
-    }
+        final String[] userName = {""};
+        hrSignUps.stream().map(dto -> {
+            userName[0] = dto.getUserName();
+            return dto;
+        }).collect(Collectors.toList());
 
-    @Override
-    public List<HrSignUp> querySignUpStatus(String jobUserName) {
-        List<HrSignUp> signUps = signUpMapper.querySignUpStatus(jobUserName);
-        return signUps.stream().collect(Collectors.toList());
-    }
-
-    @Override
-    public Map<Object, Object> queryBriefchapterBySignUpStatus(Integer signUpStatus) {
-        List<HrBriefchapter> list = mapper.queryBriefchapterBySignUpStatus(signUpStatus);
-        List<HrBriefchapter> hrBriefchapters = mapper.queryBriefchapterBySignUpstatusRecruitment(signUpStatus);
+        //查求职状态
+        List<HrSignUp> signUps = signUpMapper.querySignUpStatus(userName[0]);
+        List<HrSignUp> collect1 = signUps.stream().collect(Collectors.toList());
+        final Integer[] status = {null};
+        collect1.stream().map(dto -> {
+            status[0] = dto.getJobStatus();
+            return dto;
+        }).collect(Collectors.toList());
+        //查简章 代招单位
+        List<HrBriefchapter> list = mapper.queryBriefchapterBySignUpStatus(status[0]);
+        //招聘单位
+        List<HrBriefchapter> hrBriefchapters = mapper.queryBriefchapterBySignUpstatusRecruitment(status[0]);
         //TODO
         List<HrBriefchapter> collect = list.stream().map(dto -> {
             Map<Integer, BigDecimal> map = dto.getRebat().stream().map(r -> {
@@ -890,8 +1255,15 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
-
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
         }).collect(Collectors.toList());
@@ -911,12 +1283,22 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                             }).collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     map.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
                     });
                     return dto;
                 })
                 .collect(Collectors.toList());
         HashMap<Object, Object> map = new HashMap<>();
+        map.put("querySignUpUserName", hrSignUps);
+        map.put("querySignUpStatus", signUps);
         map.put("queryBriefchapterBySignUpStatus", collect);
         map.put("queryBriefchapterBySignUpstatusRecruitment", list1);
         return map;
@@ -926,29 +1308,47 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void cancelRegistration(Integer signUpId) {
-        Assert.isFalse(signUpMapper.cancelRegistration(signUpId) < 1, RlzyConstant.OPS_FAILED_MSG);
-
+    public int IWantToSignUp(HrSignupDeliveryrecord deliveryrecord) {
+        HrSignupDeliveryrecord deliveryrecord1 = new HrSignupDeliveryrecord();
+        deliveryrecord1.setSignupId(deliveryrecord.getSignupId());
+        deliveryrecord1.setBriefChapterId(deliveryrecord.getBriefChapterId());
+        deliveryrecord1.setJobStatus(deliveryrecord.getJobStatus());
+        deliveryrecord1.setCreateTime(LocalDateTime.now());
+        return signupDeliveryrecordMapper.insertSelective(deliveryrecord1);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public int IWantToSignUp(Integer userId, Integer briefChapterId) {
-        HrSignUp signUp = new HrSignUp();
-        signUp.setBriefChapterId(briefChapterId);
-        return signupDeliveryrecordMapper.IWantToSignUp(userId, briefChapterId);
+    public int referrerToSIgnUp(HrSignupDeliveryrecord deliveryrecord) {
+
+        List<HrSignupDeliveryrecord> deliveryrecords = new ArrayList<>();
+
+        deliveryrecords.stream()
+                .map(dto -> {
+                    dto.setSignupId(deliveryrecord.getSignupId());
+                    dto.setBriefChapterId(deliveryrecord.getBriefChapterId());
+                    dto.setJobStatus(0);
+                    dto.setCreateTime(LocalDateTime.now());
+                    deliveryrecords.add(dto);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        Assert.isFalse(signupDeliveryrecordMapper.referrerToSIgnUp(deliveryrecords) < 1, RlzyConstant.OPS_FAILED_MSG);
+        return 1;
     }
+
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void addCancelBriefchapter(Collect collect) {
         Collect co = new Collect();
         if (collect.getFlag().equals(0)) {
+            //添加收藏
             co.setUserId(collect.getUserId());
             co.setBriefchapterId(collect.getBriefchapterId());
             co.setCreateTime(new Date());
             Assert.isTrue(collectMapper.addBriefchapter(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
         } else if (collect.getFlag().equals(1)) {
+            //取消收藏
             co.setDeleteFlag(1);
             Assert.isTrue(collectMapper.updateByPrimaryKeySelective(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
         }
@@ -966,27 +1366,28 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                 query.getProfession(), query.getRegistrationPositionId(), query.getArrivalTime(), query.getExpectedSalaryLower(),
                 query.getExpectedSalaryUpper(),
                 query.getRelation(), query.getItIsPublic(), query.getAgreePlatformHelp(), query.getUserId(), query.getIdCard());
-        //初始化参数
+        //初始化报名表参数
         Integer userId = initSignUp(query.getUserName(), query.getSex(), query.getEducation(), query.getGraduationTime(),
                 query.getProfession(), query.getRegistrationPositionId(), query.getArrivalTime(), query.getExpectedSalaryLower(),
                 query.getExpectedSalaryUpper(),
                 query.getRelation(), query.getItIsPublic(), query.getAgreePlatformHelp(), query.getUserId(), query.getIdCard());
 
-        if (query.getTypeId().equals(1)) {
+        //初始化报名表投递记录表参数
+        initSignUpDeliveryrecord(up, userId);
+        Assert.isFalse(signUpMapper.insertSelective(query) < 1, "参数添加失败");
 
-            //初始化参数
-            initSignUpDeliveryrecord(up, userId);
-
-            Assert.isFalse(signUpMapper.insertSelective(query) < 1, "参数添加失败");
-        } else {
-
-            HrAcct acct = new HrAcct();
-            acct.setSignUpId(userId);
-            Assert.isFalse(acctMapper.insertSelective(acct) < 1, "参数添加失败");
-
-        }
+        //初始化我的求职表和报名表的中间表参数
+        initMySignUpTable(query.getMySignUpTableId(), userId);
 
 
+    }
+
+    private void initMySignUpTable(Integer mySignUpTableId, Integer userId) {
+        MySignUpTableSignUp up = new MySignUpTableSignUp();
+        up.setMySignUpTableId(mySignUpTableId);
+        up.setSignUpId(userId);
+        up.setCreateTime(LocalDateTime.now());
+        Assert.isFalse(tableSignUpMapper.insertSelective(up) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
     private void initSignUpDeliveryrecord(HrSignUp up, Integer userId) {
@@ -1047,16 +1448,17 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertSelective(MySignUpTable record) {
+    public int insertSelective(MySignUpTable record) {
 
         Assert.isFalse(StringUtils.isBlank(record.getGroupName()), "分组名字不能为空");
         record.setGroupName(record.getGroupName());
         record.setStatus(3);
         record.setCreateTime(new Date());
-        record.setSignId(record.getSignId());
-
-        Assert.isFalse(tableMapper.insertSelective(record) < 1, RlzyConstant.OPS_FAILED_MSG);
-
+        record.setUserId(record.getUserId());
+        boolean flag = tableMapper.insertSelective(record) < 1;
+        Assert.isFalse(flag, RlzyConstant.OPS_FAILED_MSG);
+        int a = flag == false ? 0 : 1;
+        return a;
     }
 
 
@@ -1093,7 +1495,15 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
             System.out.println(map);
             //对返佣金额进行 foreach 操作, set到返回的结果集里
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
         }).collect(Collectors.toList());
@@ -1117,9 +1527,13 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
-    public List<MySignUpTable> searchGroupingInformation() {
-        return tableMapper.searchGroupingInformation();
-
+    public Map<String, Object> searchGroupingInformation(Integer userId) {
+        Map<String, Object> map = new HashMap<>();
+        List<MySignUpTable> tables = tableMapper.searchGroupingdefault();
+        List<MySignUpTable> mySignUpTables = tableMapper.searchGroupingInformation(userId);
+        map.put("searchGroupingdefault", tables);
+        map.put("searchGroupingInformation", mySignUpTables);
+        return map;
     }
 
     @Override

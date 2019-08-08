@@ -1,17 +1,20 @@
 package com.nado.rlzy.db.mapper;
 
 import com.nado.rlzy.db.pojo.HrSignupDeliveryrecord;
-import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.common.MySqlMapper;
 
-public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrecord> {
+import java.util.List;
+
+public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrecord>, MySqlMapper<HrSignupDeliveryrecord> {
+
     /**
-     * 我要报名 身份是本人
+     * 推荐人给被推荐人报名
      * @Author lushuaiyu
      * @Description //TODO
-     * @Date 15:03 2019/7/14
-     * @Param [userId, typeId, signUpStatus]
+     * @Date 17:28 2019/8/7
+     * @Param [entites]
      * @return int
      **/
-    int IWantToSignUp (@Param("userId") Integer userId, @Param("briefChapterId") Integer briefChapterId);
+    int referrerToSIgnUp(List<HrSignupDeliveryrecord> entites);
 }

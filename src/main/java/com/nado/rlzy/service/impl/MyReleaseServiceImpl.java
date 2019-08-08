@@ -76,7 +76,15 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             //对返佣金额进行 foreach 操作, set到返回的结果集里
 
             map.forEach((k, v) -> {
-                dto.setRebateRecord(v);
+                BigDecimal m = v;
+                double v1 = m.doubleValue();
+                String s = StringUtil.decimalFormat2(v1);
+                if (v != null) {
+                    s = "返" + s + "元";
+                    dto.setRebateRecord(s);
+                } else {
+                    dto.setRebateRecord("无返佣");
+                }
             });
             return dto;
         }).collect(Collectors.toList());
@@ -89,7 +97,15 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     //对返佣金额进行 foreach 操作, set到返回的结果集里
 
                     map.forEach((k, v) -> {
-                        dto.setRebateRecord(v);
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
                     });
                     return dto;
 
@@ -121,7 +137,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         //招聘单位
         if (type.equals(5)) {
             //招聘单位 briefchapter.setRecruitedcompanyid( 组织表主键id);
-           // briefchapter.setRecruitedcompanyId(query.getRecruitedCompanyId());
+            // briefchapter.setRecruitedcompanyId(query.getRecruitedCompanyId());
             //简章表
             initBriefcharpter(query);
             //职位表
@@ -614,7 +630,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     @Override
     public List<HrGroup> selectGroupName(Integer type, Integer userId) {
         return groupMapper.selectGroupName(type, userId).stream()
-        .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -663,10 +679,10 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         } else if (query.getContractWay() == 1) {
             //用工单位
             dto.setContractWayDetailId(Integer.valueOf(query.getContractWayDetailId()));
-        } else if(query.getContractWay() == 2) {
+        } else if (query.getContractWay() == 2) {
             //厂方指定劳务公司
             dto.setContractWayDetailId(Integer.valueOf(query.getContractWayDetailId()));
-        }else {
+        } else {
             System.out.println("o");
         }
         if (mapper.save(query) >= 1) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nado.rlzy.db.mapper.MySignUpTableSignUpMapper">
+  <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.MySignUpTableSignUp">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="my_sign_up_table_id" jdbcType="INTEGER" property="mySignUpTableId" />
+    <result column="sign_up_id" jdbcType="INTEGER" property="signUpId" />
+    <result column="delete_time" jdbcType="INTEGER" property="deleteTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+</mapper>

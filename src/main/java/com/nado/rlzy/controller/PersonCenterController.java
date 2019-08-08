@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @ClassName 招聘端 个人中心controller
+ * @ClassName 招聘端 求职端 个人中心controller
  * @Description TODO
  * @Author lushuaiyu
  * @Data 2019/7/1 15:06
@@ -154,13 +154,13 @@ public class PersonCenterController extends BaseController {
     public Result<HrUser> personalInformation(Integer userId, Integer type) {
         Result<HrUser> result = new Result<>();
         if (type.equals(1)) {
-        List<HrUser> ups = service.personalInformation(userId);
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(ups);
-        return result;
+            List<HrUser> ups = service.personalInformation(userId);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(ups);
+            return result;
         }
-        if (type.equals(2)){
+        if (type.equals(2)) {
             List<HrUser> signUps = service.personalInformationReferrer(userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
@@ -169,8 +169,9 @@ public class PersonCenterController extends BaseController {
         }
         return null;
     }
+
     /**
-     * 编辑个人信息 个人
+     * 编辑个人信息
      *
      * @return com.nado.rlzy.bean.model.ResultInfo
      * @Author lushuaiyu
@@ -180,10 +181,10 @@ public class PersonCenterController extends BaseController {
      **/
     @RequestMapping(value = "editPersonData")
     @ResponseBody
-    @ApiOperation(value = "编辑个人信息 个人", notes = "编辑个人信息 个人", httpMethod = "POST")
+    @ApiOperation(value = "求职端 个人中心 编辑资料", notes = "求职端 个人中心 编辑资料", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "typeId", name = "身份id 登录者是求职者还是推荐者 1 求职者 2 推荐者", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "typeId", name = "身份id 1 本人 2 推荐者", dataType = "integer", required = true),
             @ApiImplicitParam(value = "sex", name = "性别 0 女 1 男", dataType = "integer", required = true),
             @ApiImplicitParam(value = "education", name = "学历", dataType = "string", required = true),
             @ApiImplicitParam(value = "graduationTime", name = "毕业时间", dataType = "date", required = true),
@@ -193,18 +194,8 @@ public class PersonCenterController extends BaseController {
             @ApiImplicitParam(value = "ExpectedSalaryLower", name = "期望薪资下限", dataType = "string", required = true),
             @ApiImplicitParam(value = "ExpectedSalaryUpper", name = "期望薪资上限", dataType = "string", required = true),
             @ApiImplicitParam(value = "ItIsPublic", name = "是否公开 0 公开 1 不公开", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "AgreePlatformHelp", name = "是否需要平台帮助 0 是 1 否", dataType = "integer", required = true)
-    })
-    public ResultInfo editPersonData(EditPersonDataQuery query, MultipartFile file) {
-        String url = service.updateHead(file);
-        service.editPersonData(query, url);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
-    }
-
-    @RequestMapping(value = "editPersonDataRecommend")
-    @ResponseBody
-    @ApiOperation(value = "编辑资料 推荐人", notes = "编辑资料 推荐人", httpMethod = "POST")
-    @ApiImplicitParams({
+            @ApiImplicitParam(value = "AgreePlatformHelp", name = "是否需要平台帮助 0 是 1 否", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "=====下面是推荐人信息=====", name = "下面是推荐人信息"),
             @ApiImplicitParam(value = "recommenderId", name = "推荐人id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "postIdStr", name = "推荐人的意向岗位", dataType = "string", required = true),
             @ApiImplicitParam(value = "RecommendNoLower", name = "推荐人数量下限", dataType = "integer", required = true),
@@ -213,11 +204,21 @@ public class PersonCenterController extends BaseController {
             @ApiImplicitParam(value = "itIsPublic", name = "是否公开", dataType = "integer", required = true),
             @ApiImplicitParam(value = "file", name = "上传的文件", dataType = "MultipartFile", required = true)
     })
-    public ResultInfo editPersonDataRecommend(EditPersonDataQuery query, MultipartFile file) {
-        String head = service.updateHead(file);
-        query.setUrl(head);
-        service.editPersonDataRecommend(query);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+    public ResultInfo editPersonData(EditPersonDataQuery query) {
+        //本人
+        if (query.getTypeId().equals(1)) {
+            String url = service.updateHead(query.getFile());
+            service.editPersonData(query, url);
+            return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+        }
+        //推荐人
+        if (query.getTypeId().equals(2)) {
+            String url = service.updateHead(query.getFile());
+            query.setUrl(url);
+            service.editPersonDataRecommend(query);
+            return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+        }
+        return null;
     }
 
     /**

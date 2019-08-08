@@ -26,15 +26,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      **/
     List<HrSignUp> queryAll(@Param("userId") Integer userId, @Param("type") Integer type);
 
-    /**
-     * 取消报名 求职端
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 9:29 2019/7/12
-     * @param signUpId 报名表id
-     * @return int
-     **/
-    int cancelRegistration(@Param("signUpId") Integer signUpId);
+
 
     /**
      * 编辑个人资料 本人

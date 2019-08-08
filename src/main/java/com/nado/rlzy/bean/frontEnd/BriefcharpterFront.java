@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @ClassName返回给前台的对象
+ * @ClassName 返回给前台的对象 简章概览
  * @Description TODO
  * @Author lushuaiyu
  * @Data 2019/6/27 13:09
@@ -17,10 +17,11 @@ import java.util.List;
 @Data
 @ApiModel(description = "返回给前台的对象")
 public class BriefcharpterFront {
+    private String id;
+
     @ApiModelProperty(value = "代招单位")
     private String recruitedCompany;
 
-    private Integer id;
 
     @ApiModelProperty(value = "招聘单位")
     private String certifier;
@@ -39,8 +40,8 @@ public class BriefcharpterFront {
     @ApiModelProperty(value = "福利")
     private String welfare;
 
-    @ApiModelProperty(value = "工资计算方式")
-    private String detailSalaryWay;
+    @ApiModelProperty(value = "返佣的钱")
+    private String rebateRecord;
 
     @ApiModelProperty(value = "返佣金额")
     private List<HrRebaterecord> rebate;

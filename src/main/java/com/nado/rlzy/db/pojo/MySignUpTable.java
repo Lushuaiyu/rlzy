@@ -30,5 +30,8 @@ public class MySignUpTable {
     @ApiModelProperty(value = "求职者")
     private List<HrSignUp> signUp;
 
+    @ApiModelProperty(value = "用户id")
+    private Integer userId;
+
 
 }

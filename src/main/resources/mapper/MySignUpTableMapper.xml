@@ -10,6 +10,7 @@
     </resultMap>
     <resultMap id="signUpResultMap" type="com.nado.rlzy.db.pojo.HrSignUp">
         <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="signId" property="id" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, sign_id, group_name, create_time
@@ -68,12 +69,36 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
+    <update id="updateMySignUpTableSignId">
+
+    </update>
     <select id="searchGroupingInformation" resultMap="BaseResultMap">
 
-        select group_name from my_sign_up_table
+        select m.id,
+        si.id as signId,
+        m.group_name
+        from my_sign_up_table m,
+        my_sign_up_table_sign_up mt,
+        hr_signup si,
+        hr_user u
         <where>
-            delete_flag = 0
+            m.id = mt.my_sign_up_table_id
+            and mt.sign_up_id = si.id
+            and u.Id = m.user_id
+            and m.delete_flag = 0
+            and mt.delete_time = 0
+            and si.delete_flag = 0
+            and u.DeleteFlag = 0
+            <if test="null != userId">
+                and u.Id = #{userId}
+            </if>
+            and m.status = 3
         </where>
+    </select>
+    <select id="searchGroupingdefault" resultMap="BaseResultMap">
+        select group_name
+        from my_sign_up_table
+        where status &lt;> 3
     </select>
 
 </mapper>

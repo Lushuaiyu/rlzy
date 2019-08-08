@@ -3,6 +3,7 @@ package com.nado.rlzy.bean.query;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -83,4 +84,7 @@ public class EditPersonDataQuery {
 
     @ApiModelProperty(value = "图片url")
     private String url;
+
+    @ApiModelProperty(value = "图片上传文件")
+    private MultipartFile file;
 }
