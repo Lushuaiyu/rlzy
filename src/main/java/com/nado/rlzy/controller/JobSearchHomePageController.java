@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.persistence.ExcludeSuperclassListeners;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -233,16 +234,34 @@ public class JobSearchHomePageController extends BaseController {
     @RequestMapping(value = "coHomePage")
     @ResponseBody
     @ApiOperation(notes = "求职端 首页 公司主页", value = "求职端 首页 公司主页", httpMethod = "POST")
-    @ApiImplicitParam(value = "groupId", name = "代招单位id", dataType = "Integer", required = true)
-    public Result<HrGroup> coHomePage(Integer groupId) {
-        Result<HrGroup> result = new Result<>();
-        List<HrGroup> groups = service.coHomePage(groupId);
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(groups);
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "groupId", name = "代招单位id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "类型", dataType = "Integer", required = true)
+    })
+    public ResultJson coHomePage(Integer groupId, Integer type) {
+        ResultJson result = new ResultJson();
+        Map<String, Object> map = new HashMap<>();
+        if (type.equals(1)) {
+            //基本信息
+            List<HrGroup> groups = service.coHomePage(groupId);
+            map.put("coHomePage", groups);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(map);
+        } else if(type.equals(2)){
+            //在招职位
+            List<HrBriefchapter> list = service.atThePosition(groupId);
+            map.put("atThePosition", list);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(list);
+        } else if(type.equals(3)){
+            //历史记录
+            //TODO
+
+        }
         return result;
     }
-
     /**
      * 求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 7已面试 是进入到待面试阶段
      *
@@ -415,19 +434,7 @@ public class JobSearchHomePageController extends BaseController {
         return resultJson;
     }
 
-    @RequestMapping(value = "atThePosition")
-    @ResponseBody
-    @ApiOperation(notes = "在招职位 可能废弃", value = "在招职位 可能废弃", httpMethod = "POST")
-    @ApiImplicitParam(value = "groupId", name = "公司id", dataType = "Integer", required = true)
-    public Result<HrBriefchapter> atThePosition(Integer groupId) {
-        List<HrBriefchapter> list = service.atThePosition(groupId);
-        Result<HrBriefchapter> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
-        return result;
 
-    }
 
     /**
      * 投诉撤回
