@@ -1,6 +1,7 @@
 package com.nado.rlzy.db.mapper;
 
 import com.nado.rlzy.db.pojo.HrSignupDeliveryrecord;
+import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;
 
@@ -16,5 +17,5 @@ public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrec
      * @Param [entites]
      * @return int
      **/
-    int referrerToSIgnUp(List<HrSignupDeliveryrecord> entites);
+    int referrerToSIgnUp(@Param("entites") List<HrSignupDeliveryrecord> entites);
 }

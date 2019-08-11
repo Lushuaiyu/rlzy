@@ -977,28 +977,31 @@
     </select>
 
     <select id="grouper" resultMap="BaseResultMap">
-        select si.user_name
-        from my_sign_up_table st
-        left join hr_signup si on si.id = st.sign_id and st.delete_flag = 0
+        select si.user_name, si.id, mt.group_name
+        from hr_signup si
+        left join my_sign_up_table_sign_up msutsu on si.id = msutsu.sign_up_id and msutsu.delete_time = 0
+        left join my_sign_up_table mt on mt.id = msutsu.my_sign_up_table_id and mt.delete_flag = 0
         <where>
             si.delete_flag = 0
-            <if test="null != status">
-                and st.status = #{status}
+            <if test="null != groupName">
+                and mt.group_name = #{groupName}
+            </if>
+            <if test="null != signUpName">
+                and si.user_name like concat('%', #{signUpName}, '%')
             </if>
         </where>
 
     </select>
     <select id="selectSignUpTableBySignUpName" resultMap="BaseResultMap">
-        select si.user_name
-        from hr_signup si
-        left join my_sign_up_table sut on si.id = sut.sign_id and sut.delete_flag = 0
+        select si.user_name, si.id, mt.group_name
+        from my_sign_up_table_sign_up msutsu
+        left join my_sign_up_table mt on mt.id = msutsu.my_sign_up_table_id and mt.delete_flag = 0
+        left join hr_signup si on msutsu.sign_up_id = si.id and si.delete_flag = 0
+
         <where>
-            si.delete_flag = 0
+            msutsu.delete_time = 0
             <if test="null != signUpName">
                 and si.user_name like concat('%', #{signUpName}, '%')
-            </if>
-            <if test="null != status">
-                and sut.status = #{status}
             </if>
         </where>
     </select>

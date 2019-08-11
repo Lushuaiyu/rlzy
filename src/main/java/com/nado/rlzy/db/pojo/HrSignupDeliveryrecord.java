@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
 @Table(name = "hr_signup_deliveryrecord")
 public class HrSignupDeliveryrecord {
@@ -58,6 +60,13 @@ public class HrSignupDeliveryrecord {
 
     @Transient
     private Integer type;
+
+    /**
+     * 报名简章的数量
+     */
+    private Integer[] number;
+
+    List<HrSignupDeliveryrecord> deliveryrecordList;
 
 
 }

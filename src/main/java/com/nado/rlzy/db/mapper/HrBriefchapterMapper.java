@@ -1,6 +1,5 @@
 package com.nado.rlzy.db.mapper;
 
-import com.nado.rlzy.bean.dto.PersonCoDto;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
@@ -51,6 +50,26 @@ public interface HrBriefchapterMapper {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     List<HrBriefchapter> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query);
+
+    /**
+     * 推荐职位 代招单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:04 2019/8/9
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> recommendAPosition(@Param("recruitedCompany") String recruitedCompany );
+
+    /**
+     * 推荐职位 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:05 2019/8/9
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> recommendAPositionRecruitment(@Param("recruitedCompany") String recruitedCompany);
 
 
     /**
@@ -146,7 +165,7 @@ public interface HrBriefchapterMapper {
     List<HrBriefchapter> directAdmission (BriefcharpterQuery query);
 
     /**
-     * 企业直招 招聘单位
+     * 直接录取专区 招聘单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:53 2019/8/2
@@ -327,6 +346,17 @@ public interface HrBriefchapterMapper {
      * @return int
      **/
     int updateStatus(@Param("briefchapter") Integer briefchapter);
+
+    /**
+     * 报名简章成功后 招聘人数减去相应的
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:09 2019/8/9
+     * @param briefchapter 简章id
+     * @param number 招聘数量
+     * @return int
+     **/
+    int remainingQuota( @Param("number") Integer number, @Param("briefchapter") Integer briefchapter);
 
 
 

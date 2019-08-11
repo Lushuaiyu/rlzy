@@ -51,7 +51,7 @@ public interface JobSearchHomePageService {
     List<HrBriefchapter> queryBriefcharpterByParams(BriefcharpterQuery query);
 
     /**
-     * 查询招聘简章详情 代招单位
+     * 求职端 首页 简章列表查询招聘简章详情 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:20 2019/7/4
@@ -61,7 +61,7 @@ public interface JobSearchHomePageService {
     List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query) ;
 
     /**
-     * 查询招聘简章详情 招聘单位
+     * 求职端 首页 简章列表 查询招聘简章详情 招聘单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:44 2019/8/2
@@ -69,6 +69,36 @@ public interface JobSearchHomePageService {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     List<HrBriefchapter> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query);
+
+    /**
+     * 推荐职位 代招单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:17 2019/8/9
+     * @Param [recruitedCompany]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    List<HrBriefchapter> recommendAPosition(String recruitedCompany);
+
+    /**
+     * 推荐职位 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:17 2019/8/9
+     * @Param [recruitedCompany]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    List<HrBriefchapter> recommendAPositionRecruitment(String recruitedCompany);
+
+    /**
+     * query 除了 求职端首页 简章列表以外的简章详情
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:17 2019/8/9
+     * @Param [query]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    Map<String, Object> queryBriefcharpterListDetileByParams(BriefcharpterQuery query);
 
     /**
      * 长白班按返费高低排 代招单位
@@ -244,7 +274,7 @@ public interface JobSearchHomePageService {
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:26 2019/8/7
-     * @Param [entites]
+     * @param
      * @return int
      **/
     int referrerToSIgnUp(HrSignupDeliveryrecord deliveryrecord);
@@ -258,8 +288,6 @@ public interface JobSearchHomePageService {
      * @return void
      **/
     void addCancelBriefchapter(Collect collect);
-
-
 
     /**
      * 新增求职表
@@ -280,19 +308,6 @@ public interface JobSearchHomePageService {
      * @return void
      **/
     int insertSelective(MySignUpTable record);
-
-
-
-    /**
-     * 查询投诉 求职端
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 16:05 2019/7/10
-     * @Param [userId, typeId, briefchapterId]
-     * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
-     **/
-
-
 
     /**
      * 添加投诉 求职端
@@ -335,25 +350,18 @@ public interface JobSearchHomePageService {
     Map<String, Object> searchGroupingInformation(Integer userId);
 
     /**
-     * 查询 每一个分组的求职者
+     * 查询 求职端 身份是推荐人 首页 我的求职表 分组下的 被推荐人的报名表 | 查询求职端身份是推荐人 首页 我的求职表下被推荐人的求职表
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:16 2019/7/22
-     * @param status 分组状态
+     * @param groupName 自定义分组名字
+     * @param signUpName 被推荐人姓名
+     * @param type 1 我的求职表下的被推荐人的报名表 2 自定义分组下的被推荐人的报名表
      * @return java.util.List<com.nado.rlzy.db.pojo.MySignUpTable>
      **/
-    List<HrSignUp> grouper(Integer status);
+    Map<String, Object> grouper(String groupName, String signUpName, Integer type);
 
-    /**
-     * 求职端 求职表 我的求职表 通过姓名 搜索 报名表
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 17:43 2019/7/22
-     * @param signUpName 求职者姓名
-     * @param status 分组状态
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
-     **/
-     List<HrSignUp> selectSignUpTableBySignUpName( String signUpName, Integer status);
+
 
      /**
       * 求职端 求职表 我的求职表 确认报名

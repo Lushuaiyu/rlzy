@@ -536,24 +536,25 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     int commissionRebate(@Param("signUpId") Integer signUpId);
 
     /**
-     * 查询 每一个分组的求职者
+     * 查询 求职端 身份是推荐人 首页 我的求职表 分组下的 被推荐人的报名表
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:10 2019/7/22
-     * @Param
+     * @param groupName 自定义分组名字
+     * @param signUpName 被推荐人姓名
      * @return
      **/
-    List<HrSignUp> grouper(@Param("status") Integer status);
+    List<HrSignUp> grouper(@Param("groupName") String groupName, @Param("signUpName") String signUpName);
 
     /**
-     *  求职端 求职表 我的求职表 通过姓名 搜索 报名表
+     *  查询求职端身份是推荐人 首页 我的求职表下被推荐人的求职表
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:33 2019/7/22
-     * @Param [signUpName]
+     * @param signUpName 被推荐人的姓名
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
-    List<HrSignUp> selectSignUpTableBySignUpName(@Param("signUpName") String signUpName, @Param("status") Integer status);
+    List<HrSignUp> selectSignUpTableBySignUpName(@Param("signUpName") String signUpName);
 
 
     /**

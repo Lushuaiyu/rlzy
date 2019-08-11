@@ -146,6 +146,9 @@ public class BriefcharpterQuery extends BaseQuery {
     @ApiModelProperty(value = "身份类型")
     private Integer type;
 
+    @ApiModelProperty(value = "类型变量")
+    private Integer type1;
+
     @ApiModelProperty(value = "返佣时间")
     private String rebateTime;
 

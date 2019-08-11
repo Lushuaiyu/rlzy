@@ -267,6 +267,22 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
             dto.setWomenNum1(womenNum1 + "人");
             String manAge2 = dto.getManAge();
             String womenAge2 = dto.getWomenAge();
+            String experienceId1 = dto.getExperienceId();
+            if (dto.getExperienceId().compareTo("1") == 0) {
+                dto.setExperience(experienceId1 + "年内");
+                dto.setExperienceId(null);
+            } else if (experienceId1.compareTo("3-5") == 0 ||
+                    experienceId1.compareTo("1-3") == 0 ||
+                    experienceId1.compareTo("5-10") == 0) {
+                dto.setExperience(experienceId1 + "年");
+                dto.setExperienceId(null);
+            } else if (experienceId1.compareTo("10") == 0) {
+                dto.setExperience(experienceId1 + "年以上");
+                dto.setExperienceId(null);
+            } else {
+                System.out.println("============");
+            }
+
             dto.setManAge1(manAge2 + "岁");
             dto.setWomenAge1(womenAge2 + "岁");
             Integer overtimeTime = dto.getOvertimeTimeId();
@@ -491,6 +507,173 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
+    public Map<String, Object> queryBriefcharpterListDetileByParams(BriefcharpterQuery query) {
+        Map<String, Object> map = new HashMap<>();
+        List<HrBriefchapter> list = mapper.queryBriefcharpterDetileByParams(query);
+        List<HrBriefchapter> hrBriefchapters = mapper.queryBriefcharpterDetileRecruitment(query);
+        List<HrBriefchapter> briefcharpterDetile = list.stream()
+                .map(dto -> {
+                    Integer manNum1 = dto.getManNum();
+                    dto.setManNum1(manNum1 + "人");
+                    Integer womenNum1 = dto.getWomenNum();
+                    dto.setWomenNum1(womenNum1 + "人");
+                    String manAge2 = dto.getManAge();
+                    String womenAge2 = dto.getWomenAge();
+                    dto.setManAge1(manAge2 + "岁");
+                    dto.setWomenAge1(womenAge2 + "岁");
+                    Integer overtimeTime = dto.getOvertimeTimeId();
+                    if (overtimeTime == 1) {
+                        dto.setOvertimeTime1("较少");
+                    } else if (overtimeTime == 2) {
+                        dto.setOvertimeTime1("多");
+                    } else if (overtimeTime == 3) {
+                        dto.setOvertimeTime1("较多");
+                    } else {
+                        System.out.println("====");
+                    }
+
+                    String experienceId1 = dto.getExperienceId();
+                    if (dto.getExperienceId().compareTo("1") == 0) {
+                        dto.setExperience(experienceId1 + "年内");
+                    } else if (experienceId1.compareTo("3-5") == 0 ||
+                            experienceId1.compareTo("1-3") == 0 ||
+                            experienceId1.compareTo("5-10") == 0) {
+                        dto.setExperience(experienceId1 + "年");
+                    } else if (experienceId1.compareTo("10") == 0) {
+                        dto.setExperience(experienceId1 + "年以上");
+                    } else {
+                        System.out.println("============");
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        List<HrBriefchapter> collect = hrBriefchapters.stream()
+                .map(dto -> {
+                    Integer manNum1 = dto.getManNum();
+                    dto.setManNum1(manNum1 + "人");
+                    Integer womenNum1 = dto.getWomenNum();
+                    dto.setWomenNum1(womenNum1 + "人");
+                    String manAge2 = dto.getManAge();
+                    String womenAge2 = dto.getWomenAge();
+                    dto.setManAge1(manAge2 + "岁");
+                    dto.setWomenAge1(womenAge2 + "岁");
+                    Integer overtimeTime = dto.getOvertimeTimeId();
+                    if (overtimeTime == 1) {
+                        dto.setOvertimeTime1("较少");
+                    } else if (overtimeTime == 2) {
+                        dto.setOvertimeTime1("多");
+                    } else if (overtimeTime == 3) {
+                        dto.setOvertimeTime1("较多");
+                    } else {
+                        System.out.println("====");
+                    }
+                    String experienceId1 = dto.getExperienceId();
+                    if (dto.getExperienceId().compareTo("1") == 0) {
+                        dto.setExperience(experienceId1 + "年内");
+                        dto.setExperienceId(null);
+                    } else if (experienceId1.compareTo("3-5") == 0 ||
+                            experienceId1.compareTo("1-3") == 0 ||
+                            experienceId1.compareTo("5-10") == 0) {
+                        dto.setExperience(experienceId1 + "年");
+                        dto.setExperienceId(null);
+                    } else if (experienceId1.compareTo("10") == 0) {
+                        dto.setExperience(experienceId1 + "年以上");
+                        dto.setExperienceId(null);
+                    } else {
+                        System.out.println("============");
+                    }
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        map.put("queryBriefcharpterDetileByParams", briefcharpterDetile);
+        map.put("queryBriefcharpterDetileRecruitment", collect);
+        return map;
+    }
+
+    @Override
+    public List<HrBriefchapter> recommendAPositionRecruitment(String recruitedCompany) {
+        List<HrBriefchapter> list1 = mapper.recommendAPositionRecruitment(recruitedCompany);
+        List<HrBriefchapter> collect = list1.stream()
+                .map(dto -> {
+                    Integer no = dto.getRecruitingNo();
+                    if (!(dto.getRecruitingNo().equals(0))) {
+                        //剩余招聘人数 不等于0 显示
+                        dto.setNo(no + "人");
+                    }
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+                    Map<Integer, BigDecimal> mapp = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                            CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    //对返佣金额进行 foreach 操作, set到返回的结果集里
+                    mapp.forEach((k, v) -> {
+                        BigDecimal mm = v;
+                        double v1 = mm.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
+                    });
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<HrBriefchapter> recommendAPosition(String recruitedCompany) {
+        List<HrBriefchapter> list = mapper.recommendAPosition(recruitedCompany);
+        List<HrBriefchapter> collect = list.stream()
+                .map(dto -> {
+                    Integer no = dto.getRecruitingNo();
+                    if (!(dto.getRecruitingNo().equals(0))) {
+                        //剩余招聘人数 不等于0 显示
+                        dto.setNo(no + "人");
+                    }
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+
+                    Map<Integer, BigDecimal> ma = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                            CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    //对返佣金额进行 foreach 操作, set到返回的结果集里
+                    ma.forEach((k, v) -> {
+                        BigDecimal m = v;
+                        double v1 = m.doubleValue();
+                        String s = StringUtil.decimalFormat2(v1);
+                        if (v != null) {
+                            s = "返" + s + "元";
+                            dto.setRebateRecord(s);
+                        } else {
+                            dto.setRebateRecord("无返佣");
+                        }
+                    });
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+
+        return collect;
+    }
+
+    @Override
     public List<HrBriefchapter> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query) {
         List<HrBriefchapter> val = mapper.queryBriefcharpterDetileRecruitment(query);
         return val.stream().map(dto -> {
@@ -512,6 +695,24 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
             } else {
                 System.out.println("====");
             }
+
+
+            String experienceId1 = dto.getExperienceId();
+            if (dto.getExperienceId().compareTo("1") == 0) {
+                dto.setExperience(experienceId1 + "年内");
+                dto.setExperienceId(null);
+            } else if (experienceId1.compareTo("3-5") == 0 ||
+                    experienceId1.compareTo("1-3") == 0 ||
+                    experienceId1.compareTo("5-10") == 0) {
+                dto.setExperience(experienceId1 + "年");
+                dto.setExperienceId(null);
+            } else if (experienceId1.compareTo("10") == 0) {
+                dto.setExperience(experienceId1 + "年以上");
+                dto.setExperienceId(null);
+            } else {
+                System.out.println("============");
+            }
+
             if (query.getType().equals(1)) {
                 // 身份是本人
                 List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
@@ -1312,17 +1513,18 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         HrSignupDeliveryrecord deliveryrecord1 = new HrSignupDeliveryrecord();
         deliveryrecord1.setSignupId(deliveryrecord.getSignupId());
         deliveryrecord1.setBriefChapterId(deliveryrecord.getBriefChapterId());
-        deliveryrecord1.setJobStatus(deliveryrecord.getJobStatus());
+        deliveryrecord1.setJobStatus(0);
         deliveryrecord1.setCreateTime(LocalDateTime.now());
         return signupDeliveryrecordMapper.insertSelective(deliveryrecord1);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int referrerToSIgnUp(HrSignupDeliveryrecord deliveryrecord) {
-
         List<HrSignupDeliveryrecord> deliveryrecords = new ArrayList<>();
-
-        deliveryrecords.stream()
+        List<HrSignupDeliveryrecord> list1 = new ArrayList<>();
+        list1.add(deliveryrecord);
+        list1.stream()
                 .map(dto -> {
                     dto.setSignupId(deliveryrecord.getSignupId());
                     dto.setBriefChapterId(deliveryrecord.getBriefChapterId());
@@ -1333,6 +1535,14 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                 })
                 .collect(Collectors.toList());
         Assert.isFalse(signupDeliveryrecordMapper.referrerToSIgnUp(deliveryrecords) < 1, RlzyConstant.OPS_FAILED_MSG);
+        //招聘人数 -
+        Integer[] number = deliveryrecord.getNumber();
+        List<Integer> list = Arrays.asList(number);
+        long count = list.stream().count();
+        Integer count1 = (int) count;
+
+            Assert.isFalse(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
+
         return 1;
     }
 
@@ -1537,17 +1747,23 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
-    public List<HrSignUp> grouper(Integer status) {
-        List<HrSignUp> grouper = signUpMapper.grouper(status);
-        return grouper.stream()
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<HrSignUp> selectSignUpTableBySignUpName(String signUpName, Integer status) {
-        List<HrSignUp> hrSignUps = signUpMapper.selectSignUpTableBySignUpName(signUpName, status);
-        return hrSignUps.stream()
-                .collect(Collectors.toList());
+    public Map<String, Object> grouper(String groupName, String signUpName, Integer type) {
+        Map<String, Object> map = new HashMap<>();
+        if (type.equals(1)) {
+            //我的求职表下的被推荐人的报名表
+            List<HrSignUp> hrSignUps = signUpMapper.selectSignUpTableBySignUpName(signUpName);
+            List<HrSignUp> coll = hrSignUps.stream()
+                    .collect(Collectors.toList());
+            map.put("selectSignUpTableBySignUpName", coll);
+        }
+        if (type.equals(2)) {
+            //自定义分组下的被推荐人的报名表
+            List<HrSignUp> grouper = signUpMapper.grouper(groupName, signUpName);
+            List<HrSignUp> collect = grouper.stream()
+                    .collect(Collectors.toList());
+            map.put("grouper", collect);
+        }
+        return map;
     }
 
     @Override

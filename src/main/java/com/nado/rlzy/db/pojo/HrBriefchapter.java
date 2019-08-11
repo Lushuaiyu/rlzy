@@ -74,6 +74,8 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "经验")
     private String experienceId;
+    @ApiModelProperty(value = "返回给前台 经验")
+    private String experience;
 
     @ApiModelProperty(value = "福利")
     private String welfareId;

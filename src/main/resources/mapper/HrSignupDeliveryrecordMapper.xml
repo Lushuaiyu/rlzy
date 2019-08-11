@@ -13,7 +13,7 @@
     </resultMap>
     <insert id="referrerToSIgnUp">
         insert into hr_signup_deliveryrecord (signup_id, brief_chapter_id, job_status, create_time) values
-    <foreach collection="list" item="item" separator=",">
+    <foreach collection="entites" item="item" separator=",">
         (#{item.signupId}, #{item.briefChapterId}, #{item.jobStatus}, #{item.createTime})
     </foreach>
     </insert>

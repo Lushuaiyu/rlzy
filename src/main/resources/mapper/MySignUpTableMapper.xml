@@ -96,7 +96,7 @@
         </where>
     </select>
     <select id="searchGroupingdefault" resultMap="BaseResultMap">
-        select group_name
+        select group_name, id
         from my_sign_up_table
         where status &lt;> 3
     </select>

@@ -16,7 +16,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -268,5 +271,11 @@ public class Test2 extends BaseTest {
     public void test19(){
         List<MySignUpTable> mySignUpTables = tableMapper.searchGroupingdefault();
         System.out.println(mySignUpTables);
+    }
+
+    @Test
+    public void test20(){
+        BriefcharpterQuery query = new BriefcharpterQuery();
+        System.out.println(briefchapterMapper.studentDivision(query));
     }
 }
