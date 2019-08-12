@@ -184,7 +184,7 @@ public interface MyReleaseService {
      * @Param [userId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
-    List<HrSignUp> rebate(Integer userId, Integer sex);
+    List<HrSignUp> rebatee(Integer userId, Integer sex);
 
     /**
      * 招聘详情 待返佣 没有返佣

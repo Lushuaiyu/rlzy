@@ -1030,54 +1030,54 @@
 
     </select>
     <select id="atThePosition" resultMap="BaseResultMap">
-        select dii.Name as postName,
+        select dii.Name           as postName,
         br.id,
         gr.id,
-        gr.GroupName as recruitedCompany,
-        grr.GroupName as certifier,
-        br.RecruitingNo as recruitingNo,
-        gr.GroupAddress as groupAddress,
-        br.avgSalary as avgSalary,
+        grr.GroupName      as certifier,
+        gr.GroupName       as recruitedCompany,
+        br.RecruitingNo    as recruitingNo,
+        gr.GroupAddress    as groupAddress,
+        br.avgSalary       as avgSalary,
         br.Rebate,
-        br.detailSalary as detailSalary,
+        br.detailSalary    as detailSalary,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.detailSalaryWay) and d.pId = 23) as detailSalaryWay,
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
         (case
         when (re.RebateMale >= re.RebateFemale) then re.RebateMale
         when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end) as rebateOne,
+        end)           as rebateOne,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        re.RebateType as rebateType,
+        re.RebateType      as rebateType,
         re.BriefChapterId,
         re.RebateTime,
         re.RebateMale,
         re.RebateFemale,
         re.status,
-        br.Rebate as rebateStatus
-        from collect c
+        br.Rebate          as rebateStatus
+        from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_briefchapter br on c.briefchapter_id = br.Id
-        left join
-        hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0 and u.type = 5
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0 and grr.DeleteFlag = 0 and
-        u.type = 6
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
         where br.DeleteFlag = 0
-        and c.delete_flag = 0
-        and c.delete_flag = 0
+        and grr.pid = gr.Id
+        <if test="null != groupName">
+        and gr.GroupName = #{groupName}
+        </if>
         <if test="null != groupId">
             and gr.id = #{groupId}
         </if>
-        order by c.create_time desc;
-
+        order by br.CreateTime desc;
     </select>
+
     <select id="queryBriefchapterBySignUpStatus" resultMap="BaseResultMap">
         select br.id as id,
         si.id as signUpId,

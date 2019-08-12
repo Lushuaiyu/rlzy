@@ -189,7 +189,6 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         editInformation(query, url);
 
 
-
     }
 
     @Override
@@ -221,10 +220,19 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
-    public List<ComplaintDto> complaint(Integer complaintId) {
-        return complaintMapper.complaint(complaintId).stream().collect(Collectors.toList());
+    public HashMap<String, Object> complaint(Integer complaintId, Integer type) {
+        HashMap<String, Object> map = new HashMap<>();
+        if (type.equals(1)) {
+            //代招单位下的单位
+            List<ComplaintDto> collect = complaintMapper.complaint(complaintId).stream().collect(Collectors.toList());
+            map.put("complaint", collect);
+        } else if (type.equals(2)){
+        //招聘单位
+        List<ComplaintDto> list = complaintMapper.complaintRecruitment(complaintId);
+        map.put("complaintRecruitment", list);
+        }
+        return map;
     }
-
 
     private void editInformationSignUp(EditPersonDataQuery query) {
         HrSignUp up = new HrSignUp();

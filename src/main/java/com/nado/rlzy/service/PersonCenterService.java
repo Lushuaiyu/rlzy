@@ -1,6 +1,5 @@
 package com.nado.rlzy.service;
 
-import com.nado.rlzy.bean.dto.ComplaintDto;
 import com.nado.rlzy.bean.dto.PersonCoDto;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
@@ -109,14 +108,14 @@ public interface PersonCenterService {
     HashMap<Object, Object> searchComplaintRecord(Integer userId, Integer typeId);
 
     /**
-     * 查看投诉详情
+     * 求职端 信用中心 查看投诉详情
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 11:50 2019/7/10
      * @param complaintId 投诉记录id
      * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
      **/
-    List<ComplaintDto> complaint(Integer complaintId);
+    HashMap<String, Object> complaint(Integer complaintId, Integer type);
 
     /**
      * 招聘端 首页 推荐人信息

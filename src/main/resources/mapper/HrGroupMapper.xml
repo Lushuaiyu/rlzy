@@ -38,18 +38,21 @@
 
         </resultMap>-->
     <select id="coHomePage" resultMap="BaseResultMap">
-        select g.GroupName,
-        g.co_policy,
-        g.person_num,
-        g.GroupAddress,
-        g.GroupInfo,
+        select gr.GroupName as certifier,
+        gr.co_policy,
+        gr.person_num,
+        gr.GroupAddress,
+        gr.GroupInfo,
         b.id as brId,
-        g.id
-        from hr_group g
-        left join hr_briefchapter b on g.CertifierId = b.userId
+        gr.id
+        from hr_group grr
+        left join hr_briefchapter b on grr.CertifierId = b.userId and b.DeleteFlag = 0
+        left join hr_group gr on b.userId = gr.CertifierId and gr.DeleteFlag = 0
         <where>
+            grr.DeleteFlag = 0
+            and grr.pid = gr.Id
             <if test="null != groupId">
-                g.Id = #{groupId}
+                and gr.Id = #{groupId}
             </if>
         </where>
     </select>

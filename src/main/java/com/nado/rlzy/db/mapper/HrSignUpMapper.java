@@ -558,7 +558,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 求职端 求职表 我的求职表 确认报名
+     * 求职端 求职表 我的求职表 确认报名 废弃...
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 19:41 2019/7/22

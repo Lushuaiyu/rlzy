@@ -1479,8 +1479,6 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                                     r.setRebateOne(r.getRebateMale());
                                 }
                                 return r;
-
-
                             }).collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
                     map.forEach((k, v) -> {
@@ -1498,6 +1496,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                 })
                 .collect(Collectors.toList());
         HashMap<Object, Object> map = new HashMap<>();
+        //查求职者名字
         map.put("querySignUpUserName", hrSignUps);
         map.put("querySignUpStatus", signUps);
         map.put("queryBriefchapterBySignUpStatus", collect);
@@ -1541,7 +1540,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         long count = list.stream().count();
         Integer count1 = (int) count;
 
-            Assert.isFalse(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
+        Assert.isFalse(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
 
         return 1;
     }
@@ -1560,6 +1559,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         } else if (collect.getFlag().equals(1)) {
             //取消收藏
             co.setDeleteFlag(1);
+            co.setBriefchapterId(collect.getBriefchapterId());
             Assert.isTrue(collectMapper.updateByPrimaryKeySelective(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
         }
 
@@ -1689,6 +1689,8 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         complaint.setUserId(query.getUserId());
         //complaint.setSignUpId(query.getSignUpId());
         complaint.setCreateTime(LocalDateTime.now());
+        complaint.setContactPerson(query.getContactPerson());
+        complaint.setPhone(query.getPhone());
 
 
         Assert.isFalse(complaintMapper.save(complaint) < 1, RlzyConstant.OPS_FAILED_MSG);
@@ -1697,9 +1699,23 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
-    public List<HrBriefchapter> atThePosition(Integer groupId) {
-        List<HrBriefchapter> list = mapper.atThePosition(groupId);
+    public List<HrBriefchapter> atThePosition(Integer groupId, String groupName) {
+        List<HrBriefchapter> list = mapper.atThePosition(groupId, groupName);
         return list.stream().map(dto -> {
+            Integer no = dto.getRecruitingNo();
+            if (!(dto.getRecruitingNo().equals(0))) {
+                //剩余招聘人数 不等于0 显示
+                dto.setNo(no + "人");
+            }
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
             Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
                     CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
             System.out.println(map);
@@ -1757,7 +1773,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
             map.put("selectSignUpTableBySignUpName", coll);
         }
         if (type.equals(2)) {
-            //自定义分组下的被推荐人的报名表
+            //分组下的被推荐人的报名表
             List<HrSignUp> grouper = signUpMapper.grouper(groupName, signUpName);
             List<HrSignUp> collect = grouper.stream()
                     .collect(Collectors.toList());
@@ -1774,8 +1790,8 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
-    public Map<String, List<ComplaintPage>> complaintPage(Integer typeId, Integer userId, Integer brieId, Integer dictionary) {
-        Map<String, List<ComplaintPage>> map = new HashMap<>();
+    public Map<String, Object> complaintPage(Integer typeId, Integer userId, Integer brieId, Integer dictionary) {
+        Map<String, Object> map = new HashMap<>();
         if (typeId.equals(1)) {
             //本人
             List<ComplaintPage> users = userMapper.selectMyselfName(typeId, userId);
@@ -1796,8 +1812,8 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
-    public List<ComplaintDto> creditCenter(Integer status) {
-        return complaintMapper.creditCenter(status)
+    public List<ComplaintDto> creditCenter(Integer status, Integer type) {
+        return complaintMapper.creditCenter(status, type)
                 .stream()
                 .collect(Collectors.toList());
     }

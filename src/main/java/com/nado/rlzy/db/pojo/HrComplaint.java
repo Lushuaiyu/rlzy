@@ -60,6 +60,12 @@ public class HrComplaint {
     @ApiModelProperty(value = "推荐者姓名")
     private String userName;
 
+    /**
+     * 联系人
+     */
+    private String contactPerson;
+
+
 
 
     @ApiModelProperty(value = "被推荐者(求职者)")

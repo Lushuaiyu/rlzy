@@ -194,14 +194,14 @@ public interface HrBriefchapterMapper {
     List<HrBriefchapter> recruitmentBrochureCollectionRecruitment(@Param("userId") Integer userId, @Param("type") Integer type);
 
     /**
-     * 在招职位查询 代招单位 这是哪的接口? 可能废弃
+     * 在招职位查询 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 19:21 2019/7/10
      * @Param [groupId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> atThePosition(@Param("groupId") Integer groupId);
+    List<HrBriefchapter> atThePosition(@Param("groupId") Integer groupId, @Param("groupName") String groupName);
 
     /**
      * 长白班按返费高低排  代招单位

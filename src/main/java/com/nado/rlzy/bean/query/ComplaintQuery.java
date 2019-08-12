@@ -49,6 +49,11 @@ public class ComplaintQuery {
     @ApiModelProperty(value = "投诉人手机号")
     private String phone;
 
+    /**
+     * 联系人
+     */
+    private String contactPerson;
+
     @ApiModelProperty(value = "投诉状态")
     private Integer status;
 

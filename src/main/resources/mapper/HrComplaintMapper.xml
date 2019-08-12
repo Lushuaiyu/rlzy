@@ -188,7 +188,9 @@
         c.description,
         c.evidence,
         c.brief_chapter_id,
-        b.Id
+        b.Id,
+        c.phone,
+        c.name
         from hr_complaint c
         left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
         left join hr_briefchapter b on c.brief_chapter_id = b.id and b.DeleteFlag = 0
@@ -230,16 +232,25 @@
         </if>
     </select>
     <select id="creditCenter" resultType="com.nado.rlzy.bean.dto.ComplaintDto">
-        select ct.complaint_type as complaintType,
-        co.create_time as createTime,
-        co.id
-        from hr_complaint co
-        left join
-        hr_complainttype ct on co.complaint_type_id = ct.id and ct.delete_flag = 0
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, co.complaint_type_id)
+        and d.pId = 24) as complaintType,
+        co.create_time     as createTime,
+        co.id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, co.complaint_type_id)
+        and d.pId = 25) as status
+        from hr_complaint co left join hr_briefchapter br on co.brief_chapter_id = br.Id and br.DeleteFlag = 0
+        left join hr_user u on br.userId = u.Id and u.DeleteFlag = 0
         <where>
             co.delete_flag = 0
             <if test="null != status">
                 and co.status = #{status}
+            </if>
+            <if test="null != type">
+            and u.type = #{type}
             </if>
         </where>
     </select>
@@ -280,7 +291,9 @@
         c.description,
         c.evidence,
         c.brief_chapter_id,
-        b.Id
+        b.Id,
+        c.name,
+        c.phone
         from hr_complaint c
         left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
         left join hr_briefchapter b on c.brief_chapter_id = b.id and b.DeleteFlag = 0
@@ -288,7 +301,7 @@
         left join hr_user u on s.user_id = u.id and u.DeleteFlag = 0
         where c.delete_flag = 0
         and gr.type = 1
-        <if test="null != complaintId ">
+        <if test = "null != complaintId">
             and c.id = #{complaintId}
         </if>
     </select>

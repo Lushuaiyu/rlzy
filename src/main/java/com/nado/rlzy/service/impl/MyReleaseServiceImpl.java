@@ -347,7 +347,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     }
 
     @Override
-    public List<HrSignUp> rebate(Integer userId, Integer sex) {
+    public List<HrSignUp> rebatee(Integer userId, Integer sex) {
         List<HrSignUp> sign = signUpMapper.rebate(userId);
         List<HrSignUp> list = sign.stream().map(signUp -> {
             signUp.getRebat().stream().map(rebat -> {

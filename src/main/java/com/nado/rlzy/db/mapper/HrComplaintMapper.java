@@ -13,7 +13,7 @@ import java.util.List;
 public interface HrComplaintMapper extends BaseMapper<HrComplaint> {
 
     /**
-     * 查询投诉记录 投诉简章为代招单位
+     * 查询投诉记录 投诉简章为代招单位下的单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:24 2019/7/10
@@ -37,7 +37,7 @@ public interface HrComplaintMapper extends BaseMapper<HrComplaint> {
 
 
     /**
-     * 查看投诉详情 投诉公司是代招单位
+     * 查看投诉详情 投诉公司是代招单位下的单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 11:49 2019/7/10
@@ -74,7 +74,7 @@ public interface HrComplaintMapper extends BaseMapper<HrComplaint> {
      * @Param [status]
      * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
      **/
-    List<ComplaintDto> creditCenter(@Param("status") Integer status);
+    List<ComplaintDto> creditCenter(@Param("status") Integer status, @Param("type") Integer type);
 
     /**
      * 查询所有参数

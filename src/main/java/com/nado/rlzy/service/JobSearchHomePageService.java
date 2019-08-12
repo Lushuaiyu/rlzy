@@ -1,7 +1,6 @@
 package com.nado.rlzy.service;
 
 import com.nado.rlzy.bean.dto.ComplaintDto;
-import com.nado.rlzy.bean.dto.ComplaintPage;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.ComplaintQuery;
 import com.nado.rlzy.db.pojo.*;
@@ -270,7 +269,7 @@ public interface JobSearchHomePageService {
     int IWantToSignUp(HrSignupDeliveryrecord deliveryrecord);
 
     /**
-     * 推荐人给被推荐人报名
+     * 求职端 首页 我的报名表 推荐人给被推荐人报名
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:26 2019/8/7
@@ -327,7 +326,7 @@ public interface JobSearchHomePageService {
      * @Param [groupId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> atThePosition( Integer groupId);
+    List<HrBriefchapter> atThePosition( Integer groupId, String groupName);
     /**
      * 撤销投诉
      * @Author lushuaiyu
@@ -364,7 +363,7 @@ public interface JobSearchHomePageService {
 
 
      /**
-      * 求职端 求职表 我的求职表 确认报名
+      * 求职端 求职表 我的求职表 确认报名 废弃
       * @Author lushuaiyu
       * @Description //TODO
       * @Date 19:46 2019/7/22
@@ -381,7 +380,7 @@ public interface JobSearchHomePageService {
      * @Param [status]
      * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
      **/
-    List<ComplaintDto> creditCenter(Integer status);
+    List<ComplaintDto> creditCenter(Integer status, Integer type);
 
     /** 投诉页面 前端选择内容
      * @Author lushuaiyu
@@ -390,7 +389,7 @@ public interface JobSearchHomePageService {
      * @Param [typeId, userId, brieId, dictionary]
      * @return java.util.Map<java.lang.String,java.lang.Object>
      **/
-    Map<String, List<ComplaintPage>> complaintPage(Integer typeId, Integer userId, Integer brieId, Integer dictionary);
+    Map<String, Object> complaintPage(Integer typeId, Integer userId, Integer brieId, Integer dictionary);
 
 
 

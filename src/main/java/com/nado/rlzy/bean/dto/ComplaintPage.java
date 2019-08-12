@@ -1,5 +1,6 @@
 package com.nado.rlzy.bean.dto;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
+@ApiModel
 public class ComplaintPage {
     @ApiModelProperty(value = "求职者 || 推荐人")
     private String userName;

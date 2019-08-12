@@ -2,7 +2,6 @@ package com.nado.rlzy.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.base.BaseController;
-import com.nado.rlzy.bean.dto.ComplaintDto;
 import com.nado.rlzy.bean.dto.PersonCoDto;
 import com.nado.rlzy.bean.model.CommonResult;
 import com.nado.rlzy.bean.model.Result;
@@ -247,7 +246,7 @@ public class PersonCenterController extends BaseController {
     }
 
     /**
-     * 投诉记录详情
+     * 求职端 信用中心 查看投诉详情
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.bean.dto.ComplaintDto>
      * @Author lushuaiyu
@@ -257,11 +256,14 @@ public class PersonCenterController extends BaseController {
      **/
     @RequestMapping(value = "complaint")
     @ResponseBody
-    @ApiOperation(value = "投诉记录排行", notes = "查询投诉记录", httpMethod = "POST")
-    @ApiImplicitParam(value = "complaintId", name = "投诉记录id", dataType = "Integer", required = true)
-    public Result<ComplaintDto> complaint(Integer complaintId) {
-        List<ComplaintDto> complaint = service.complaint(complaintId);
-        Result<ComplaintDto> result = new Result<>();
+    @ApiOperation(value = "求职端 信用中心 查看投诉详情", notes = "求职端 信用中心 查看投诉详情", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "complaintId", name = "投诉记录id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "类型id 1 代招单位下的单位 2 招聘单位", dataType = "Integer", required = true)
+    })
+    public ResultJson complaint(Integer complaintId, Integer type) {
+        HashMap<String, Object> complaint = service.complaint(complaintId, type);
+        ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(complaint);

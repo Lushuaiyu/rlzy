@@ -9,7 +9,10 @@ import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.EditBriefchapterQuery;
 import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
-import com.nado.rlzy.db.pojo.*;
+import com.nado.rlzy.db.pojo.HrDictionaryItem;
+import com.nado.rlzy.db.pojo.HrGroup;
+import com.nado.rlzy.db.pojo.HrSignUp;
+import com.nado.rlzy.db.pojo.Province;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.MyReleaseService;
 import io.swagger.annotations.Api;
@@ -22,7 +25,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
@@ -196,141 +198,143 @@ public class MyReleaseController extends BaseController {
 
     @RequestMapping(value = "reportNotSuitable")
     @ResponseBody
-    @ApiOperation(value = "招聘详情 已报名 不合适", notes = "招聘详情 已报名 不合适", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true)
-    public CommonResult reportNotSuitable(Integer signUpId) {
-        int count = service.reportNotSuitable(signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
+    @ApiOperation(value = "招聘详情 已报名", notes = "招聘详情 已报名 不合适", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true),
+            @ApiImplicitParam(value = "type", name = "1 招聘详情 已报名 不合适 2 邀请面试 3 直接录取 ", dataType = "integet", required = true)
+    })
+    public ResultJson reportNotSuitable(Integer signUpId, Integer type) {
+        ResultJson resultJson = new ResultJson();
+        if (type.equals(1)) {
+            //招聘详情 已报名 不合适
+            int count = service.reportNotSuitable(signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        } else if (type.equals(2)) {
+            //招聘详情 已报名 邀请面试
+            int count = service.recruitmentDetailsInvitationInterview(signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        } else if (type.equals(3)) {
+            //招聘详情 已报名 直接录取
+            int count = service.recruitmentDetailsDirectAdmission(signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+
+        }
+        return resultJson;
     }
-
-    @RequestMapping(value = "recruitmentDetailsInvitationInterview")
-    @ResponseBody
-    @ApiOperation(value = "招聘详情 已报名 邀请面试", notes = "招聘详情 已报名 邀请面试", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true)
-    public CommonResult recruitmentDetailsInvitationInterview(@NotNull(message = "signUpId 不能为空") Integer signUpId) {
-        int count = service.recruitmentDetailsInvitationInterview(signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
-
-    }
-
-    @RequestMapping(value = "recruitmentDetailsDirectAdmission")
-    @ResponseBody
-    @ApiOperation(value = "招聘详情 已报名 直接录取", notes = "招聘详情 已报名 直接录取", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true)
-    public CommonResult recruitmentDetailsDirectAdmission(Integer signUpId) {
-        int count = service.recruitmentDetailsDirectAdmission(signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
-    }
-
 
     @RequestMapping(value = "recruitmentInterviewd")
     @ResponseBody
-    @ApiOperation(value = "招聘详情 待面试 已面试", notes = "招聘详情 待面试 已面试", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true)
-    public CommonResult recruitmentInterviewd(Integer signUpId) {
-        int count = service.recruitmentInterviewd(signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
-    }
-
-    @RequestMapping(value = "recruitmentNoInterviewd")
-    @ResponseBody
-    @ApiOperation(value = "招聘详情 待面试 未面试", notes = "招聘详情 待面试 未面试", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true)
-    public CommonResult recruitmentNoInterviewd(Integer signUpId) {
-        int count = service.recruitmentNoInterviewd(signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
-    }
-
-    @RequestMapping(value = "recruitmentInterviewFailed")
-    @ResponseBody
-    @ApiOperation(value = "招聘详情 待面试 已面试 面试未通过", notes = "招聘详情 待面试 已面试 面试未通过", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true)
-    public CommonResult recruitmentInterviewFailed(Integer signUpId) {
-        int count = service.recruitmentInterviewFailed(signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
-    }
-
-
-    @RequestMapping(value = "recruitmentInterviewSuccess")
-    @ResponseBody
-    @ApiOperation(value = "招聘详情 待面试 已面试 面试已通过", notes = "招聘详情 待面试 已面试 面试已通过", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true)
-    public CommonResult recruitmentInterviewSuccess(Integer signUpId) {
-        int count = service.recruitmentInterviewSuccess(signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
+    @ApiOperation(value = "招聘详情 待面试", notes = "招聘详情 待面试", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true),
+            @ApiImplicitParam(value = "type", name = "1 招聘详情 待面试 已面试 2 未面试 3 已面试 面试未通过 |" +
+                    "招聘详情 待面试 已面试 面试未通过 | 4 招聘详情 待面试 已面试 面试已通过",
+                    dataType = "integet", required = true)
+    })
+    public ResultJson recruitmentInterviewd(Integer signUpId, Integer type) {
+        ResultJson resultJson = new ResultJson();
+        if (type.equals(1)) {
+            // 招聘详情 待面试 已面试
+            int count = service.recruitmentInterviewd(signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        } else if (type.equals(2)) {
+            //招聘详情 待面试 未面试
+            int count = service.recruitmentNoInterviewd(signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        } else if (type.equals(3)) {
+            //招聘详情 待面试 已面试 面试未通过
+            int count = service.recruitmentInterviewFailed(signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        } else if (type.equals(4)) {
+            //招聘详情 待面试 已面试 面试已通过
+            int count = service.recruitmentInterviewSuccess(signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        }
+        return resultJson;
     }
 
     @RequestMapping(value = "notReported")
     @ResponseBody
-    @ApiOperation(value = "招聘详情 待报道 未报到", notes = "招聘详情 待报道 未报到", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true)
-    public CommonResult notReported(Integer signUpId) {
-        int count = service.notReported(signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
-    }
-
-    @RequestMapping(value = "reported")
-    @ResponseBody
-    @ApiOperation(value = "招聘详情 待报道 确认报道", notes = "招聘详情 待报道 确认报道", httpMethod = "POST")
-    @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true)
-    public CommonResult reported(Integer signUpId) {
-        int count = service.reported(signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
-    }
-
-    @RequestMapping(value = "noReportedReason")
-    @ResponseBody
-    @ApiOperation(value = "未报到原因", notes = "未报到原因", httpMethod = "POST")
+    @ApiOperation(value = "招聘详情 待报道", notes = "招聘详情 待报道", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true),
+            @ApiImplicitParam(value = "type", name = "1 招聘详情 待报道 未报到 2 招聘详情 待报道 确认报道 3 未报到原因 ", dataType = "integer", required = true),
             @ApiImplicitParam(value = "reason", name = "未报到原因", dataType = "integer", required = true)
     })
-    public CommonResult noReportedReason(Integer reason, Integer signUpId) {
-        int count = service.noReportedReason(reason, signUpId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
+    public ResultJson notReported(Integer signUpId, Integer type, Integer reason) {
+        ResultJson resultJson = new ResultJson();
+        if (type.equals(1)) {
+        int count = service.notReported(signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        } else if (type.equals(2)){
+            int count = service.reported(signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+
+        } else if (type.equals(3)){
+            int count = service.noReportedReason(reason, signUpId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        }
+        return resultJson;
     }
 
-    @RequestMapping(value = "rebate")
+    @RequestMapping(value = "rebatee")
     @ResponseBody
-    @ApiOperation(value = "招聘详情 待返佣 返佣计划", notes = "招聘详情 待返佣 返佣计划", httpMethod = "POST")
+    @ApiOperation(value = "招聘详情 待返佣", notes = "招聘详情 待返佣", httpMethod = "POST")
     @ApiImplicitParams({
+
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "sex", name = "性别", dataType = "integer", required = true)
-    })
-    public Result<HrSignUp> rebate(Integer userId, Integer sex) {
-        List<HrSignUp> list = service.rebate(userId, sex);
-        Result<HrSignUp> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
-        return result;
-    }
-
-    @RequestMapping(value = "noRebate")
-    @ResponseBody
-    @ApiOperation(value = "招聘详情 待返佣 没有返佣", notes = "招聘详情 待返佣 没有返佣", httpMethod = "POST")
-    @ApiImplicitParam(value = "rebateId", name = "返佣id", dataType = "integer", required = true)
-    public CommonResult noRebate(Integer rebateId) {
-        int count = service.noRebate(rebateId);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
-
-    }
-
-    @RequestMapping(value = "alreadyRebate")
-    @ResponseBody
-    @ApiOperation(value = "招聘详情 待返佣 返佣计划(如果返佣的是求职者本人 不需要signUpId 如果是推荐人推荐的求职者 则需要signUpId)", notes = "招聘详情 待返佣 返佣计划", httpMethod = "POST")
-    @ApiImplicitParams({
+            @ApiImplicitParam(value = "sex", name = "性别", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "type", name = "1 招聘详情 待返佣 查询返佣计划 2 招聘详情 待返佣 没有返佣" +
+                    "3招聘详情 待返佣 返佣计划(如果返佣的是求职者本人 不需要signUpId 如果是推荐人推荐的求职者 则需要signUpId)", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "rebateId", name = "性别", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "下面是返佣计划的入参", name = "下面是返佣计划的入参", dataType = "string", required = true),
             @ApiImplicitParam(value = "userId", name = "招聘单位 id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "addMoney", name = "增加的钱 和 减少的钱 必须保持一致", dataType = "BigDecimal", required = true),
             @ApiImplicitParam(value = "subtraction", name = "减少的钱 和添加的钱必须保持一致", dataType = "BigDecimal", required = true),
             @ApiImplicitParam(value = "rebateId", name = "返佣id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "signUpId", name = "报名表id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "typeId", name = "身份id", dataType = "integer", required = true)
-
     })
-    public CommonResult alreadyRebate(RebateQuery query) {
-        int count = service.rebate(query);
-        return CommonResult.success(count, RlzyConstant.OPS_SUCCESS_MSG);
+    public ResultJson rebate(RebateQuery query) {
+        ResultJson resultJson = new ResultJson();
+
+        if (query.getType().equals(1)) {
+        List<HrSignUp> list = service.rebatee(query.getUserId(), query.getSex());
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(list);
+        } else if (query.getType().equals(2)){
+            int count = service.noRebate(query.getRebateId());
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        } else if (query.getType().equals(3)){
+            int count = service.rebate(query);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        }
+        return resultJson;
     }
 
     @RequestMapping(value = "changeJobStatus")
@@ -348,7 +352,6 @@ public class MyReleaseController extends BaseController {
 
     /**
      * 根据类型查询前端选项内容
-     *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.Options>
      * @Author lushuaiyu
      * @Description //TODO
@@ -390,7 +393,7 @@ public class MyReleaseController extends BaseController {
 
     @RequestMapping(value = "selectGroupName")
     @ResponseBody
-    @ApiOperation(value = "", notes = "", httpMethod = "POST")
+    @ApiOperation(value = "查询招聘企业名称", notes = "查询招聘企业名称", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "type", name = "企业类型 5 招聘企业, 6 代招企业", dataType = "integer", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id 7是招聘企业 8 9 是代招企业")
@@ -402,9 +405,5 @@ public class MyReleaseController extends BaseController {
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(list);
         return result;
-
-
     }
-
-
 }

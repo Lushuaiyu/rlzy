@@ -31,5 +31,14 @@ public class RebateQuery {
 
     @ApiModelProperty(value = "")
     private Integer rebateId;
+    /**
+     * 性别
+     */
+     private Integer sex;
+
+    /**
+     * 类型
+     */
+    private Integer type;
 
 }
