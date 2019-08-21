@@ -28,7 +28,15 @@ public class Collect {
     @Column(name = "sign_up_id")
     private Integer signUpId;
 
+    @Column(name = "recruiter_id")
+   private Integer recruiterId;
+
+
+
+    /**
+     * 0 添加搜藏 1 取消搜藏
+     */
     @Transient
-    private Integer flag;
+    private Integer type;
 }
 

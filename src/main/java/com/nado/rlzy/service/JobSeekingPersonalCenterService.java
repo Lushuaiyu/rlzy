@@ -2,9 +2,9 @@ package com.nado.rlzy.service;
 
 import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrSignUp;
+import com.nado.rlzy.db.pojo.HrUser;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName 求职端个人中心
@@ -37,7 +37,7 @@ public interface JobSeekingPersonalCenterService {
 
 
     /**
-     * 查询我的报名表详情
+     * 求职端个人中心 查询我的报名表详情
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 19:19 2019/7/8
@@ -48,7 +48,7 @@ public interface JobSeekingPersonalCenterService {
 
 
     /**
-     * 查询我的报名表概览
+     * 求职端个人中心 查询我的报名表概览
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 19:41 2019/7/8
@@ -57,14 +57,32 @@ public interface JobSeekingPersonalCenterService {
      **/
     List<HrSignUp> selectSignUp( Integer userId);
 
-    /** 查询投诉人 投诉人是报名该简章的求职者
+
+    /**
+     * 查询本人的违规
      * @Author lushuaiyu
      * @Description //TODO
-     * @Date 13:56 2019/7/10
-     * @param briefChapterId 简章id
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     * @Date 15:33 2019/8/19
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrUser>
      **/
-    Map<Object, Object> searchSignUpUserName(Integer briefChapterId, Integer userId, Integer typeId);
+    List<HrUser> queryMyselfVillation(Integer userId);
+
+    /**
+     * 求职端 个人中心  推荐人推荐的求职者违规
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:28 2019/8/19
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrUser>
+     **/
+    List<HrUser> queryReferrerVillation(Integer userId);
+
+
+
+
+
+
 
 
 }

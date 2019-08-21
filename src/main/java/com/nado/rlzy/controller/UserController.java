@@ -124,8 +124,8 @@ public class UserController extends BaseController {
     @ApiOperation(value = "招聘端注册", notes = "招聘端注册", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "入参, 具体参数见上面", dataType = "RecruitmentSideRegisterQuery", required = true)
     public CommonResult registerUser(RecruitmentSideRegisterQuery query) {
-        String head = centerService.updateHead(query.getFile());
         //图片上传
+        String head = centerService.updateHead(query.getFile());
         query.setImageHead(head);
         int registerUser = service.registerUser(query);
         return CommonResult.success(registerUser, RlzyConstant.OPS_SUCCESS_MSG);
@@ -136,9 +136,9 @@ public class UserController extends BaseController {
     @ApiOperation(value = "求职端注册 完善信息", notes = "求职端注册 完善信息", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "入参, 具体参数见上面", dataType = "RecruitmentSideRegisterHobHuntingQuery", required = true)
     public CommonResult registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
-        //String head = centerService.updateHead(query.getFile());
+        String head = centerService.updateHead(query.getFile());
         // photo upload
-        query.setImageHead("ss");
+        query.setImageHead(head);
         int registerJobHunting = service.registerJobHunting(query);
         return CommonResult.success(registerJobHunting, RlzyConstant.OPS_SUCCESS_MSG);
     }

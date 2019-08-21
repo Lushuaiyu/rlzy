@@ -3,8 +3,11 @@ package com.nado.rlzy.service;
 import com.nado.rlzy.bean.frontEnd.JobListtFront;
 import com.nado.rlzy.bean.query.JobListQuery;
 import com.nado.rlzy.db.pojo.Collect;
+import com.nado.rlzy.db.pojo.HrSignUp;
+import com.nado.rlzy.db.pojo.HrUser;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName 招聘版首页
@@ -24,7 +27,7 @@ public interface RecruitmentHomePageService {
      * @Param [query]
      * @return java.util.List<com.nado.rlzy.bean.dto.JobListDto>
      **/
-    List<JobListtFront> selectJobListOverview(JobListQuery query);
+    List<HrSignUp> selectJobListOverview(JobListQuery query);
 
 
     /**
@@ -38,14 +41,14 @@ public interface RecruitmentHomePageService {
     List<JobListtFront> selectJobList(JobListQuery query);
 
     /**
-     * 添加收藏 概览
+     * 招聘端 个人中心 我的收藏 报名表信息 概览
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 18:22 2019/7/2
      * @Param []
      * @return java.util.List<com.nado.rlzy.bean.query.JobListQuery>
      **/
-    List<JobListtFront> selectCollectListOverview(Integer userId );
+    List<HrSignUp> selectCollectListOverview(Integer userId );
 
     /**
      * 添加收藏
@@ -67,7 +70,7 @@ public interface RecruitmentHomePageService {
      * @param  collect 收藏 对象 入参
      * @return void
      **/
-    void save(Collect collect);
+    int save(Collect collect);
 
     /**
      * 招聘端 取消收藏
@@ -77,6 +80,67 @@ public interface RecruitmentHomePageService {
      * @Param [collect]
      * @return void
      **/
-    void updateSignUpCollectStatus(Collect collect);
+    int updateSignUpCollectStatus(Collect collect);
+
+    /**
+     * 招聘端 首页简章
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:16 2019/8/14
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    Map<String, Object> recruitmentBriefchapter(Integer userId, Integer type);
+
+    /**
+     * 招聘端首页 推荐人列表概览
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:40 2019/8/15
+     * @Param [query, referrerQuery]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    List<HrUser> referrer(JobListQuery query);
+
+    /**
+     * 招聘端首页 推荐人列表详情
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:59 2019/8/15
+     * @Param [query]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrUser>
+     **/
+    List<HrUser> referrerDetails(Integer userId);
+
+    /**
+     * 招聘端求职者列表 添加搜藏
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:15 2019/8/15
+     * @Param [userId, signUpId]
+     * @return int
+     **/
+    int collectSignUPTable(Integer userId, Integer signUpId);
+
+    /**
+     * 招聘端求职者列表 取消搜藏 | 招聘端推荐人列表 取消搜藏
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:16 2019/8/15
+     * @Param [id]
+     * @return int
+     **/
+    int collectCancel(Integer id);
+
+    /**
+     * 招聘端推荐人列表 添加搜藏
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:48 2019/8/15
+     * @Param [userId]
+     * @return int
+     **/
+    int collectReferrer(Integer userId);
+
 
 }

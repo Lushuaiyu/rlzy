@@ -18,6 +18,9 @@ public interface CollectMapper extends Mapper<Collect> {
      **/
     int addBriefchapter(Collect record);
 
+
+
+
     /**
      * 取消收藏
      * @Author lushuaiyu
@@ -26,7 +29,8 @@ public interface CollectMapper extends Mapper<Collect> {
      * @Param
      * @return
      **/
-    int updateByPrimaryKeySelective(Collect record);
+    int updateByPrimaryKeySelecti(Collect record);
+
 
 
 

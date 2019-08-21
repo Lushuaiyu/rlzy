@@ -2,33 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nado.rlzy.db.mapper.ProvinceMapper">
     <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.Province">
-        <id column="id" property="id" jdbcType="INTEGER"/>
-        <result column="provinceID" property="provinceID" jdbcType="VARCHAR"/>
-        <result column="province" property="province" jdbcType="VARCHAR"/>
+        <result column="provinceId" property="provinceId" jdbcType="VARCHAR"/>
+        <result column="provinceName" property="provinceName" jdbcType="VARCHAR"/>
         <collection property="citys" resultMap="cityList" ofType="com.nado.rlzy.db.pojo.City"/>
 
     </resultMap>
     <resultMap type="com.nado.rlzy.db.pojo.City" id="cityList">
-        <id column="syId" property="id"/>
-        <result property="cityID" column="cityID"/>
-        <result property="city" column="city"/>
+        <result property="cityId" column="cityId"/>
+        <result property="cityName" column="cityName"/>
         <collection property="areas" resultMap="area" ofType="com.nado.rlzy.db.pojo.Area"/>
     </resultMap>
 
     <resultMap type="com.nado.rlzy.db.pojo.Area" id="area">
-        <id column="saId" property="id"/>
-        <result property="areaID" column="areaID"/>
-        <result property="area" column="area"/>
+        <result property="areaId" column="areaId"/>
+        <result property="areaName" column="areaName"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, provinceID, province
     </sql>
     <select id="getPCA" resultMap="BaseResultMap">
-        SELECT sa.id saId,sa.father saFather,sa.area,sa.areaID,yp.* FROM sp_hat_area
-		sa,(SELECT sy.id syId,sy.father syFather,sy.city,sy.cityID,sp.id
-		spId,sp.province,sp.provinceID
-		FROM sp_hat_city sy,sp_hat_province sp WHERE sy.father=sp.provinceID ) yp
-		WHERE sa.father=yp.cityID
+        SELECT t_area.areaid areaId,t_area.father areaFatherId,t_area.area areaName,t_pro_city.* FROM sp_hat_area
+		t_area,(SELECT t_city.cityId cityId,t_city.father cityFatherId,t_city.city cityName,t_province.provinceid
+		provinceId,t_province.province provinceName
+		FROM sp_hat_city t_city,sp_hat_province t_province WHERE t_city.father=t_province.provinceID ) t_pro_city
+		WHERE t_area.father=t_pro_city.cityId
     </select>
 
 </mapper>

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
 @Data
 @ApiModel(description = "编辑简章query")
 @AllArgsConstructor
+@NoArgsConstructor
 public class EditBriefchapterQuery {
     @ApiModelProperty(value = "编辑简章时 返佣的钱 男")
     private BigDecimal rebateNowMan;
@@ -61,6 +63,11 @@ public class EditBriefchapterQuery {
 
     @ApiModelProperty(value = "入职返佣 女")
     private BigDecimal entryWomen;
+
+    /**
+     *  1 代招单位 2 招聘单位
+     */
+    private Integer typp;
 
 
 }

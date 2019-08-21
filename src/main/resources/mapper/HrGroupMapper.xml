@@ -27,8 +27,13 @@
         <result column="Pid" property="pid" jdbcType="INTEGER"/>
         <result column="person_num" property="personNum" jdbcType="VARCHAR"/>
         <result column="co_policy" property="coPolicy" jdbcType="VARCHAR"/>
+        <result column="UserName" property="userName" jdbcType="VARCHAR"/>
+        <result column="violation_flag" property="violationFlag" jdbcType="VARCHAR"/>
         <!--        <collection property="hriefchapter" resultMap="rebaterecord" ofType="com.nado.rlzy.db.pojo.HrRebaterecord"/>-->
-
+        <collection property="deliveryrecords" resultMap="deliveryrecordsMap" ofType="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord"/>
+    </resultMap>
+    <resultMap id="deliveryrecordsMap" type="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord">
+        <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
     </resultMap>
 
 
@@ -46,7 +51,7 @@
         b.id as brId,
         gr.id
         from hr_group grr
-        left join hr_briefchapter b on grr.CertifierId = b.userId and b.DeleteFlag = 0
+        left join hr_briefchapter b on grr.CertifierId = b.userId and b.briefChapterStatus = 0
         left join hr_group gr on b.userId = gr.CertifierId and gr.DeleteFlag = 0
         <where>
             grr.DeleteFlag = 0
@@ -57,18 +62,20 @@
         </where>
     </select>
     <select id="selectGroupName" resultType="hrGroup">
-        select g.Id, g.GroupName
-        from hr_group g
-        left join hr_user u on g.CertifierId = u.id and u.DeleteFlag = 0
-        <where>
-            g.DeleteFlag = 0
-            <if test="null != type">
-                and u.type = 6
-            </if>
-            <if test="null != userId">
-                and u.id = 8
-            </if>
-        </where>
+        select grr.Id, grr.GroupName
+        from hr_group grr
+        left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_user u on gr.CertifierId = u.Id and u.DeleteFlag = 0
+        where grr.DeleteFlag = 0
+        and grr.DeleteFlag = 0
+        <if test="null != type">
+            and u.type = #{type}
+        </if>
+        and grr.pid = gr.Id
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
     </select>
     <select id="queryAgentEnterprisePid" resultMap="BaseResultMap">
         select g.Id
@@ -128,13 +135,31 @@
         </if>
 
     </select>
-    <select id="queryTheAuditFailed" resultType="map">
-         select g.remark
-            from hr_group g
-                     left join hr_user u on g.CertifierId = u.Id and u.DeleteFlag = 0
-            where g.DeleteFlag = 0
-              and g.Status = 3
-              and u.id = #{userId}
+    <select id="queryTheAuditFailed" resultMap="BaseResultMap">
+          select g.remark
+            from hr_group g where DeleteFlag = 0 and Status = 3
+             <if test="null != groupId">
+             and  Id = #{groupId}
+             </if>
     </select>
+    <select id="selectGroupNameRecruitment" resultType="hrGroup">
+        select grr.GroupName, grr.Id
+        from hr_group grr
+        left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0
+        left join hr_user u on grr.CertifierId = u.Id and u.DeleteFlag = 0
+        where grr.DeleteFlag = 0
+        and grr.DeleteFlag = 0
+        and grr.type = 1
+        <if test="null != type">
+            and u.type = #{type}
+        </if>
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+    </select>
+
+
+
+
 
 </mapper>

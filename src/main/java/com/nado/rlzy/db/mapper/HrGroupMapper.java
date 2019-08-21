@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author lushuaiyu
@@ -26,7 +25,7 @@ public interface HrGroupMapper extends Mapper<HrGroup> {
     List<HrGroup> coHomePage(@Param("groupId") Integer groupId);
 
     /**
-     * 查询企业名字 招聘企业 代招企业
+     * 招聘端 发布简章 查询被招聘企业的名字
      *
      * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
      * @Author lushuaiyu
@@ -35,6 +34,16 @@ public interface HrGroupMapper extends Mapper<HrGroup> {
      * @Param [type, userId]
      **/
     List<HrGroup> selectGroupName(@Param("type") Integer type, @Param("userId") Integer userId);
+
+    /**
+     * 招聘端 发布简章 查询招聘企业的名字
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:56 2019/8/14
+     * @Param [type, userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
+     **/
+    List<HrGroup> selectGroupNameRecruitment(@Param("type") Integer type, @Param("userId") Integer userId);
 
     /**
      * 查询代招单位的pid
@@ -46,6 +55,9 @@ public interface HrGroupMapper extends Mapper<HrGroup> {
      * @Param [type, userId]
      **/
     List<HrGroup> queryAgentEnterprisePid(@Param("userId") Integer userId);
+
+
+
 
 
     /**
@@ -68,18 +80,21 @@ public interface HrGroupMapper extends Mapper<HrGroup> {
      * @Date 9:56 2019/8/3
      * @Param [userId]
      **/
-    List<PersonCoDto> queryPersonCORecruitment(Integer userId);
+    List<PersonCoDto> queryPersonCORecruitment(@Param("userId") Integer userId);
 
     /**
      * 认证失败说明
+     *
+     * @param groupId id
+     * @return java.util.Map<java.lang.String, java.lang.Object>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:18 2019/8/7
-     * @param userId 用户id
-     * @return java.util.Map<java.lang.String,java.lang.Object>
      **/
+     List<HrGroup> queryTheAuditFailed(@Param("groupId") Integer groupId);
 
-    Map<String, List<PersonCoDto>> queryTheAuditFailed(@Param("userId") Integer userId);
+
+
 
 
 }

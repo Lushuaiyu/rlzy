@@ -34,6 +34,11 @@ public class HrSignupDeliveryrecord {
     @Column(name = "job_status")
     private Integer jobStatus;
 
+    @Transient
+    private String interviewFont;
+
+    private String reportFont;
+
     /**
      * 未通过原因 0不合适 1未面试 2未报道 3面试未通过 4返佣中断
      */

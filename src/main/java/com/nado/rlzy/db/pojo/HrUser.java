@@ -34,6 +34,9 @@ public class HrUser {
     private Integer userId;
 
     @Transient
+    private Integer briefChapterId;
+
+    @Transient
     @ApiModelProperty(value = "身份类型id")
     private Integer typeId;
 
@@ -57,6 +60,11 @@ public class HrUser {
     @ApiModelProperty(value = "多个岗位的id")
     private String postIdStr;
 
+    /**
+     * 意向岗位
+     */
+    private String postName;
+
     @Column(name = "Mobile")
     @ApiModelProperty(value = "手机号码")
     private String mobile;
@@ -78,6 +86,45 @@ public class HrUser {
     @Column(name = "RecommendNoLower")
     @ApiModelProperty(value = "推荐人数下限")
     private Integer recommendNoLower;
+
+    /**
+     * 推荐人数
+     */
+    @Transient
+    private String recommend;
+
+    /**
+     * 已面试
+     */
+    @Transient
+    private Integer interviewed;
+
+    /**
+     * 已报到
+     */
+    private Integer arReported;
+    /**
+     * 未报到
+     */
+    @Transient
+    private Integer noReported;
+    /**
+     * 未面试
+     */
+    @Transient
+    private Integer noInterview;
+
+    /**
+     * 每个推荐人下的气滞者
+     */
+    @Transient
+    private Integer jobSeeker;
+
+    /**
+     * 违规记录
+     */
+    @Transient
+    private String violationRecord;
 
     @Column(name = "RecommendInfo")
     @ApiModelProperty(value = "推荐说明")
@@ -113,6 +160,8 @@ public class HrUser {
     @ApiModelProperty(value = "signUp 集合")
     private List<HrSignUp> signUp;
 
+    private List<HrGroup> groups;
+
     @Column(name = "agreeHelp")
     @ApiModelProperty(value = "是否同意平台帮助")
     private Integer agreeHelp;
@@ -141,6 +190,9 @@ public class HrUser {
     @Column(name = "expectedSalaryUpper")
     private BigDecimal expectedSalaryUpper;
 
+    @Transient
+    private String groupName;
+
     @ApiModelProperty(value = "期望薪资下限")
     @Column(name = "expectedSalaryLower")
     private BigDecimal expectedSalaryLower;
@@ -152,6 +204,29 @@ public class HrUser {
     @ApiModelProperty(value = "期望薪资")
     @Transient
     private String expectedSalary;
+
+    /**
+     * 违规状态 0 未违规 1 违规 (违规了就停权)
+     */
+    @Column(name = "violation_flag")
+    private Integer violationFlag;
+
+    /**
+     * 违规时间
+     */
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "violation_time")
+    private LocalDateTime violationTime;
+
+    @Transient
+    private List<HrSignupDeliveryrecord> deliveryrecords;
+
+    @Transient
+    private String inteview;
+
+    @Transient
+    private String report;
 
 
 }

@@ -6,7 +6,7 @@
         <result column="RecruitedCompanyId" property="recruitedcompanyId" jdbcType="INTEGER"/>
 
         <result column="Name" property="postName" jdbcType="VARCHAR"/>
-
+        <result column="PostId" property="postId" jdbcType="INTEGER"/>
         <result column="recruitingNo" property="recruitingNo" jdbcType="INTEGER"/>
         <result column="Rebate" property="rebate" jdbcType="INTEGER"/>
         <result column="avgSalary" property="avgSalary" jdbcType="INTEGER"/>
@@ -23,6 +23,8 @@
         <result column="interviewTime" property="interviewTime" jdbcType="TIMESTAMP"/>
         <result column="interviewAddress" property="interviewAddress" jdbcType="VARCHAR"/>
         <result column="interviewAddressFlag" property="interviewAddressFlag" jdbcType="INTEGER"/>
+        <result column="work_address" property="workAddress" jdbcType="VARCHAR"/>
+        <result column="clothingReguiement" property="clothingReguirementId" jdbcType="VARCHAR"/>
 
 
         <result column="registerTime" property="registerTime" jdbcType="TIMESTAMP"/>
@@ -56,6 +58,9 @@
         <result column="womenAgeId" property="womenAgeId" jdbcType="INTEGER"/>
         <result column="womenAge" property="womenAge" jdbcType="VARCHAR"/>
         <result column="manAge" property="manAge" jdbcType="VARCHAR"/>
+        <result column="manAge" property="manAge" jdbcType="VARCHAR"/>
+        <result column="women_num" property="womenNum" jdbcType="INTEGER"/>
+        <result column="man_num" property="manNum" jdbcType="INTEGER"/>
 
 
         <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP"/>
@@ -72,6 +77,7 @@
         <result column="rebateStatus" property="rebateStatus" jdbcType="INTEGER"/>
         <result column="readNum" property="readNum" jdbcType="INTEGER"/>
         <result column="no_pass_reason" property="noPassReason" jdbcType="INTEGER"/>
+        <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
         <result column="sex" property="sex" jdbcType="INTEGER"/>
 
 
@@ -106,235 +112,306 @@
         interviewAddress, registerTime, contractWay, contractTime, hireWay, Rebate, userId,
         Status, remark, CheckedTime, readNum, CreateTime, DeleteFlag, new_column
     </sql>
-    <insert id="save" parameterType="com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery">
+    <insert id="save" parameterType="com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery" keyProperty="id"
+            useGeneratedKeys="true">
         insert into hr_briefchapter
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                Id,
-            </if>
-            <if test="recruitedcompanyid != null">
+
+            <if test="recruitedCompanyId != null">
                 RecruitedCompanyId,
             </if>
-            <if test="postid != null">
+            <if test="postId != null">
                 PostId,
             </if>
-            <if test="jobnatureid != null">
-                jobNatureId,
-            </if>
-            <if test="recruitingno != null">
+            <if test="recruitingNo != null">
                 RecruitingNo,
             </if>
-            <if test="avgsalary != null">
+            <if test="avgSalary != null">
                 avgSalary,
             </if>
-            <if test="detailsalary != null">
+            <if test="detailSalary != null">
                 detailSalary,
             </if>
-            <if test="detailsalaryway != null">
+            <if test="detailSalaryWay != null">
                 detailSalaryWay,
             </if>
-            <if test="educationid != null">
+            <if test="educationId != null">
                 educationId,
             </if>
-            <if test="experienceid != null">
+            <if test="experienceId != null">
                 experienceId,
             </if>
-            <if test="welfareid != null">
+            <if test="welfareId != null">
                 welfareId,
             </if>
-            <if test="postdetail != null">
+            <if test="postDetail != null">
                 PostDetail,
             </if>
-            <if test="interviewtime != null">
+            <if test="interviewTime != null">
                 interviewTime,
             </if>
-            <if test="interviewaddress != null">
+            <if test="interviewAddress != null">
                 interviewAddress,
             </if>
-            <if test="registertime != null">
+            <if test="registerTime != null">
                 registerTime,
             </if>
-            <if test="contractway != null">
+            <if test="contractWay != null">
                 contractWay,
             </if>
-            <if test="contracttime != null">
+            <if test="contractTime != null">
                 contractTime,
             </if>
-            <if test="hireway != null">
+            <if test="hireWay != null">
                 hireWay,
             </if>
             <if test="rebate != null">
                 Rebate,
             </if>
-            <if test="userid != null">
+            <if test="userId != null">
                 userId,
             </if>
             <if test="status != null">
                 Status,
             </if>
-            <if test="remark != null">
-                remark,
-            </if>
-            <if test="checkedtime != null">
+
+            <if test="checkedTime != null">
                 CheckedTime,
             </if>
-            <if test="readnum != null">
+            <if test="readNum != null">
                 readNum,
             </if>
-            <if test="createtime != null">
+            <if test="createTime != null">
                 CreateTime,
             </if>
-            <if test="deleteflag != null">
-                DeleteFlag,
+            <if test="null != briefChapterStatus">
+                briefChapterStatus,
             </if>
-            <if test="newColumn != null">
-                new_column,
+            <if test="null != manNum">
+                man_num,
+            </if>
+            <if test="null != womenNum">
+                women_num,
+            </if>
+            <if test="null != manAgeId">
+                man_age_id,
+            </if>
+            <if test="null != womenAgeId">
+                women_age_id,
+            </if>
+            <if test="null != professionId">
+                profession_id,
+            </if>
+            <if test="null != workWayId">
+                work_way_id,
+            </if>
+            <if test="workTimeArrangeId">
+                work_time_arrange_id,
+            </if>
+            <if test="null != clothingRequirementId">
+                clothing_requirement_id,
+            </if>
+            <if test="null != workAddress">
+                work_address,
+            </if>
+            <if test="null != hobbyId">
+                hobby_id,
+            </if>
+            <if test="null != overtimeTimeId">
+                overtime_times_id,
+            </if>
+            <if test="null != descriptionJobPhotoUrl">
+                description_job_photo_url,
+            </if>
+            <if test="null != noEmployerAddress">
+                no_employer_address,
+            </if>
+            <if test="null != employerCertificatePhotoUrl">
+                employer_certificate_photo_url,
+            </if>
+            <if test="null != contractWayDetailId">
+                contract_way_detail_id,
+            </if>
+            <if test="null != acceptRecommendedResume">
+                accept_recommended_resume
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=INTEGER},
+
+            <if test="recruitedCompanyId != null">
+                #{recruitedCompanyId},
             </if>
-            <if test="recruitedcompanyid != null">
-                #{recruitedcompanyid,jdbcType=INTEGER},
+            <if test="postId != null">
+                #{postId},
             </if>
-            <if test="postid != null">
-                #{postid,jdbcType=INTEGER},
+            <if test="recruitingNo != null">
+                #{recruitingNo},
             </if>
-            <if test="jobnatureid != null">
-                #{jobnatureid,jdbcType=VARCHAR},
+            <if test="avgSalary != null">
+                #{avgSalary},
             </if>
-            <if test="recruitingno != null">
-                #{recruitingno,jdbcType=INTEGER},
+            <if test="detailSalary != null">
+                #{detailSalary},
             </if>
-            <if test="avgsalary != null">
-                #{avgsalary,jdbcType=VARCHAR},
+            <if test="detailSalaryWay != null">
+                #{detailSalaryWay},
             </if>
-            <if test="detailsalary != null">
-                #{detailsalary,jdbcType=VARCHAR},
+            <if test="educationId != null">
+                #{educationId},
             </if>
-            <if test="detailsalaryway != null">
-                #{detailsalaryway,jdbcType=VARCHAR},
+            <if test="experienceId != null">
+                #{experienceId},
             </if>
-            <if test="educationid != null">
-                #{educationid,jdbcType=VARCHAR},
+            <if test="welfareId != null">
+                #{welfareId},
             </if>
-            <if test="experienceid != null">
-                #{experienceid,jdbcType=VARCHAR},
+            <if test="postDetail != null">
+                #{postDetail},
             </if>
-            <if test="welfareid != null">
-                #{welfareid,jdbcType=VARCHAR},
+            <if test="interviewTime != null">
+                #{interviewTime},
             </if>
-            <if test="postdetail != null">
-                #{postdetail,jdbcType=VARCHAR},
+            <if test="interviewAddress != null">
+                #{interviewAddress},
             </if>
-            <if test="interviewtime != null">
-                #{interviewtime,jdbcType=VARCHAR},
+            <if test="registerTime != null">
+                #{registerTime},
             </if>
-            <if test="interviewaddress != null">
-                #{interviewaddress,jdbcType=INTEGER},
+            <if test="contractWay != null">
+                #{contractWay},
             </if>
-            <if test="registertime != null">
-                #{registertime,jdbcType=VARCHAR},
+            <if test="contractTime != null">
+                #{contractTime,jdbcType=VARCHAR},
             </if>
-            <if test="contractway != null">
-                #{contractway,jdbcType=INTEGER},
-            </if>
-            <if test="contracttime != null">
-                #{contracttime,jdbcType=VARCHAR},
-            </if>
-            <if test="hireway != null">
-                #{hireway,jdbcType=INTEGER},
+            <if test="hireWay != null">
+                #{hireWay},
             </if>
             <if test="rebate != null">
-                #{rebate,jdbcType=TINYINT},
+                #{rebate},
             </if>
-            <if test="userid != null">
-                #{userid,jdbcType=INTEGER},
+            <if test="userId != null">
+                #{userId},
             </if>
             <if test="status != null">
-                #{status,jdbcType=INTEGER},
+                #{status},
             </if>
-            <if test="remark != null">
-                #{remark,jdbcType=VARCHAR},
+            <if test="checkedTime != null">
+                #{checkedTime},
             </if>
-            <if test="checkedtime != null">
-                #{checkedtime,jdbcType=TIMESTAMP},
+            <if test="readNum != null">
+                #{readNum},
             </if>
-            <if test="readnum != null">
-                #{readnum,jdbcType=INTEGER},
+            <if test="createTime != null">
+                #{createTime},
             </if>
-            <if test="createtime != null">
-                #{createtime,jdbcType=TIMESTAMP},
+            <if test="null != briefChapterStatus">
+                #{briefChapterStatus},
             </if>
-            <if test="deleteflag != null">
-                #{deleteflag,jdbcType=TINYINT},
+            <if test="null != manNum">
+                #{manNum},
             </if>
-            <if test="newColumn != null">
-                #{newColumn,jdbcType=INTEGER},
+            <if test="null != womenNum">
+                #{womenNum},
             </if>
+            <if test="null != manAgeId">
+                #{manAgeId},
+            </if>
+            <if test="null != womenAgeId">
+                #{womenAgeId},
+            </if>
+            <if test="null != professionId">
+                #{professionId},
+            </if>
+            <if test="null != workWayId">
+                #{workWayId},
+            </if>
+            <if test="workTimeArrangeId">
+                #{workTimeArrangeId},
+            </if>
+            <if test="null != clothingRequirementId">
+                #{clothingRequirementId},
+            </if>
+            <if test="null != workAddress">
+                #{workAddress},
+            </if>
+            <if test="null != hobbyId">
+                #{hobbyId},
+            </if>
+            <if test="null != overtimeTimeId">
+                #{overtimeTimeId},
+            </if>
+            <if test="null != descriptionJobPhotoUrl">
+                #{descriptionJobPhotoUrl},
+            </if>
+            <if test="null != noEmployerAddress">
+                #{noEmployerAddress},
+            </if>
+            <if test="null != employerCertificatePhotoUrl">
+                #{employerCertificatePhotoUrl},
+            </if>
+            <if test="null != contractWayDetailId">
+                #{contractWayDetailId},
+            </if>
+            <if test="null != acceptRecommendedResume">
+                #{acceptRecommendedResume}
+            </if>
+
         </trim>
     </insert>
     <update id="update" parameterType="com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery">
         update hr_briefchapter
         <set>
-            <if test="recruitedcompanyid != null">
-                RecruitedCompanyId = #{recruitedcompanyid,jdbcType=INTEGER},
+            <if test="recruitedCompanyId != null">
+                recruitedCompanyId = #{recruitedCompanyId,jdbcType=INTEGER},
             </if>
-            <if test="postid != null">
-                PostId = #{postid,jdbcType=INTEGER},
+            <if test="postId != null">
+                PostId = #{postId,jdbcType=INTEGER},
             </if>
-            <if test="jobnatureid != null">
-                jobNatureId = #{jobnatureid,jdbcType=VARCHAR},
+            <if test="avgSalary != null">
+                avgSalary = #{avgSalary,jdbcType=VARCHAR},
             </if>
-            <if test="recruitingno != null">
-                RecruitingNo = #{recruitingno,jdbcType=INTEGER},
+            <if test="detailSalary != null">
+                detailSalary = #{detailSalary,jdbcType=VARCHAR},
             </if>
-            <if test="avgsalary != null">
-                avgSalary = #{avgsalary,jdbcType=VARCHAR},
+            <if test="detailSalaryWay != null">
+                detailSalaryWay = #{detailSalaryWay,jdbcType=VARCHAR},
             </if>
-            <if test="detailsalary != null">
-                detailSalary = #{detailsalary,jdbcType=VARCHAR},
+            <if test="educationId != null">
+                educationId = #{educationId,jdbcType=VARCHAR},
             </if>
-            <if test="detailsalaryway != null">
-                detailSalaryWay = #{detailsalaryway,jdbcType=VARCHAR},
+            <if test="experienceId != null">
+                experienceId = #{experienceId,jdbcType=VARCHAR},
             </if>
-            <if test="educationid != null">
-                educationId = #{educationid,jdbcType=VARCHAR},
+            <if test="welfareId != null">
+                welfareId = #{welfareId,jdbcType=VARCHAR},
             </if>
-            <if test="experienceid != null">
-                experienceId = #{experienceid,jdbcType=VARCHAR},
-            </if>
-            <if test="welfareid != null">
-                welfareId = #{welfareid,jdbcType=VARCHAR},
-            </if>
-            <if test="postdetail != null">
-                PostDetail = #{postdetail,jdbcType=VARCHAR},
+            <if test="postDetail != null">
+                PostDetail = #{postDetail,jdbcType=VARCHAR},
             </if>
 
-            <if test="interviewtime != null">
-                interviewTime = #{interviewtime,jdbcType=VARCHAR},
+            <if test="interviewTime != null">
+                interviewTime = #{interviewTime,jdbcType=VARCHAR},
             </if>
-            <if test="interviewaddress != null">
-                interviewAddress = #{interviewaddress,jdbcType=INTEGER},
+            <if test="interviewAddress != null">
+                interviewAddress = #{interviewAddress,jdbcType=INTEGER},
             </if>
-            <if test="registertime != null">
-                registerTime = #{registertime,jdbcType=VARCHAR},
+            <if test="registerTime != null">
+                registerTime = #{registerTime,jdbcType=VARCHAR},
             </if>
-            <if test="contractway != null">
-                contractWay = #{contractway,jdbcType=INTEGER},
+            <if test="contractWay != null">
+                contractWay = #{contractWay,jdbcType=INTEGER},
             </if>
-            <if test="contracttime != null">
-                contractTime = #{contracttime,jdbcType=VARCHAR},
+            <if test="contractTime != null">
+                contractTime = #{contractTime,jdbcType=VARCHAR},
             </if>
-            <if test="hireway != null">
-                hireWay = #{hireway,jdbcType=INTEGER},
+            <if test="hireWay != null">
+                hireWay = #{hireWay,jdbcType=INTEGER},
             </if>
             <if test="rebate != null">
                 Rebate = #{rebate,jdbcType=TINYINT},
             </if>
-            <if test="userid != null">
-                userId = #{userid,jdbcType=INTEGER},
+            <if test="userId != null">
+                userId = #{userId,jdbcType=INTEGER},
             </if>
             <if test="status != null">
                 Status = #{status,jdbcType=INTEGER},
@@ -342,17 +419,59 @@
             <if test="remark != null">
                 remark = #{remark,jdbcType=VARCHAR},
             </if>
-            <if test="checkedtime != null">
-                CheckedTime = #{checkedtime,jdbcType=TIMESTAMP},
+            <if test="createTime != null">
+                CreateTime = #{createTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="readnum != null">
-                readNum = #{readnum,jdbcType=INTEGER},
+            <if test="null != briefChapterStatus">
+                briefChapterStatus = #{briefChapterStatus},
             </if>
-            <if test="createtime != null">
-                CreateTime = #{createtime,jdbcType=TIMESTAMP},
+            <if test="null != manNum">
+                man_num = #{manNum},
             </if>
-            <if test="deleteflag != null">
-                DeleteFlag = #{deleteflag,jdbcType=TINYINT},
+            <if test="null != womenNum">
+                women_num = #{womenNum},
+            </if>
+            <if test="null != manAgeId">
+                man_age_id = #{manAgeId},
+            </if>
+            <if test="null != womenAgeId">
+                women_age_id = #{womenAgeId},
+            </if>
+            <if test="null != professionId">
+                profession_id = #{professionId},
+            </if>
+            <if test="null != workWayId">
+                work_way_id = #{workWayId},
+            </if>
+            <if test="null != workTimeArrangeId">
+                work_time_arrange_id = #{workTimeArrangeId},
+            </if>
+            <if test="null != clothingRequirementId">
+                clothing_requirement_id = #{clothingRequirementId},
+            </if>
+            <if test="null != workAddress">
+                work_address = #{workAddress},
+            </if>
+            <if test="null != hobbyId">
+                hobby_id = #{hobbyId},
+            </if>
+            <if test="null != overtimeTimeId">
+                overtime_times_id = #{overtimeTimeId},
+            </if>
+            <if test="null != descriptionJobPhotoUrl">
+                description_job_photo_url = #{descriptionJobPhotoUrl},
+            </if>
+            <if test="null != noEmployerAddress">
+                no_employer_address = #{noEmployerAddress},
+            </if>
+            <if test="null != employerCertificatePhotoUrl">
+                employer_certificate_photo_url = #{employerCertificatePhotoUrl},
+            </if>
+            <if test="null != contractWayDetailId">
+                contract_way_detail_id = #{contractWayDetailId},
+            </if>
+            <if test="null != acceptRecommendedResume">
+                accept_recommended_resume = #{acceptRecommendedResume},
             </if>
         </set>
         where Id = #{id,jdbcType=INTEGER}
@@ -367,7 +486,7 @@
                 women_num = #{womenNum}
             </if>
             <where>
-                DeleteFlag = 0
+                briefChapterStatus = 0
                 <if test="null != status">
                     and Status = #{status}
                 </if>
@@ -383,7 +502,7 @@
         <set>
             Status = 0
             <where>
-                DeleteFlag = 0
+                briefChapterStatus = 0
                 <if test="null != briefchapter">
                     and Id = #{briefchapter}
                 </if>
@@ -395,12 +514,15 @@
         <set>
             RecruitingNo = RecruitingNo - #{number}
             <where>
-                DeleteFlag = 0
+                briefChapterStatus = 0
                 <if test="null != briefchapter">
                     and Id = #{briefchapter}
                 </if>
             </where>
         </set>
+    </update>
+    <update id="updateAA" parameterType="com.nado.rlzy.bean.query.EditBriefchapterQuery">
+        update hr_briefchapter set man_num = #{manNumNow}, women_num = #{womenNumNow} where Id = #{briefchapter}
     </update>
     <select id="queryBriefcharpterDtoByParams" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
@@ -431,13 +553,13 @@
         re.status
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id and gr.type = 0
         <if test="null != recruitedCompany and '' != recruitedCompany">
             and grr.GroupName like concat('%', #{recruitedCompany}, '%')
@@ -512,7 +634,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         <if test="null != certifier and '' != certifier">
             and grr.GroupName = #{certifier}
         </if>
@@ -534,7 +656,10 @@
         grr.GroupAddress as groupAddress,
         br.avgSalary as avgSalary,
         br.detailSalary as detailSalary,
-        br.detailSalaryWay as detailSalaryWay,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
         br.hireWay as hireWay,
 
         (SELECT GROUP_CONCAT(d.name)
@@ -580,8 +705,10 @@
         and d.pId = 15) as hobby,
         br.no_employer_address as noEmployerAddress,
         br.PostDetail as postDetail,
+        br.work_address,
         br.registerTime as registerTime,
         br.interview_address as interviewAddress,
+        br.interviewTime,
         br.no_employer_address as noEmployerAddress,
         br.registerTime as registerTime,
         br.contractWay as contractWay,
@@ -607,17 +734,17 @@
         re.RebateFemale,
         re.status,
         si.id as signUpId,
-        br.man_num as manNum,
-        br.women_num as womenNum
+        br.man_num,
+        br.women_num
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         and gr.type = 0
         <if test="null != sex">
@@ -709,13 +836,13 @@
         re.status
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id and gr.type = 0 and br.work_time_arrange_id = 1 order by rebateOne desc
 
     </select>
@@ -748,13 +875,13 @@
         re.status
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id and gr.type = 0 and br.welfareId like concat('%', 1, '%') order by rebateOne desc
 
     </select>
@@ -788,13 +915,13 @@
         br.Rebate          as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         and gr.type = 0
         order by rebateOne desc, br.CreateTime asc
@@ -835,13 +962,13 @@
         br.Rebate as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 13
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         and gr.type = 0
         <if test="null!= contractWayDetailId1">
@@ -883,13 +1010,13 @@
         br.Rebate                 as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
        and grr.pid = gr.Id
         and gr.type = 0
         order by br.avgSalary desc
@@ -926,13 +1053,13 @@
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
         left join
-        hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0 and u.type = 5
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0 and grr.DeleteFlag = 0 and u.type = 6
+        hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0 and u.type = 5
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0 and grr.groupStatus = 0 and u.type = 6
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0 and br.contractWay = 1 order by rebateOne desc
+        where br.briefChapterStatus = 0 and br.contractWay = 1 order by rebateOne desc
 
 
 
@@ -969,13 +1096,13 @@
         br.Rebate                 as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0 and
+        where br.briefChapterStatus = 0 and
         (br.hireWay = 1
         or br.hireWay = 0)
         and grr.pid = gr.Id
@@ -1012,12 +1139,12 @@
         u.Id
         from collect c
         left join hr_user u on c.user_id = u.id and u.DeleteFlag = 0
-        left join hr_briefchapter br on br.id = c.briefchapter_id and br.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         and gr.type = 0
         <if test="null != type">
@@ -1030,16 +1157,16 @@
 
     </select>
     <select id="atThePosition" resultMap="BaseResultMap">
-        select dii.Name           as postName,
+        select dii.Name as postName,
         br.id,
         gr.id,
-        grr.GroupName      as certifier,
-        gr.GroupName       as recruitedCompany,
-        br.RecruitingNo    as recruitingNo,
-        gr.GroupAddress    as groupAddress,
-        br.avgSalary       as avgSalary,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
         br.Rebate,
-        br.detailSalary    as detailSalary,
+        br.detailSalary as detailSalary,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
@@ -1047,30 +1174,30 @@
         (case
         when (re.RebateMale >= re.RebateFemale) then re.RebateMale
         when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end)           as rebateOne,
+        end) as rebateOne,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        re.RebateType      as rebateType,
+        re.RebateType as rebateType,
         re.BriefChapterId,
         re.RebateTime,
         re.RebateMale,
         re.RebateFemale,
         re.status,
-        br.Rebate          as rebateStatus
+        br.Rebate as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         <if test="null != groupName">
-        and gr.GroupName = #{groupName}
+            and gr.GroupName = #{groupName}
         </if>
         <if test="null != groupId">
             and gr.id = #{groupId}
@@ -1097,18 +1224,19 @@
         re.RebateFemale,
         re.RebateMale,
         re.BriefChapterId,
+        re.RebateTime,
         si.sex,
         br.registerTime,
         br.interviewTime,
         sd.no_pass_reason
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         and gr.type = 0
         <if test="null != signUpStatus">
@@ -1126,6 +1254,8 @@
         br.avgSalary as avgSalary,
         br.Rebate,
         br.Status,
+        sd.no_pass_reason,
+        sd.job_status,
         br.detailSalary as detailSalary,
         br.detailSalaryWay as detailSalaryWay,(SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
@@ -1148,13 +1278,13 @@
         ifnull(re.BriefChapterId, 0)
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         <if test="null != userId">
             and u.id = #{userId}
@@ -1195,12 +1325,12 @@
         re.status
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         inner join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and u.type = 5
         <if test="null != certifier and '' != certifier">
             and gr.GroupName like concat('%', #{certifier}, '%')
@@ -1273,7 +1403,10 @@
         gr.GroupAddress as groupAddress,
         br.avgSalary as avgSalary,
         br.detailSalary as detailSalary,
-        br.detailSalaryWay as detailSalaryWay,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
         br.hireWay as hireWay,
 
         (SELECT GROUP_CONCAT(d.name)
@@ -1321,9 +1454,11 @@
         br.PostDetail as postDetail,
         br.registerTime as registerTime,
         br.interview_address as interviewAddress,
+        br.interviewTime,
         br.no_employer_address as noEmployerAddress,
         br.registerTime as registerTime,
         br.contractWay as contractWay,
+        br.work_address,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.contract_way_detail_id)
@@ -1345,15 +1480,17 @@
         re.RebateMale,
         re.RebateFemale,
         re.status,
-        si.id as signUpId
+        si.id as signUpId,
+        br.man_num,
+        br.women_num
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
-        where br.DeleteFlag = 0 and u.type = 5
+        where br.briefChapterStatus = 0 and u.type = 5
         <if test="null != sex">
             and si.sex = #{sex}
         </if>
@@ -1443,12 +1580,12 @@
         br.Rebate          as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and u.type = 5
         order by rebateOne desc, br.CreateTime asc
         limit 0,10
@@ -1488,12 +1625,12 @@
         br.Rebate as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 13
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and u.type = 5
         <if test="null != contractWayDetailId1">
             and br.contract_way_detail_id in
@@ -1534,12 +1671,12 @@
         br.Rebate                 as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and u.type = 5
         order by br.avgSalary desc
     </select>
@@ -1574,13 +1711,13 @@
         br.Rebate                 as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and br.contractWay = 1
         and grr.pid = gr.Id
         order by rebateOne desc
@@ -1616,12 +1753,12 @@
         br.Rebate                 as rebateStatus
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0 and
+        where br.briefChapterStatus = 0 and
         (br.hireWay = 1
         or br.hireWay = 0)
         and u.type = 5
@@ -1655,12 +1792,12 @@
         re.status,
         u.Id
         from collect c
-        left join hr_briefchapter br on br.id = c.briefchapter_id and br.DeleteFlag = 0
+        left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0
         left join hr_user u on c.user_id = u.id and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         <if test="null != type">
             and u.type = #{type}
         </if>
@@ -1700,12 +1837,12 @@
         re.status
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         inner join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and u.type = 5 and br.work_time_arrange_id = 1 order by rebateOne desc
 
     </select>
@@ -1738,12 +1875,12 @@
         re.status
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         inner join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and u.type = 5 and br.welfareId like concat('%', 1, '%') order by rebateOne desc
 
     </select>
@@ -1764,6 +1901,7 @@
         re.CreateTime,
         re.RebateFemale,
         re.RebateMale,
+        re.RebateTime,
         re.BriefChapterId,
         si.sex,
         br.registerTime,
@@ -1771,11 +1909,11 @@
         sd.no_pass_reason
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0 and u.type = 5
+        where br.briefChapterStatus = 0 and u.type = 5
         <if test="null != signUpStatus">
             and sd.job_status = #{signUpStatus}
         </if>
@@ -1809,17 +1947,19 @@
         re.RebateTime,
         re.RebateMale,
         re.RebateFemale,
+        sd.job_status,
+        sd.no_pass_reason,
         re.status,
         br.Rebate as rebateStatus,
         ifnull(re.BriefChapterId, 0)
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and gr.type = 1
         <if test="null != userId">
             and u.id = #{userId}
@@ -1842,7 +1982,10 @@
         grr.GroupAddress as groupAddress,
         br.avgSalary as avgSalary,
         br.detailSalary as detailSalary,
-        br.detailSalaryWay as detailSalaryWay,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
         br.hireWay as hireWay,
 
         (SELECT GROUP_CONCAT(d.name)
@@ -1890,6 +2033,7 @@
         br.PostDetail as postDetail,
         br.registerTime as registerTime,
         br.interview_address as interviewAddress,
+        br.interviewTime,
         br.no_employer_address as noEmployerAddress,
         br.registerTime as registerTime,
         br.contractWay as contractWay,
@@ -1919,13 +2063,13 @@
         br.women_num as womenNum
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
-        where br.DeleteFlag = 0
+        where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         and gr.type = 0
         <if test="null != recruitedCompany">
@@ -1988,6 +2132,7 @@
         br.PostDetail as postDetail,
         br.registerTime as registerTime,
         br.interview_address as interviewAddress,
+
         br.no_employer_address as noEmployerAddress,
         br.registerTime as registerTime,
         br.contractWay as contractWay,
@@ -2016,18 +2161,114 @@
         si.id as signUpId
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
 
-        where br.DeleteFlag = 0 and u.type = 5
+        where br.briefChapterStatus = 0 and u.type = 5
         <if test="null != recruitedCompany">
             and gr.GroupName like concat('%', #{recruitedCompany}, '%')
         </if>
 
     </select>
+    <select id="queryRecruitingNo" resultMap="BaseResultMap">
+        select RecruitingNo from hr_briefchapter where briefChapterStatus = 0
+        <if test="null != briefchapter">
+            and Id = #{briefchapter}
+        </if>
+    </select>
+    <select id="representativeUnit" resultMap="BaseResultMap">
+        select
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.PostId,
+        br.Id,
+        grr.GroupName as recruitedCompany,
+        gr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        grr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status
+        from hr_briefchapter br
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
 
-
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.briefChapterStatus = 0
+        and grr.pid = gr.Id
+        and gr.type = 0
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+    </select>
+    <select id="recruitmentUnit" resultMap="BaseResultMap">
+        select
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.PostId,
+        br.Id,
+        gr.GroupName as recruitedCompany,
+        gr.GroupAddress as groupAdress,
+        br.RecruitingNo as recruitingNo,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        (case
+        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
+        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
+        end) as rebateOne,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        re.RebateType as rebateType,
+        re.BriefChapterId,
+        re.RebateTime,
+        re.RebateMale,
+        re.RebateFemale,
+        re.status
+        from hr_briefchapter br
+        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
+        where br.briefChapterStatus = 0
+        and u.type = 5
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+    </select>
 </mapper>

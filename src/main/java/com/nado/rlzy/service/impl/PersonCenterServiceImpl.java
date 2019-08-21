@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import tk.mybatis.mapper.entity.Example;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -61,11 +60,6 @@ public class PersonCenterServiceImpl implements PersonCenterService {
 
     public static final Logger logger = LoggerFactory.getLogger(PersonCenterServiceImpl.class);
 
-    @Override
-    public Map<String, List<PersonCoDto>> queryTheAuditFailed(Integer userId) {
-        return hrGroupMapper.queryTheAuditFailed(userId);
-
-    }
 
     @Override
     public int myFeedback(String content, Integer userId, String name, String phone) {
@@ -90,15 +84,19 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
-    public Map<String, Object> queryPersonCo(Integer userId) {
-
-        List<PersonCoDto> coDtos = hrGroupMapper.queryPersonCo(userId);
-        List<PersonCoDto> list = hrGroupMapper.queryPersonCORecruitment(userId);
-        List<PersonCoDto> collect = coDtos.stream().collect(Collectors.toList());
-        List<PersonCoDto> dtos = list.stream().collect(Collectors.toList());
+    public Map<String, Object> queryPersonCo(Integer userId, Integer type) {
         HashMap<String, Object> map = new HashMap<>(16);
-        map.put("queryPersonCo", collect);
-        map.put("queryPersonCORecruitment", dtos);
+        if (type.equals(1)) {
+            //招聘单位
+            List<PersonCoDto> list = hrGroupMapper.queryPersonCORecruitment(userId);
+            List<PersonCoDto> dtos = list.stream().collect(Collectors.toList());
+            map.put("queryPersonCORecruitment", dtos);
+        } else {
+            //代招单位
+            List<PersonCoDto> coDtos = hrGroupMapper.queryPersonCo(userId);
+            List<PersonCoDto> collect = coDtos.stream().collect(Collectors.toList());
+            map.put("queryPersonCo", collect);
+        }
         return map;
 
 
@@ -106,14 +104,27 @@ public class PersonCenterServiceImpl implements PersonCenterService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int addCo(AddCoQuery query) {
-
-        List<HrGroup> hrGroups = hrGroupMapper.queryAgentEnterprisePid(8);
+    public Map<String, Object> addCo(AddCoQuery query) {
+        Map<String, Object> map = new HashMap<>();
         //参数校验
         checkNullParams(query.getCoName(), query.getCoAddress(),
                 query.getCompanyProfile(), query.getBusLicense());
-        Integer id = hrGroups.get(0).getId();
 
+        if (query.getType().equals(1)) {
+            Integer groupId = addCoParams(query);
+            map.put("queryAgentEnterprisePid", groupId);
+        } else {
+            List<HrGroup> coDtos = hrGroupMapper.queryTheAuditFailed(query.getGroupId());
+            map.put("queryTheAuditFailed", coDtos);
+        }
+        return map;
+
+
+    }
+
+    private int addCoParams(AddCoQuery query) {
+        List<HrGroup> hrGroups = hrGroupMapper.queryAgentEnterprisePid(query.getUserId());
+        Integer id = hrGroups.get(0).getId();
         //添加
         HrGroup hrGroup = new HrGroup();
         hrGroup.setGroupname(query.getCoName());
@@ -124,9 +135,8 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         hrGroup.setCertifierid(query.getUserId());
         boolean b = hrGroupMapper.insertSelective(hrGroup) < 1;
         Assert.isFalse(b, RlzyConstant.OPS_FAILED_MSG);
-        //添加成功 返回1 失败 返回0
-        Integer result = b == false ? 1 : 0;
-        return result;
+        return hrGroup.getId();
+
     }
 
 
@@ -208,9 +218,9 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
-    public HashMap<Object, Object> searchComplaintRecord(Integer userId, Integer typeId) {
-        List<ComplaintDto> collect = complaintMapper.searchComplaintRecord(userId, typeId).stream().collect(Collectors.toList());
-        List<ComplaintDto> dtos = complaintMapper.searchComplaintRecordMyself(userId, typeId)
+    public HashMap<Object, Object> searchComplaintRecord(Integer userId) {
+        List<ComplaintDto> collect = complaintMapper.searchComplaintRecord(userId).stream().collect(Collectors.toList());
+        List<ComplaintDto> dtos = complaintMapper.searchComplaintRecordMyself(userId)
                 .stream()
                 .collect(Collectors.toList());
         HashMap<Object, Object> map = new HashMap<>();
@@ -223,16 +233,18 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     public HashMap<String, Object> complaint(Integer complaintId, Integer type) {
         HashMap<String, Object> map = new HashMap<>();
         if (type.equals(1)) {
-            //代招单位下的单位
+            //代招单位
             List<ComplaintDto> collect = complaintMapper.complaint(complaintId).stream().collect(Collectors.toList());
             map.put("complaint", collect);
-        } else if (type.equals(2)){
-        //招聘单位
-        List<ComplaintDto> list = complaintMapper.complaintRecruitment(complaintId);
-        map.put("complaintRecruitment", list);
+        } else if (type.equals(2)) {
+            //招聘单位
+            List<ComplaintDto> list = complaintMapper.complaintRecruitment(complaintId);
+            map.put("complaintRecruitment", list);
         }
+
         return map;
     }
+
 
     private void editInformationSignUp(EditPersonDataQuery query) {
         HrSignUp up = new HrSignUp();
@@ -242,7 +254,9 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         up.setGraduationTime(query.getGraduationTime());
         up.setProfession(query.getProfession());
         up.setRegistrationPositionId(query.getRegistrationPositionId());
-        up.setArrivalTime(query.getArrivalTime());
+        String arrivalTime = query.getArrivalTime();
+        LocalDateTime localDateTime = StringUtil.strToLocalDateTime(arrivalTime);
+        up.setArrivalTime(localDateTime);
         up.setExpectedSalaryLower(query.getExpectedSalaryLower());
         up.setExpectedSalaryUpper(query.getExpectedSalaryUpper());
         up.setItIsPublic(query.getItIsPublic());
@@ -253,13 +267,7 @@ public class PersonCenterServiceImpl implements PersonCenterService {
 
     @Override
     public List<Feedback> feedback() {
-        //创建Example
-        Example example = new Example(Feedback.class);
-
-        //创建Criteria
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("deleteFlag", 0);
-        List<Feedback> list = feedbackMapper.selectByExample(example);
+        List<Feedback> list = feedbackMapper.feedbck();
         return list.stream()
                 .collect(Collectors.toList());
     }
@@ -269,6 +277,18 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         List<HrUser> list = userMapper.selectReferrerInfo(userId, typeId);
         return list.stream().collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<HrUser> collectReferrer(Integer userId) {
+        List<HrUser> hrUsers = userMapper.collectReferrer(userId);
+        return hrUsers.stream()
+                .map(dto -> {
+                    Integer recommendNoLower = dto.getRecommendNoLower();
+                    Integer recommendNoUpper = dto.getRecommendNoUpper();
+                    dto.setRecommend(recommendNoLower + "-" + recommendNoUpper + "人");
+                    return dto;
+                }).collect(Collectors.toList());
     }
 
     private void editInformation(EditPersonDataQuery query, String url) {

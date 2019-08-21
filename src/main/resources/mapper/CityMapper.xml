@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.City" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="cityID" property="cityId" jdbcType="VARCHAR" />
-    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="city" property="cityName" jdbcType="VARCHAR" />
     <result column="father" property="father" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >

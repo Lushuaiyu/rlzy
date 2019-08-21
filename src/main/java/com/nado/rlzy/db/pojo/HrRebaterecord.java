@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -17,31 +20,49 @@ import java.util.Date;
  * @return
  **/
 @Data
+@Table(name = "hr_rebaterecord")
 public class HrRebaterecord {
+    @Column(name = "Id")
     private Integer id;
 
+    @Column(name = "BriefChapterId")
     private Integer briefchapterId;
 
-
-
+    @Column(name = "RebateType")
     private Integer rebateType;
 
-    private String rebateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "RebateTime")
+    private Date rebateTime;
 
+    @Column(name =  "RebateMale")
     private BigDecimal rebateMale;
 
+    @Column(name = "RebateFemale")
     private BigDecimal rebateFemale;
 
+    @Transient
     private BigDecimal rebateOne;
 
+    /**
+     * 具体到某个人 前台显示的返佣金额
+     */
+    @Transient
+    private String rebateMon;
+
+    @Column(name = "status")
     private Integer status;
 
+    @Column(name = "DeleteFlag")
     private Byte deleteFlag;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "CreateTime")
     private Date createTime;
 
+    @Column(name = "rebate_variable")
     private BigDecimal rebateVariable;
 
 

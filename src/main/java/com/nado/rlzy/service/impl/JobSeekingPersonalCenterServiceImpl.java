@@ -1,10 +1,13 @@
 package com.nado.rlzy.service.impl;
 
 import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
+import com.nado.rlzy.db.mapper.HrGroupMapper;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
+import com.nado.rlzy.db.mapper.HrUserMapper;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.db.pojo.HrSignUp;
+import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
 import com.nado.rlzy.utils.CollectorsUtil;
 import com.nado.rlzy.utils.StringUtil;
@@ -12,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +35,12 @@ public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCe
     @Autowired
     private HrSignUpMapper signUpMapper;
 
+    @Autowired
+    private HrUserMapper userMapper;
+
+    @Autowired
+    private HrGroupMapper groupMapper;
+
     @Override
     public List<HrBriefchapter> recruitmentBrochureCollectionRecruitment(Integer userId, Integer type) {
         return mapper.recruitmentBrochureCollectionRecruitment(userId, type)
@@ -48,9 +56,10 @@ public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCe
                         if (v != null) {
                             s = "返" + s + "元";
                             dto.setRebateRecord(s);
-                        }else {
+                        } else {
                             dto.setRebateRecord("无返佣");
-                        }                    });
+                        }
+                    });
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -72,9 +81,10 @@ public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCe
                         if (v != null) {
                             s = "返" + s + "元";
                             dto.setRebateRecord(s);
-                        }else {
+                        } else {
                             dto.setRebateRecord("无返佣");
-                        }                    });
+                        }
+                    });
                     return dto;
                 }).collect(Collectors.toList());
 
@@ -85,19 +95,62 @@ public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCe
         return signUpMapper.selectSignUpTable(signId, userId).stream().collect(Collectors.toList());
     }
 
+
     @Override
     public List<HrSignUp> selectSignUp(Integer userId) {
         return signUpMapper.selectSignUp(userId).stream().collect(Collectors.toList());
     }
 
+
     @Override
-    public Map<Object, Object> searchSignUpUserName(Integer briefChapterId, Integer userId, Integer typeId) {
-        HashMap<Object, Object> map = new HashMap<>();
+    public List<HrUser> queryMyselfVillation(Integer userId) {
+        List<HrUser> list = userMapper.queryMyselfVillation(userId);
+        return list.stream()
+                .map(dto -> {
+                    dto.getDeliveryrecords()
+                            .stream().map(x -> {
+                        Integer jobStatus = x.getJobStatus();
+                        if (jobStatus.equals(8)) {
+                            //未面试
+                            x.setInterviewFont("未面试");
+                        }
+                        if (jobStatus.equals(9)) {
+                            //未报到
+                            x.setReportFont("未报到");
+                        }
+                        return x;
+                    }).collect(Collectors.toList());
+                    return dto;
+                }).collect(Collectors.toList());
+    }
 
-        if (typeId.equals(1)){
+    @Override
+    public List<HrUser> queryReferrerVillation(Integer userId) {
 
-        }
+        List<HrUser> list = userMapper.queryReferrerVillation(userId);
+        List<HrUser> users = list.stream()
+                .map(dto -> {
+                    Integer dtoUserId = dto.getUserId();
+                    Integer briefChapterId = dto.getBriefChapterId();
+                    List<HrUser> hrUsers = userMapper.queryJobStatus(dtoUserId, briefChapterId);
+                    hrUsers.stream()
+                            .map(d -> {
+                                long count = d.getDeliveryrecords().stream().filter(x -> x.getJobStatus() == 8).count();
+                                Integer inteviewe = (int) count;
+                                long count1 = d.getDeliveryrecords().stream().filter(xx -> xx.getJobStatus() == 9).count();
+                                Integer report = (int) count1;
 
-        return map;
+                                if (!(inteviewe.equals(0))) {
+                                    dto.setInteview(inteviewe + "人未面试");
+                                }
+                                if (!(report.equals(0))) {
+                                    dto.setReport(report + "人未报到");
+                                }
+                                return d;
+                            }).collect(Collectors.toList());
+                    return dto;
+                }).collect(Collectors.toList());
+        return users;
+
     }
 }

@@ -125,7 +125,9 @@ public class Test extends BaseTest {
 
         Integer a = 1;
         Integer b = 0;
-        HrSignUp hrSignUp = signUpMapper.SearchdirectAdmission(a, b);
+        Integer c = 4;
+
+        HrSignUp hrSignUp = signUpMapper.SearchdirectAdmission(a, b, c);
         BigDecimal value = hrSignUp.getValue();
         Date interviewTime = hrSignUp.getInterviewTime();
         System.out.println(interviewTime);

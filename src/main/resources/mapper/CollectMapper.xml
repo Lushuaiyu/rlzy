@@ -14,7 +14,7 @@
 
 
 
-    <insert id="addBriefchapter" parameterType="com.nado.rlzy.db.pojo.Collect" >
+    <insert id="addBriefchapter" parameterType="com.nado.rlzy.db.pojo.Collect" useGeneratedKeys="true" keyProperty="id" >
     insert into collect
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -59,7 +59,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nado.rlzy.db.pojo.Collect"  >
+
+  <update id="updateByPrimaryKeySelecti" parameterType="com.nado.rlzy.db.pojo.Collect"  >
     update collect
     <set >
       <if test="briefchapterId != null" >
@@ -80,23 +81,9 @@
       </if>
     </set>
     where
-     <if test="null != briefchapterId">
-       briefchapter_id = #{briefchapterId}
+     <if test="null != id">
+       id = #{id}
      </if>
-     <if test="null != userId">
-       and user_id = #{userId}
-     </if>
-     <if test="null != signUpId">
-       and sign_up_id = #{signUpId}
-     </if>
-     where
-     <if test="null != userId">
-     user_id = #{userId}
-     </if>
-     <if test="null != signUpId">
-     and sign_up_id = #{signUpId}
-     </if>
-        and delete_flag = 0
   </update>
 
 </mapper>

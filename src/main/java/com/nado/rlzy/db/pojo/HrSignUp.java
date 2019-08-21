@@ -25,6 +25,20 @@ public class HrSignUp {
     @Column(name = "id")
     private Integer id;
 
+    /**
+     * 1 本人 2 推荐人
+     */
+    @Transient
+    private Integer type;
+
+
+
+    /**
+     * 推荐人数
+     */
+    @Transient
+    private String recommend;
+
     @ApiModelProperty(value = "用户表Id(推荐人Id)")
     @Column(name = "user_id")
     private Integer userId;
@@ -72,7 +86,9 @@ public class HrSignUp {
 
     @ApiModelProperty(value = "到岗时间")
     @Column(name = "arrival_time")
-    private String arrivalTime;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy年MM月dd日")
+    private LocalDateTime arrivalTime;
 
     @ApiModelProperty(value = "期望薪资上限")
     @Column(name = "expected_salary_upper")
@@ -152,6 +168,17 @@ public class HrSignUp {
     @Transient
     private String recommendNoLower;
 
+    /**
+     * 推荐人名字
+     */
+    @Transient
+    private String recommendName;
+
+    /**
+     * 推荐人名字
+     */
+    private String commendName;
+
     @ApiModelProperty(value = "推荐人数上限")
     @Transient
     private String recommendNoUpper;
@@ -185,6 +212,15 @@ public class HrSignUp {
     @Transient
     private Integer interviewTimeFlag;
 
+    /**
+     * 未报名简章的求职者
+     */
+    @Transient
+    private Integer noSingUp;
+
+
+
+
     @ApiModelProperty(value = "报到时间标识")
     @Transient
     private Integer reportTimeFlag;
@@ -201,6 +237,10 @@ public class HrSignUp {
 
     @Transient
     private List<HrBriefchapter> chapter;
+
+    @Transient
+    private List<HrSignupDeliveryrecord> deliveryrecord;
+
 
 
 }

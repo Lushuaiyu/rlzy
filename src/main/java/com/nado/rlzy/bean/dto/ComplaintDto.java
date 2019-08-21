@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.nado.rlzy.bean.model.ComplaintModel;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -38,8 +37,6 @@ public class ComplaintDto {
     @ApiModelProperty(value = "被推荐者(求职者)")
     private String signUserName;
 
-
-
     @ApiModelProperty(value = "投诉人")
     private List<ComplaintModel> complaintModels;
 
@@ -68,7 +65,7 @@ public class ComplaintDto {
     private Integer deleteFlag;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy年MM月dd日")
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 

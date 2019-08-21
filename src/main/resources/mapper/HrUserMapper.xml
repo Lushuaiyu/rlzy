@@ -8,30 +8,50 @@
         <result column="Password" property="password" jdbcType="VARCHAR"/>
         <result column="HeadImage" property="headImage" jdbcType="VARCHAR"/>
         <result column="PostIdStr" property="postIdStr" jdbcType="VARCHAR"/>
+        <result column="postName" property="postName" jdbcType="VARCHAR"/>
         <result column="Mobile" property="mobile" jdbcType="VARCHAR"/>
         <result column="IdCard" property="idCard" jdbcType="VARCHAR"/>
+        <result column="education" property="education" jdbcType="VARCHAR"/>
+        <result column="profession" property="profession" jdbcType="VARCHAR"/>
+        <result column="graduationTime" property="graduationTime" jdbcType="VARCHAR"/>
+        <result column="arrivalTime" property="arrivalTime" jdbcType="VARCHAR"/>
         <result column="RegisterTime" property="registerTime" jdbcType="TIMESTAMP"/>
         <result column="RecommendNoUpper" property="recommendNoUpper" jdbcType="INTEGER"/>
         <result column="expectedSalaryLower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
         <result column="expectedSalaryUpper" property="expectedSalaryUpper" jdbcType="DECIMAL"/>
-
+        <result column="GroupName" property="groupName" jdbcType="VARCHAR"/>
         <result column="RecommendNoLower" property="recommendNoLower" jdbcType="INTEGER"/>
         <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
-        <result column="RecommenderId" property="recommenderId" jdbcType="INTEGER"/>
+        <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="INTEGER"/>
         <result column="LoginIp" property="loginIp" jdbcType="VARCHAR"/>
         <result column="LoginTime" property="loginTime" jdbcType="TIMESTAMP"/>
         <result column="DeleteFlag" property="deleteFlag" jdbcType="INTEGER"/>
         <result column="type" property="type" jdbcType="INTEGER"/>
         <result column="isPublic" property="publicIs" jdbcType="INTEGER"/>
         <result column="agreeHelp" property="agreeHelp" jdbcType="INTEGER"/>
+        <result column="agreeHelp" property="violationRecord" jdbcType="VARCHAR"/>
+        <result column="jobSeeker" property="jobSeeker" jdbcType="INTEGER"/>
+        <result column="violationRecord" property="violationRecord" jdbcType="VARCHAR"/>
+        <result column="violation_flag" property="violationFlag" jdbcType="VARCHAR"/>
+        <result column="violation_time" property="violationTime" jdbcType="TIMESTAMP"/>
+        <result column="usId" property="userId" jdbcType="INTEGER"/>
+        <result column="briefId" property="briefChapterId" jdbcType="INTEGER"/>
         <collection property="signUp" resultMap="resultMap" ofType="com.nado.rlzy.db.pojo.HrSignUp"/>
-
+        <collection property="groups" resultMap="resultMap" ofType="com.nado.rlzy.db.pojo.HrSignUp"/>
+        <collection property="deliveryrecords" resultMap="deliveryrecordsMap"
+                    ofType="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord"/>
+    </resultMap>
+    <resultMap id="groups" type="com.nado.rlzy.db.pojo.HrGroup">
+        <result column="GroupName" property="groupname" jdbcType="VARCHAR"/>
 
     </resultMap>
     <resultMap id="resultMap" type="com.nado.rlzy.db.pojo.HrSignUp">
         <result column="user_name" property="userName" jdbcType="VARCHAR"/>
-        <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="deliveryrecordsMap" type="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord">
+        <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
         <result column="no_report_reason" property="noReportReason" jdbcType="INTEGER"/>
     </resultMap>
 
@@ -237,6 +257,18 @@
         </set>
 
     </update>
+    <update id="updateViolationFlag" parameterType="hrUser">
+        update hr_user
+        <set>
+            violation_flag = 1
+        </set>
+        <where>
+            DeleteFlag = 0
+            <if test="null != userId">
+                and Id = #{userId}
+            </if>
+        </where>
+    </update>
 
     <select id="getUserByMobile" resultType="com.nado.rlzy.db.pojo.HrUser" parameterType="map">
         select id,
@@ -273,7 +305,7 @@
         RecommendNoUpper as recommendNoUpper,
         RecommendNoLower as recommendNoLower,
         RecommendInfo as recInfo
-        from HR_User
+        from hr_user
         where mobile= #{mobile} and password =#{password}
     </select>
     <select id="getPassword" resultType="string">
@@ -350,9 +382,15 @@
         u.HeadImage,
         u.sex,
         u.IdCard,
-        u.education,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, u.PostIdStr)
+        and d.pId = 2) as education,
         u.graduationTime,
-        u.profession,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, u.PostIdStr)
+        and d.pId = 3) as profession,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
@@ -372,5 +410,161 @@
                 and u.Id = #{userId}
             </if>
         </where>
+    </select>
+    <select id="selectReferrer" resultMap="BaseResultMap" parameterType="com.nado.rlzy.bean.query.ReferrerQuery">
+        select u.UserName,
+        u.id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, u.PostIdStr)
+        and d.pId = 1) as postName,
+        u.RecommendNoLower,
+        u.RecommendNoUpper
+        from hr_user u
+        left join user_login_quit ulq on u.id = ulq.user_id
+        and ulq.delete_flag = 0
+        where u.DeleteFlag = 0
+        and u.type = 2
+        <if test="null != recommendNoLower and null != recommendNoUpper">
+            and (u.RecommendNoLower = #{recommendNoLower} and u.RecommendNoUpper = #{recommendNoUpper})
+        </if>
+        <if test="null != postId">
+            and u.PostIdStr like concat('%', #{postId}, '%');
+        </if>
+        order by ulq.type desc
+    </select>
+    <select id="selectReferrerDetails" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.JobListQuery">
+        select u.UserName,
+        u.RecommendNoLower,
+        u.Id,
+        u.RecommendNoUpper,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, u.PostIdStr)
+        and d.pId = 1) as postName,
+        u.RecommendInfo,
+        v.content as violationRecord
+        from hr_user u left join hr_signup si on u.id = si.user_id and si.delete_flag = 0
+        left join violation_record v on si.id = v.sign_up_id and v.delete_flag = 0 where u.DeleteFlag = 0
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+        group by u.UserName
+
+    </select>
+    <select id="jobSeeker" resultType="_int">
+        select count(si.user_name) as jobSeeker
+        from hr_user u
+        left join hr_signup si on u.id = si.user_id and si.delete_flag = 0
+        left join violation_record v on si.id = v.sign_up_id and v.delete_flag = 0
+        where u.DeleteFlag = 0
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+    </select>
+
+    <select id="interviewed" resultType="_int">
+        select count(si.user_name) as interviewed
+        from hr_signup si
+        left join hr_signup_deliveryrecord hsd
+        on si.id = hsd.signup_id and hsd.delete_flag = 0
+        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        where si.delete_flag = 0 and hsd.job_status = 10
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+    </select>
+    <select id="arReported" resultType="_int">
+        select count(si.user_name) as reported
+        from hr_signup si
+        left join hr_signup_deliveryrecord hsd
+        on si.id = hsd.signup_id
+        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        where hsd.job_status = 11
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+    </select>
+    <select id="noInterview" resultType="_int">
+        select count(si.user_name) as noInterview
+        from hr_signup si
+        left join hr_signup_deliveryrecord hsd
+        on si.id = hsd.signup_id
+        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        where hsd.job_status = 8
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+    </select>
+    <select id="noReported" resultType="_int">
+        select count(si.user_name) as noReported
+        from hr_signup si
+        left join hr_signup_deliveryrecord hsd
+        on si.id = hsd.signup_id
+        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        where hsd.job_status = 9
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+
+
+    </select>
+    <select id="collectReferrer" resultType="hrUser">
+        select uu.UserName,
+        uu.id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, uu.PostIdStr)
+        and d.pId = 1) as postName,
+        uu.RecommendNoLower,
+        uu.RecommendNoUpper
+        from collect c
+        left join hr_user u on c.user_id = u.id and u.DeleteFlag = 0
+        left join hr_user uu on c.recruiter_id = uu.Id and uu.DeleteFlag = 0
+        where c.delete_flag = 0
+        <if test="null != userId">
+            and c.user_id = #{userId}
+        </if>
+        and c.recruiter_id is not null
+    </select>
+    <select id="queryMyselfVillation" resultMap="BaseResultMap">
+        select hsd.job_status, u.UserName, gr.GroupName, u.violation_flag
+        from hr_signup si
+        left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
+        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0
+        left join hr_group gr on br.RecruitedCompanyId = gr.Id and gr.groupStatus = 0
+        where si.delete_flag = 0
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+    </select>
+  <select id="queryReferrerVillation" resultMap="BaseResultMap">
+        select hsd.job_status, u.UserName, gr.GroupName, u.violation_flag, hsd.job_status, hsd.brief_chapter_id as briefId, si.user_id as usId
+        from hr_signup si
+        left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
+        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0
+        left join hr_group gr on br.RecruitedCompanyId = gr.Id and gr.groupStatus = 0
+        where si.delete_flag = 0
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+        group by gr.GroupName
+    </select>
+
+
+    <select id="queryJobStatus" resultMap="BaseResultMap">
+        select hsd.job_status
+        from hr_signup si
+        left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
+        left join hr_briefchapter br on hsd.brief_chapter_id = br.id and br.briefChapterStatus = 0
+        <if test="null != userId">
+            where si.user_id = #{userId}
+        </if>
+        <if test="null != briefChapterId">
+            and hsd.brief_chapter_id = #{briefChapterId}
+        </if>
     </select>
 </mapper>

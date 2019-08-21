@@ -296,9 +296,19 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                 System.out.println("====");
             }
 
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+
             if (query.getType().equals(1)) {
                 // 身份是本人
-                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 2);
+                List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
                 //遍历
                 sign.stream()
                         .map(va -> {
@@ -314,8 +324,10 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                             //到岗时间
                             Date date = dto.getRegisterTime();
                             //报名表 到岗时间
-                            String arrivalTime = va.getArrivalTime();
-                            Date strToDate = StringUtil.StrToDate(arrivalTime);
+                            LocalDateTime arrivalTime = va.getArrivalTime();
+                            String s2 = StringUtil.localdatetimeToStr(arrivalTime);
+
+                            Date strToDate = StringUtil.StrToDate(s2);
                             //综合工资
                             BigDecimal avgSalary = dto.getAvgSalary();
                             //期望工资下限
@@ -332,16 +344,16 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
                             //经验
                             String experienceId = dto.getExperienceId();
-                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat formatt = new SimpleDateFormat("yyyy-MM-dd");
                             Date date1 = new Date();
-                            String nowTime = format.format(date1);
+                            String nowTime = formatt.format(date1);
                             Calendar startTime = Calendar.getInstance();
                             Calendar endTime = Calendar.getInstance();
                             Integer time = null;
                             String exTime = "";
                             try {
-                                startTime.setTime(format.parse(graduationTime));
-                                endTime.setTime(format.parse(nowTime));
+                                startTime.setTime(formatt.parse(graduationTime));
+                                endTime.setTime(formatt.parse(nowTime));
                                 //毕业了几年
                                 time = endTime.get(Calendar.YEAR) - startTime.get(Calendar.YEAR);
                                 exTime = String.valueOf(time);
@@ -532,6 +544,16 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                         System.out.println("====");
                     }
 
+                    //月综合
+                    double value = dto.getAvgSalary().doubleValue();
+                    String format = StringUtil.decimalFormat2(value);
+                    dto.setAvgSalary1(format + "元起");
+                    //计薪
+                    double value1 = dto.getDetailSalary().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(value1);
+                    String detailSalaryWay = dto.getDetailSalaryWay();
+                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+
                     String experienceId1 = dto.getExperienceId();
                     if (dto.getExperienceId().compareTo("1") == 0) {
                         dto.setExperience(experienceId1 + "年内");
@@ -713,6 +735,17 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                 System.out.println("============");
             }
 
+            //月综合
+            double value = dto.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            dto.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = dto.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = dto.getDetailSalaryWay();
+            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+
+
             if (query.getType().equals(1)) {
                 // 身份是本人
                 List<HrSignUp> sign = signUpMapper.queryAll(query.getUserId(), 1);
@@ -731,8 +764,9 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                             //到岗时间
                             Date date = dto.getRegisterTime();
                             //报名表 到岗时间
-                            String arrivalTime = va.getArrivalTime();
-                            Date strToDate = StringUtil.StrToDate(arrivalTime);
+                            LocalDateTime arrivalTime = va.getArrivalTime();
+                            String s2 = StringUtil.localdatetimeToStr(arrivalTime);
+                            Date strToDate = StringUtil.StrToDate(s2);
                             //综合工资
                             BigDecimal avgSalary = dto.getAvgSalary();
                             //期望工资下限
@@ -748,17 +782,17 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                             //经验
                             String experienceId = dto.getExperienceId();
 
-                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat formatt = new SimpleDateFormat("yyyy-MM-dd");
                             Date date1 = new Date();
-                            String nowTime = format.format(date1);
+                            String nowTime = formatt.format(date1);
                             Calendar startTime = Calendar.getInstance();
                             Calendar endTime = Calendar.getInstance();
                             Integer time = null;
                             String exTime = "";
 
                             try {
-                                startTime.setTime(format.parse(graduationTime));
-                                endTime.setTime(format.parse(nowTime));
+                                startTime.setTime(formatt.parse(graduationTime));
+                                endTime.setTime(formatt.parse(nowTime));
                                 //毕业了几年
                                 time = endTime.get(Calendar.YEAR) - startTime.get(Calendar.YEAR);
                                 exTime = String.valueOf(time);
@@ -1444,10 +1478,14 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         //TODO
         List<HrBriefchapter> collect = list.stream().map(dto -> {
             Map<Integer, BigDecimal> map = dto.getRebat().stream().map(r -> {
+                double doubleValue = r.getRebateFemale().doubleValue();
+                String s = StringUtil.decimalFormat2(doubleValue);
                 if (dto.getSex().equals(0)) {
                     r.setRebateOne(r.getRebateFemale());
+                    r.setRebateMon("金额: ¥" + s);
                 } else {
                     r.setRebateOne(r.getRebateMale());
+                    r.setRebateMon("金额: ¥" + s);
                 }
                 return r;
             }).collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
@@ -1545,25 +1583,21 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         return 1;
     }
 
+    @Override
+    public int updateCollect(Collect collect) {
+        collect.setDeleteFlag(1);
+        return collectMapper.updateByPrimaryKeySelecti(collect);
+    }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void addCancelBriefchapter(Collect collect) {
+    public int addCancelBriefchapter(Collect collect) {
         Collect co = new Collect();
-        if (collect.getFlag().equals(0)) {
-            //添加收藏
-            co.setUserId(collect.getUserId());
-            co.setBriefchapterId(collect.getBriefchapterId());
-            co.setCreateTime(new Date());
-            Assert.isTrue(collectMapper.addBriefchapter(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
-        } else if (collect.getFlag().equals(1)) {
-            //取消收藏
-            co.setDeleteFlag(1);
-            co.setBriefchapterId(collect.getBriefchapterId());
-            Assert.isTrue(collectMapper.updateByPrimaryKeySelective(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
-        }
-
-
+        co.setUserId(collect.getUserId());
+        co.setBriefchapterId(collect.getBriefchapterId());
+        co.setCreateTime(new Date());
+        Assert.isTrue(collectMapper.addBriefchapter(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
+        return collect.getId();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -1612,7 +1646,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     private Integer initSignUp(String userName, Integer sex, String education,
                                String graduationTime, String profession,
-                               String registrationPositionId, String arrivalTime,
+                               String registrationPositionId, LocalDateTime arrivalTime,
                                BigDecimal expectedSalaryLower, BigDecimal expectedSalaryUpper,
                                Integer relation, Integer itIsPublic, Integer agreePlatformHelp,
                                Integer userId, String idCard) {
@@ -1636,7 +1670,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     private void checkAddSignUp(String userName, Integer sex, String education, String graduationTime, String profession,
-                                String registrationPositionId, String arrivalTime, BigDecimal expectedSalaryLower, BigDecimal expectedSalaryUpper,
+                                String registrationPositionId, LocalDateTime arrivalTime, BigDecimal expectedSalaryLower, BigDecimal expectedSalaryUpper,
                                 Integer relation, Integer itIsPublic, Integer agreePlatformHelp, Integer userId, String idCard) {
         Assert.isFalse(StringUtils.isBlank(userName), "用户名不能为空");
         Assert.isFalse(null == sex, "性别不能为空");
@@ -1745,11 +1779,9 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void complaintWithdrawn(ComplaintQuery query) {
-        HrComplaint complaint = new HrComplaint();
-        complaint.setDeleteFlag(1);
-        //complaint.setId(query.getId());
-        Assert.isFalse(complaintMapper.update(complaint) < 1, RlzyConstant.OPS_FAILED_MSG);
+    public int complaintWithdrawn(ComplaintQuery query) {
+        Assert.isFalse( complaintMapper.updateCom(query) < 1, RlzyConstant.OPS_FAILED_MSG);
+        return 1;
     }
 
     @Override
@@ -1763,18 +1795,18 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
-    public Map<String, Object> grouper(String groupName, String signUpName, Integer type) {
+    public Map<String, Object> grouper(String groupName, String signUpName, Integer type, Integer userId) {
         Map<String, Object> map = new HashMap<>();
         if (type.equals(1)) {
             //我的求职表下的被推荐人的报名表
-            List<HrSignUp> hrSignUps = signUpMapper.selectSignUpTableBySignUpName(signUpName);
+            List<HrSignUp> hrSignUps = signUpMapper.selectSignUpTableBySignUpName(signUpName, userId);
             List<HrSignUp> coll = hrSignUps.stream()
                     .collect(Collectors.toList());
             map.put("selectSignUpTableBySignUpName", coll);
         }
         if (type.equals(2)) {
             //分组下的被推荐人的报名表
-            List<HrSignUp> grouper = signUpMapper.grouper(groupName, signUpName);
+            List<HrSignUp> grouper = signUpMapper.grouper(groupName, signUpName, userId);
             List<HrSignUp> collect = grouper.stream()
                     .collect(Collectors.toList());
             map.put("grouper", collect);
@@ -1788,6 +1820,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         return signUpMapper.confirmRegistration(briefChapterId, collect);
 
     }
+
 
     @Override
     public Map<String, Object> complaintPage(Integer typeId, Integer userId, Integer brieId, Integer dictionary) {
@@ -1812,9 +1845,18 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
-    public List<ComplaintDto> creditCenter(Integer status, Integer type) {
-        return complaintMapper.creditCenter(status, type)
+    public List<ComplaintDto> creditCenter(Integer[] status, Integer userId) {
+        List<Integer> list = Stream.of(status).collect(Collectors.toList());
+
+        return complaintMapper.creditCenter(list, userId)
                 .stream()
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HrComplaint> selectComplaint(Integer coId) {
+        List<HrComplaint> list = complaintMapper.selectComplaint(coId);
+        return list.stream()
                 .collect(Collectors.toList());
     }
 

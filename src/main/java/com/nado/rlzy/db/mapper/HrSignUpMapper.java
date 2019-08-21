@@ -2,7 +2,6 @@ package com.nado.rlzy.db.mapper;
 
 import com.nado.rlzy.bean.dto.ComplaintPage;
 import com.nado.rlzy.bean.dto.JobListDto;
-import com.nado.rlzy.bean.dto.SignUpNumberDto;
 import com.nado.rlzy.bean.query.JobListQuery;
 import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.db.pojo.HrSignUp;
@@ -40,17 +39,14 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 查询求职列表概览
+     * 招聘端 查询求职列表概览
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:04 2019/7/2
      * @Param query 入参
      * @return java.util.List<com.nado.rlzy.bean.dto.JobListDto>
      **/
-    List<JobListDto> selectJobListOverview(JobListQuery query);
-
-
-
+    List<HrSignUp> selectJobListOverview(JobListQuery query);
 
     /**
      * 查看求职列表详情
@@ -64,14 +60,14 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 添加收藏 概览 可能用不到
+     * 招聘端 个人中心 我的收藏 报名表信息 概览
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 18:21 2019/7/2
      * @Param []
      * @return java.util.List<com.nado.rlzy.bean.dto.JobListDto>
      **/
-    List<JobListDto> selectCollectListOverview(@Param("userId") Integer userId);
+    List<HrSignUp> selectCollectListOverview(@Param("userId") Integer userId);
 
 
 
@@ -87,7 +83,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 查询报名表详情 可能废弃
+     * 查询报名表详情
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 19:12 2019/7/8
@@ -163,14 +159,16 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 招聘端 查询报名人数
+     * 招聘端 查询报名了某个简章的人数
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:40 2019/7/17
      * @param briefchapter 简章id
      * @return int
      **/
-    List<SignUpNumberDto> countSignUpNum(@Param("briefchapter") Integer briefchapter);
+    List<HrSignUp> countSignUpNum(@Param("briefchapter") Integer briefchapter);
+
+
 
     /**
      *  邀请报名
@@ -210,7 +208,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [userId, signUpId]
      * @return int
      **/
-    HrSignUp SearchdirectAdmission(@Param("signUpId") Integer signUpId, @Param("sex") Integer sex);
+    HrSignUp SearchdirectAdmission(@Param("signUpId") Integer signUpId, @Param("sex") Integer sex, @Param("briefchapter") Integer briefchapter);
 
 
     /**
@@ -332,7 +330,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @param signUpId 报名 id
      * @return int
      **/
-    int reportNotSuitable(@Param("signUpId") Integer signUpId);
+    int reportNotSuitable(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
     /**
      * 招聘详情 已报名 邀请面试
@@ -342,7 +340,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId]
      * @return int
      **/
-    int recruitmentDetailsInvitationInterview(@Param("signUpId") Integer signUpId);
+    int recruitmentDetailsInvitationInterview(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
     /**
      * 招聘详情 已报名 直接录取
@@ -352,7 +350,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId]
      * @return int
      **/
-    int recruitmentDetailsDirectAdmission(@Param("signUpId") Integer signUpId);
+    int recruitmentDetailsDirectAdmission(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
     /**
      * 招聘详情 待面试 已面试
@@ -362,7 +360,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId]
      * @return int
      **/
-    int recruitmentInterviewd(@Param("signUpId") Integer signUpId);
+    int recruitmentInterviewd(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
     /**
      * 招聘详情 待面试 未面试
@@ -372,7 +370,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId]
      * @return int
      **/
-    int recruitmentNoInterviewd(@Param("signUpId") Integer signUpId);
+    int recruitmentNoInterviewd(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
     /**
      * 招聘详情 待面试 已面试 面试未通过
@@ -382,8 +380,9 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId]
      * @return int
      **/
-    @Update(value = "update hr_signup set no_pass_reason = 3, job_status = 4 where delete_flag = 0 and id = #{signUpId}")
-    int recruitmentInterviewFailed(@Param("signUpId") Integer signUpId);
+    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si SET sd.no_pass_reason = 3, sd.job_status = 4\n" +
+            " WHERE sd.delete_flag = 0 and si.delete_flag = 0 and si.id = sd.signup_id and si.id = #{signUpId} and sd.brief_chapter_id = #{briefChapterId}")
+    int recruitmentInterviewFailed(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
     /**
      * 招聘详情 待面试 已面试 面试已通过
@@ -393,8 +392,9 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId]
      * @return int
      **/
-    @Update(value = "update hr_signup set job_status = 2 where  delete_flag = 0 and id = #{signUpId}")
-    int recruitmentInterviewSuccess(@Param("signUpId") Integer signUpId);
+    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si SET sd.job_status = 2\n" +
+            " WHERE sd.delete_flag = 0 and si.delete_flag = 0 and si.id = sd.signup_id and si.id = #{signUpId} and sd.brief_chapter_id = #{briefChapterId}")
+    int recruitmentInterviewSuccess(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
     /**
      * 查询 报到时间
@@ -426,8 +426,9 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId]
      * @return int
      **/
-    @Update(value = "update hr_signup set job_status = 9 where delete_flag = 0 and id = #{signUpId}")
-    int notReported(@Param("signUpId") Integer signUpId);
+    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si SET sd.job_status = 9\n" +
+            " WHERE sd.delete_flag = 0 and si.delete_flag = 0 and si.id = sd.signup_id and si.id = #{signUpId} and sd.brief_chapter_id = #{briefChapterId}")
+    int notReported(@Param("signUpId") Integer signUpId , @Param("briefChapterId") Integer briefChapterId);
 
     /**
      * 招聘详情 待报道 已报道
@@ -437,8 +438,9 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId]
      * @return int
      **/
-    @Update(value = "update hr_signup set job_status = 3 where delete_flag = 0 and id = #{signUpId}")
-    int reported(@Param("signUpId") Integer signUpId);
+    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si SET sd.job_status = 3\n" +
+            " WHERE sd.delete_flag = 0 and si.delete_flag = 0 and si.id = sd.signup_id and si.id = #{signUpId} and sd.brief_chapter_id = #{briefChapterId}")
+    int reported(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
 
     /**
@@ -449,17 +451,17 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [reason, signUpId]
      * @return int
      **/
-    int noReportedReason(@Param("reason") Integer reason, @Param("signUpId") Integer signUpId);
+    int noReportedReason(@Param("reason") Integer reason, @Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
     /**
-     * 招聘详情 待返佣 返佣计划
+     * 招聘详情 待返佣 查询返佣
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:56 2019/7/19
-     * @Param [userId]
+     * @param signUpId 报名id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
-    List<HrSignUp> rebate(@Param("userId") Integer userId);
+    List<HrSignUp> rebate(@Param("signUpId") Integer signUpId);
 
 
     /**
@@ -492,7 +494,6 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [userId, money]
      * @return int
      **/
-    //@Update(value = "update hr_acct set AcctBalance = (AcctBalance + #{addMoney} ) where DeleteFlag = 0 and UserId = #{userId}")
     int rebateAdd(RebateQuery query);
 
     /**
@@ -503,7 +504,6 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [userId, money]
      * @return int
      **/
-    /*@Update(value = "update hr_acct set IceBalance = (IceBalance - #{subtraction}) where DeleteFlag = 0 and UserId = #{userId}")*/
     int rebateSubtraction(RebateQuery query);
 
     /**
@@ -514,8 +514,14 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId, status]
      * @return int
      **/
-    @Update(value = "update hr_signup set job_status = #{status} where delete_flag = 0 and id = #{signUpId}")
-    int changeJobStatus(@Param("signUpId") Integer signUpId, @Param("status") Integer status);
+    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si\n" +
+            "SET sd.job_status = #{status}\n" +
+            "WHERE sd.delete_flag = 0\n" +
+            "  and si.delete_flag = 0\n" +
+            "  and si.id = sd.signup_id\n" +
+            "  and si.id = #{signUpId}\n" +
+            "  and sd.brief_chapter_id = #{briefChapterId}")
+    int changeJobStatus(@Param("signUpId") Integer signUpId, @Param("status") Integer status, @Param("briefChapterId") Integer briefChapterId);
 
     /**
      * 返佣中断  未返佣
@@ -544,7 +550,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @param signUpName 被推荐人姓名
      * @return
      **/
-    List<HrSignUp> grouper(@Param("groupName") String groupName, @Param("signUpName") String signUpName);
+    List<HrSignUp> grouper(@Param("groupName") String groupName, @Param("signUpName") String signUpName, @Param("userId") Integer userId);
 
     /**
      *  查询求职端身份是推荐人 首页 我的求职表下被推荐人的求职表
@@ -554,7 +560,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @param signUpName 被推荐人的姓名
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
-    List<HrSignUp> selectSignUpTableBySignUpName(@Param("signUpName") String signUpName);
+    List<HrSignUp> selectSignUpTableBySignUpName(@Param("signUpName") String signUpName, @Param("userId") Integer userId);
 
 
     /**
@@ -566,6 +572,16 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @return int
      **/
     int confirmRegistration(@Param("briefChapterId") Integer briefChapterId, @Param("id") List<Integer> id);
+
+    /**
+     * 查询最近连续三次的求职状态
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:35 2019/8/16
+     * @Param [signId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     **/
+    List<HrSignUp> threeNoInterview(@Param("signId") Integer signId);
 
 
 

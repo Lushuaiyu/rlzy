@@ -88,7 +88,9 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "面试时间")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")    private LocalDateTime interviewTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime interviewTime;
+
     @ApiModelProperty(value = "用人单位面试地址")
     private String interviewAddress;
 
@@ -166,6 +168,7 @@ public class HrBriefchapter {
     private String manAge;
     private String manAge1;
 
+
     @ApiModelProperty(value = "女员工年龄段")
     private String womenAge;
 
@@ -174,11 +177,16 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "工作方式")
     private String workWayId;
 
+    /**
+     * 工作地点
+     */
+    private String workAddress;
+
     @ApiModelProperty(value = "工作时间安排")
     private String workTimeArrangeId;
 
     @ApiModelProperty(value = "服装要求")
-    private Integer clothingRequirementId;
+    private String clothingReguirementId;
 
     @ApiModelProperty(value = "兴趣爱好")
     private String hobbyId;
@@ -190,11 +198,6 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "加班时长")
     private Integer overtimeTimeId;
-
-
-
-    @ApiModelProperty(value = "着装要求")
-    private Integer clothingReguirementId;
 
     @ApiModelProperty(value = "职位描述")
     private String descriptionJob;
@@ -245,12 +248,18 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "报名未通过原因")
     private Integer noPassReason;
 
+    /**
+     * 求职状态
+     */
+    private Integer jobStatus;
+
     @ApiModelProperty(value = "求职表 性别")
     private Integer sex;
 
-
-
-
+    /**
+     * 0 已上架 1已下架
+     */
+    private Integer briefChapterStatus;
 
 
 }

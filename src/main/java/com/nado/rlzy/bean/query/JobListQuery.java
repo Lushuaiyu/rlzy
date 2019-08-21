@@ -1,15 +1,11 @@
 package com.nado.rlzy.bean.query;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
 
 /**
- * @ClassName 查询求职列表query & 新增报名表 query & 我要报名
+ * @ClassName 查询求职列表query & 新增报名表 query & 我要报名 & 查询推荐人列表
  * @Description TODO
  * @Author lushuaiyu
  * @Data 2019/7/2 13:23
@@ -43,15 +39,13 @@ public class JobListQuery {
     @ApiModelProperty(value = "年龄")
     private String age;
 
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(value = "到岗时间")
-    private Date arrivalTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @ApiModelProperty(value = "到岗时间")
+    private String arrivalTime;
+
+
     @ApiModelProperty(value = "毕业时间")
-    private Date graduationTime;
+    private String graduationTime;
 
     @ApiModelProperty(value = "简章id")
     private Integer briefChapterId;
@@ -73,6 +67,36 @@ public class JobListQuery {
 
     @ApiModelProperty(value = "是否获取平台帮助")
     private Integer agreePlatformHelp;
+
+    /**
+     * 1 求职列表 2 推荐人列表
+     */
+    private Integer type;
+
+
+
+
+    /**
+     * 推荐人id user表主键id
+     */
+    private String uid;
+
+    /**
+     * 推荐人数下限
+     */
+    private String recommendNoLower;
+
+    /**
+     * 推荐人数上限
+     */
+    private String recommendNoUpper;
+
+    /**
+     * 意向岗位 简章表的postId
+     */
+    private String postId;
+
+
 
 
 

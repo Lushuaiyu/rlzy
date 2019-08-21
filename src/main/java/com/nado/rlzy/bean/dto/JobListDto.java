@@ -39,6 +39,8 @@ public class JobListDto {
     @ApiModelProperty(value = "性别")
     private Integer sex;
 
+
+
     @ApiModelProperty(value = "身份证号码")
     private String cardId;
 

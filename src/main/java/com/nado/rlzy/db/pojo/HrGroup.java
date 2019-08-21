@@ -92,6 +92,12 @@ public class HrGroup {
     @Column(name = "co_policy  ")
     private String coPolicy;
 
+    @Transient
+    private Integer violationFlag;
+
+    @Transient
+    private String userName;
+
     /**
      * 代招单位和简章是一对多
      */
@@ -111,6 +117,9 @@ public class HrGroup {
 
     @Column(name = "groupStatus")
     private Integer groupStatus;
+
+    @Transient
+    private List<HrSignupDeliveryrecord> deliveryrecords;
 
 
 }

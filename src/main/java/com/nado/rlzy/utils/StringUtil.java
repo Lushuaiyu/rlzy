@@ -173,8 +173,12 @@ public class StringUtil {
     public static LocalDateTime strToLocalDateTime(String str){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return LocalDateTime.parse(str, formatter);
+    }
 
-
+    public static String localdatetimeToStr(LocalDateTime localDateTime){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String format = formatter.format(localDateTime);
+        return format;
     }
 
 

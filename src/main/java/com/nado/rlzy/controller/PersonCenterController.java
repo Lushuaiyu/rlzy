@@ -2,17 +2,22 @@ package com.nado.rlzy.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.base.BaseController;
-import com.nado.rlzy.bean.dto.PersonCoDto;
+import com.nado.rlzy.bean.dto.ComplaintDto;
 import com.nado.rlzy.bean.model.CommonResult;
 import com.nado.rlzy.bean.model.Result;
 import com.nado.rlzy.bean.model.ResultInfo;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.AddCoQuery;
+import com.nado.rlzy.bean.query.ComplaintQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
 import com.nado.rlzy.db.pojo.Feedback;
+import com.nado.rlzy.db.pojo.HrComplaint;
+import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.PersonCenterService;
+import com.nado.rlzy.service.RecruitmentHomePageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -45,6 +50,13 @@ public class PersonCenterController extends BaseController {
     @Autowired
     private PersonCenterService service;
 
+    @Autowired
+    private RecruitmentHomePageService homePageService;
+
+    @Autowired
+    private JobSearchHomePageService jobSearchHomePageService;
+
+
     public static final Logger logger = LoggerFactory.getLogger(PersonCenterController.class);
 
 
@@ -60,9 +72,12 @@ public class PersonCenterController extends BaseController {
     @RequestMapping(value = "queryPersonCo")
     @ResponseBody
     @ApiOperation(value = "查询我的企业 ", notes = "查询我的企业", httpMethod = "POST")
-    @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
-    public ResultJson queryPersonCo(Integer userId) {
-        Map<String, Object> map = service.queryPersonCo(userId);
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "type", name = "1 招聘单位 2 代招单位", dataType = "integer", required = true)
+    })
+    public ResultJson queryPersonCo(Integer userId, Integer type) {
+        Map<String, Object> map = service.queryPersonCo(userId, type);
         ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
@@ -85,20 +100,23 @@ public class PersonCenterController extends BaseController {
      **/
     @RequestMapping(value = "addCo")
     @ResponseBody
-    @ApiOperation(value = "添加企业", notes = "添加企业", httpMethod = "POST")
+    @ApiOperation(value = "添加企业 | 企业认证失败说明", notes = "添加企业 | 企业认证失败说明", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "coName", value = "公司名称", dataType = "string", required = true),
             @ApiImplicitParam(name = "coAddress", value = "公司地址", dataType = "string", required = true),
             @ApiImplicitParam(name = "CompanyProfile", value = "公司简介", dataType = "string", required = true),
             @ApiImplicitParam(value = "file", name = "上传图片", dataType = "MultipartFile", required = true),
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true)
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true),
+            @ApiImplicitParam(value = "type", name = "1 添加企业 | 2 身份认证失败说明", dataType = "int", required = true),
+            @ApiImplicitParam(value = "data", name = "返回给前台的企业的id", dataType = "int", required = true)
     })
     public ResultJson addCo(AddCoQuery query) {
-        MultipartFile file = query.getFile();
-        String url = service.updateHead(file);
-        query.setBusLicense(url);
-
-        int co = service.addCo(query);
+        if (query.type.equals(1)) {
+            MultipartFile file = query.getFile();
+            String url = service.updateHead(file);
+            query.setBusLicense(url);
+        }
+        Map<String, Object> co = service.addCo(query);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
@@ -149,7 +167,10 @@ public class PersonCenterController extends BaseController {
     @RequestMapping(value = "personalInformation")
     @ResponseBody
     @ApiOperation(notes = "求职端 个人中心 个人资料", value = "求职端 个人中心 个人资料", httpMethod = "POST")
-    @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "身份", dataType = "Integer", required = true)
+    })
     public Result<HrUser> personalInformation(Integer userId, Integer type) {
         Result<HrUser> result = new Result<>();
         if (type.equals(1)) {
@@ -187,7 +208,7 @@ public class PersonCenterController extends BaseController {
             @ApiImplicitParam(value = "sex", name = "性别 0 女 1 男", dataType = "integer", required = true),
             @ApiImplicitParam(value = "education", name = "学历", dataType = "string", required = true),
             @ApiImplicitParam(value = "graduationTime", name = "毕业时间", dataType = "date", required = true),
-            @ApiImplicitParam(value = "Profession", name = "专业", dataType = "string", required = true),
+            @ApiImplicitParam(value = "profession", name = "专业", dataType = "string", required = true),
             @ApiImplicitParam(value = "registrationPositionId", name = "报名岗位id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "ArrivalTime", name = "到岗时间", dataType = "date", required = true),
             @ApiImplicitParam(value = "ExpectedSalaryLower", name = "期望薪资下限", dataType = "string", required = true),
@@ -220,33 +241,10 @@ public class PersonCenterController extends BaseController {
         return null;
     }
 
-    /**
-     * 查询投诉记录
-     *
-     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.bean.dto.ComplaintDto>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 15:14 2019/7/10
-     * @Param [userId, typeId]
-     **/
-    @RequestMapping(value = "searchComplaintRecord")
-    @ResponseBody
-    @ApiOperation(value = "查询投诉记录", notes = "查询投诉记录", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "typeId", name = "用户身份id", dataType = "Integer", required = true)
-    })
-    public ResultJson searchComplaintRecord(Integer userId, Integer typeId) {
-        HashMap<Object, Object> map = service.searchComplaintRecord(userId, typeId);
-        ResultJson result = new ResultJson();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(map);
-        return result;
-    }
+
 
     /**
-     * 求职端 信用中心 查看投诉详情
+     * 求职端 信用中心 查看投诉详情 & 撤销投诉
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.bean.dto.ComplaintDto>
      * @Author lushuaiyu
@@ -256,17 +254,31 @@ public class PersonCenterController extends BaseController {
      **/
     @RequestMapping(value = "complaint")
     @ResponseBody
-    @ApiOperation(value = "求职端 信用中心 查看投诉详情", notes = "求职端 信用中心 查看投诉详情", httpMethod = "POST")
+    @ApiOperation(value = "求职端 信用中心 查看投诉详情 & 撤销投诉", notes = "求职端 信用中心 查看投诉详情 & 撤销投诉", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "complaintId", name = "投诉记录id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "type", name = "类型id 1 代招单位下的单位 2 招聘单位", dataType = "Integer", required = true)
+            @ApiImplicitParam(value = "type", name = "类型id 1 代招单位下的单位 2 招聘单位", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "typ1", name = "1 查看投诉详情 2 撤销投诉", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "id", name = "投诉id", dataType = "integer", required = true)
     })
-    public ResultJson complaint(Integer complaintId, Integer type) {
-        HashMap<String, Object> complaint = service.complaint(complaintId, type);
+    public ResultJson complaint(Integer complaintId, Integer type, Integer typ1, Integer id) {
         ResultJson result = new ResultJson();
+        if (typ1.equals(1)) {
+            //投诉详情
+        HashMap<String, Object> complaint = service.complaint(complaintId, type);
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(complaint);
+        }  else {
+            //撤销投诉
+            ComplaintQuery query = new ComplaintQuery();
+            query.setId(id);
+            int i = jobSearchHomePageService.complaintWithdrawn(query);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(i);
+
+        }
         return result;
     }
 
@@ -289,7 +301,7 @@ public class PersonCenterController extends BaseController {
 
     @RequestMapping(value = "feedback")
     @ResponseBody
-    @ApiOperation(notes = "招聘端 求知与反馈", value = "招聘端 求知与反馈", httpMethod = "POST")
+    @ApiOperation(notes = "招聘端 帮助与反馈", value = "招聘端 帮助与反馈", httpMethod = "POST")
     public Result<Feedback> feedback() {
         var list = service.feedback();
         var result = new Result<Feedback>();
@@ -315,7 +327,78 @@ public class PersonCenterController extends BaseController {
 
     }
 
-    @RequestMapping(value = "queryTheAuditFailed")
+
+    /**
+     * 招聘端 个人中心 我的收藏 报名表信息概览 | 推荐人信息概览
+     *
+     * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.bean.frontEnd.JobListtFront>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:12 2019/7/8
+     * @Param [userId]
+     **/
+
+    @RequestMapping(value = "selectCollectListOverview")
+    @ResponseBody
+    @ApiOperation(value = "招聘端 个人中心 我的收藏 报名表信息 概览", notes = "招聘端 个人中心 我的收藏 报名表信息 概览", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户id", required = true),
+            @ApiImplicitParam(name = "type", value = "1 推荐人信息 2 报名表信息 ", required = true)
+    })
+    public ResultJson selectCollectListOverview(Integer userId, Integer type) {
+        Map<String, Object> map = new HashMap<>();
+        ResultJson result = new ResultJson();
+
+        if (type.equals(1)) {
+            List<HrUser> hrUsers = service.collectReferrer(userId);
+            map.put("collectReferrer", hrUsers);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(map);
+        } else {
+            List<HrSignUp> fronts = homePageService.selectCollectListOverview(userId);
+            map.put("selectCollectListOverview", fronts);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(map);
+        }
+        return result;
+
+    }
+
+    @RequestMapping(value = "creditCenter")
+    @ResponseBody
+    @ApiOperation(notes = "招聘端 个人中心 信用中心 投诉待处理 已撤销", value = "招聘端 个人中心 信用中心 投诉待处理 已撤销", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "status", name = "投诉状态 1, 3 待处理 | 已处理  2 已撤销 ",  required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id",  required = true)
+    })
+    public Result<ComplaintDto> creditCenter(Integer[] status, Integer userId) {
+        var list = jobSearchHomePageService.creditCenter(status, userId);
+        var result = new Result<ComplaintDto>();
+        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setData(list);
+        return result;
+    }
+
+    @RequestMapping(value = "selectComplaint")
+    @ResponseBody
+    @ApiOperation(value = "招聘端 个人中心 信用中心 查看投诉", notes = "招聘端 个人中心 信用中心 查看投诉", httpMethod = "POST")
+    @ApiImplicitParam(name = "coId", value = "简章id", required = true)
+    public ResultJson selectComplaint(Integer coId){
+        ResultJson resultJson = new ResultJson();
+        List<HrComplaint> hrComplaints = jobSearchHomePageService.selectComplaint(coId);
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(hrComplaints);
+        return resultJson;
+    }
+
+
+
+
+  /*  @RequestMapping(value = "queryTheAuditFailed")
     @ResponseBody
     @ApiOperation(value = "认证失败说明", notes = "认证失败说明", httpMethod = "POST")
     @ApiImplicitParam(name = "用户id", value = "userId", required = true)
@@ -327,5 +410,5 @@ public class PersonCenterController extends BaseController {
         resultJson.setData(map);
         return resultJson;
     }
-
+*/
 }

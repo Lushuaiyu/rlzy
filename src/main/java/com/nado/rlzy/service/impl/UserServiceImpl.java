@@ -306,7 +306,8 @@ public class UserServiceImpl implements UserService {
         signUp.setGraduationTime(graduationTime);
         signUp.setRegistrationPositionId(registrationPositionId);
         signUp.setProfession(profession);
-        signUp.setArrivalTime(arrivalTime);
+        LocalDateTime localDateTime = StringUtil.strToLocalDateTime(arrivalTime);
+        signUp.setArrivalTime(localDateTime);
         BigDecimal lowerExpectedSalary = StringUtil.decimal(expectedSalaryLower);
         signUp.setExpectedSalaryLower(lowerExpectedSalary);
         BigDecimal upperExpectedSalary = StringUtil.decimal(expectedSalaryUpper);

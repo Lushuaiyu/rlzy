@@ -18,4 +18,7 @@ public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrec
      * @return int
      **/
     int referrerToSIgnUp(@Param("entites") List<HrSignupDeliveryrecord> entites);
+
+
+
 }

@@ -166,4 +166,9 @@ public class BriefcharpterQuery extends BaseQuery {
     @ApiModelProperty(value = "提交认证人id")
     private Integer certifierId;
 
+    /**
+     * 0 已上架 1已下架
+     */
+    private Integer briefChapterStatus;
+
 }

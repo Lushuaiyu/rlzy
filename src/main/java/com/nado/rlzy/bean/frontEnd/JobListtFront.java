@@ -68,12 +68,12 @@ public class JobListtFront implements Serializable {
 
     @ApiModelProperty(value = "报道时间")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy年MM月dd日")
     private LocalDateTime arrivalTime;
 
     @ApiModelProperty(value = "毕业时间")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime graduationTime;
 
     @ApiModelProperty(value = "与推荐者的关系")

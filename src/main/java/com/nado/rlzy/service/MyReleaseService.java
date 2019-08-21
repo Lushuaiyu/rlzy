@@ -1,13 +1,9 @@
 package com.nado.rlzy.service;
 
-import com.nado.rlzy.bean.dto.SignUpNumberDto;
 import com.nado.rlzy.bean.query.EditBriefchapterQuery;
 import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
-import com.nado.rlzy.db.pojo.HrDictionaryItem;
-import com.nado.rlzy.db.pojo.HrGroup;
-import com.nado.rlzy.db.pojo.HrSignUp;
-import com.nado.rlzy.db.pojo.Province;
+import com.nado.rlzy.db.pojo.*;
 
 import java.util.List;
 import java.util.Map;
@@ -22,15 +18,14 @@ import java.util.Map;
 public interface MyReleaseService {
     /**
      * 招聘端 我的发布
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 13:39 2019/7/22
      * @Param [userId, typeId, status]
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     Map<String, Object> myRelease(Integer userId, Integer typeId, Integer status);
-
-
 
 
     /**
@@ -76,7 +71,7 @@ public interface MyReleaseService {
      * @Date 10:04 2019/7/19
      * @Param [signUpId]
      **/
-    int reportNotSuitable(Integer signUpId);
+    int reportNotSuitable(Integer signUpId, Integer briefChapterId);
 
     /**
      * 招聘详情 已报名 邀请面试
@@ -87,7 +82,7 @@ public interface MyReleaseService {
      * @Date 10:18 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentDetailsInvitationInterview(Integer signUpId);
+    int recruitmentDetailsInvitationInterview(Integer signUpId, Integer briefChapterId);
 
     /**
      * 招聘详情 已报名 直接录取
@@ -98,7 +93,7 @@ public interface MyReleaseService {
      * @Date 11:01 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentDetailsDirectAdmission(Integer signUpId);
+    int recruitmentDetailsDirectAdmission(Integer signUpId, Integer briefChapterId);
 
     /**
      * 招聘详情 待面试 已面试
@@ -109,7 +104,7 @@ public interface MyReleaseService {
      * @Date 11:26 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentInterviewd(Integer signUpId);
+    int recruitmentInterviewd(Integer signUpId, Integer briefChapterId, Integer rebateType);
 
     /**
      * 招聘详情 待面试 未面试
@@ -120,7 +115,7 @@ public interface MyReleaseService {
      * @Date 11:29 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentNoInterviewd(Integer signUpId);
+    Map<String, Object> recruitmentNoInterviewd(Integer signUpId, Integer userId, Integer briefChapterId);
 
     /**
      * 招聘详情 待面试 已面试 面试未通过
@@ -131,92 +126,100 @@ public interface MyReleaseService {
      * @Date 11:51 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentInterviewFailed(Integer signUpId);
+    int recruitmentInterviewFailed(Integer signUpId, Integer briefChapterId);
 
     /**
      * 招聘详情 待面试 已面试 面试已通过
+     *
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 13:50 2019/7/19
      * @Param [signUpId]
-     * @return int
      **/
-    int recruitmentInterviewSuccess(Integer signUpId);
+    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId);
 
     /**
      * 招聘详情 待报道 未报到
+     *
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:31 2019/7/19
      * @Param [signUpId]
-     * @return int
      **/
-    int notReported(Integer signUpId);
+    Map<String, Object> notReported(Integer signUpId, Integer briefChapterId, Integer userId);
 
     /**
      * 招聘详情 待报道 已报道
+     *
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:40 2019/7/19
      * @Param [signUpId]
-     * @return int
      **/
-    int reported(Integer signUpId);
+    int reported(Integer signUpId, Integer briefChapterId, Integer rebateType);
 
 
     /**
      * 未报到原因
+     *
+     * @param reason   未报到原因
+     * @param signUpId 报名者id
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:59 2019/7/19
-     * @param reason 未报到原因
-     * @param signUpId 报名者id
-     * @return int
      **/
-    int noReportedReason( Integer reason, Integer signUpId);
+    int noReportedReason(Integer reason, Integer signUpId, Integer briefChapterId);
 
 
     /**
-     * 招聘详情 待返佣 返佣计划
+     * 招聘详情 待返佣 返佣
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:01 2019/7/19
      * @Param [userId]
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
-    List<HrSignUp> rebatee(Integer userId, Integer sex);
+    List<HrSignUp> rebatee(Integer signUpId, Integer sex);
 
     /**
      * 招聘详情 待返佣 没有返佣
+     *
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:45 2019/7/19
      * @Param [rebateId]
-     * @return int
      **/
     int noRebate(Integer rebateId);
 
     /**
      * 招聘详情 待返佣 返佣计划
+     *
+     * @param query 入参
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:05 2019/7/19
-     * @param query 入参
-     * @return int
      **/
     int rebate(RebateQuery query);
 
     /**
      * 重置求职者报名状态
+     *
+     * @param signUpId     报名id
+     * @param status       求职状态
+     * @param currentState 当前状态
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:07 2019/7/22
-     * @param signUpId 报名id
-     * @param status 求职状态
-     * @param currentState 当前状态
-     * @return int
      **/
-    int changeJobStatus(Integer signUpId, Integer status, Integer currentState);
+    int changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId);
 
     /**
      * 判断报名人数是否满了
@@ -227,7 +230,7 @@ public interface MyReleaseService {
      * @Description //TODO
      * @Date 11:15 2019/7/17
      **/
-    List<SignUpNumberDto> numberOfRecruitsFull(Integer briefchapter);
+    List<HrBriefchapter> numberOfRecruitsFull(Integer briefchapter);
 
     /**
      * 招聘端 邀请报名
@@ -272,46 +275,50 @@ public interface MyReleaseService {
      * @Description //TODO
      * @Date 16:12 2019/7/17
      **/
-    int directAdmission(Integer signUpId, Integer userId, Integer sex);
+    int directAdmission(Integer signUpId, Integer userId, Integer sex, Integer briefchapter);
 
 
     /**
      * 根据配置表类型查 内容
+     *
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:15 2019/7/8
      * @Param [type]
-     * @return com.nado.rlzy.db.pojo.Options
      **/
     List<HrDictionaryItem> selectContentByType(String type);
 
     /**
-     * 招聘端 我的发布 编辑简章
+     * 招聘端 我的发布  正在招 编辑简章
+     *
+     * @return java.lang.Integer
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:22 2019/7/24
      * @Param [query]
-     * @return java.lang.Integer
      **/
     Integer editBriefchapterMyRelease(EditBriefchapterQuery query);
 
     /**
-     * 把待面试盖为未面试
+     * 招聘端 我的发布 不通过 编辑简章
+     *
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
-     * @Date 11:40 2019/7/30
-     * @Param [signUpId]
-     * @return int
+     * @Date 14:18 2019/8/20
+     * @Param [query]
      **/
-    Integer updateJobStatusInterviewed(Integer signUpId);
+    int editBriefchapterFail(ReleaseBriefcharpterQuery query);
+
 
     /**
      * 查询招聘企业名称
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:08 2019/8/1
      * @Param [type, userId]
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
      **/
-    List<HrGroup> selectGroupName(Integer type, Integer userId);
+    Map<String, Object> selectGroupName(Integer type, Integer userId, Integer status);
 }

@@ -1,9 +1,15 @@
 package com.nado.rlzy.bean.query;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nado.rlzy.base.BaseQuery;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @ClassName 招聘端 -- 发布简章query
@@ -15,12 +21,43 @@ import lombok.Data;
 @Data
 @ApiModel(description = "发布简章入参")
 public class ReleaseBriefcharpterQuery extends BaseQuery {
+    private Integer id;
+
+    /**
+     * 返佣表的简章id
+     */
+    private Integer briefcharpterId;
 
     @ApiModelProperty(value = "简章状态")
     private Integer status;
 
     @ApiModelProperty(value = " 专业id")
     private String professionId;
+
+    private Integer recruitingNo;
+
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date checkedTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime createTime;
+
+    /**
+     * 阅读人数
+     */
+    private Integer readNum;
+
+    /**
+     * 综合工资
+     */
+    private String avgSalary;
+
+    /**
+     * 结算工资
+     */
+    private String detailSalary;
 
     @ApiModelProperty(value = "用户id")
     private Integer userId;
@@ -33,6 +70,11 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
 
     @ApiModelProperty(value = "man age id")
     private Integer manAgeId;
+
+    /**
+     * 0:无返佣 1:有返佣
+     */
+    private String rebate;
 
     @ApiModelProperty(value = "性别")
     private Integer sex;
@@ -47,8 +89,15 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
     @ApiModelProperty(value = "学历id")
     private String educationId;
 
-    @ApiModelProperty(value = "面试地址 0 用人单位 1 非用人单位")
-    private Integer interviewAddress;
+    @ApiModelProperty(value = "用人单位面试地址")
+    private String interviewAddress;
+
+    @ApiModelProperty(value = "非用人单面试地址")
+    private String noEmployerAddress;
+
+    @ApiModelProperty(value = "用人单位证明图片url")
+    private String employerCertificatePhotoUrl;
+
 
     @ApiModelProperty(value = "工作年限id")
     private String experienceId;
@@ -58,6 +107,11 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
 
     @ApiModelProperty(value = "工作时间安排id")
     private String workTimeArrangeId;
+
+    /**
+     * 工作地点
+     */
+    private String workAddress;
 
     @ApiModelProperty(value = "服装要求id")
     private String clothingRequirementId;
@@ -116,12 +170,18 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
     private Integer rebateType;
 
 
-
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "返佣时间")
-    private String rebateTime;
+    private Date rebateTime;
 
     @ApiModelProperty(value = "返佣男")
     private String rebateMale;
+
+    /**
+     * 职位描述图片url
+     */
+    private String descriptionJobPhotoUrl;
 
     @ApiModelProperty(value = "返佣女")
     private String rebateFemale;
@@ -132,6 +192,29 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
 
     @ApiModelProperty(value = "提交认证人id")
     private Integer certifierId;
+
+    /**
+     * 职位描述图片上传
+     */
+    private MultipartFile descriptionJobPhotoFile;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 用人单位证明图片上传
+     */
+    private MultipartFile employerCertificatePhotoFile;
+
+
+
+    /**
+     * 0 已上架 1已下架
+     */
+    private Integer briefChapterStatus;
+
 
 
 }

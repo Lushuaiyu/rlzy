@@ -18,6 +18,11 @@ public class AddCoQuery {
     @ApiModelProperty(value = "公司名称")
     private String CoName;
 
+    /**
+     * 企业id
+     */
+    private Integer groupId;
+
     @ApiModelProperty(value = "公司地址")
     private String CoAddress;
 
@@ -33,4 +38,9 @@ public class AddCoQuery {
 
     @ApiModelProperty(value = "文件上传")
     public MultipartFile file;
+
+    /**
+     * 1 添加企业 | 2 身份认证失败说明
+     */
+    public Integer type;
 }

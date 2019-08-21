@@ -17,7 +17,7 @@
         Id, BriefChapterId, RebateType, RebateTime, RebateMale, RebateFemale, status, DeleteFlag,
         CreateTime, rebate_variable,
     </sql>
-    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryK" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from hr_rebaterecord
@@ -33,69 +33,31 @@
             group by BriefChapterId
         </where>
     </select>
+    <select id="selectReId" resultType="_int" parameterType="hrRebaterecord">
+        select Id
+        from hr_rebaterecord re
+        <where>
+            <if test="null != briefchapterId">
+                BriefChapterId = #{briefchapterId}
+            </if>
+            <if test="null != rebateType">
+                and RebateType = #{rebateType}
+            </if>
+            and DeleteFlag = 0
+        </where>
+    </select>
 
-    <insert id="insertSelective" parameterType="com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery">
-        insert into hr_rebaterecord
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                Id,
-            </if>
-            <if test="briefchapterid != null">
-                BriefChapterId,
-            </if>
-            <if test="rebatetype != null">
-                RebateType,
-            </if>
-            <if test="rebatetime != null">
-                RebateTime,
-            </if>
-            <if test="rebatemale != null">
-                RebateMale,
-            </if>
-            <if test="rebatefemale != null">
-                RebateFemale,
-            </if>
-            <if test="status != null">
-                status,
-            </if>
-            <if test="deleteflag != null">
-                DeleteFlag,
-            </if>
-            <if test="createtime != null">
-                CreateTime,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=INTEGER},
-            </if>
-            <if test="briefchapterid != null">
-                #{briefchapterid,jdbcType=INTEGER},
-            </if>
-            <if test="rebatetype != null">
-                #{rebatetype,jdbcType=TINYINT},
-            </if>
-            <if test="rebatetime != null">
-                #{rebatetime,jdbcType=VARCHAR},
-            </if>
-            <if test="rebatemale != null">
-                #{rebatemale,jdbcType=DECIMAL},
-            </if>
-            <if test="rebatefemale != null">
-                #{rebatefemale,jdbcType=DECIMAL},
-            </if>
-            <if test="status != null">
-                #{status,jdbcType=INTEGER},
-            </if>
-            <if test="deleteflag != null">
-                #{deleteflag,jdbcType=TINYINT},
-            </if>
-            <if test="createtime != null">
-                #{createtime,jdbcType=TIMESTAMP},
-            </if>
-        </trim>
+
+    <insert id="insertSelective">
+        insert into hr_rebaterecord (BriefChapterId, RebateType, RebateMale, RebateFemale, RebateTime, CreateTime)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.briefcharpterId},#{item.rebateType}, #{item.rebateMale}, #{item.rebateFemale}, #{item.rebateTime},
+            #{item.createTime})
+        </foreach>
+
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.nado.rlzy.db.pojo.HrRebaterecord">
+    <update id="updateByPrimaryKeySelecti" parameterType="com.nado.rlzy.db.pojo.HrRebaterecord">
         update hr_rebaterecord
         <set>
             <if test="briefchapterid != null">
@@ -145,25 +107,53 @@
     <update id="updateRebateManAndWomen">
         update hr_rebaterecord
         <set>
-        <if test="null != manMoney">
-            RebateMale   = #{manMoney},
-        </if>
-        <if test="null != womenMoney">
-            RebateFemale = #{womenMoney}
-        </if>
-        <where>
-             DeleteFlag = 0
-             <if test="null != type">
-                 and RebateType = #{type}
-             </if>
-             <if test="null != briefchapter">
-                 and BriefChapterId = #{briefchapter}
-             </if>
-        </where>
-                       
+            <if test="null != manMoney">
+                RebateMale = #{manMoney},
+            </if>
+            <if test="null != womenMoney">
+                RebateFemale = #{womenMoney}
+            </if>
+            <where>
+                DeleteFlag = 0
+                <if test="null != type">
+                    and RebateType = #{type}
+                </if>
+                <if test="null != briefchapter">
+                    and BriefChapterId = #{briefchapter}
+                </if>
+            </where>
+
         </set>
-         
-         
-         
+
+
+    </update>
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            update hr_rebaterecord
+            <set>
+                RebateMale = #{item.rebateMale} ,
+                RebateFemale = #{item.rebateFemale},
+                RebateTime = #{item.rebateTime}
+                <where>
+                    BriefChapterId = #{item.briefchapterId} and RebateType = #{item.rebateType}
+                </where>
+            </set>
+        </foreach>
+
+    </update>
+    <update id="updateRebateStatus" parameterType="hrRebaterecord" >
+        update hr_rebaterecord
+        <set>
+                status = 1,
+            <if test="null != rebateTime">
+                RebateTime = #{rebateTime}
+            </if>
+            where
+            <if test="null != id">
+                Id = #{id}
+            </if>
+            and DeleteFlag = 0
+        </set>
+
     </update>
 </mapper>

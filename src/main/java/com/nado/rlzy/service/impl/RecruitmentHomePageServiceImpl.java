@@ -5,11 +5,14 @@ import com.nado.rlzy.bean.dto.JobListDto;
 import com.nado.rlzy.bean.frontEnd.JobListtFront;
 import com.nado.rlzy.bean.query.JobListQuery;
 import com.nado.rlzy.db.mapper.CollectMapper;
+import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
-import com.nado.rlzy.db.pojo.Collect;
+import com.nado.rlzy.db.mapper.HrUserMapper;
+import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.RecruitmentHomePageService;
 import com.nado.rlzy.utils.CheckParametersUtil;
+import com.nado.rlzy.utils.CollectorsUtil;
 import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -17,8 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -37,40 +43,23 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     @Autowired
     private CollectMapper collectMapper;
 
+
+    @Autowired
+    private HrBriefchapterMapper briefchapterMapper;
+
+    @Autowired
+    private HrUserMapper userMapper;
+
+
     @Override
-    public List<JobListtFront> selectJobListOverview(JobListQuery query) {
+    public List<HrSignUp> selectJobListOverview(JobListQuery query) {
 
-        List<JobListDto> listDtos = mapper.selectJobListOverview(query);
-        List<JobListtFront> collect = listDtos.stream().map(dto -> {
-            JobListtFront front = new JobListtFront();
-            BeanUtils.copyProperties(dto, front);
-
-            //数据处理
-            Integer age = dto.getAge();
-            String s = StringUtil.toString(age);
-            front.setAge(s);
-
-
-            Integer jobStatus = dto.getJobStatus();
-            String s2 = StringUtil.toString(jobStatus);
-            front.setJobStatus(s2);
-
-            Integer relation = dto.getRelation();
-            String s3 = StringUtil.toString(relation);
-            front.setRelation(s3);
-
-            Integer type = dto.getType();
-            String s1 = StringUtil.toString(type);
-            front.setRelation(s1);
-
+        List<HrSignUp> listDtos = mapper.selectJobListOverview(query);
+        List<HrSignUp> collect = listDtos.stream().map(dto -> {
             if (dto.getType().equals(1)) {
-                front.setRelation("本人");
+                dto.setCommendName("本人");
             }
-
-
-            return front;
-
-
+            return dto;
         }).collect(Collectors.toList());
         return collect;
 
@@ -136,29 +125,15 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     }
 
     @Override
-    public List<JobListtFront> selectCollectListOverview(Integer userId) {
-        List<JobListDto> jobListDtos = mapper.selectCollectListOverview(userId);
+    public List<HrSignUp> selectCollectListOverview(Integer userId) {
+        List<HrSignUp> jobListDtos = mapper.selectCollectListOverview(userId);
         return jobListDtos.stream().map(dto -> {
-            JobListtFront front = new JobListtFront();
-            BeanUtils.copyProperties(dto, front);
-            //数据处理
-            Integer age = dto.getAge();
-            String s = StringUtil.toString(age);
-            front.setAge(s);
-
-
-            Integer jobStatus = dto.getJobStatus();
-            String s2 = StringUtil.toString(jobStatus);
-            front.setJobStatus(s2);
-
-
-            Integer relation = dto.getRelation();
-            String s3 = StringUtil.toString(relation);
-            front.setRelation(s3);
-
-            return front;
-
-
+            String signUpName = dto.getSignUpName();
+            String commendName = dto.getCommendName();
+            if (signUpName.compareTo(commendName) == 0) {
+                dto.setRecommendName("自己");
+            }
+            return dto;
         }).collect(Collectors.toList());
     }
 
@@ -214,38 +189,188 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void save(Collect collect) {
+    public int save(Collect collect) {
         CheckParametersUtil.getInstance()
-                .put(collect.getBriefchapterId(), "briefcharpter")
                 .put(collect.getUserId(), "userId")
                 .put(collect.getSignUpId(), "signUpId");
 
-        collect.setBriefchapterId(collect.getBriefchapterId());
+
         collect.setCreateTime(new Date());
         collect.setUserId(collect.getUserId());
         collect.setSignUpId(collect.getSignUpId());
 
-        Assert.isTrue(collectMapper.addBriefchapter(collect) >= 1, RlzyConstant.OPS_FAILED_MSG);
+        Assert.isFalse(collectMapper.insertSelective(collect) <= 0, RlzyConstant.OPS_FAILED_MSG);
+        return collect.getId();
     }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateSignUpCollectStatus(Collect collect) {
-        //Assert.isFalse( null == collect.getBriefchapterId(), RlzyConstant.NULL_PARAM);
-        Assert.isFalse(null == collect.getUserId(), RlzyConstant.NULL_PARAM);
-        Assert.isFalse(null == collect.getSignUpId(), RlzyConstant.NULL_PARAM);
+    public int updateSignUpCollectStatus(Collect collect) {
         collect.setDeleteFlag(1);
-        Assert.isFalse(collectMapper.updateByPrimaryKeySelective(collect) < 1, RlzyConstant.OPS_FAILED_MSG);
+        Assert.isFalse(collectMapper.updateByPrimaryKeySelecti(collect) <= 0, RlzyConstant.OPS_FAILED_MSG);
+        return 1;
+    }
+
+
+    @Override
+    public Map<String, Object> recruitmentBriefchapter(Integer userId, Integer type) {
+        HashMap<String, Object> map = new HashMap<>();
+        if (type.equals(1)) {
+            //代招企业
+            List<HrBriefchapter> list = briefchapterMapper.representativeUnit(userId);
+            List<HrBriefchapter> collect = list.stream()
+                    .map(dto -> {
+                        Integer no = dto.getRecruitingNo();
+                        if (!(dto.getRecruitingNo().equals(0))) {
+                            //剩余招聘人数 不等于0 显示
+                            dto.setNo(no + "人");
+                        }
+                        //月综合
+                        double value = dto.getAvgSalary().doubleValue();
+                        String format = StringUtil.decimalFormat2(value);
+                        dto.setAvgSalary1(format + "元起");
+                        //计薪
+                        double value1 = dto.getDetailSalary().doubleValue();
+                        String s1 = StringUtil.decimalFormat2(value1);
+                        String detailSalaryWay = dto.getDetailSalaryWay();
+                        dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+                        Map<Integer, BigDecimal> mapp = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                                CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                        //对返佣金额进行 foreach 操作, set到返回的结果集里
+                        mapp.forEach((k, v) -> {
+                            BigDecimal mm = v;
+                            double v1 = mm.doubleValue();
+                            String s = StringUtil.decimalFormat2(v1);
+                            if (v != null) {
+                                s = "返" + s + "元";
+                                dto.setRebateRecord(s);
+                            } else {
+                                dto.setRebateRecord("无返佣");
+                            }
+                        });
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+            map.put("representativeUnit", collect);
+        } else {
+            //招聘企业
+            List<HrBriefchapter> list = briefchapterMapper.recruitmentUnit(userId).stream()
+                    .map(dto -> {
+                        Integer no = dto.getRecruitingNo();
+                        if (!(dto.getRecruitingNo().equals(0))) {
+                            //剩余招聘人数 不等于0 显示
+                            dto.setNo(no + "人");
+                        }
+                        //月综合
+                        double value = dto.getAvgSalary().doubleValue();
+                        String format = StringUtil.decimalFormat2(value);
+                        dto.setAvgSalary1(format + "元起");
+                        //计薪
+                        double value1 = dto.getDetailSalary().doubleValue();
+                        String s1 = StringUtil.decimalFormat2(value1);
+                        String detailSalaryWay = dto.getDetailSalaryWay();
+                        dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+                        Map<Integer, BigDecimal> mapp = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                                CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                        //对返佣金额进行 foreach 操作, set到返回的结果集里
+                        mapp.forEach((k, v) -> {
+                            BigDecimal mm = v;
+                            double v1 = mm.doubleValue();
+                            String s = StringUtil.decimalFormat2(v1);
+                            if (v != null) {
+                                s = "返" + s + "元";
+                                dto.setRebateRecord(s);
+                            } else {
+                                dto.setRebateRecord("无返佣");
+                            }
+                        });
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+            map.put("recruitmentUnit", list);
+        }
+        return map;
+    }
+
+
+    @Override
+    public List<HrUser> referrer(JobListQuery query) {
+        List<HrUser> hrUsers = userMapper.selectReferrer(query);
+        List<HrUser> collect = hrUsers.stream().map(dto -> {
+            Integer recommendNoLower = dto.getRecommendNoLower();
+            Integer recommendNoUpper = dto.getRecommendNoUpper();
+            dto.setRecommend(recommendNoLower + "-" + recommendNoUpper + "人");
+            return dto;
+        }).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<HrUser> referrerDetails(Integer userId) {
+
+        List<HrUser> list = userMapper.selectReferrerDetails(userId);
+        int interviewed = userMapper.interviewed(userId);
+        int arReported = userMapper.arReported(userId);
+        int noReported = userMapper.noReported(userId);
+        int noInterview = userMapper.noInterview(userId);
+        int jobSeeker = userMapper.jobSeeker(userId);
+        list.stream()
+                .map(dto -> {
+                    Integer recommendNoLower = dto.getRecommendNoLower();
+                    Integer recommendNoUpper = dto.getRecommendNoUpper();
+                    dto.setRecommend(recommendNoLower + "-" + recommendNoUpper + "人");
+                    dto.setInterviewed(interviewed);
+                    dto.setArReported(arReported);
+                    dto.setNoInterview(noInterview);
+                    dto.setNoReported(noReported);
+                    dto.setJobSeeker(jobSeeker);
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return list;
+    }
+
+
+    @Override
+    public int collectSignUPTable(Integer userId, Integer signUpId) {
+        Collect collect = new Collect();
+        collect.setUserId(userId);
+        collect.setSignUpId(signUpId);
+        collect.setCreateTime(new Date());
+        collectMapper.insertSelective(collect);
+        return collect.getId();
     }
 
 
 
-    /*public static void main(String[] args) {
+    @Override
+    public int collectCancel(Integer id) {
+        Collect collect = new Collect();
+        collect.setDeleteFlag(1);
+        return collectMapper.insertSelective(collect);
+
+    }
+
+
+
+    @Override
+    public int collectReferrer(Integer userId) {
+        Collect collect = new Collect();
+        collect.setUserId(userId);
+        collectMapper.insertSelective(collect);
+        return collect.getId();
+    }
+
+
+
+    public static void main(String[] args) {
         String realName = "320673199611152349";
-        realName = realName.substring(0,3) + replaceStr(realName.substring(3,6)) + realName.substring(6, 14) + replaceStr(realName.substring(14, 18));
+        realName = realName.substring(0, 3) + replaceStr(realName.substring(3, 6)) + realName.substring(6, 14) + replaceStr(realName.substring(14, 18));
         System.out.println(realName);
         System.out.println("aaa");
-    }*/
+    }
 
     private static String replaceStr(String realName) {
         StringBuffer stringBuffer = new StringBuffer();
