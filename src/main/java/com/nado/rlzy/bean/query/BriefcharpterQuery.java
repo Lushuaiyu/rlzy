@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  * @ClassName 招聘简章query
  * @Description TODO
@@ -26,7 +29,7 @@ public class BriefcharpterQuery extends BaseQuery {
     private String certifier;
 
     @ApiModelProperty(value = "职位")
-    private String postName;
+    private int[] postName;
 
     @ApiModelProperty(value = "用户id")
     private Integer userId;
@@ -38,7 +41,7 @@ public class BriefcharpterQuery extends BaseQuery {
     private String professionId;
 
     @ApiModelProperty(value = "职位id")
-    private Integer postId;
+    private String postId;
 
 
     @ApiModelProperty(value = "男生年龄 id")
@@ -54,8 +57,9 @@ public class BriefcharpterQuery extends BaseQuery {
     private Integer sex;
 
 
-    @ApiModelProperty(value = "学历id")
-    private Integer[] educationId;
+    @ApiModelProperty(value = "学历id 学历可多选")
+    private String educationId;
+
 
     @ApiModelProperty(value = "招聘企业面试地址 ")
     private String interviewAddress;
@@ -68,7 +72,13 @@ public class BriefcharpterQuery extends BaseQuery {
     private String interviewAddress2;
 
     @ApiModelProperty(value = "工作年限id")
-    private String experienceId;
+    private Integer experienceId;
+
+
+    /**
+     * 工作地点
+     */
+    private String workAddress;
 
     @ApiModelProperty(value = "工作方式id")
     private Integer workWayId;
@@ -158,8 +168,6 @@ public class BriefcharpterQuery extends BaseQuery {
     @ApiModelProperty(value = "返佣女")
     private String rebateFemale;
 
-
-
     @ApiModelProperty(value = "被招聘企业id")
     private Integer recruitedCompanyId;
 
@@ -171,4 +179,70 @@ public class BriefcharpterQuery extends BaseQuery {
      */
     private Integer briefChapterStatus;
 
+    /**
+     * 到岗时间
+     */
+    private Date arrivalTime;
+
+    /**
+     * 毕业时间
+     */
+    private Date graduationTime;
+
+    /**
+     * 期望薪资下限
+     */
+    private BigDecimal expectedSalaryLower;
+
+    /**
+     * 期望薪资上限
+     */
+    private BigDecimal expectedSalaryUpper;
+
+    /**
+     * 学历
+     */
+    private String education;
+
+    /**
+     * 意向岗位
+     */
+    private String registrationPositionId;
+
+    /**
+     * 年龄
+     */
+    private Integer age;
+
+    /**
+     * 男生面试返佣
+     */
+    private BigDecimal rebateMaleInterview;
+
+    /**
+     * 女生面试返佣
+     */
+    private BigDecimal rebateFemaleInterview;
+
+    /**
+     * 男生报道返佣
+     */
+    private BigDecimal rebateMaleReport;
+
+    /**
+     * 女生报道返佣
+     */
+    private BigDecimal rebateFemaleReport;
+
+    /**
+     * 男生入职返佣
+     */
+    private BigDecimal rebateMaleEntry;
+
+
+
+    /**
+     * 返佣时间入职
+     */
+    private Date rebateTimeEntry;
 }

@@ -30,7 +30,8 @@
         <result column="UserName" property="userName" jdbcType="VARCHAR"/>
         <result column="violation_flag" property="violationFlag" jdbcType="VARCHAR"/>
         <!--        <collection property="hriefchapter" resultMap="rebaterecord" ofType="com.nado.rlzy.db.pojo.HrRebaterecord"/>-->
-        <collection property="deliveryrecords" resultMap="deliveryrecordsMap" ofType="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord"/>
+        <collection property="deliveryrecords" resultMap="deliveryrecordsMap"
+                    ofType="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord"/>
     </resultMap>
     <resultMap id="deliveryrecordsMap" type="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord">
         <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
@@ -43,21 +44,17 @@
 
         </resultMap>-->
     <select id="coHomePage" resultMap="BaseResultMap">
-        select gr.GroupName as certifier,
-        gr.co_policy,
-        gr.person_num,
-        gr.GroupAddress,
-        gr.GroupInfo,
-        b.id as brId,
-        gr.id
+        select grr.GroupName as certifier,
+        grr.co_policy,
+        grr.person_num,
+        grr.GroupAddress,
+        grr.GroupInfo,
+        grr.Id
         from hr_group grr
-        left join hr_briefchapter b on grr.CertifierId = b.userId and b.briefChapterStatus = 0
-        left join hr_group gr on b.userId = gr.CertifierId and gr.DeleteFlag = 0
         <where>
-            grr.DeleteFlag = 0
-            and grr.pid = gr.Id
+            grr.groupStatus = 0
             <if test="null != groupId">
-                and gr.Id = #{groupId}
+                and grr.Id = #{groupId}
             </if>
         </where>
     </select>
@@ -66,7 +63,7 @@
         from hr_group grr
         left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
-        left join hr_user u on gr.CertifierId = u.Id and u.DeleteFlag = 0
+        left join hr_user u on gr.CertifierId = u.Id and u.status = 0
         where grr.DeleteFlag = 0
         and grr.DeleteFlag = 0
         <if test="null != type">
@@ -80,7 +77,7 @@
     <select id="queryAgentEnterprisePid" resultMap="BaseResultMap">
         select g.Id
         from hr_group g
-        left join hr_user u on g.CertifierId = u.Id and u.DeleteFlag = 0
+        left join hr_user u on g.CertifierId = u.Id and u.status = 0
         <where>
             g.DeleteFlag = 0
             <if test="null != userId">
@@ -109,7 +106,7 @@
             and grr.CertifierId = u.id
             and gr.DeleteFlag = 0
             and grr.DeleteFlag = 0
-            and u.DeleteFlag = 0
+            and u.status = 0
             <if test="null != userId">
                 and u.id = #{userId}
             </if>
@@ -127,7 +124,7 @@
         u.type,
         gr.Id
         from hr_group gr
-        left join hr_user u on gr.CertifierId = u.id and u.DeleteFlag = 0
+        left join hr_user u on gr.CertifierId = u.id and u.status = 0
         where gr.DeleteFlag = 0
         and gr.type = 1
         <if test="null != userId">
@@ -136,17 +133,17 @@
 
     </select>
     <select id="queryTheAuditFailed" resultMap="BaseResultMap">
-          select g.remark
-            from hr_group g where DeleteFlag = 0 and Status = 3
-             <if test="null != groupId">
-             and  Id = #{groupId}
-             </if>
+        select g.remark
+        from hr_group g where DeleteFlag = 0 and Status = 3
+        <if test="null != groupId">
+            and Id = #{groupId}
+        </if>
     </select>
     <select id="selectGroupNameRecruitment" resultType="hrGroup">
         select grr.GroupName, grr.Id
         from hr_group grr
         left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0
-        left join hr_user u on grr.CertifierId = u.Id and u.DeleteFlag = 0
+        left join hr_user u on grr.CertifierId = u.Id and u.status = 0
         where grr.DeleteFlag = 0
         and grr.DeleteFlag = 0
         and grr.type = 1
@@ -157,9 +154,6 @@
             and u.id = #{userId}
         </if>
     </select>
-
-
-
 
 
 </mapper>

@@ -65,5 +65,8 @@ public class HrRebaterecord {
     @Column(name = "rebate_variable")
     private BigDecimal rebateVariable;
 
+    @Column(name = "sign_up_id")
+    private Integer signUpId;
+
 
 }

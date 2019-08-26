@@ -2,6 +2,7 @@ package com.nado.rlzy.db.mapper;
 
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
+import com.nado.rlzy.db.pojo.HrSignUp;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
@@ -12,7 +13,7 @@ public interface HrRebaterecordMapper {
 
 
     /**
-     * 发布简章 返佣金额 添加
+     * 发布简章 返佣金额 添加 废弃 这个东西在简章表里 不需要批量修改
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:45 2019/7/23
@@ -25,6 +26,18 @@ public interface HrRebaterecordMapper {
     HrRebaterecord selectByPrimaryK(Integer id);
 
     int updateByPrimaryKeySelecti(HrRebaterecord record);
+
+
+    /**
+     * 定时任务 返佣 查询返佣时间
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 19:29 2019/7/18
+     * @Param []
+     **/
+    List<HrSignUp> selectRebateTime();
 
     /**
      * 查询 男 和 女 单人面试 报道 入职的总共返佣金额

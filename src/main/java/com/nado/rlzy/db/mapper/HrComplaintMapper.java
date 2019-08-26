@@ -126,6 +126,16 @@ public interface HrComplaintMapper extends BaseMapper<HrComplaint>, Mapper<HrCom
      **/
     int updateCom(ComplaintQuery query);
 
+    /**
+     * 公司主页 - 历史记录 - 违规记录 代招单位 || 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 12:58 2019/8/24
+     * @Param [groupId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrComplaint>
+     **/
+    List<HrComplaint> violationRecord(@Param("groupId") Integer groupId);
+
 
 
 

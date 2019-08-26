@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @ClassName 招聘端和求职端 登录注册 修改密码啊
@@ -257,7 +258,7 @@ public class UserServiceImpl implements UserService {
                     query.getExpectedSalaryLower(), query.getExpectedSalaryUpper());
 
             //报名表
-            Integer signUpId = initSignUp(userId, query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(), query.getProfession(), query.getArrivalTime(),
+            Integer signUpId = initSignUp(userId,query.getSex(),query.getUserName(),query.getIdCard(), query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(), query.getProfession(), query.getArrivalTime(),
                     query.getExpectedSalaryLower(), query.getExpectedSalaryUpper(), query.getItIsPublic(), query.getAgreePlatformHelp());
             //报名表投递记录表
             initSignUpDeliveryrecord(signUpId, query.getJobStatus());
@@ -297,17 +298,24 @@ public class UserServiceImpl implements UserService {
         Assert.isFalse(userMapper.insertSelective(user) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
-    private Integer initSignUp(Integer userId, String education, String graduationTime,
+    private Integer initSignUp(Integer userId,Integer sex, String userName,String idCard, String education, Date graduationTime,
                                String registrationPositionId, String profession, String arrivalTime,
                                String expectedSalaryLower, String expectedSalaryUpper, Integer itIsPublic, Integer agreePlatformHelp) {
         HrSignUp signUp = new HrSignUp();
+        signUp.setSex(sex);
+        signUp.setUserName(userName);
+        boolean b = IdcardUtil.isvalidCard18(idCard);
+        Assert.isFalse(b == false, "身份证输入有误, 请重新输入");
+        signUp.setIdCard(idCard);
+        int ageByIdCard = IdcardUtil.getAgeByIdCard(idCard);
+        signUp.setAge(ageByIdCard);
         signUp.setEducation(education);
         signUp.setUserId(userId);
         signUp.setGraduationTime(graduationTime);
         signUp.setRegistrationPositionId(registrationPositionId);
         signUp.setProfession(profession);
-        LocalDateTime localDateTime = StringUtil.strToLocalDateTime(arrivalTime);
-        signUp.setArrivalTime(localDateTime);
+        Date date = StringUtil.StrToDate(arrivalTime);
+        signUp.setArrivalTime(date);
         BigDecimal lowerExpectedSalary = StringUtil.decimal(expectedSalaryLower);
         signUp.setExpectedSalaryLower(lowerExpectedSalary);
         BigDecimal upperExpectedSalary = StringUtil.decimal(expectedSalaryUpper);
@@ -320,7 +328,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Integer initUserJobHunt(String phone, String password, String imageHead, String userName, String idCard, Integer unitType,
-                                    Integer sex, String education, String graduationTime,
+                                    Integer sex, String education, Date graduationTime,
                                     String registrationPositionId, String profession, String arrivalTime,
                                     String expectedSalaryLower, String expectedSalaryUpper) {
         HrUser user = new HrUser();
@@ -328,6 +336,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(password);
         user.setHeadImage(imageHead);
         user.setUserName(userName);
+        boolean b = IdcardUtil.isvalidCard18(idCard);
+        Assert.isFalse(b == false, "身份证输入有误, 请重新输入");
         user.setIdCard(idCard);
         user.setType(unitType);
         user.setSex(sex);
@@ -348,7 +358,7 @@ public class UserServiceImpl implements UserService {
 
     private void checkJobHunting(String phone, String code, String password, String confirmPassword,
                                  Integer unitType, String imageHead, String userName, Integer sex,
-                                 String idCard, String education, String graduationTime,
+                                 String idCard, String education, Date graduationTime,
                                  String profession, String registrationPositionId, String arrivalTime,
                                  String expectedSalaryLower, String expectedSalaryUpper, Integer itIsPublic,
                                  Integer agreePlatformHelp, String postIdStr, Integer recommendNoLower, Integer recommendNoUpper, String recommendInfo) {

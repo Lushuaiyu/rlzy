@@ -320,12 +320,13 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
                     Integer recommendNoLower = dto.getRecommendNoLower();
                     Integer recommendNoUpper = dto.getRecommendNoUpper();
                     dto.setRecommend(recommendNoLower + "-" + recommendNoUpper + "人");
-                    dto.setInterviewed(interviewed);
-                    dto.setArReported(arReported);
-                    dto.setNoInterview(noInterview);
-                    dto.setNoReported(noReported);
-                    dto.setJobSeeker(jobSeeker);
+                    dto.setInterviewed("参加面试" + interviewed + "人");
+                    dto.setArReported("报道" + arReported + "人");
+                    dto.setNoInterview( "未面试" + noInterview + "人");
+                    dto.setNoReported("未报到" + noReported + "人");
 
+                    dto.setJobSeeker( "拥有求职者" +jobSeeker + "人");
+                    dto.setViolationRecord("有责未报到" + dto.getViolationRecord() + "次  ");
                     return dto;
                 })
                 .collect(Collectors.toList());

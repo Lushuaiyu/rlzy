@@ -65,11 +65,11 @@ public class JobSearchHomePageController extends BaseController {
     })
     public ResultJson queryBriefcharpterDtoByParams(BriefcharpterQuery query) {
 
-        List<HrBriefchapter> vals = service.queryBriefcharpterDtoByParams(query);
-        List<HrBriefchapter> list = service.queryBriefcharpterByParams(query);
+        Map<String, Object> map1 = service.queryBriefcharpterDtoByParams(query);
+        Map<String, Object> map2 = service.queryBriefcharpterByParams(query);
         HashMap<String, Object> map = new HashMap<>();
-        map.put("queryBriefcharpterDtoByParams", vals);
-        map.put("queryBriefcharpterByParams", list);
+        map.put("queryBriefcharpterDtoByParams", map1);
+        map.put("queryBriefcharpterByParams", map2);
         ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
@@ -92,12 +92,9 @@ public class JobSearchHomePageController extends BaseController {
     @ApiOperation(notes = "type = 0:求职端 首页 简章列表 查询招聘简章详情 | type = 1:query 除了 求职端首页 简章列表以外的简章详情",
             value = "type = 0:求职端 首页 简章列表 查询招聘简章详情 | type = 1:query 除了 求职端首页 简章列表以外的简章详情", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "type", name = "登陆者身份 1 本人 2 推荐人", dataType = "int", required = true),
             @ApiImplicitParam(value = "type1", name = "0 简章列表的详情 1 除了简章列表外的详情", dataType = "int", required = true),
-            @ApiImplicitParam(value = "sex", name = "1 男 2 女", dataType = "int", required = true),
-            @ApiImplicitParam(value = "query", name = "其余参数见文档", dataType = "int", required = true),
-            @ApiImplicitParam(value = "id", name = "简章id", dataType = "int", required = true),
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true)
+            @ApiImplicitParam(value = "briefcharpterId", name = "简章id", dataType = "int", required = true),
+            @ApiImplicitParam(value = "recruitedCompany", name = "用人单位", dataType = "int", required = true),
     })
     public ResultJson queryBriefcharpterDetileByParams(BriefcharpterQuery query) {
         ResultJson json = new ResultJson();
@@ -105,24 +102,26 @@ public class JobSearchHomePageController extends BaseController {
         if (query.getType1().equals(0)) {
             List<HrBriefchapter> list = service.queryBriefcharpterDetileByParams(query);
             List<HrBriefchapter> list1 = service.queryBriefcharpterDetileRecruitment(query);
+            //推荐单位 代招单位
             List<HrBriefchapter> hrBriefchapters = service.recommendAPosition(query.getRecruitedCompany());
+            //推荐单位 招聘单位
             List<HrBriefchapter> hrBriefchapters1 = service.recommendAPositionRecruitment(query.getRecruitedCompany());
 
             //招聘单位
-                map.put("queryBriefcharpterDetileRecruitment", list1);
-                map.put("recommendAPositionRecruitment", hrBriefchapters1);
-                //代招单位
-                map.put("queryBriefcharpterDetileByParams", list);
-                map.put("recommendAPosition", hrBriefchapters);
-                json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                json.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-                json.setData(map);
+            map.put("queryBriefcharpterDetileRecruitment", list1);
+            map.put("recommendAPositionRecruitment", hrBriefchapters1);
+            //代招单位
+            map.put("queryBriefcharpterDetileByParams", list);
+            map.put("recommendAPosition", hrBriefchapters);
+            json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            json.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            json.setData(map);
 
             json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             json.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             json.setData(map);
         } else if (query.getType1().equals(1)) {
-            // 除了 求职端首页 简章列表以外的简章详情
+            // 除了求职端首页简章列表以外的简章详情
             Map<String, Object> detile = service.queryBriefcharpterListDetileByParams(query);
             json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             json.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
@@ -226,36 +225,91 @@ public class JobSearchHomePageController extends BaseController {
 
     @RequestMapping(value = "coHomePage")
     @ResponseBody
-    @ApiOperation(notes = "求职端 首页 公司主页", value = "求职端 首页 公司主页", httpMethod = "POST")
+    @ApiOperation(notes = "求职端 首页 公司主页 代招单位", value = "求职端 首页 公司主页", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "groupId", name = "代招单位id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "type", name = "类型", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "groupName", name = "代招单位名字", dataType = "Integer", required = true)
+            @ApiImplicitParam(value = "groupId", name = "代招单位id || 招聘单位id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "类型 1 基本信息 2 在招职位 3 历史记录", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "briefchapterId", name = "简章id", dataType = "Integer", required = true)
     })
-    public ResultJson coHomePage(Integer groupId, Integer type, String groupName) {
+    public ResultJson coHomePage(Integer groupId, Integer type, Integer briefchapterId) {
         ResultJson result = new ResultJson();
         Map<String, Object> map = new HashMap<>();
         if (type.equals(1)) {
-            //基本信息
+            //求职端公司主页基本信息 代招单位 || 招聘单位
             List<HrGroup> groups = service.coHomePage(groupId);
             map.put("coHomePage", groups);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
-        } else if(type.equals(2)){
-            //在招职位
-            List<HrBriefchapter> list = service.atThePosition(groupId, groupName);
+        } else if (type.equals(2)) {
+            // 求职端公司主页在招职位 代招单位
+            List<HrBriefchapter> list = service.atThePosition(groupId);
             map.put("atThePosition", list);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(list);
-        } else if(type.equals(3)){
+        } else {
             //历史记录
-            //TODO
-
+            //违规记录
+            List<HrComplaint> list = service.violationRecord(groupId);
+            //简章 代招单位
+            List<HrBriefchapter> hrBriefchapters = service.companyHomeHistory(groupId);
+            //人数
+            Map<String, Object> entry = service.interviewReportEntry(briefchapterId);
+            map.put("violationRecord", list);
+            map.put("companyHomeHistory", hrBriefchapters);
+            map.put("interviewReportEntry", entry);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(map);
         }
         return result;
     }
+
+    @RequestMapping(value = "coHomePageRecruitment")
+    @ResponseBody
+    @ApiOperation(value = "求职端 首页 公司主页 招聘单位", notes = "求职端 首页 公司主页 代招单位 招聘单位")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "groupId", name = "代招单位id || 招聘单位id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "类型 1 基本信息 2 在招职位 3 历史记录", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "briefchapterId", name = "简章id", dataType = "Integer", required = true)
+    })
+    public ResultJson coHomePageRecruitment(Integer groupId, Integer type, Integer briefchapterId){
+        ResultJson result = new ResultJson();
+        Map<String, Object> map = new HashMap<>();
+        if (type.equals(1)) {
+            //求职端公司主页基本信息 代招单位 || 招聘单位
+            List<HrGroup> groups = service.coHomePage(groupId);
+            map.put("coHomePage", groups);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(map);
+        } else if (type.equals(2)) {
+            // 求职端公司主页在招职位 招聘单位
+            List<HrBriefchapter> list = service.atThePositionRecruitment(groupId);
+            map.put("atThePosition", list);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(list);
+        } else {
+            //历史记录
+            //违规记录
+            List<HrComplaint> list = service.violationRecord(groupId);
+            //简章 招聘单位
+            List<HrBriefchapter> hrBriefchapters = service.compayHomeHistoryRecruitment(groupId);
+            Map<String, Object> entry = service.interviewReportEntry(briefchapterId);
+            map.put("violationRecord", list);
+            map.put("companyHomeHistory", hrBriefchapters);
+            map.put("interviewReportEntry", entry);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(map);
+        }
+        return result;
+
+
+    }
+
     /**
      * 求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 7已面试 是进入到待面试阶段
      *
@@ -460,9 +514,6 @@ public class JobSearchHomePageController extends BaseController {
     }
 
 
-
-
-
     @RequestMapping(value = "searchGroupingInformation")
     @ResponseBody
     @ApiOperation(notes = "查询我的求职表分组 推荐人身份才能添加分组", value = "查询我的求职表分组 推荐人身份才能添加分组", httpMethod = "POST")
@@ -506,9 +557,6 @@ public class JobSearchHomePageController extends BaseController {
         int registration = service.confirmRegistration(briefChapterId, id);
         return CommonResult.success(registration, RlzyConstant.OPS_SUCCESS_MSG);
     }*/
-
-
-
 
 
 }

@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public interface JobSearchHomePageService {
     /**
-     * 求职端 公司主页
+     * 求职端公司主页基本信息 代招单位 || 招聘单位
      *
      * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
      * @Author lushuaiyu
@@ -36,7 +36,7 @@ public interface JobSearchHomePageService {
      * @Date 15:59 2019/6/27
      * @Param [query] 入参
      **/
-    List<HrBriefchapter> queryBriefcharpterDtoByParams(BriefcharpterQuery query);
+    Map<String, Object> queryBriefcharpterDtoByParams(BriefcharpterQuery query);
 
 
     /**
@@ -47,7 +47,7 @@ public interface JobSearchHomePageService {
      * @Param [query]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> queryBriefcharpterByParams(BriefcharpterQuery query);
+    Map<String, Object> queryBriefcharpterByParams(BriefcharpterQuery query);
 
     /**
      * 求职端 首页 简章列表查询招聘简章详情 代招单位
@@ -321,14 +321,64 @@ public interface JobSearchHomePageService {
     int addComplaint(ComplaintQuery query, String head);
 
     /**
-     * 在招职位
+     * 求职端 公司主页在招职位查询 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 19:22 2019/7/10
      * @Param [groupId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> atThePosition( Integer groupId, String groupName);
+    List<HrBriefchapter> atThePosition( Integer groupId);
+
+    /**
+     * 求职端 公司主页在招职位查询 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:39 2019/8/26
+     * @Param [groupId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> atThePositionRecruitment(Integer groupId);
+
+    /**
+     * 求职端公司主页 历史记录 违规记录
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:54 2019/8/24
+     * @Param
+     * @return
+     **/
+    List<HrComplaint> violationRecord(Integer groupId);
+
+    /**
+     * 求职端公司主页 历史记录 代招单位下的简章
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:07 2019/8/24
+     * @Param [brirfchapterId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> companyHomeHistory( Integer groupId);
+
+    /**
+     * 求职端公司主页历史记录代招单位和招聘单位下的报名 面试 报道人数 面试返佣 报道返佣 入职返佣的人数 代招单位下的简章
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:48 2019/8/26
+     * @param briefchapterId 简章id
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    Map<String, Object> interviewReportEntry(Integer briefchapterId);
+
+    /**
+     * 求职端公司主页 历史记录 招聘单位下的简章
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:42 2019/8/26
+     * @Param [recruitedCompany]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> compayHomeHistoryRecruitment(Integer groupId);
     /**
      * 撤销投诉
      * @Author lushuaiyu

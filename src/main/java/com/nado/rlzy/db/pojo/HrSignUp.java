@@ -78,7 +78,8 @@ public class HrSignUp {
 
     @ApiModelProperty(value = "毕业时间")
     @Column(name = "graduation_time")
-    private String graduationTime;
+    @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
+    private Date graduationTime;
 
     @ApiModelProperty(value = "专业")
     @Column(name = "profession")
@@ -86,9 +87,8 @@ public class HrSignUp {
 
     @ApiModelProperty(value = "到岗时间")
     @Column(name = "arrival_time")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy年MM月dd日")
-    private LocalDateTime arrivalTime;
+    @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
+    private Date arrivalTime;
 
     @ApiModelProperty(value = "期望薪资上限")
     @Column(name = "expected_salary_upper")
@@ -107,6 +107,10 @@ public class HrSignUp {
     @Transient
     private Integer jobStatus;
 
+    /**
+     * 前端需要的
+     */
+    private Integer status;
 
 
 
@@ -190,6 +194,13 @@ public class HrSignUp {
     @ApiModelProperty(value = "招聘端 直接录取 返佣非推荐者")
     @Transient
     private BigDecimal value;
+
+    /**
+     * 意向岗位
+     */
+    private String postId;
+
+    private String postIdStr;
 
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

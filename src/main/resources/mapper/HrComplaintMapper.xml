@@ -12,6 +12,9 @@
         <result column="status" jdbcType="INTEGER" property="status"/>
         <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+
     </resultMap>
     <sql id="Base_Column_List">
     id, brief_chapter_id, complaint_type_id, description, evidence, name, phone, status, 
@@ -196,7 +199,7 @@
         left join hr_briefchapter b on c.brief_chapter_id = b.Id and b.briefChapterStatus = 0
         left join hr_group grr on b.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on b.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_user u on s.user_id = u.Id and u.status = 0
         where c.delete_flag = 0
         and grr.Pid = gr.Id
         <if test="null != userId">
@@ -222,7 +225,7 @@
         left join hr_briefchapter b on c.brief_chapter_id = b.id and b.briefChapterStatus = 0
         left join hr_group grr on b.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on b.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_user u on s.user_id = u.id and u.DeleteFlag = 0
+        left join hr_user u on s.user_id = u.id and u.status = 0
         <where>
             c.delete_flag =0
             and grr.Pid = gr.Id
@@ -245,7 +248,7 @@
         left join hr_complainttype ct on c.complaint_type_id = ct.id and ct.delete_flag = 0
         left join hr_briefchapter b on s.brief_chapter_id = b.id and b.briefChapterStatus = 0
         left join hr_group g on b.RecruitedCompanyId = g.Id and g.groupStatus = 0
-        left join hr_user u on s.user_id = u.id and u.DeleteFlag = 0
+        left join hr_user u on s.user_id = u.id and u.status = 0
         where c.delete_flag = 0
         <if test="null != userId">
             and u.id = #{userId}
@@ -271,7 +274,7 @@
         co.create_time as createTime
         from hr_complaint co
         left join hr_briefchapter br on co.brief_chapter_id = br.Id and br.briefChapterStatus = 0
-        left join hr_user u on br.userId = u.Id and u.DeleteFlag = 0
+        left join hr_user u on br.userId = u.Id and u.status = 0
         <where>
             co.delete_flag = 0
             <if test="null != status">
@@ -298,7 +301,7 @@
         and d.pId = 25) as status,
         c.create_time as createTime
         from hr_complaint c
-        left join hr_user u on c.user_id = u.id and u.DeleteFlag = 0
+        left join hr_user u on c.user_id = u.id and u.status = 0
         left join hr_briefchapter br on c.brief_chapter_id = br.id and br.briefChapterStatus = 0
 
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
@@ -326,7 +329,7 @@
         left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
         left join hr_briefchapter b on c.brief_chapter_id = b.id and b.briefChapterStatus = 0
         left join hr_group gr on b.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_user u on s.user_id = u.id and u.DeleteFlag = 0
+        left join hr_user u on s.user_id = u.id and u.status = 0
         where c.delete_flag = 0
         and gr.type = 1
         <if test="null != complaintId">
@@ -354,5 +357,18 @@
         <if test="null != coId">
             and co.id = #{coId}
         </if>
+    </select>
+    <select id="violationRecord" resultMap="BaseResultMap">
+        select c.updateTime, c.remark
+        from hr_group g
+        left join hr_briefchapter br on g.groupStatus = 0
+        left join hr_complaint c on c.brief_chapter_id = br.Id
+        where br.userId = g.CertifierId
+        and g.groupStatus = 0
+        <if test="null != groupId">
+            and g.Id = #{groupId}
+        </if>
+        and c.status = 5
+        group by g.Id
     </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.nado.rlzy.config;
 
 import com.nado.rlzy.db.mapper.HrComplaintMapper;
+import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +36,8 @@ public class ScheduledTask {
     @Autowired
     private HrComplaintMapper complaintMapper;
 
-
-
+    @Autowired
+    private HrRebaterecordMapper rebaterecordMapper;
 
     /**
      * 面试
@@ -112,7 +113,7 @@ public class ScheduledTask {
     @Scheduled(cron = "*/1 * * * *")
     @Transactional(rollbackFor = Exception.class)
     public void task3() {
-        List<HrSignUp> list = mapper.selectRebateTime();
+        List<HrSignUp> list = rebaterecordMapper.selectRebateTime();
         list.stream().map(s -> {
             s.getRebat().stream().map(c -> {
                 Date time = c.getCreateTime();

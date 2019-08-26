@@ -287,6 +287,7 @@
             <if test="null != phone and '' != phone">
                 mobile = #{mobile}
             </if>
+            and status = 0
         </where>
 
 
@@ -306,10 +307,10 @@
         RecommendNoLower as recommendNoLower,
         RecommendInfo as recInfo
         from hr_user
-        where mobile= #{mobile} and password =#{password}
+        where mobile= #{mobile} and password =#{password} and status = 0
     </select>
     <select id="getPassword" resultType="string">
-        select Password from hr_user where Mobile = #{phone}
+        select Password from hr_user where Mobile = #{phone} and status = 0
     </select>
     <select id="queryUserByPhone" resultType="com.nado.rlzy.db.pojo.HrUser">
         select * from hr_user
@@ -318,6 +319,7 @@
             <if test="null != phone">
                 and Mobile = #{phone}
             </if>
+            and status = 0
         </where>
     </select>
     <select id="selectReferrerInfo" resultMap="BaseResultMap">
@@ -327,7 +329,7 @@
         u.PostIdStr,
         u.RecommendInfo,
         si.user_name,
-        sd.job_status,
+        sd.status,
         si.user_id,
         si.id as signUpId,
         sd.no_report_reason,
@@ -336,7 +338,7 @@
         left join hr_signup si on si.user_id = u.id and si.delete_flag = 0
         left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
         <where>
-            u.DeleteFlag = 0
+            u.status = 0
             <if test="null != userId">
                 and u.id = #{userId}
             </if>
@@ -350,6 +352,7 @@
         <if test="null != userId">
             and Id = #{userId}
         </if>
+        status = 0
 
     </select>
 
@@ -368,9 +371,9 @@
         u.agreeHelp
         from hr_user u
         <where>
-            u.DeleteFlag = 0
+            u.status = 0
             and u.type = 2
-            and u.DeleteFlag = 0
+            and u.status = 0
             <if test="null != userId">
                 and u.Id = #{userId}
             </if>
@@ -403,7 +406,7 @@
         u.PostIdStr
         from hr_user u
         <where>
-            u.DeleteFlag = 0
+            u.status = 0
 
             and u.type = 1
             <if test="null != userId">
@@ -423,7 +426,7 @@
         from hr_user u
         left join user_login_quit ulq on u.id = ulq.user_id
         and ulq.delete_flag = 0
-        where u.DeleteFlag = 0
+        where u.status = 0
         and u.type = 2
         <if test="null != recommendNoLower and null != recommendNoUpper">
             and (u.RecommendNoLower = #{recommendNoLower} and u.RecommendNoUpper = #{recommendNoUpper})
@@ -442,23 +445,27 @@
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
-        and d.pId = 1) as postName,
+        and d.pId = 1)  as postName,
         u.RecommendInfo,
-        v.content as violationRecord
-        from hr_user u left join hr_signup si on u.id = si.user_id and si.delete_flag = 0
-        left join violation_record v on si.id = v.sign_up_id and v.delete_flag = 0 where u.DeleteFlag = 0
+        (select count(v.id)
+        from violation_record v
+        left join hr_signup si on v.sign_up_id = si.id and si.delete_flag = 0
+        where v.delete_flag = 0
+        and v.type = 2) as violationRecord
+        from hr_user u
+        left join hr_signup si on u.id = si.user_id and si.delete_flag = 0
+        where u.status = 0
         <if test="null != userId">
             and u.id = #{userId}
         </if>
-        group by u.UserName
-
+        group by u.Id;
     </select>
     <select id="jobSeeker" resultType="_int">
         select count(si.user_name) as jobSeeker
         from hr_user u
         left join hr_signup si on u.id = si.user_id and si.delete_flag = 0
         left join violation_record v on si.id = v.sign_up_id and v.delete_flag = 0
-        where u.DeleteFlag = 0
+        where u.status = 0
         <if test="null != userId">
             and u.id = #{userId}
         </if>
@@ -469,8 +476,8 @@
         from hr_signup si
         left join hr_signup_deliveryrecord hsd
         on si.id = hsd.signup_id and hsd.delete_flag = 0
-        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
-        where si.delete_flag = 0 and hsd.job_status = 10
+        left join hr_user u on si.user_id = u.id and u.status = 0
+        where si.delete_flag = 0 and hsd.status = 10
         <if test="null != userId">
             and u.Id = #{userId}
         </if>
@@ -480,8 +487,8 @@
         from hr_signup si
         left join hr_signup_deliveryrecord hsd
         on si.id = hsd.signup_id
-        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
-        where hsd.job_status = 11
+        left join hr_user u on si.user_id = u.id and u.status = 0
+        where hsd.status = 11
         <if test="null != userId">
             and u.Id = #{userId}
         </if>
@@ -491,8 +498,8 @@
         from hr_signup si
         left join hr_signup_deliveryrecord hsd
         on si.id = hsd.signup_id
-        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
-        where hsd.job_status = 8
+        left join hr_user u on si.user_id = u.id and u.status = 0
+        where hsd.status = 8
         <if test="null != userId">
             and u.Id = #{userId}
         </if>
@@ -502,8 +509,8 @@
         from hr_signup si
         left join hr_signup_deliveryrecord hsd
         on si.id = hsd.signup_id
-        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
-        where hsd.job_status = 9
+        left join hr_user u on si.user_id = u.id and u.status = 0
+        where hsd.status = 9
         <if test="null != userId">
             and u.Id = #{userId}
         </if>
@@ -520,8 +527,8 @@
         uu.RecommendNoLower,
         uu.RecommendNoUpper
         from collect c
-        left join hr_user u on c.user_id = u.id and u.DeleteFlag = 0
-        left join hr_user uu on c.recruiter_id = uu.Id and uu.DeleteFlag = 0
+        left join hr_user u on c.user_id = u.id and u.status = 0
+        left join hr_user uu on c.recruiter_id = uu.Id and uu.status = 0
         where c.delete_flag = 0
         <if test="null != userId">
             and c.user_id = #{userId}
@@ -529,10 +536,10 @@
         and c.recruiter_id is not null
     </select>
     <select id="queryMyselfVillation" resultMap="BaseResultMap">
-        select hsd.job_status, u.UserName, gr.GroupName, u.violation_flag
+        select hsd.status, u.UserName, gr.GroupName, u.violation_flag
         from hr_signup si
         left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
-        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        left join hr_user u on si.user_id = u.id and u.status = 0
         left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0
         left join hr_group gr on br.RecruitedCompanyId = gr.Id and gr.groupStatus = 0
         where si.delete_flag = 0
@@ -541,10 +548,10 @@
         </if>
     </select>
   <select id="queryReferrerVillation" resultMap="BaseResultMap">
-        select hsd.job_status, u.UserName, gr.GroupName, u.violation_flag, hsd.job_status, hsd.brief_chapter_id as briefId, si.user_id as usId
+        select hsd.status, u.UserName, gr.GroupName, u.violation_flag, hsd.status, hsd.brief_chapter_id as briefId, si.user_id as usId
         from hr_signup si
         left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
-        left join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        left join hr_user u on si.user_id = u.id and u.status = 0
         left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0
         left join hr_group gr on br.RecruitedCompanyId = gr.Id and gr.groupStatus = 0
         where si.delete_flag = 0
@@ -556,7 +563,7 @@
 
 
     <select id="queryJobStatus" resultMap="BaseResultMap">
-        select hsd.job_status
+        select hsd.status
         from hr_signup si
         left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
         left join hr_briefchapter br on hsd.brief_chapter_id = br.id and br.briefChapterStatus = 0

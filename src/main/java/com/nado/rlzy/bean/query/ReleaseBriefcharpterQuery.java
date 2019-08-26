@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -214,6 +215,43 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
      * 0 已上架 1已下架
      */
     private Integer briefChapterStatus;
+
+    /**
+     * 男生面试返佣
+     */
+    private BigDecimal rebateMaleInterview;
+
+    /**
+     * 女生面试返佣
+     */
+    private BigDecimal rebateFemaleInterview;
+
+    /**
+     * 男生报道返佣
+     */
+    private BigDecimal rebateMaleReport;
+
+    /**
+     * 女生报道返佣
+     */
+    private BigDecimal rebateFemaleReport;
+
+    /**
+     * 男生入职返佣
+     */
+    private BigDecimal rebateMaleEntry;
+
+    /**
+     * 女生入职返佣
+     */
+    private BigDecimal rebateFemaleEntry;
+
+
+
+    /**
+     * 返佣时间入职
+     */
+    private Date rebateTimeEntry;
 
 
 

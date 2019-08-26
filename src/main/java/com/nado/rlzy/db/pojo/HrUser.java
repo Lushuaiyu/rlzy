@@ -10,6 +10,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -97,28 +98,28 @@ public class HrUser {
      * 已面试
      */
     @Transient
-    private Integer interviewed;
+    private String interviewed;
 
     /**
      * 已报到
      */
-    private Integer arReported;
+    private String arReported;
     /**
      * 未报到
      */
     @Transient
-    private Integer noReported;
+    private String noReported;
     /**
      * 未面试
      */
     @Transient
-    private Integer noInterview;
+    private String noInterview;
 
     /**
-     * 每个推荐人下的气滞者
+     * 每个推荐人下的求职者
      */
     @Transient
-    private Integer jobSeeker;
+    private String jobSeeker;
 
     /**
      * 违规记录
@@ -180,7 +181,7 @@ public class HrUser {
 
     @ApiModelProperty(value = "毕业时间")
     @Column(name = "graduationTime")
-    private String graduationTime;
+    private Date graduationTime;
 
     @ApiModelProperty(value = "到岗时间")
     @Column(name = "arrivalTime")

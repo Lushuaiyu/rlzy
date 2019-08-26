@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,12 +252,14 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         up.setUserId(query.getUserId());
         up.setSex(query.getSex());
         up.setEducation(query.getEducation());
-        up.setGraduationTime(query.getGraduationTime());
+        String graduationTime = query.getGraduationTime();
+        Date date = StringUtil.StrToDate(graduationTime);
+        up.setGraduationTime(date);
         up.setProfession(query.getProfession());
         up.setRegistrationPositionId(query.getRegistrationPositionId());
         String arrivalTime = query.getArrivalTime();
-        LocalDateTime localDateTime = StringUtil.strToLocalDateTime(arrivalTime);
-        up.setArrivalTime(localDateTime);
+        Date date1 = StringUtil.StrToDate(arrivalTime);
+        up.setArrivalTime(date1);
         up.setExpectedSalaryLower(query.getExpectedSalaryLower());
         up.setExpectedSalaryUpper(query.getExpectedSalaryUpper());
         up.setItIsPublic(query.getItIsPublic());
@@ -296,7 +299,9 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         hrUser.setHeadImage(url);
         hrUser.setSex(query.getSex());
         hrUser.setEducation(query.getEducation());
-        hrUser.setGraduationTime(query.getGraduationTime());
+        String graduationTime = query.getGraduationTime();
+        Date date = StringUtil.StrToDate(graduationTime);
+        hrUser.setGraduationTime(date);
         hrUser.setProfession(query.getProfession());
         hrUser.setPostIdStr(query.getPostIdStr());
         hrUser.setArrivalTime(query.getArrivalTime());

@@ -104,7 +104,7 @@ public interface MyReleaseService {
      * @Date 11:26 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentInterviewd(Integer signUpId, Integer briefChapterId, Integer rebateType);
+    int recruitmentInterviewd(Integer signUpId, Integer briefChapterId);
 
     /**
      * 招聘详情 待面试 未面试
@@ -137,7 +137,7 @@ public interface MyReleaseService {
      * @Date 13:50 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId);
+    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer rebateType);
 
     /**
      * 招聘详情 待报道 未报到
@@ -172,7 +172,7 @@ public interface MyReleaseService {
      * @Description //TODO
      * @Date 14:59 2019/7/19
      **/
-    int noReportedReason(Integer reason, Integer signUpId, Integer briefChapterId);
+    int noReportedReason(Integer reason, Integer signUpId, Integer briefChapterId, Integer type);
 
 
     /**

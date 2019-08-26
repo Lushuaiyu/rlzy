@@ -43,8 +43,8 @@ public class TestAccountController {
 
     @RequestMapping(value = "in")
     @ResponseBody
-    public ResultJson in(Integer userId, Integer typeId){
-        List<HrSignUp> hrSignUps = signUpMapper.queryAll(userId, typeId);
+    public ResultJson in(Integer userId){
+        List<HrSignUp> hrSignUps = signUpMapper.queryAll(userId);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);

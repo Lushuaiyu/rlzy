@@ -14,7 +14,7 @@ public interface HrGroupMapper extends Mapper<HrGroup> {
 
 
     /**
-     * 公司主页
+     * 求职端公司主页基本信息 代招单位 || 招聘单位
      *
      * @param groupId 代招单位 id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
@@ -92,6 +92,8 @@ public interface HrGroupMapper extends Mapper<HrGroup> {
      * @Date 10:18 2019/8/7
      **/
      List<HrGroup> queryTheAuditFailed(@Param("groupId") Integer groupId);
+
+
 
 
 

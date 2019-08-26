@@ -195,14 +195,24 @@ public interface HrBriefchapterMapper {
     List<HrBriefchapter> recruitmentBrochureCollectionRecruitment(@Param("userId") Integer userId, @Param("type") Integer type);
 
     /**
-     * 在招职位查询 代招单位
+     * 求职端 公司主页在招职位查询 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 19:21 2019/7/10
      * @Param [groupId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> atThePosition(@Param("groupId") Integer groupId, @Param("groupName") String groupName);
+    List<HrBriefchapter> atThePosition(@Param("groupId") Integer groupId);
+
+    /**
+     * 求职端 公司主页在招职位查询 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:49 2019/8/26
+     * @Param [groupId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> atThePositionRecruitment(@Param("groupId") Integer groupId);
 
     /**
      * 长白班按返费高低排  代招单位
@@ -263,7 +273,7 @@ public interface HrBriefchapterMapper {
      * @Param [query]
      * @return java.lang.Integer
      **/
-    Integer save(ReleaseBriefcharpterQuery query);
+    Integer save(HrBriefchapter query);
 
     /**
      * 更新发布简章
@@ -352,7 +362,7 @@ public interface HrBriefchapterMapper {
     int updateStatus(@Param("briefchapter") Integer briefchapter);
 
     /**
-     * 报名简章成功后 招聘人数减去相应的
+     * 报名简章成功后 招聘人数减去相应的数
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:09 2019/8/9
@@ -388,6 +398,26 @@ public interface HrBriefchapterMapper {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     List<HrBriefchapter> recruitmentUnit(@Param("userId") Integer userId);
+
+    /**
+     * 求职端 公司主页 历史记录 代招单位下的简章
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:03 2019/8/26
+     * @param groupId 代招单位
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> companyHomeHistory(@Param("groupId") Integer groupId);
+
+    /**
+     * 求职端 公司主页 历史记录 招聘单位的简章
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:07 2019/8/26
+     * @param groupId 招聘单位
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> companyHomeHistoryRecruitment(@Param("groupId") Integer groupId);
 
 
 

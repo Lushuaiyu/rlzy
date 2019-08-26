@@ -12,6 +12,7 @@
         <result column="DeleteFlag" property="deleteFlag" jdbcType="TINYINT"/>
         <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="rebate_variable" property="rebateVariable" jdbcType="DECIMAL"/>
+        <result column="sign_up_id" property="signUpId" jdbcType="DECIMAL"/>
     </resultMap>
     <sql id="Base_Column_List">
         Id, BriefChapterId, RebateType, RebateTime, RebateMale, RebateFemale, status, DeleteFlag,
@@ -83,6 +84,9 @@
             </if>
             <if test="createtime != null">
                 CreateTime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="null != signUpId">
+                sign_up_id = #{signUpId},
             </if>
         </set>
         where Id = #{id,jdbcType=INTEGER}
@@ -156,4 +160,13 @@
         </set>
 
     </update>
+
+    <select id="selectRebateTime" resultMap="BaseResultMap">
+        select CreateTime from hr_rebaterecord
+        <where>
+            DeleteFlag = 0 and status = 1
+        </where>
+
+
+    </select>
 </mapper>

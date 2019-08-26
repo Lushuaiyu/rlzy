@@ -44,7 +44,7 @@
         <result column="workWay" property="workWayId" jdbcType="INTEGER"/>
         <result column="workTimeArrange" property="workTimeArrangeId" jdbcType="INTEGER"/>
         <result column="overtimeTime" property="overtimeTimeId" jdbcType="INTEGER"/>
-        <result column="clothingReguirementId" property="clothingReguirementId" jdbcType="VARCHAR"/>
+        <result column="clothing_requirement_id" property="clothingReguirementId" jdbcType="VARCHAR"/>
         <result column="noEmployerAddress" property="noEmployerAddress" jdbcType="VARCHAR"/>
 
 
@@ -77,8 +77,15 @@
         <result column="rebateStatus" property="rebateStatus" jdbcType="INTEGER"/>
         <result column="readNum" property="readNum" jdbcType="INTEGER"/>
         <result column="no_pass_reason" property="noPassReason" jdbcType="INTEGER"/>
-        <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
+        <result column="status" property="jobStatus" jdbcType="INTEGER"/>
         <result column="sex" property="sex" jdbcType="INTEGER"/>
+        <result column="rebate_male_interview" property="rebateMaleInterview" jdbcType="DECIMAL"/>
+        <result column="rebate_male_report" property="rebateMaleReport" jdbcType="DECIMAL"/>
+        <result column="rebate_male_entry" property="rebateMaleEntry" jdbcType="DECIMAL"/>
+        <result column="rebate_female_interview" property="rebateFemaleInterview" jdbcType="DECIMAL"/>
+        <result column="rebate_female_report" property="rebateFemaleReport" jdbcType="DECIMAL"/>
+        <result column="rebate_female_entry" property="rebateFemaleEntry" jdbcType="DECIMAL"/>
+        <result column="rebate_time_entry" property="rebateTimeEntry" jdbcType="DECIMAL"/>
 
 
         <!--
@@ -112,12 +119,12 @@
         interviewAddress, registerTime, contractWay, contractTime, hireWay, Rebate, userId,
         Status, remark, CheckedTime, readNum, CreateTime, DeleteFlag, new_column
     </sql>
-    <insert id="save" parameterType="com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery" keyProperty="id"
+    <insert id="save" parameterType="com.nado.rlzy.db.pojo.HrBriefchapter" keyProperty="id"
             useGeneratedKeys="true">
         insert into hr_briefchapter
         <trim prefix="(" suffix=")" suffixOverrides=",">
 
-            <if test="recruitedCompanyId != null">
+            <if test="recruitedcompanyId != null">
                 RecruitedCompanyId,
             </if>
             <if test="postId != null">
@@ -150,8 +157,8 @@
             <if test="interviewTime != null">
                 interviewTime,
             </if>
-            <if test="interviewAddress != null">
-                interviewAddress,
+            <if test="interviewAddress != null and '' != interviewAddress">
+                interview_address,
             </if>
             <if test="registerTime != null">
                 registerTime,
@@ -173,16 +180,6 @@
             </if>
             <if test="status != null">
                 Status,
-            </if>
-
-            <if test="checkedTime != null">
-                CheckedTime,
-            </if>
-            <if test="readNum != null">
-                readNum,
-            </if>
-            <if test="createTime != null">
-                CreateTime,
             </if>
             <if test="null != briefChapterStatus">
                 briefChapterStatus,
@@ -208,7 +205,7 @@
             <if test="workTimeArrangeId">
                 work_time_arrange_id,
             </if>
-            <if test="null != clothingRequirementId">
+            <if test="null != clothingReguirementId">
                 clothing_requirement_id,
             </if>
             <if test="null != workAddress">
@@ -233,13 +230,35 @@
                 contract_way_detail_id,
             </if>
             <if test="null != acceptRecommendedResume">
-                accept_recommended_resume
+                accept_recommended_resume,
             </if>
+            <if test="null != rebateMaleInterview">
+                rebate_male_interview,
+            </if>
+            <if test="null != rebateMaleReport">
+                rebate_male_report,
+            </if>
+            <if test="null != rebateMaleEntry">
+                rebate_male_entry,
+            </if>
+            <if test="null != rebateFemaleInterview">
+                rebate_female_interview,
+            </if>
+            <if test="null != rebateFemaleReport">
+                rebate_female_report,
+            </if>
+            <if test="null != rebateFemaleEntry">
+                rebate_female_entry,
+            </if>
+            <if test="null != rebateTimeEntry">
+                rebate_time_entry,
+            </if>
+
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 
-            <if test="recruitedCompanyId != null">
-                #{recruitedCompanyId},
+            <if test="recruitedcompanyId != null">
+                #{recruitedcompanyId},
             </if>
             <if test="postId != null">
                 #{postId},
@@ -295,15 +314,6 @@
             <if test="status != null">
                 #{status},
             </if>
-            <if test="checkedTime != null">
-                #{checkedTime},
-            </if>
-            <if test="readNum != null">
-                #{readNum},
-            </if>
-            <if test="createTime != null">
-                #{createTime},
-            </if>
             <if test="null != briefChapterStatus">
                 #{briefChapterStatus},
             </if>
@@ -328,8 +338,8 @@
             <if test="workTimeArrangeId">
                 #{workTimeArrangeId},
             </if>
-            <if test="null != clothingRequirementId">
-                #{clothingRequirementId},
+            <if test="null != clothingReguirementId">
+                #{clothingReguirementId},
             </if>
             <if test="null != workAddress">
                 #{workAddress},
@@ -353,8 +363,30 @@
                 #{contractWayDetailId},
             </if>
             <if test="null != acceptRecommendedResume">
-                #{acceptRecommendedResume}
+                #{acceptRecommendedResume},
             </if>
+            <if test="null != rebateMaleInterview">
+                #{rebateMaleInterview},
+            </if>
+            <if test="null != rebateMaleReport">
+                #{rebateMaleReport},
+            </if>
+            <if test="null != rebateMaleEntry">
+                #{rebateMaleEntry},
+            </if>
+            <if test="null != rebateFemaleInterview">
+                #{rebateFemaleInterview},
+            </if>
+            <if test="null != rebateFemaleReport">
+                #{rebateFemaleReport},
+            </if>
+            <if test="null != rebateFemaleEntry">
+                #{rebateFemaleEntry},
+            </if>
+            <if test="null != rebateTimeEntry">
+                #{rebateTimeEntry},
+            </if>
+
 
         </trim>
     </insert>
@@ -366,6 +398,9 @@
             </if>
             <if test="postId != null">
                 PostId = #{postId,jdbcType=INTEGER},
+            </if>
+            <if test="null != recruitingNo">
+                RecruitingNo = #{recruitingNo},
             </if>
             <if test="avgSalary != null">
                 avgSalary = #{avgSalary,jdbcType=VARCHAR},
@@ -393,7 +428,7 @@
                 interviewTime = #{interviewTime,jdbcType=VARCHAR},
             </if>
             <if test="interviewAddress != null">
-                interviewAddress = #{interviewAddress,jdbcType=INTEGER},
+                interview_address = #{interviewAddress,jdbcType=INTEGER},
             </if>
             <if test="registerTime != null">
                 registerTime = #{registerTime,jdbcType=VARCHAR},
@@ -415,15 +450,6 @@
             </if>
             <if test="status != null">
                 Status = #{status,jdbcType=INTEGER},
-            </if>
-            <if test="remark != null">
-                remark = #{remark,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                CreateTime = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="null != briefChapterStatus">
-                briefChapterStatus = #{briefChapterStatus},
             </if>
             <if test="null != manNum">
                 man_num = #{manNum},
@@ -472,6 +498,27 @@
             </if>
             <if test="null != acceptRecommendedResume">
                 accept_recommended_resume = #{acceptRecommendedResume},
+            </if>
+            <if test="null != rebateMaleInterview">
+                rebate_male_interview = #{rebateMaleInterview},
+            </if>
+            <if test="null != rebateMaleReport">
+                rebate_male_report = #{rebateMaleReport} ,
+            </if>
+            <if test="null != rebateMaleEntry">
+                rebate_male_entry = #{rebateMaleEntry},
+            </if>
+            <if test="null != rebateFemaleInterview">
+                rebate_female_interview = #{rebateFemaleInterview},
+            </if>
+            <if test="null != rebateFemaleReport">
+                rebate_female_report = #{rebateFemaleReport},
+            </if>
+            <if test="null != rebateFemaleEntry">
+                rebate_female_entry = #{rebateFemaleEntry},
+            </if>
+            <if test="null != rebateTimeEntry">
+                rebate_time_entry,
             </if>
         </set>
         where Id = #{id,jdbcType=INTEGER}
@@ -526,49 +573,52 @@
     </update>
     <select id="queryBriefcharpterDtoByParams" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
-        select dii.name as postName,
-        br.Id,
-        grr.GroupName as recruitedCompany,
-        gr.GroupName as certifier,
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
         br.RecruitingNo as recruitingNo,
-        grr.GroupAddress as groupAddress,
+        gr.GroupAddress as groupAddress,
         br.avgSalary as avgSalary,
         br.Rebate,
         br.detailSalary as detailSalary,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.detailSalaryWay) and d.pId = 23) as detailSalaryWay,
-        (case
-        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
-        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end) as rebateOne,
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.welfareId) and d.pId = 10) as welfareId,
-        re.RebateType as rebateType,
-        re.BriefChapterId,
-        re.RebateTime,
-        re.RebateMale,
-        re.RebateFemale,
-        re.status
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
-        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
-        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0
-        and grr.pid = gr.Id and gr.type = 0
+        and grr.pid = gr.Id
         <if test="null != recruitedCompany and '' != recruitedCompany">
             and grr.GroupName like concat('%', #{recruitedCompany}, '%')
         </if>
-        <if test="null != postName and '' != postName">
-            and dii.name like concat('%', #{postName}, '%')
+        <if test="null != postName">
+            and br.PostId in
+            <foreach collection="postName" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="null != sex">
             and si.sex = #{sex}
+        </if>
+        <if test="null != age">
+            and br.man_age_id = #{age}
         </if>
         <if test="null != manAgeId">
             and br.man_age_id = #{manAgeId}
@@ -576,33 +626,30 @@
         <if test="null != womenAgeId">
             and br.women_age_id = #{womenAgeId}
         </if>
-        <if test="null != contractWayDetailId and '' != contractWayDetailId">
-            and br.contract_way_detail_id like concat('%', #{contractWayDetailId}, '%')
+        <if test="null != contractWayDetailId">
+            and br.contract_way_detail_id = #{contractWayDetailId}
         </if>
-        <if test="null != professionId and '' != professionId ">
-            and br.profession_id like concat('%', #{professionId}, '%')
+        <if test="null != professionId">
+            and br.profession_id = #{professionId}
         </if>
-        <if test="null != educationId">
-            and br.educationId in
-            <foreach collection="educationId" item="item" separator="," open="(" close=")">
-                #{item}
-            </foreach>
+        <if test="null != educationId and '' != educationId">
+            and br.educationId like concat('%', #{educationId}, '%')
         </if>
 
-        <if test="null != experienceId and '' != experienceId">
+        <if test="null != experienceId">
             and br.experienceId = #{experienceId}
         </if>
-        <if test="null != workWayId and '' != workWayId">
+        <if test="null != workWayId">
             and br.work_way_id = #{workWayId}
         </if>
-        <if test="null != workTimeArrangeId and '' != workTimeArrangeId">
+        <if test="null != workTimeArrangeId">
             and br.work_time_arrange_id = #{workTimeArrangeId}
         </if>
-        <if test="null != clothingRequirementId and '' != clothingRequirementId ">
+        <if test="null != clothingRequirementId">
             and br.clothing_requirement_id = #{clothingRequirementId}
         </if>
-        <if test="null != interviewAddress and '' != interviewAddress ">
-            and grr.GroupName like concat('%', #{interviewAddress}, '%')
+        <if test="null != workAddress and '' != workAddress">
+            and br.work_address like concat('%', #{workAddress}, '%')
         </if>
         <if test="null != hobbyId and '' != hobbyId">
             and br.hobby_id like concat ('%', #{hobbyId}, '%')
@@ -613,14 +660,23 @@
         <if test="null != welfareId and '' != welfareId">
             and br.welfareId like concat('%', #{welfareId}, '%')
         </if>
-        <if test="null != interviewStartTime and '' != interviewStartTime and null != interviewEndTime and '' != interviewEndTime ">
+        <if test="null != interviewStartTime and null != queryBriefcharpterDetileByParamsinterviewEndTime">
             and br.interviewTime between #{interviewStartTime} and #{interviewEndTime}
         </if>
-        <if test="null != registerStartTime and '' != registerStartTime and null != registerEndTime and '' != registerEndTime">
+        <if test="null != registerStartTime and null != registerEndTime">
             and br.registerTime between #{registerStartTime} and #{registerEndTime}
         </if>
         <if test="null != contractWay">
             and br.contractWay = #{contractWay}
+        </if>
+        <if test="null != expectedSalaryLower">
+            and si.expected_salary_lower = #{expectedSalaryLower}
+        </if>
+        <if test="null != expectedSalaryUpper">
+            and si.expected_salary_upper = #{expectedSalaryUpper}
+        </if>
+        <if test="null != educationId">
+            and si.education = #{educationId}
         </if>
 
         order by br.CreateTime desc
@@ -649,6 +705,7 @@
     <select id="queryBriefcharpterDetileByParams" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
         select dii.Name as postName,
+        br.PostId,
         br.Id,
         grr.GroupName as recruitedCompany,
         gr.GroupName as certifier,
@@ -737,7 +794,7 @@
         br.man_num,
         br.women_num
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
@@ -747,61 +804,8 @@
         where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         and gr.type = 0
-        <if test="null != sex">
-            and si.sex = #{sex}
-        </if>
-        <if test="null != manAgeId">
-            and br.man_age_id = #{manAgeId}
-        </if>
-        <if test="null != womenAgeId">
-            and br.women_age_id = #{womenAgeId}
-        </if>
-        <if test="null != postName and '' != postName">
-            and dii.Name = #{postName}
-        </if>
-        <if test="null != contractWayDetailId and '' != contractWayDetailId">
-            and br.contract_way_detail_id like concat('%', #{contractWayDetailId}, '%')
-        </if>
-        <if test="null != professionId and '' != professionId ">
-            and br.profession_id like concat('%', #{professionId}, '%')
-        </if>
-        <if test="null != educationId and '' != educationId">
-            and br.educationId in(#{educationId})
-        </if>
-        <if test="null != experienceId and '' != experienceId">
-            and br.experienceId = #{experienceId}
-        </if>
-        <if test="null != workWayId and '' != workWayId">
-            and br.work_way_id = #{workWayId}
-        </if>
-        <if test="null != workTimeArrangeId and '' != workTimeArrangeId">
-            and br.work_time_arrange_id = #{workTimeArrangeId}
-        </if>
-        <if test="null != clothingRequirementId and '' != clothingRequirementId ">
-            and br.clothing_requirement_id = #{clothingRequirementId}
-        </if>
-        <if test="null != interviewAddress and '' != interviewAddress ">
-            and grr.GroupName like concat('%', #{interviewAddress}, '%')
-        </if>
-        <if test="null != hobbyId and '' != hobbyId">
-            and br.hobby_id like concat('%', #{hobbyId}, '%')
-        </if>
-        <if test="null != overtimeTimeId ">
-            and br.overtime_times_id = #{overtimeTimeId}
-        </if>
-        <if test="null != welfareId and '' != welfareId">
-            and br.welfareId like concat('%', #{welfareId}, '%')
-        </if>
-        <if test="null != interviewStartTime and '' != interviewStartTime and null != interviewEndTime and '' != interviewEndTime ">
-            and br.interviewTime between #{interviewStartTime} and #{interviewEndTime}
-        </if>
-        <if test="null != registerStartTime and '' != registerStartTime and null != registerEndTime and '' != registerEndTime">
-            and br.registerTime between #{registerStartTime} and #{registerEndTime}
-        </if>
-        <if test="null != contractWay">
-            and br.contractWay = #{contractWay}
-        </if>
-        <if test="null != briefcharpterId ">
+
+        <if test="null != briefcharpterId">
             and br.Id = #{briefcharpterId}
         </if>
 
@@ -835,7 +839,7 @@
         re.RebateFemale,
         re.status
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
@@ -874,7 +878,7 @@
         re.RebateFemale,
         re.status
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
@@ -887,279 +891,11 @@
     </select>
     <select id="recommendedFeeTop10" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
-        select dii.Name           as postName,
-        br.Id,
-        grr.GroupName      as recruitedCompany,
-        gr.GroupName       as certifier,
-        grr.GroupAddress as groupAddress,
-        br.RecruitingNo    as recruitingNo,
-        br.avgSalary       as avgSalary,
-        br.detailSalary    as detailSalary,
-       (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.detailSalaryWay) and d.pId = 23) as detailSalaryWay,
-        (case
-        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
-        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end)           as rebateOne,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.welfareId)
-        and d.pId = 10) as welfareId,
-        re.RebateType      as rebateType,
-        re.BriefChapterId,
-        re.RebateTime,
-        re.RebateMale,
-        re.RebateFemale,
-        re.status,
-        br.Rebate          as rebateStatus
-        from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
-        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
-        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.briefChapterStatus = 0
-        and grr.pid = gr.Id
-        and gr.type = 0
-        order by rebateOne desc, br.CreateTime asc
-        limit 0,10
-    </select>
-    <select id="studentDivision" resultMap="BaseResultMap"
-            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
-
         select (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.PostId)
         and d.pId = 1) as postName,
-        br.Id,
-        gr.GroupName as recruitedCompany,
-        grr.GroupName as certifier,
-        br.RecruitingNo as recruitingNo,
-        grr.GroupAddress as groupAddress,
-        br.avgSalary as avgSalary,
-        br.detailSalary as detailSalary,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.detailSalaryWay) and d.pId = 23) as detailSalaryWay,
-        br.contract_way_detail_id as contractWayDetailId,
-        (case
-        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
-        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end) as rebateOne,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.welfareId)
-        and d.pId = 10) as welfareId,
-        re.RebateType as rebateType,
-        re.BriefChapterId,
-        re.RebateTime,
-        re.RebateMale,
-        re.RebateFemale,
-        re.status,
-        br.Rebate as rebateStatus
-        from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 13
-        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
-        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.briefChapterStatus = 0
-        and grr.pid = gr.Id
-        and gr.type = 0
-        <if test="null!= contractWayDetailId1">
-            and br.contract_way_detail_id in
-            <foreach collection="contractWayDetailId1" item="item" separator="," open="(" close=")">
-                #{item}
-            </foreach>
-        </if>
-        order by rebateOne desc
-    </select>
-    <select id="salaryLeaderboard" resultMap="BaseResultMap"
-            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
-        select dii.Name                  as postName,
         br.id,
-        grr.GroupName             as recruitedCompany,
-        gr.GroupName              as certifier,
-        br.RecruitingNo           as recruitingNo,
-        grr.GroupAddress           as groupAddress,
-        br.avgSalary              as avgSalary,
-        br.detailSalary           as detailSalary,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.detailSalaryWay) and d.pId = 23) as detailSalaryWay,
-        br.contract_way_detail_id as contractWayDetailId,
-        (case
-        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
-        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end)                  as rebateOne,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.welfareId)
-        and d.pId = 10)        as welfareId,
-        re.RebateType             as rebateType,
-        re.BriefChapterId,
-        re.RebateTime,
-        re.RebateMale,
-        re.RebateFemale,
-        re.status,
-        br.Rebate                 as rebateStatus
-        from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
-        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
-        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.briefChapterStatus = 0
-       and grr.pid = gr.Id
-        and gr.type = 0
-        order by br.avgSalary desc
-    </select>
-    <select id="directBusiness" resultMap="BaseResultMap"
-            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
-        select dii.Name as postName,
-        br.id,
-        gr.GroupName as recruitedCompany,
-        grr.GroupName as certifier,
-        br.RecruitingNo as recruitingNo,
-        grr.GroupAddress as groupAddress,
-        br.avgSalary as avgSalary,
-        br.detailSalary as detailSalary,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.detailSalaryWay) and d.pId = 23) as detailSalaryWay,
-        br.contract_way_detail_id as contractWayDetailId,
-        (case
-        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
-        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end) as rebateOne,
-       (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.welfareId)
-        and d.pId = 10) as welfareId,
-        re.RebateType as rebateType,
-        re.BriefChapterId,
-        re.RebateTime,
-        re.RebateMale,
-        re.RebateFemale,
-        re.status,
-        br.Rebate as rebateStatus
-        from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join
-        hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0 and u.type = 5
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0 and grr.groupStatus = 0 and u.type = 6
-        left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
-        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
-        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.briefChapterStatus = 0 and br.contractWay = 1 order by rebateOne desc
-
-
-
-
-    </select>
-    <select id="directAdmission" resultMap="BaseResultMap"
-            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
-        select dii.Name                  as postName,
-        br.id,
-        grr.GroupName             as recruitedCompany,
-        gr.GroupName              as certifier,
-        br.RecruitingNo           as recruitingNo,
-        grr.GroupAddress           as groupAddress,
-        br.avgSalary              as avgSalary,
-        br.detailSalary           as detailSalary,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.detailSalaryWay) and d.pId = 23) as detailSalaryWay,
-        br.contract_way_detail_id as contractWayDetailId,
-        (case
-        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
-        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end)                  as rebateOne,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.welfareId)
-        and d.pId = 10)        as welfareId,
-        re.RebateType             as rebateType,
-        re.BriefChapterId,
-        re.RebateTime,
-        re.RebateMale,
-        re.RebateFemale,
-        re.status,
-        br.Rebate                 as rebateStatus
-        from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
-        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
-        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        where br.briefChapterStatus = 0 and
-        (br.hireWay = 1
-        or br.hireWay = 0)
-        and grr.pid = gr.Id
-        and gr.type = 0
-        order by rebateOne desc
-    </select>
-    <select id="recruitmentBrochureCollection" resultMap="BaseResultMap">
-        select dii.name as postName,
-        br.id,
-        grr.GroupName as recruitedCompany,
-        gr.GroupName as certifier,
-        br.RecruitingNo as recruitingNo,
-        grr.GroupAddress as groupAddress,
-        br.avgSalary as avgSalary,
-        br.Rebate,
-        br.detailSalary as detailSalary,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.detailSalaryWay) and d.pId = 23) as detailSalaryWay,
-        (case
-        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
-        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end) as rebateOne,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.welfareId)
-        and d.pId = 10) as welfareId,
-        re.RebateType as rebateType,
-        re.BriefChapterId,
-        re.RebateTime,
-        re.RebateMale,
-        re.RebateFemale,
-        re.status,
-        u.Id
-        from collect c
-        left join hr_user u on c.user_id = u.id and u.DeleteFlag = 0
-        left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0
-        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
-        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        where br.briefChapterStatus = 0
-        and grr.pid = gr.Id
-        and gr.type = 0
-        <if test="null != type">
-            and u.type = #{type}
-        </if>
-        <if test="null != userId">
-            and u.id = #{userId}
-        </if>
-        order by c.create_time desc
-
-    </select>
-    <select id="atThePosition" resultMap="BaseResultMap">
-        select dii.Name as postName,
-        br.id,
-        gr.id,
         grr.GroupName as certifier,
         gr.GroupName as recruitedCompany,
         br.RecruitingNo as recruitingNo,
@@ -1171,38 +907,304 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
         and d.pId = 23) as detailSalaryWay,
-        (case
-        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
-        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end) as rebateOne,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        re.RebateType as rebateType,
-        re.BriefChapterId,
-        re.RebateTime,
-        re.RebateMale,
-        re.RebateFemale,
-        re.status,
         br.Rebate as rebateStatus
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
-        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
-        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0
         and grr.pid = gr.Id
-        <if test="null != groupName">
-            and gr.GroupName = #{groupName}
+        order by rebateOne desc, br.CreateTime asc
+        limit 0,10
+    </select>
+    <select id="studentDivision" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and grr.pid = gr.Id
+        <if test="null!= contractWayDetailId1">
+            and br.contract_way_detail_id in
+            <foreach collection="contractWayDetailId1" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
         </if>
+        order by rebateOne desc
+    </select>
+    <select id="salaryLeaderboard" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+       select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and grr.pid = gr.Id
+        order by br.avgSalary desc
+    </select>
+    <select id="directBusiness" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and grr.pid = gr.Id
+        and br.contractWay = 1 order by rebateOne desc
+
+
+
+
+    </select>
+    <select id="directAdmission" resultMap="BaseResultMap"
+            parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and grr.pid = gr.Id
+         and (br.hireWay = 1
+        or br.hireWay = 0)
+        order by rebateOne desc
+    </select>
+    <select id="recruitmentBrochureCollection" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from collect c
+        left join hr_user u on c.user_id = u.id and u.status = 0
+        left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and grr.pid = gr.Id
+        <if test="null != type">
+            and u.type = #{type}
+        </if>
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+        order by c.create_time desc
+
+    </select>
+    <select id="atThePosition" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and grr.pid = gr.Id
         <if test="null != groupId">
             and gr.id = #{groupId}
         </if>
         order by br.CreateTime desc;
+    </select>
+
+    <select id="atThePositionRecruitment" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        gr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and gr.type = 1
+        <if test="null != groupId">
+            and gr.Id = #{groupId}
+        </if>
     </select>
 
     <select id="queryBriefchapterBySignUpStatus" resultMap="BaseResultMap">
@@ -1230,7 +1232,7 @@
         br.interviewTime,
         sd.no_pass_reason
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1240,7 +1242,7 @@
         and grr.pid = gr.Id
         and gr.type = 0
         <if test="null != signUpStatus">
-            and sd.job_status = #{signUpStatus}
+            and sd.status = #{signUpStatus}
         </if>
     </select>
     <select id="myRelease" resultMap="BaseResultMap">
@@ -1255,7 +1257,7 @@
         br.Rebate,
         br.Status,
         sd.no_pass_reason,
-        sd.job_status,
+        sd.status,
         br.detailSalary as detailSalary,
         br.detailSalaryWay as detailSalaryWay,(SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
@@ -1277,7 +1279,7 @@
         br.Rebate as rebateStatus,
         ifnull(re.BriefChapterId, 0)
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
@@ -1324,7 +1326,7 @@
         re.RebateFemale,
         re.status
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         inner join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1335,8 +1337,11 @@
         <if test="null != certifier and '' != certifier">
             and gr.GroupName like concat('%', #{certifier}, '%')
         </if>
-        <if test="null != postName and '' != postName">
-            and dii.name like concat('%', #{postName}, '%')
+        <if test="null != postName">
+            and br.PostId in
+            <foreach collection="postName" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="null != sex">
             and si.sex = #{sex}
@@ -1344,35 +1349,36 @@
         <if test="null != manAgeId">
             and br.man_age_id = #{manAgeId}
         </if>
+        <if test="null != age">
+            and br.man_age_id = #{age}
+        </if>
         <if test="null != womenAgeId">
             and br.women_age_id = #{womenAgeId}
         </if>
-        <if test="null != contractWayDetailId and '' != contractWayDetailId">
-            and br.contract_way_detail_id like concat('%', #{contractWayDetailId}, '%')
+        <if test="null != contractWayDetailId">
+            and br.contract_way_detail_id = #{contractWayDetailId}
         </if>
-        <if test="null != professionId and '' != professionId ">
-            and br.profession_id like concat('%', #{professionId}, '%')
+        <if test="null != professionId">
+            and br.profession_id = #{professionId}
         </if>
-        <if test="null != educationId">
-            and br.educationId in
-            <foreach collection="educationId" item="item" separator="," open="(" close=")">
-                #{item}
-            </foreach>
+        <if test="null != educationId and '' != educationId">
+            and br.educationId like concat('%', #{educationId}, '%')
         </if>
-        <if test="null != experienceId and '' != experienceId">
+
+        <if test="null != experienceId">
             and br.experienceId = #{experienceId}
         </if>
-        <if test="null != workWayId and '' != workWayId">
+        <if test="null != workWayId">
             and br.work_way_id = #{workWayId}
         </if>
-        <if test="null != workTimeArrangeId and '' != workTimeArrangeId">
+        <if test="null != workTimeArrangeId">
             and br.work_time_arrange_id = #{workTimeArrangeId}
         </if>
-        <if test="null != clothingRequirementId and '' != clothingRequirementId ">
+        <if test="null != clothingRequirementId">
             and br.clothing_requirement_id = #{clothingRequirementId}
         </if>
-        <if test="null != interviewAddress and '' != interviewAddress ">
-            and gr.GroupName like concat('%', #{interviewAddress}, '%')
+        <if test="null != workAddress and '' != workAddress ">
+            and br.work_address like concat('%', #{workAddress}, '%')
         </if>
         <if test="null != hobbyId and '' != hobbyId">
             and br.hobby_id like concat ('%', #{hobbyId}, '%')
@@ -1383,14 +1389,23 @@
         <if test="null != welfareId and '' != welfareId">
             and br.welfareId like concat('%', #{welfareId}, '%')
         </if>
-        <if test="null != interviewStartTime and '' != interviewStartTime and null != interviewEndTime and '' != interviewEndTime ">
+        <if test="null != interviewStartTime and null != interviewEndTime">
             and br.interviewTime between #{interviewStartTime} and #{interviewEndTime}
         </if>
-        <if test="null != registerStartTime and '' != registerStartTime and null != registerEndTime and '' != registerEndTime">
+        <if test="null != registerStartTime and null != registerEndTime">
             and br.registerTime between #{registerStartTime} and #{registerEndTime}
         </if>
         <if test="null != contractWay">
             and br.contractWay = #{contractWay}
+        </if>
+        <if test="null != expectedSalaryLower">
+            and si.expected_salary_lower = #{expectedSalaryLower}
+        </if>
+        <if test="null != expectedSalaryUpper">
+            and si.expected_salary_upper = #{expectedSalaryUpper}
+        </if>
+        <if test="null != educationId">
+            and si.education = #{educationId}
         </if>
         order by br.CreateTime desc
     </select>
@@ -1484,67 +1499,13 @@
         br.man_num,
         br.women_num
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
         where br.briefChapterStatus = 0 and u.type = 5
-        <if test="null != sex">
-            and si.sex = #{sex}
-        </if>
-        <if test="null != manAgeId">
-            and br.man_age_id = #{manAgeId}
-        </if>
-        <if test="null != womenAgeId">
-            and br.women_age_id = #{womenAgeId}
-        </if>
-        <if test="null != postName and '' != postName">
-            and dii.Name = #{postName}
-        </if>
-        <if test="null != contractWayDetailId and '' != contractWayDetailId">
-            and br.contract_way_detail_id like concat('%', #{contractWayDetailId}, '%')
-        </if>
-        <if test="null != professionId and '' != professionId ">
-            and br.profession_id like concat('%', #{professionId}, '%')
-        </if>
-        <if test="null != educationId and '' != educationId">
-            and br.educationId in(#{educationId})
-        </if>
-        <if test="null != experienceId and '' != experienceId">
-            and br.experienceId = #{experienceId}
-        </if>
-        <if test="null != workWayId and '' != workWayId">
-            and br.work_way_id = #{workWayId}
-        </if>
-        <if test="null != workTimeArrangeId and '' != workTimeArrangeId">
-            and br.work_time_arrange_id = #{workTimeArrangeId}
-        </if>
-        <if test="null != clothingRequirementId and '' != clothingRequirementId ">
-            and br.clothing_requirement_id = #{clothingRequirementId}
-        </if>
-        <if test="null != interviewAddress and '' != interviewAddress ">
-            and gr.GroupName like concat('%', #{interviewAddress}, '%')
-        </if>
-        <if test="null != hobbyId and '' != hobbyId">
-            and br.hobby_id like concat('%', #{hobbyId}, '%')
-        </if>
-        <if test="null != overtimeTimeId ">
-            and br.overtime_times_id = #{overtimeTimeId}
-        </if>
-        <if test="null != welfareId and '' != welfareId">
-            and br.welfareId like concat('%', #{welfareId}, '%')
-        </if>
-        <if test="null != interviewStartTime and '' != interviewStartTime and null != interviewEndTime and '' != interviewEndTime ">
-            and br.interviewTime between #{interviewStartTime} and #{interviewEndTime}
-        </if>
-        <if test="null != registerStartTime and '' != registerStartTime and null != registerEndTime and '' != registerEndTime">
-            and br.registerTime between #{registerStartTime} and #{registerEndTime}
-        </if>
-        <if test="null != contractWay">
-            and br.contractWay = #{contractWay}
-        </if>
         <if test="null != briefcharpterId ">
             and br.Id = #{briefcharpterId}
         </if>
@@ -1579,7 +1540,7 @@
         re.status,
         br.Rebate          as rebateStatus
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1624,7 +1585,7 @@
         re.status,
         br.Rebate as rebateStatus
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 13
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1670,7 +1631,7 @@
         re.status,
         br.Rebate                 as rebateStatus
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1710,7 +1671,7 @@
         re.status,
         br.Rebate                 as rebateStatus
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
@@ -1752,7 +1713,7 @@
         re.status,
         br.Rebate                 as rebateStatus
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1793,7 +1754,7 @@
         u.Id
         from collect c
         left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0
-        left join hr_user u on c.user_id = u.id and u.DeleteFlag = 0
+        left join hr_user u on c.user_id = u.id and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1836,7 +1797,7 @@
         re.RebateFemale,
         re.status
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         inner join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1874,7 +1835,7 @@
         re.RebateFemale,
         re.status
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         inner join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1908,14 +1869,14 @@
         br.interviewTime,
         sd.no_pass_reason
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0 and u.type = 5
         <if test="null != signUpStatus">
-            and sd.job_status = #{signUpStatus}
+            and sd.status = #{signUpStatus}
         </if>
 
 
@@ -1947,13 +1908,13 @@
         re.RebateTime,
         re.RebateMale,
         re.RebateFemale,
-        sd.job_status,
+        sd.status,
         sd.no_pass_reason,
         re.status,
         br.Rebate as rebateStatus,
         ifnull(re.BriefChapterId, 0)
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -1974,104 +1935,39 @@
 
     </select>
     <select id="recommendAPosition" resultMap="BaseResultMap">
-        select dii.Name as postName,
-        br.Id,
-        grr.GroupName as recruitedCompany,
-        gr.GroupName as certifier,
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
         br.RecruitingNo as recruitingNo,
-        grr.GroupAddress as groupAddress,
+        gr.GroupAddress as groupAddress,
         br.avgSalary as avgSalary,
+        br.Rebate,
         br.detailSalary as detailSalary,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
         and d.pId = 23) as detailSalaryWay,
-        br.hireWay as hireWay,
 
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.man_age_id)
-        and d.pId = 5) as manAge,
-        br.Rebate,
-        gr.Id as groupId,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.women_age_id)
-        and d.pId = 9) as womenAge,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.educationId)
-        and d.pId = 2) as education,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.experienceId)
-        and d.pId = 12) as experience,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.profession_id)
-        and d.pId = 3) as profession,
-
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.work_way_id)
-        and d.pId = 16) as workWay,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.work_time_arrange_id)
-        and d.pId = 17) as workTimeArrange,
-
-        br.overtime_times_id as overtimeTime,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.clothing_requirement_id)
-        and d.pId = 14) as clothingReguiement,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.hobby_id)
-        and d.pId = 15) as hobby,
-        br.no_employer_address as noEmployerAddress,
-        br.PostDetail as postDetail,
-        br.registerTime as registerTime,
-        br.interview_address as interviewAddress,
-        br.interviewTime,
-        br.no_employer_address as noEmployerAddress,
-        br.registerTime as registerTime,
-        br.contractWay as contractWay,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.contract_way_detail_id)
-        and d.pId = 13) as contractWayDetail,
-        br.contract_start_time as contractStartTime,
-        br.contractTime,
-        br.readNum as readNum,
-        (case
-        when (re.RebateMale >= re.RebateFemale) then re.RebateMale
-        when (re.RebateMale &lt; re.RebateFemale) then re.RebateFemale
-        end) as rebateOne,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        re.RebateType as rebateType,
-        re.BriefChapterId,
-        re.RebateTime,
-        re.RebateMale,
-        re.RebateFemale,
-        re.status,
-        si.id as signUpId,
-        br.man_num as manNum,
-        br.women_num as womenNum
+        br.Rebate as rebateStatus
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
-        left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
-        left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
-        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
-        left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
         where br.briefChapterStatus = 0
         and grr.pid = gr.Id
-        and gr.type = 0
         <if test="null != recruitedCompany">
             and grr.GroupName like concat('%', #{recruitedCompany}, '%');
         </if>
@@ -2084,7 +1980,10 @@
         gr.GroupAddress as groupAddress,
         br.avgSalary as avgSalary,
         br.detailSalary as detailSalary,
-        br.detailSalaryWay as detailSalaryWay,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
         br.hireWay as hireWay,
 
         (SELECT GROUP_CONCAT(d.name)
@@ -2160,7 +2059,7 @@
         re.id as aa,
         si.id as signUpId
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -2213,7 +2112,7 @@
         re.RebateFemale,
         re.status
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
 
@@ -2260,7 +2159,7 @@
         re.RebateFemale,
         re.status
         from hr_briefchapter br
-        left join hr_user u on u.id = br.userId and u.DeleteFlag = 0
+        left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
@@ -2271,4 +2170,77 @@
             and u.id = #{userId}
         </if>
     </select>
+    <select id="companyHomeHistory" resultType="hrBriefchapter" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and grr.pid = gr.Id
+        <if test="null != groupId">
+            and gr.Id = #{groupId}
+        </if>
+    </select>
+    <select id="companyHomeHistoryRecruitment" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        gr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_briefchapter br
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and gr.type = 1
+        <if test="null != groupId">
+            and gr.Id = #{groupId}
+        </if>
+    </select>
+
 </mapper>

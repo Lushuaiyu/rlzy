@@ -33,6 +33,21 @@ public class StringUtil {
         return format.format(value);
     }
 
+
+    /**
+     * decimal 转 string
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:40 2019/8/26
+     * @Param [decimal]
+     * @return java.lang.String
+     **/
+    public static String decimalToString(BigDecimal decimal){
+        DecimalFormat format = new DecimalFormat();
+        return format.format(decimal);
+
+    }
+
     public static String decimalFormat2(Double value) {
         DecimalFormat format = new DecimalFormat();
         return format.format(value);

@@ -41,12 +41,21 @@ public class HrComplaint {
     private Integer deleteFlag;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
+
     @ApiModelProperty(value = "用户id")
     private Integer userId;
+
+    private String remark;
 
     @ApiModelProperty(value = "求职表主键id")
     private Integer signUpId;
@@ -66,15 +75,11 @@ public class HrComplaint {
     private String contactPerson;
 
 
-
-
     @ApiModelProperty(value = "被推荐者(求职者)")
     private String signUserName;
 
     @ApiModelProperty(value = "投诉人")
     private List<ComplaintModel> complaintModels;
-
-
 
 
 }

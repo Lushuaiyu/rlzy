@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -69,9 +70,25 @@ public class HrSignupDeliveryrecord {
     /**
      * 报名简章的数量
      */
+    @Transient
     private Integer[] number;
 
-    List<HrSignupDeliveryrecord> deliveryrecordList;
+    @Transient
+    private List<HrSignupDeliveryrecord> deliveryrecordList;
 
+    @Column(name = "status")
+    private Integer status;
+
+    @Column(name = "rebate_interview_time")
+    private Date rebateInterviewTime;
+
+    @Column(name = "rebate_report_time")
+    private Date rebateReportTime;
+
+    @Column(name = "rebate_entry_time")
+    private Date rebateEntryTime;
+
+    @Column(name = "rebate_type")
+    private Integer rebateType;
 
 }

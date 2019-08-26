@@ -63,6 +63,9 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     @Autowired
     private HrUserMapper userMapper;
 
+    @Autowired
+    private ViolationRecordMapper violationRecordMapper;
+
 
     @Override
     public Map<String, Object> myRelease(Integer userId, Integer typeId, Integer status) {
@@ -128,56 +131,29 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveUser(ReleaseBriefcharpterQuery query, Integer type) {
-        HrBriefchapter briefchapter = new HrBriefchapter();
-        ArrayList<ReleaseBriefcharpterQuery> list = new ArrayList<>();
         //招聘单位
         if (type.equals(5)) {
-            //招聘单位 briefchapter.setRecruitedcompanyid( 组织表主键id);
-            briefchapter.setRecruitedcompanyId(query.getUserId());
-            //简章表
-            int briefcharpterId = initBriefcharpter(query);
-
             //有返佣
             if (query.getRebateStatus().equals(1)) {
-                //批量更新 返佣
-                list.stream()
-                        .map(dto -> {
-                            dto.setBriefcharpterId(briefcharpterId);
-                            dto.setRebateType(query.getRebateType());
-                            dto.setRebateMale(query.getRebateMale());
-                            dto.setRebateFemale(query.getRebateFemale());
-                            dto.setRebateTime(new Date());
-                            dto.setCreateTime(LocalDateTime.now());
-                            list.add(dto);
-                            return dto;
-                        }).collect(Collectors.toList());
-                Assert.isFalse(rebaterecordMapper.insertSelective(list) < 1, RlzyConstant.OPS_FAILED_MSG);
-
+                //简章表
+                initBriefcharpterRebate(query);
             } else {
-                briefchapter.setRebateStatus(0);
+                //不返佣
+                //简章表初始化
+                initBriefcharpter(query);
             }
             //代招单位
         } else if (type.equals(6)) {
-            //简章表
-            int briefcharpterId = initBriefcharpter(query);
-            //有返佣
+
             if (query.getRebateStatus().equals(1)) {
-                //批量更新 返佣
-                list.stream()
-                        .map(dto -> {
-                            dto.setBriefcharpterId(briefcharpterId);
-                            dto.setRebateType(query.getRebateType());
-                            dto.setRebateMale(query.getRebateMale());
-                            dto.setRebateFemale(query.getRebateFemale());
-                            dto.setRebateTime(new Date());
-                            dto.setCreateTime(LocalDateTime.now());
-                            list.add(dto);
-                            return dto;
-                        }).collect(Collectors.toList());
-                Assert.isFalse(rebaterecordMapper.insertSelective(list) < 1, RlzyConstant.OPS_FAILED_MSG);
+                //返佣
+                //简章表初始化
+                initBriefcharpterRebate(query);
 
             } else {
-                briefchapter.setRebateStatus(0);
+                //不返佣
+                //简章表初始化
+                initBriefcharpter(query);
             }
         }
 
@@ -248,22 +224,11 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int recruitmentInterviewd(Integer signUpId, Integer briefChapterId, Integer rebateType) {
-
+    public int recruitmentInterviewd(Integer signUpId, Integer briefChapterId) {
         //改变求职状态为 已面试
-        int signup = signUpMapper.recruitmentInterviewd(signUpId, briefChapterId);
+        return signUpMapper.recruitmentInterviewd(signUpId, briefChapterId);
 
-        HrRebaterecord hrRebaterecord = new HrRebaterecord();
-        hrRebaterecord.setBriefchapterId(briefChapterId);
-        hrRebaterecord.setRebateType(rebateType);
-        //查询返佣id
-        int reId = rebaterecordMapper.selectReId(hrRebaterecord);
 
-        hrRebaterecord.setId(reId);
-        hrRebaterecord.setRebateTime(new Date());
-        //改变返佣状态
-        int rebateStatus = rebaterecordMapper.updateRebateStatus(hrRebaterecord);
-        return signup >= 1 && reId >= 1 && rebateStatus >= 1 ? RlzyConstant.OPS_SUCCESS_CODE : RlzyConstant.OPS_FAILED_CODE;
     }
 
     @Override
@@ -307,8 +272,19 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId) {
-        return signUpMapper.recruitmentInterviewSuccess(signUpId, briefChapterId);
+    public int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer rebateType) {
+        int signup = signUpMapper.recruitmentInterviewSuccess(signUpId, briefChapterId);
+        HrRebaterecord hrRebaterecord = new HrRebaterecord();
+        hrRebaterecord.setBriefchapterId(briefChapterId);
+        hrRebaterecord.setRebateType(rebateType);
+        //查询返佣id
+        int reId = rebaterecordMapper.selectReId(hrRebaterecord);
+
+        hrRebaterecord.setId(reId);
+        hrRebaterecord.setRebateTime(new Date());
+        //改变返佣状态
+        int rebateStatus = rebaterecordMapper.updateRebateStatus(hrRebaterecord);
+        return signup >= 1 && reId >= 1 && rebateStatus >= 1 ? RlzyConstant.OPS_SUCCESS_CODE : RlzyConstant.OPS_FAILED_CODE;
     }
 
     @Override
@@ -361,9 +337,15 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int noReportedReason(Integer reason, Integer signUpId, Integer briefChapterId) {
-        return signUpMapper.noReportedReason(reason, signUpId, briefChapterId);
-
+    public int noReportedReason(Integer reason, Integer signUpId, Integer briefChapterId, Integer type) {
+        int noReported = signUpMapper.noReportedReason(reason, signUpId, briefChapterId);
+        ViolationRecord record = new ViolationRecord();
+        record.setContent(reason);
+        record.setSignUpId(signUpId);
+        record.setCreatTime(new Date());
+        record.setType(type);
+        int violationRecord = violationRecordMapper.insertSelective(record);
+        return noReported >= 1 && violationRecord >= 1 ? 1 : 0;
     }
 
     @Override
@@ -375,8 +357,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     BigDecimal female = rebat.getRebateFemale();
                     rebat.setRebateOne(female);
                     rebat.setRebateFemale(BigDecimal.valueOf(0));
-                    rebat.setRebateMale(BigDecimal.valueOf(0))
-                    ;
+                    rebat.setRebateMale(BigDecimal.valueOf(0));
                 }
                 if (sex.equals(1)) {
                     BigDecimal male = rebat.getRebateMale();
@@ -539,7 +520,8 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     public int editBriefchapterFail(ReleaseBriefcharpterQuery query) {
-
+        int num = query.getManNum() + query.getWomenNum();
+        query.setRecruitingNo(num);
         Integer update = mapper.update(query);
         //修改返佣
         HrRebaterecord hrRebaterecord = new HrRebaterecord();
@@ -555,7 +537,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             BigDecimal decimal1 = StringUtil.decimal(rebateFemale);
             Assert.isFalse(null != decimal1, "女生返佣不能为空");
             hrRebaterecord.setRebateFemale(decimal1);
-            hrRebaterecord.setRebateTime(briefcharpterQuery.getRebateTime());
+            //返佣时间
             list.add(hrRebaterecord);
         }
         int i = rebaterecordMapper.updateBatch(list);
@@ -794,7 +776,16 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     }
 
 
-    private int initBriefcharpter(ReleaseBriefcharpterQuery query) {
+    /**
+     * 有返佣的情况下发布简章
+     *
+     * @return void
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 9:57 2019/8/24
+     * @Param [query]
+     **/
+    private void initBriefcharpterRebate(ReleaseBriefcharpterQuery query) {
         HrBriefchapter dto = new HrBriefchapter();
         dto.setPostId(query.getPostId());
         //被招聘企业id
@@ -804,7 +795,111 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         String s = query.getAvgSalary();
         BigDecimal decimal = StringUtil.decimal(s);
         dto.setAvgSalary(decimal);
+        //招聘人数
+        int num = query.getManNum() + query.getWomenAgeId();
+        dto.setRecruitingNo(num);
+        String salary = query.getDetailSalary();
+        BigDecimal decimal1 = StringUtil.decimal(salary);
+        dto.setDetailSalary(decimal1);
+        dto.setManAgeId(query.getManAgeId());
+        dto.setWomenAgeId(query.getWomenAgeId());
+        dto.setEducationId(query.getEducationId());
+        dto.setExperienceId(query.getExperienceId());
+        dto.setWorkWayId(query.getWorkWayId());
+        dto.setWorkAddress(query.getWorkAddress());
+        dto.setWorkTimeArrangeId(query.getWorkTimeArrangeId());
+        dto.setClothingReguirementId(query.getClothingRequirementId());
+        dto.setHobbyId(query.getHobbyId());
+        dto.setOvertimeTimeId(query.getOvertimeTimeId());
+        dto.setWelfareId(query.getWelfareId());
 
+        //用人单位证明
+        dto.setEmployerCertificatePhotoUrl(query.getEmployerCertificatePhotoUrl());
+
+        //是否返佣 有返佣
+        dto.setRebate(1);
+
+        dto.setDescriptionJobPhotoUrl(query.getDescriptionJobPhotoUrl());
+
+        //用人单位面试地址
+        dto.setInterviewAddress(query.getInterviewAddress());
+
+        //非用人单位面试地址
+        dto.setNoEmployerAddress(query.getNoEmployerAddress());
+
+        dto.setPostDetail(query.getPostDetail());
+        String interviewTime = query.getInterviewTime();
+        LocalDateTime dateTime = StringUtil.strToLocalDateTime(interviewTime);
+        dto.setInterviewTime(dateTime);
+        String time = query.getRegisterTime();
+        Date date = StringUtil.StrToDate(time);
+        dto.setRegisterTime(date);
+        String contractTime = query.getContractTime();
+        LocalDateTime localDateTime1 = StringUtil.strToLocalDateTime(contractTime);
+        dto.setContractTime(localDateTime1);
+        dto.setHireWay(query.getHireWay());
+        dto.setAcceptRecommendedResume(query.getAcceptRecommendedResume());
+
+
+        dto.setContractWay(query.getContractWay());
+        dto.setManNum(query.getManNum());
+        dto.setWomenNum(query.getWomenNum());
+        dto.setUserId(query.getUserId());
+        //面试返佣男
+        dto.setRebateMaleInterview(query.getRebateMaleInterview());
+        // 报道...
+        dto.setRebateMaleReport(query.getRebateMaleReport());
+        //入职...
+        dto.setRebateMaleEntry(query.getRebateMaleEntry());
+        //面试返佣女
+        dto.setRebateFemaleInterview(query.getRebateFemaleInterview());
+        //报道...
+        dto.setRebateFemaleReport(query.getRebateFemaleReport());
+        //入职...
+        dto.setRebateFemaleEntry(query.getRebateFemaleEntry());
+        //入职返佣时间
+        dto.setRebateTimeEntry(query.getRebateTimeEntry());
+        if (query.getContractWay() == 0) {
+            //招聘单位
+            dto.setContractWay(0);
+            dto.setContractWayDetailId(Integer.valueOf(query.getContractWayDetailId()));
+        } else if (query.getContractWay() == 1) {
+            //用工单位
+            dto.setContractWay(1);
+            dto.setContractWayDetailId(Integer.valueOf(query.getContractWayDetailId()));
+        } else if (query.getContractWay() == 2) {
+            //厂方指定劳务公司
+            dto.setContractWay(2);
+            dto.setContractWayDetailId(Integer.valueOf(query.getContractWayDetailId()));
+        } else {
+            System.out.println(RlzyConstant.OPS_FAILED_MSG);
+        }
+
+        Assert.isFalse(mapper.save(dto) < 1, RlzyConstant.OPS_FAILED_MSG);
+    }
+
+    /**
+     * 没返佣 简章表初始化
+     *
+     * @return void
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:29 2019/8/24
+     * @Param [query]
+     **/
+    private void initBriefcharpter(ReleaseBriefcharpterQuery query) {
+        HrBriefchapter dto = new HrBriefchapter();
+        dto.setPostId(query.getPostId());
+        //被招聘企业id
+        dto.setRecruitedcompanyId(query.getRecruitedCompanyId());
+
+        dto.setProfessionId(query.getProfessionId());
+        String s = query.getAvgSalary();
+        BigDecimal decimal = StringUtil.decimal(s);
+        dto.setAvgSalary(decimal);
+        //招聘人数
+        int num = query.getManNum() + query.getWomenAgeId();
+        dto.setRecruitingNo(num);
         String salary = query.getDetailSalary();
         BigDecimal decimal1 = StringUtil.decimal(salary);
         dto.setDetailSalary(decimal1);
@@ -825,9 +920,8 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         //用人单位证明
         dto.setEmployerCertificatePhotoUrl(query.getEmployerCertificatePhotoUrl());
 
-        String rebate = query.getRebate();
-        int i = Integer.parseInt(rebate);
-        dto.setRebate(i);
+        //是否返佣 没返佣
+        dto.setRebate(0);
 
         dto.setDescriptionJobPhotoUrl(query.getDescriptionJobPhotoUrl());
 
@@ -871,8 +965,6 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             System.out.println(RlzyConstant.OPS_FAILED_MSG);
         }
 
-        Assert.isFalse(mapper.save(query) < 1, RlzyConstant.OPS_FAILED_MSG);
-
-        return dto.getId();
+        Assert.isFalse(mapper.save(dto) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 }

@@ -6,15 +6,20 @@
         <result column="signup_id" jdbcType="INTEGER" property="signupId"/>
         <result column="brief_chapter_id" jdbcType="INTEGER" property="briefChapterId"/>
         <result column="job_status" jdbcType="INTEGER" property="jobStatus"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
         <result column="no_pass_reason" jdbcType="INTEGER" property="noPassReason"/>
         <result column="no_report_reason" jdbcType="INTEGER" property="noReportReason"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="rebate_interview_time" jdbcType="DATE" property="rebateInterviewTime"/>
+        <result column="rebate_report_time" jdbcType="DATE" property="rebateReportTime"/>
+        <result column="rebate_entry_time" jdbcType="DATE" property="rebateEntryTime"/>
+        <result column="rebate_type" jdbcType="INTEGER" property="rebateType"/>
     </resultMap>
     <insert id="referrerToSIgnUp">
-        insert into hr_signup_deliveryrecord (signup_id, brief_chapter_id, job_status, create_time) values
+        insert into hr_signup_deliveryrecord (signup_id, brief_chapter_id, job_status, status, create_time) values
     <foreach collection="entites" item="item" separator=",">
-        (#{item.signupId}, #{item.briefChapterId}, #{item.jobStatus}, #{item.createTime})
+        (#{item.signupId}, #{item.briefChapterId}, #{item.jobStatus}, #{item.status}, #{item.createTime})
     </foreach>
     </insert>
 </mapper>

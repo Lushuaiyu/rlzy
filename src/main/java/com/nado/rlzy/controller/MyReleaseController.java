@@ -114,7 +114,7 @@ public class MyReleaseController extends BaseController {
     @ApiOperation(notes = "发布简章", value = "发布简章", httpMethod = "POST")
     @ApiImplicitParams(
             {
-                    @ApiImplicitParam(name = "query", value = "入参, 详细参数见swagger model部分, 再次入参不一一列举", dataType = "ReleaseBriefcharpterQuery", required = true),
+                    @ApiImplicitParam(name = "type", value = "身份, 5 代招单位 6 招聘单位", dataType = "Integer", required = true),
                     @ApiImplicitParam(name = "type", value = "身份, 代招单位还是招聘单位", dataType = "Integer", required = true)
             }
     )
@@ -260,7 +260,7 @@ public class MyReleaseController extends BaseController {
         ResultJson resultJson = new ResultJson();
         if (type.equals(1)) {
             // 招聘详情 待面试 已面试
-            int count = service.recruitmentInterviewd(signUpId, briefChapterId, rebateType);
+            int count = service.recruitmentInterviewd(signUpId, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
@@ -278,7 +278,7 @@ public class MyReleaseController extends BaseController {
             resultJson.setData(count);
         } else if (type.equals(4)) {
             //招聘详情 待面试 已面试 面试已通过
-            int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId);
+            int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, rebateType);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
@@ -291,27 +291,28 @@ public class MyReleaseController extends BaseController {
     @ApiOperation(value = "招聘详情 待报道", notes = "招聘详情 待报道", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true),
-            @ApiImplicitParam(value = "type", name = "1 招聘详情 待报道 未报到 2 招聘详情 待报道 确认报道 3 未报到原因 ", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "typp", name = "1 招聘详情 待报道 未报到 2 招聘详情 待报道 确认报道 3 未报到原因 ", dataType = "integer", required = true),
             @ApiImplicitParam(value = "reason", name = "未报到原因", dataType = "integer", required = true),
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "rebateType", name = "返佣类型 1 报道", dataType = "integer", required = true)
+            @ApiImplicitParam(value = "rebateType", name = "返佣类型 1 报道", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "type", name = "违规类型 0 0 社保原因(无责) 1 其他原因(无责) 3 其他原因(有责)", dataType = "integer", required = true)
     })
-    public ResultJson notReported(Integer signUpId, Integer type, Integer reason, Integer briefChapterId, Integer userId, Integer rebateType ) {
+    public ResultJson notReported(Integer signUpId, Integer typp, Integer reason, Integer briefChapterId, Integer userId, Integer rebateType, Integer type ) {
         ResultJson resultJson = new ResultJson();
-        if (type.equals(1)) {
+        if (typp.equals(1)) {
             Map<String, Object> map = service.notReported(signUpId, briefChapterId, userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
-        } else if (type.equals(2)) {
+        } else if (typp.equals(2)) {
             int count = service.reported(signUpId, briefChapterId, rebateType);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
 
-        } else if (type.equals(3)) {
-            int count = service.noReportedReason(reason, signUpId, briefChapterId);
+        } else if (typp.equals(3)) {
+            int count = service.noReportedReason(reason, signUpId, briefChapterId, type);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);

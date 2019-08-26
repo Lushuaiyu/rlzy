@@ -21,6 +21,7 @@
         <result column="expected_salary_lower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
         <result column="enter_time" property="enterTime" jdbcType="TIMESTAMP"/>
         <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
+        <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
         <result column="no_pass_reason" property="noPassReason" jdbcType="INTEGER"/>
         <result column="delete_flag" property="deleteFlag" jdbcType="TINYINT"/>
         <result column="registration_position_id" property="registrationPositionId" jdbcType="VARCHAR"/>
@@ -36,6 +37,8 @@
         <result column="RecommendNoUpper" property="recommendNoUpper" jdbcType="VARCHAR"/>
         <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
         <result column="value" property="value" jdbcType="DECIMAL"/>
+        <result column="postId" property="postId" jdbcType="VARCHAR"/>
+        <result column="PostIdStr" property="postIdStr" jdbcType="VARCHAR"/>
         <result column="interviewTime" property="interviewTime" jdbcType="DATE"/>
         <result column="registerTime" property="registerTime" jdbcType="DATE"/>
         <result column="noSingUp" property="noSingUp" jdbcType="INTEGER"/>
@@ -110,7 +113,7 @@
                 enter_time,
             </if>
             <if test="jobStatus != null">
-                job_status,
+                status,
             </if>
             <if test="noPassReason != null">
                 no_pass_reason,
@@ -247,7 +250,7 @@
                 enter_time = #{enterTime,jdbcType=TIMESTAMP},
             </if>
             <if test="jobStatus != null">
-                job_status = 0,
+                status = 0,
             </if>
             <if test="noPassReason != null">
                 no_pass_reason = #{noPassReason,jdbcType=INTEGER},
@@ -314,7 +317,7 @@
                 enter_time = #{enterTime,jdbcType=TIMESTAMP},
             </if>
             <if test="jobStatus != null">
-                job_status = #{jobStatus,jdbcType=INTEGER},
+                status = #{jobStatus,jdbcType=INTEGER},
             </if>
             <if test="noPassReason != null">
                 no_pass_reason = #{noPassReason,jdbcType=INTEGER},
@@ -342,7 +345,7 @@
     <update id="invitationToRegister">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 5
+            sd.status = 5
             <where>
                 si.delete_flag = 0
                 and si.id = sd.signup_id
@@ -356,7 +359,8 @@
     <update id="notSuitable">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 4
+            sd.status = 8,
+            sd.job_status = 1,
             <where>
                 si.delete_flag = 0
                 and sd.delete_flag = 0
@@ -370,7 +374,7 @@
     <update id="invitationInterview">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 7
+            sd.status = 7
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -385,7 +389,7 @@
     <!--<update id="updateJobStatusByTask">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 10
+            sd.status = 10
             <where>
                 si.delete_flag = 0
                 and sd.delete_flag = 0``
@@ -403,7 +407,7 @@
     <update id="updateJobStatusInterviewed">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 8
+            sd.status = 8
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -418,7 +422,7 @@
     <update id="updateJobStatus">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 10
+            sd.status = 10
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -432,7 +436,7 @@
     <update id="updateJobStatusConfirmationReport">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 11
+            sd.status = 11
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -446,7 +450,7 @@
     <update id="updateJobStatusConfirmationReportByTask">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 11
+            sd.status = 3
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -463,7 +467,7 @@
     <update id="updateJobStatusReport">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 9
+            sd.status = 9
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -486,7 +490,7 @@
     <update id="reportNotSuitable">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 4
+            sd.status = 4
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -505,7 +509,8 @@
     <update id="recruitmentDetailsInvitationInterview">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 7
+            sd.status = 1,
+            sd.job_status = 2
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -522,7 +527,7 @@
     <update id="recruitmentDetailsDirectAdmission">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 2
+            sd.status = 2
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -539,7 +544,7 @@
     <update id="recruitmentInterviewd">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 10
+            sd.status = 10
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -556,7 +561,9 @@
     <update id="recruitmentNoInterviewd">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 8
+            sd.status = 8,
+            sd.job_status = 3,
+            sd.no_pass_reason = 1
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -595,7 +602,7 @@
     <update id="confirmRegistration">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.job_status = 0
+            sd.status = 0
         </set>
         <where>
             sd.delete_flag = 0
@@ -655,6 +662,7 @@
 
         </set>
     </update>
+    <update id="waitingForCommissionToBecomeRebateSIgnUp"></update>
 
 
     <select id="selectJobListOverview" resultMap="BaseResultMap"
@@ -665,7 +673,7 @@
         s.age as age,
         u.UserName as commendName,
         u.type,
-        sd.job_status,
+        sd.status,
         s.arrival_time,
         ifnull(b.id, '0') as noSingUp,
         (SELECT GROUP_CONCAT(d.name)
@@ -673,7 +681,7 @@
         WHERE FIND_IN_SET(d.value, s.relation)
         and d.pId = 4) as relation,
         from hr_signup s
-        left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_user u on s.user_id = u.Id and u.status = 0
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
         left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0
         <where>
@@ -720,7 +728,7 @@
         s.graduation_time as graduationTime,
         s.expected_salary_lower as expectedSalaryLower,
         s.expected_salary_upper as expectedSalaryUpper,
-        sd.job_status as jobStatus,
+        sd.status as jobStatus,
         ifnull(b.Id, 0) as noSignUp,
         s.relation as relation,
         sd.brief_chapter_id as briefChapterId,
@@ -747,7 +755,7 @@
         select s.user_name,
         s.age,
         u.UserName as commendName,
-        sd.job_status,
+        sd.status,
         s.arrival_time,
         s.id,
         IFNULL(b.id, '0') as noSignUp,
@@ -760,7 +768,7 @@
         from collect c
         left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_user u on c.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_user u on c.user_id = u.Id and u.status = 0
         left join hr_briefchapter b on c.briefchapter_id = b.Id and b.briefChapterStatus = 0
         where c.delete_flag = 0
         <if test="null != userId">
@@ -778,13 +786,13 @@
        s.graduation_time       as graduationTime,
        s.expected_salary_lower as expectedSalaryLower,
        s.expected_salary_upper as expectedSalaryUpper,
-       sd.job_status           as jobStatus,
+       sd.status           as jobStatus,
        ifnull(b.Id, 0)         as noSignUp,
        s.relation              as relation
         from collect c
                  left join hr_signup s on c.sign_up_id = s.id
                  left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-                 left join hr_user u on c.user_id = u.Id and u.DeleteFlag = 0
+                 left join hr_user u on c.user_id = u.Id and u.status = 0
                  left join hr_briefchapter b on c.briefchapter_id = b.Id and b.briefChapterStatus = 0
                  left join hr_dictionary_item dii on b.PostId = dii.value and dii.status = 1 and dii.pId = 1
         where c.delete_flag = 0
@@ -825,7 +833,7 @@
         and hsd.delete_flag = 0
         and s.delete_flag = 0
         and s.user_id = u.Id
-        and u.DeleteFlag = 0
+        and u.status = 0
         and br.Id = hsd.brief_chapter_id
         and br.briefChapterStatus = 0
         <if test="null != signId">
@@ -855,7 +863,7 @@
         si.id
         from hr_signup si
         left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_user u on si.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_user u on si.user_id = u.Id and u.status = 0
         left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.briefChapterStatus = 0
         <where>
             si.delete_flag = 0
@@ -871,7 +879,7 @@
     <select id="querySignUpUserName" resultMap="BaseResultMap">
         select distinct s.user_name
         from hr_signup s
-        left join hr_user u on s.user_id = u.Id
+        left join hr_user u on s.user_id = u.Id and u.status = 0
         <where>
             s.delete_flag = 0
             <if test="null != type">
@@ -884,13 +892,13 @@
         </where>
     </select>
     <select id="querySignUpStatus" resultMap="BaseResultMap">
-        select sd.job_status,
+        select sd.status,
         sd.brief_chapter_id,
         si.user_name,
         sd.signup_id
         from hr_signup si
         inner join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
-        inner join hr_user u on si.user_id = u.id and u.DeleteFlag = 0
+        inner join hr_user u on si.user_id = u.id and u.status = 0
         <where>
             si.delete_flag = 0
             <if test="null != jobUserName">
@@ -947,19 +955,19 @@
         r.status,
         sd.no_pass_reason,
         s.id,
-        sd.job_status,
+        sd.status,
         r.CreateTime,
         s.sex,
         r.RebateType,
         s.user_id
         from hr_signup s
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_user u on s.user_id = u.Id and u.status = 0
         left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0
         left join hr_rebaterecord r on sd.brief_chapter_id = r.BriefChapterId and r.DeleteFlag = 0
         <where>
             s.delete_flag = 0
-            and sd.job_status in
+            and sd.status in
             <if test="null != list">
                 <foreach collection="list" item="item" separator="," open="(" close=")">
                     #{item}
@@ -970,32 +978,25 @@
     </select>
     <select id="signUpId" resultMap="BaseResultMap">
         select si.id from hr_signup si
-        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0 and sd.job_status = 1
+        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0 and sd.status = 1
         <where>
             si.delete_flag = 0
         </where>
     </select>
     <select id="signUpIdByReport" resultMap="BaseResultMap">
         select si.id from hr_signup si
-        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0 and sd.job_status = 2
+        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0 and sd.status = 2
         <where>
             si.delete_flag = 0
         </where>
     </select>
-    <select id="selectRebateTime" resultMap="BaseResultMap">
-        select CreateTime from hr_rebaterecord
-        <where>
-            DeleteFlag = 0 and status = 1
-        </where>
 
-
-    </select>
     <select id="recruitmentInterviewOver" resultType="com.nado.rlzy.db.pojo.HrSignUp">
         select
         b.registerTime
         from hr_signup s
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_user u on s.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_user u on s.user_id = u.Id and u.status = 0
         left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0
         left join hr_rebaterecord r on sd.brief_chapter_id = r.BriefChapterId and r.status = 0 and r.DeleteFlag = 0
         <where>
@@ -1016,7 +1017,7 @@
         left join hr_briefchapter br on re.BriefChapterId = br.id and br.briefChapterStatus = 0
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        left join hr_user u on si.user_id = u.Id and si.delete_flag = 0
+        left join hr_user u on si.user_id = u.Id and u.status = 0
         <where>
             re.DeleteFlag = 0
             <if test="null != signUpId">
@@ -1031,7 +1032,7 @@
         from hr_signup si
         left join my_sign_up_table_sign_up msutsu on si.id = msutsu.sign_up_id and msutsu.delete_time = 0
         left join my_sign_up_table mt on mt.id = msutsu.my_sign_up_table_id and mt.delete_flag = 0
-        left join hr_user u on si.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_user u on si.user_id = u.Id and u.status = 0
 
         <where>
             si.delete_flag = 0
@@ -1052,7 +1053,7 @@
         from my_sign_up_table_sign_up msutsu
         left join my_sign_up_table mt on mt.id = msutsu.my_sign_up_table_id and mt.delete_flag = 0
         left join hr_signup si on msutsu.sign_up_id = si.id and si.delete_flag = 0
-        left join hr_user u on si.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_user u on si.user_id = u.Id and u.status = 0
         <where>
             msutsu.delete_time = 0
             <if test="null != signUpName">
@@ -1068,7 +1069,7 @@
         si.id
         from hr_signup si
         left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_user u on si.user_id = u.Id and u.DeleteFlag = 0
+        left join hr_user u on si.user_id = u.Id and u.status = 0
         left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.briefChapterStatus = 0
         where si.delete_flag = 0
         <if test="null != brieId">
@@ -1082,36 +1083,25 @@
         </if>
     </select>
     <select id="queryAll" resultMap="BaseResultMap">
-        select si.sex,
+        select
         si.age,
         si.arrival_time,
         si.graduation_time,
         si.expected_salary_lower,
         si.expected_salary_upper,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, si.education)
-        and d.pId = 2) as education,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, si.registration_position_id)
-        and d.pId = 1) as registrationPosition,
+        si.education,
+        u.PostIdStr,
         si.registration_position_id
         from hr_signup si
-        left join hr_user u on si.user_id = u.Id
-        <where>
-            <if test="null != userId">
-                si.user_id = #{userId}
-            </if>
-            <if test="null != type">
-                and u.type = #{type}
-            </if>
-            and si.delete_flag = 0
-        </where>
+        left join hr_user u on si.user_id = u.Id and u.status = 0
+        where si.delete_flag = 0 and
+        <if test="null != userId">
+            si.user_id = #{userId}
+        </if>
 
     </select>
     <select id="threeNoInterview" resultMap="BaseResultMap">
-        select hsd.job_status
+        select hsd.status
         from hr_signup si
         left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
         where si.delete_flag = 0
@@ -1119,7 +1109,82 @@
             and si.id = #{signId}
         </if>
         order by hsd.create_time desc
-        limit 0, 3;
+        limit 0, 3
     </select>
+    <select id="briefchaterSignUpNo" resultType="_int">
+        select count(sd.status)
+        from hr_briefchapter br
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
+        where br.briefChapterStatus = 0
+        <if test="null != briefchapterId">
+            and br.id = #{briefchapterId}
+        </if>
+        and sd.status = 0
+    </select>
+    <select id="briefchapterInterviewNo" resultType="_int">
+        select count(si.id)
+        from hr_briefchapter br
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
+        where br.briefChapterStatus = 0
+        <if test="null != briefchapterId">
+            and br.id = #{briefchapterId}
+        </if>
+        and sd.status = 10
+    </select>
+    <select id="briefchapterReportNo" resultType="_int">
+        select count(si.id)
+        from hr_briefchapter br
 
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
+        where br.briefChapterStatus = 0
+        <if test="null != briefchapterId">
+            and br.id = #{briefchapterId}
+        </if>
+        and sd.status = 11;
+    </select>
+    <select id="rebateInterview" resultType="_int">
+        select count(si.id)
+        from hr_briefchapter br
+        left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
+        left join hr_signup si
+        on hsd.signup_id = si.id and si.delete_flag = 0
+        left join hr_rebaterecord re on si.id = re.sign_up_id and re.DeleteFlag = 0 and re.RebateType = 0
+        where br.briefChapterStatus = 0
+        and hsd.status = 12
+        <if test="null != briefchapterId">
+            and br.id = #{briefchapterId}
+        </if>
+        and re.RebateType = 0
+    </select>
+    <select id="rebateReport" resultType="_int">
+        select count(si.id)
+        from hr_briefchapter br
+        left join hr_rebaterecord re on re.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
+        where br.briefChapterStatus = 0
+        <if test="null != briefchapterId">
+            and br.id = #{briefchapterId}
+        </if>
+        and si.id = re.sign_up_id
+        and sd.status = 12
+        and re.RebateType = 1
+    </select>
+    <select id="rebateEntry" resultType="_int">
+        select count(si.id)
+        from hr_briefchapter br
+        left join hr_rebaterecord re on re.DeleteFlag = 0
+        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
+        left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
+        where br.briefChapterStatus = 0
+        <if test="null != briefchapterId">
+            and br.id = #{briefchapterId}
+        </if>
+        and si.id = re.sign_up_id
+        and sd.status = 12
+        and re.RebateType = 2
+    </select>
 </mapper>
