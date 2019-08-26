@@ -55,13 +55,13 @@ DROP TABLE IF EXISTS `collect`;
 CREATE TABLE `collect` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `user_id` int(11) DEFAULT NULL COMMENT '用户id',
-  `briefchapter_id` int(11) NOT NULL COMMENT '简章id',
-  `recruiter_id` int(11) NOT NULL COMMENT '推荐人id',
+  `briefchapter_id` int(11) DEFAULT NULL COMMENT '简章id',
+  `recruiter_id` int(11) DEFAULT NULL COMMENT '推荐人id',
   `sign_up_id` int(11) DEFAULT NULL COMMENT '报名表id',
   `create_time` timestamp NULL DEFAULT NULL COMMENT '添加时间',
-  `delete_flag` int(11) NOT NULL DEFAULT '0' COMMENT '是否取消收藏 0 收藏 1: 取消收藏',
+  `delete_flag` int(11) DEFAULT '0' COMMENT '是否取消收藏 0 收藏 1: 取消收藏',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='收藏表\n';
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 COMMENT='收藏表\n';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `collect` (
 
 LOCK TABLES `collect` WRITE;
 /*!40000 ALTER TABLE `collect` DISABLE KEYS */;
-INSERT INTO `collect` VALUES (1,4,1,4,1,'2019-07-01 16:00:00',0),(9,6,2,3,3,'2019-07-29 16:00:00',0),(10,10,3,3,4,'2019-07-06 16:00:00',0),(11,16,6,3,7,'2019-07-07 16:00:00',0),(12,9,7,1,8,'2019-08-01 16:00:00',0),(13,3,4,2,NULL,'2019-08-01 16:00:00',0),(14,2,5,1,NULL,'2019-08-01 16:00:00',0);
+INSERT INTO `collect` VALUES (1,4,1,NULL,NULL,'2019-07-01 16:00:00',0),(9,6,2,NULL,NULL,'2019-07-29 16:00:00',0),(10,10,3,NULL,NULL,'2019-07-06 16:00:00',0),(11,16,6,NULL,NULL,'2019-07-07 16:00:00',0),(12,9,7,NULL,NULL,'2019-08-01 16:00:00',0),(13,3,4,NULL,NULL,'2019-08-01 16:00:00',0),(14,2,5,NULL,NULL,'2019-08-01 16:00:00',0),(15,8,NULL,NULL,12,'2019-08-14 08:45:09',1),(16,7,NULL,NULL,5,'2019-08-15 01:14:15',1),(17,7,NULL,NULL,5,'2019-08-15 01:14:16',0),(18,8,NULL,NULL,1,'2019-08-15 01:14:16',0),(19,7,NULL,NULL,9,'2019-08-15 01:14:17',0),(20,8,NULL,NULL,11,'2019-08-15 01:14:18',0),(21,8,NULL,NULL,5,'2019-08-15 01:14:18',1),(22,8,NULL,NULL,3,'2019-08-15 01:14:19',0),(23,8,NULL,NULL,6,'2019-08-15 01:14:20',1),(24,8,NULL,2,NULL,'2019-08-15 01:12:48',0),(25,9,NULL,2,NULL,'2019-08-15 01:54:05',0),(26,8,NULL,17,NULL,'2019-08-15 01:54:17',0),(27,8,NULL,3,NULL,'2019-08-15 01:54:29',0),(28,1,7,NULL,10,'2019-08-15 01:54:36',0);
 /*!40000 ALTER TABLE `collect` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -140,14 +140,13 @@ DROP TABLE IF EXISTS `hr_acct`;
 CREATE TABLE `hr_acct` (
   `Id` int(32) NOT NULL AUTO_INCREMENT COMMENT '账户表',
   `UserId` int(32) DEFAULT NULL COMMENT '用户Id',
-  `AcctBalance` decimal(10,0) DEFAULT '0' COMMENT '账户金额',
-  `IceBalance` decimal(10,0) DEFAULT '0' COMMENT '冻结金额',
-  `DeleteFlag` tinyint(4) DEFAULT '0' COMMENT '0:未删除  1:已删除',
+  `AcctBalance` decimal(10,2) DEFAULT '0.00' COMMENT '账户金额',
+  `IceBalance` decimal(10,2) DEFAULT '0.00' COMMENT '冻结金额',
   `modifyTime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `CreateTime` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `sign_up_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,7 +155,7 @@ CREATE TABLE `hr_acct` (
 
 LOCK TABLES `hr_acct` WRITE;
 /*!40000 ALTER TABLE `hr_acct` DISABLE KEYS */;
-INSERT INTO `hr_acct` VALUES (1,2,0,100,0,'2019-07-30 07:36:27','2019-10-29 09:44:03',NULL),(2,3,0,200,0,'2019-07-30 07:33:22','2018-10-29 09:44:05',NULL),(3,4,110,0,0,'2019-07-30 07:36:27','2018-10-30 09:10:33',NULL),(4,7,0,700,0,'2019-07-30 07:34:12','2019-01-10 02:27:55',NULL),(5,8,0,2000,0,'2019-07-30 07:34:12','2019-01-10 02:27:56',NULL),(7,NULL,0,0,0,NULL,NULL,NULL);
+INSERT INTO `hr_acct` VALUES (1,2,12608.00,100.00,'2019-08-20 09:25:59','2019-10-29 09:44:03',NULL),(2,3,12608.00,200.00,'2019-08-20 09:25:59','2018-10-29 09:44:05',NULL),(3,4,12718.00,0.00,'2019-08-20 09:25:59','2018-10-30 09:10:33',NULL),(4,7,12608.00,700.00,'2019-08-20 09:25:59','2019-01-10 02:27:55',NULL),(5,8,14608.00,0.00,'2019-08-20 09:25:59','2019-01-10 02:27:56',NULL),(7,NULL,12608.00,0.00,'2019-08-20 09:25:59',NULL,NULL),(8,NULL,12608.00,0.00,'2019-08-20 09:25:59',NULL,1);
 /*!40000 ALTER TABLE `hr_acct` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -199,6 +198,34 @@ INSERT INTO `hr_acct_detail` VALUES (1,1,200,1100,900,'2018-10-31 00:00:00',NULL
 UNLOCK TABLES;
 
 --
+-- Table structure for table `hr_acct_recharge`
+--
+
+DROP TABLE IF EXISTS `hr_acct_recharge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hr_acct_recharge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '账户充值记录表',
+  `userId` int(11) DEFAULT NULL COMMENT '充值者Id',
+  `rechargeType` int(11) DEFAULT NULL COMMENT '充值方式 0微信 1支付宝 2线下',
+  `amount` decimal(10,2) DEFAULT NULL COMMENT '充值金额',
+  `status` int(11) DEFAULT NULL COMMENT '线下支付需审核--状态:0待审核 1审核通过 2审核未通过',
+  `createTime` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `hr_acct_recharge`
+--
+
+LOCK TABLES `hr_acct_recharge` WRITE;
+/*!40000 ALTER TABLE `hr_acct_recharge` DISABLE KEYS */;
+INSERT INTO `hr_acct_recharge` VALUES (1,2,1,10000.00,NULL,'2018-10-29 17:43:43'),(2,2,0,10000.00,0,'2018-10-29 17:54:46');
+/*!40000 ALTER TABLE `hr_acct_recharge` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `hr_briefchapter`
 --
 
@@ -224,12 +251,11 @@ CREATE TABLE `hr_briefchapter` (
   `hireWay` int(11) DEFAULT NULL COMMENT '录取方式 0完全直录 1可以直录 2不可直录',
   `Rebate` int(11) DEFAULT NULL COMMENT '0:无返佣 1:有返佣',
   `userId` int(11) DEFAULT NULL COMMENT '提交人',
-  `Status` int(11) DEFAULT '0' COMMENT '状态 0待审核 1通过(正在招)  2未通过 3已结束 -1接口暂时保存，后台不需要取',
+  `Status` int(11) DEFAULT '0' COMMENT '状态 0待审核 1通过(正在招) 2未通过 3已招满 4已过期 5待面试 6待报道 7待返佣 8返佣中 9返佣结束',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注，不通过时用到',
   `CheckedTime` datetime DEFAULT NULL COMMENT '审核通过时间',
   `readNum` int(11) DEFAULT '0' COMMENT '浏览次数',
   `CreateTime` datetime DEFAULT NULL COMMENT '创建时间',
-  `DeleteFlag` int(11) DEFAULT '0' COMMENT '0:未删除  1:已删除',
   `man_age_id` int(11) DEFAULT NULL COMMENT '男员工年龄段',
   `women_age_id` int(11) DEFAULT NULL COMMENT '女员工年龄段',
   `work_way_id` int(11) DEFAULT NULL COMMENT '工作方式',
@@ -240,7 +266,7 @@ CREATE TABLE `hr_briefchapter` (
   `description_job_photo_url` varchar(255) DEFAULT NULL COMMENT '职位描述图片url',
   `accept_recommended_resume` int(11) DEFAULT NULL COMMENT '是否接受平台推荐简历 0: 是 1: 否',
   `employer_certificate_photo_url` varchar(255) DEFAULT NULL COMMENT '用人单位证明图片 url',
-  `man_num` int(11) DEFAULT NULL COMMENT '男人招聘数量段',
+  `man_num` int(11) DEFAULT NULL COMMENT '男人招聘数量',
   `women_num` int(11) DEFAULT NULL COMMENT '女人招聘数量',
   `interview_address` varchar(255) DEFAULT NULL COMMENT '用人单位面试地址',
   `no_employer_address` varchar(255) DEFAULT NULL COMMENT '非用人单位面试地址',
@@ -249,8 +275,15 @@ CREATE TABLE `hr_briefchapter` (
   `contract_start_time` datetime DEFAULT NULL COMMENT '合同开始时间',
   `interviewTime` datetime DEFAULT NULL COMMENT '面试时间',
   `briefChapterStatus` int(11) DEFAULT '0' COMMENT '0 已上架 1已下架',
+  `rebate_male_interview` decimal(10,0) DEFAULT NULL COMMENT '返佣金额男面试',
+  `rebate_female_interview` decimal(10,0) DEFAULT NULL COMMENT '返佣金额女面试',
+  `rebate_male_report` decimal(10,0) DEFAULT NULL COMMENT '返佣金额男报道',
+  `rebate_female_report` decimal(10,0) DEFAULT NULL COMMENT '返佣金额女报道',
+  `rebate_male_entry` decimal(10,0) DEFAULT NULL COMMENT '返佣金额男入职',
+  `rebate_female_entry` decimal(10,0) DEFAULT NULL COMMENT '返佣金额女入职',
+  `rebate_time_entry` date DEFAULT NULL COMMENT '返佣时间入职',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,8 +292,34 @@ CREATE TABLE `hr_briefchapter` (
 
 LOCK TABLES `hr_briefchapter` WRITE;
 /*!40000 ALTER TABLE `hr_briefchapter` DISABLE KEYS */;
-INSERT INTO `hr_briefchapter` VALUES (1,5,1,-7,21000,300,2,'1',1,'3','bbb','2019-07-19',1,1,'2019-11-17 16:48:10',0,1,8,0,NULL,NULL,20,'2018-12-19 13:40:24',0,1,2,1,1,1,'1',1,NULL,0,NULL,1,2,'归一道','你好街',1,'aaaa','2019-05-07 00:00:00','2019-07-09 10:00:00',NULL),(2,4,2,6,12000,20,2,'1',2,'1,2,3,4','cccc','2019-07-22',1,2,'2019-08-02 16:48:20',0,1,8,1,NULL,NULL,21,'2018-12-19 13:45:57',0,2,3,2,2,2,'2',2,NULL,1,NULL,2,3,'举头路','llfasdf街',1,'eeeee','2019-07-22 00:00:00','2019-05-15 14:00:00',NULL),(3,8,3,5,13000,300,3,'2',3,'4','dddd','2019-07-25',1,3,'2020-12-17 16:48:50',1,1,7,2,NULL,NULL,56,'2018-12-19 13:47:13',0,3,4,2,1,3,'3',3,NULL,1,NULL,3,4,'喵喵路','按说大道',1,'iiiiii','2019-07-14 00:00:00','2019-07-26 10:00:00',NULL),(4,5,1,10,8000,20,2,'3',3,'3,4','miaomiao','2019-07-21',0,2,'2019-12-08 16:48:24',1,0,9,3,NULL,NULL,56,'2018-12-19 14:04:38',0,3,2,2,1,4,'2',2,NULL,0,NULL,2,3,'陵城路','皈依路',1,'安静路','2019-07-07 00:00:00','2019-07-17 09:00:00',NULL),(5,6,2,-1,2000,300,3,'2',4,'3','aaa','2019-09-21',0,3,'2019-08-03 16:48:20',1,1,4,2,NULL,NULL,54,'2018-12-19 14:05:31',0,2,4,1,2,2,'3',1,NULL,0,NULL,3,2,'移动公司','安创路',1,'静安寺','2019-07-07 00:00:00','2017-08-10 13:00:00',NULL),(6,5,3,11,15000,20,2,'1',5,'3,4','eeeee','2019-08-28',1,3,'2019-07-17 16:48:13',0,0,6,2,NULL,NULL,67,'2018-12-19 14:40:05',0,2,2,2,1,1,'5',3,NULL,1,NULL,4,1,'电力大厦','仁和路',1,'永乐路','2019-07-21 00:00:00','2019-08-14 15:00:00',NULL),(7,6,2,18,0,6000,3,'1',1,'3','ffffff','2019-08-19',0,2,'2021-12-17 16:48:45',1,1,2,2,NULL,NULL,76,'2018-12-19 14:44:01',0,4,1,3,4,3,'3',3,NULL,1,NULL,2,4,'武陵路','康庄路',1,'常州街','2019-07-20 00:00:00','2019-08-13 11:00:00',NULL);
+INSERT INTO `hr_briefchapter` VALUES (1,5,1,4,21000,300,2,'1',1,'3','bbb','2019-07-19',1,1,'2019-11-17 16:48:10',0,1,8,2,'违规',NULL,20,'2018-12-19 13:40:24',1,2,1,1,1,'1',1,NULL,0,NULL,10,22,'归一道','你好街',1,'aaaa','2019-05-07 00:00:00','2019-07-09 10:00:00',0,200,400,522,545,854,102,'2019-08-30'),(2,4,2,2,12000,20,2,'1,2',2,'1,2,3,4','cccc','2019-07-22',1,2,'2019-08-02 16:48:20',0,1,8,1,NULL,'2019-08-26 17:46:32',21,'2018-12-19 13:45:57',2,3,2,2,2,'2',2,'https://szsahsh.oss-cn-shanghai.aliyuncs.com/upload/shop/ahsh_20190723144327.jpg',1,NULL,23,12,'举头路','llfasdf街',1,'eeeee','2019-07-22 00:00:00','2019-05-15 14:00:00',0,500,700,255,223,895,154,'2019-09-03'),(3,3,3,0,13000,300,3,'2',3,'4','dddd','2019-07-25',1,3,'2020-12-17 16:48:50',1,1,7,2,NULL,NULL,56,'2018-12-19 13:47:13',3,4,2,1,3,'3',3,NULL,1,NULL,12,25,'喵喵路','按说大道',1,'iiiiii','2019-07-14 00:00:00','2019-07-26 10:00:00',0,260,500,426,456,896,452,'2019-08-14'),(4,2,1,10,8000,20,2,'3',3,'3,4','miaomiao','2019-07-21',0,2,'2019-12-08 16:48:24',1,0,8,3,NULL,NULL,56,'2018-12-19 14:04:38',3,2,2,1,4,'2',2,NULL,0,NULL,10,23,'陵城路','皈依路',1,'安静路','2019-07-07 00:00:00','2019-07-17 09:00:00',0,400,800,122,412,896,455,'2019-08-27'),(5,8,2,12,2000,300,3,'2',4,'3','aaa','2019-09-21',0,3,'2019-08-03 16:48:20',1,1,8,2,NULL,NULL,54,'2018-12-19 14:05:31',2,4,1,2,2,'3',1,NULL,0,NULL,16,74,'移动公司','安创路',1,'静安寺','2019-07-07 00:00:00','2017-08-10 13:00:00',0,720,900,632,782,896,457,'2019-09-24'),(6,14,3,10,15000,20,2,'1',5,'3,4','eeeee','2019-08-28',1,3,'2019-07-17 16:48:13',0,0,8,2,NULL,NULL,67,'2018-12-19 14:40:05',2,2,2,1,1,'5',3,NULL,1,NULL,18,54,'电力大厦','仁和路',1,'永乐路','2019-07-21 00:00:00','2019-08-14 15:00:00',0,400,400,524,249,865,412,'2019-09-09'),(7,6,2,18,0,6000,3,'1',1,'3','ffffff','2019-08-19',0,2,'2021-12-17 16:48:45',1,1,9,2,NULL,NULL,76,'2018-12-19 14:44:01',4,1,3,4,3,'3',3,NULL,1,NULL,29,21,'武陵路','康庄路',1,'常州街','2019-07-20 00:00:00','2019-08-13 11:00:00',0,800,100,544,472,457,423,'2019-09-10'),(8,4,3,10,400,800,2,'1',5,'3,4','synh','2019-08-19',1,2,'2019-08-19 04:33:57',1,1,9,1,NULL,NULL,10,'2019-08-19 04:34:24',4,2,3,1,3,'4',1,NULL,1,NULL,16,21,'qwe','zxc',1,'vvv','2019-08-19 04:35:15','2019-08-19 04:35:17',0,400,731,521,954,741,422,'2019-09-02'),(9,7,3,12,1000,100,1,'2',1,'1,2','miao','2019-08-19',1,2,'2019-08-19 05:46:34',0,1,8,1,NULL,NULL,10,'2019-08-19 05:47:17',3,1,2,1,2,'3',2,NULL,1,NULL,28,30,'zghqorh','vbf',1,'无穷路','2019-08-19 05:48:20','2019-08-19 05:48:24',0,800,475,641,145,152,715,'2019-08-08'),(11,3,2,4,10000,100,2,'3',2,'1,3','这个职位十分的适合你么','2019-08-24',0,2,'2019-08-24 11:30:42',0,1,7,0,NULL,NULL,0,NULL,1,2,1,1,2,'2',3,'fdfsdaf',0,'fsdfdfdf',10,20,'香榭街道','miao streat',3,'wang streat','2019-08-26 01:32:50','2019-08-24 11:30:42',0,100,52,400,552,123,523,'2019-08-24');
 /*!40000 ALTER TABLE `hr_briefchapter` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `hr_briefchapter_recharge`
+--
+
+DROP TABLE IF EXISTS `hr_briefchapter_recharge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hr_briefchapter_recharge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '简章充值记录表',
+  `userId` int(11) DEFAULT NULL COMMENT '充值者ID',
+  `rechargeType` int(11) DEFAULT NULL COMMENT '充值方式 0账户充值',
+  `amount` decimal(10,2) DEFAULT NULL COMMENT '充值金额',
+  `createTime` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `hr_briefchapter_recharge`
+--
+
+LOCK TABLES `hr_briefchapter_recharge` WRITE;
+/*!40000 ALTER TABLE `hr_briefchapter_recharge` DISABLE KEYS */;
+/*!40000 ALTER TABLE `hr_briefchapter_recharge` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -278,13 +337,15 @@ CREATE TABLE `hr_complaint` (
   `evidence` varchar(256) DEFAULT NULL COMMENT '凭证',
   `name` varchar(255) DEFAULT NULL COMMENT '投诉人',
   `phone` varchar(255) DEFAULT NULL COMMENT '投诉人手机',
-  `status` int(32) DEFAULT '0' COMMENT '状态 1待解决 2已撤销 3已处理 4 企业7天之后未处理, 平台后台处理',
+  `status` int(32) DEFAULT '0' COMMENT '状态 1待解决 2已撤销 3已处理 4 企业7天之后未处理 平台后台处理 5 违规',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `delete_flag` int(11) DEFAULT '0' COMMENT '0:未删除  1:已删除',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `updateTime` datetime DEFAULT NULL COMMENT '更新时间',
   `user_id` int(11) DEFAULT NULL COMMENT '用户id',
   `sign_up_id` int(11) NOT NULL DEFAULT '0' COMMENT '求职表主键id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -293,7 +354,7 @@ CREATE TABLE `hr_complaint` (
 
 LOCK TABLES `hr_complaint` WRITE;
 /*!40000 ALTER TABLE `hr_complaint` DISABLE KEYS */;
-INSERT INTO `hr_complaint` VALUES (1,3,'1','该企业随意散布虚假消息','dddddd','xiaoming','13877777',3,0,'2018-10-30 00:00:00',2,1),(2,2,'2','fasasasasasasasasasasas','rereeer','yc','111112',1,0,'2018-11-19 00:00:00',3,2),(3,4,'2','ffsfffsdfsdf','ddddd','aa','18629871278',2,0,'2019-07-10 00:00:00',4,2),(4,5,'3','1111','fdfd','miao',NULL,1,0,'2019-07-25 00:00:00',5,1),(5,6,'4','1111','fdfd','miao',NULL,2,0,'2019-07-25 00:00:00',10,1),(6,1,'1','1111','fdfd','miao',NULL,2,0,'2019-07-10 00:00:00',16,1),(7,4,'5','啦啦啦啦啦啦啦','0101010','sdf',NULL,0,0,'2019-08-05 10:30:22',4,0);
+INSERT INTO `hr_complaint` VALUES (1,1,'1','该企业随意散布虚假消息','dddddd','xiaoming','13877777',1,NULL,0,'2018-10-30 00:00:00','2019-08-26 06:17:00',2,1),(2,2,'2','fasasasasasasasasasasas','rereeer','yc','111112',2,NULL,0,'2018-11-19 00:00:00','2019-08-26 06:17:01',3,2),(3,3,'2','ffsfffsdfsdf','ddddd','aa','18629871278',2,NULL,0,'2019-07-10 00:00:00','2019-08-26 06:17:02',4,2),(4,5,'3','1111','fdfd','miao','10254689564',3,NULL,0,'2019-07-25 00:00:00','2019-08-26 06:17:04',5,1),(5,6,'4','1111','fdfd','miao','18620956523',5,'aaaaaa',1,'2019-07-25 00:00:00','2019-08-26 06:17:05',10,1),(6,4,'1','1111','fdfd','miao','13365241204',1,NULL,0,'2019-07-10 00:00:00','2019-08-26 06:17:06',16,1),(7,7,'5','啦啦啦啦啦啦啦','0101010','sdf','12045875412',3,NULL,0,'2019-08-05 10:30:22','2019-08-26 06:17:07',4,3),(8,1,'2','gbdfdg','范德萨发短信','二丫','16525450214',5,'存在欺诈行为',0,'2019-08-23 02:43:10','2019-08-26 06:17:08',4,4);
 /*!40000 ALTER TABLE `hr_complaint` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -346,7 +407,7 @@ CREATE TABLE `hr_dictionary_item` (
 
 LOCK TABLES `hr_dictionary_item` WRITE;
 /*!40000 ALTER TABLE `hr_dictionary_item` DISABLE KEYS */;
-INSERT INTO `hr_dictionary_item` VALUES (1,1,'维修工','1',NULL,1),(2,1,'普工','2',NULL,1),(3,1,'工程师','3',NULL,1),(4,2,'大专','1',NULL,1),(5,2,'本科','2',NULL,1),(6,2,'硕士','3',NULL,1),(7,3,'土木工程','1',NULL,1),(8,3,'软件工程','2',NULL,1),(9,3,'通信工程','3',NULL,1),(10,4,'职业推介人','1',NULL,1),(11,4,'亲朋','2',NULL,1),(12,4,'同学','3',NULL,1),(13,4,'师生','4',NULL,1),(14,5,'16-22','1',NULL,1),(15,5,'23-30','2',NULL,1),(16,5,'31-40','3',NULL,1),(17,5,'40','4',NULL,1),(18,9,'16-22','1',NULL,1),(19,9,'23-30','2',NULL,1),(20,9,'31-40','3',NULL,1),(21,9,'40','4',NULL,1),(22,12,'1','1',NULL,1),(23,12,'3-5','2',NULL,1),(24,12,'5-10','3',NULL,1),(25,12,'10','4',NULL,1),(26,12,'1-3年','5',NULL,1),(27,13,'正式工','1',NULL,1),(28,13,'小时工','2',NULL,1),(29,13,'派遣工','3',NULL,1),(30,13,'实习工','4',NULL,1),(31,14,'便装','1',NULL,1),(32,14,'常规厂服','2',NULL,1),(33,14,'分离式无尘服','3',NULL,1),(34,14,'连体式无尘服','4',NULL,1),(35,15,'阅读','1',NULL,1),(36,15,'跳舞','2',NULL,1),(37,15,'音乐','3',NULL,1),(38,15,'运动','4',NULL,1),(39,15,'烹饪','5',NULL,1),(40,16,'坐','1',NULL,1),(41,16,'站立','2',NULL,1),(42,16,'走动','3',NULL,1),(43,17,'白班','1',NULL,1),(44,17,'夜班','2',NULL,1),(45,17,'三班','3',NULL,1),(46,17,'两班','4',NULL,1),(47,18,'0-40','1',NULL,1),(48,18,'40-100','2',NULL,1),(49,18,'100以上','3',NULL,1),(50,19,'星湖街到','1',NULL,1),(51,19,'创业路','2',NULL,1),(52,19,'陕西南路','3',NULL,1),(53,20,'创业大厦','1',NULL,1),(54,20,'喵喵大厦','2',NULL,1),(55,20,'文水苑','3',NULL,1),(56,20,'锦绣苑','4',NULL,1),(57,10,'有吃住','1',NULL,1),(58,10,'班车接送','2',NULL,1),(59,10,'五险一金','3',NULL,1),(60,10,'交通便利','4',NULL,1),(61,10,'位于商圈','5',NULL,1),(62,10,'不加班','6',NULL,1),(63,10,'团建','7',NULL,1),(64,13,'寒暑假工','5',NULL,1),(66,23,'时','1',NULL,1),(67,23,'月','2',NULL,1),(68,23,'日','3',NULL,1),(69,24,'虚假消息','1',NULL,1),(70,24,'返费问题','2',NULL,1),(71,24,'客服态度恶劣','3',NULL,1),(72,24,'其他问题','4',NULL,1),(73,25,'待解决','1',NULL,1),(74,25,'已撤销','2',NULL,1),(75,25,'已生效','3',NULL,1),(76,12,'不限','6',NULL,1);
+INSERT INTO `hr_dictionary_item` VALUES (1,1,'维修工','1',NULL,1),(2,1,'普工','2',NULL,1),(3,1,'工程师','3',NULL,1),(4,2,'大专','1',NULL,1),(5,2,'本科','2',NULL,1),(6,2,'硕士','3',NULL,1),(7,3,'土木工程','1',NULL,1),(8,3,'软件工程','2',NULL,1),(9,3,'通信工程','3',NULL,1),(10,4,'职业推介人','1',NULL,1),(11,4,'亲朋','2',NULL,1),(12,4,'同学','3',NULL,1),(13,4,'师生','4',NULL,1),(14,5,'16-22','1',NULL,1),(15,5,'23-30','2',NULL,1),(16,5,'31-40','3',NULL,1),(17,5,'40','4',NULL,1),(18,9,'16-22','1',NULL,1),(19,9,'23-30','2',NULL,1),(20,9,'31-40','3',NULL,1),(21,9,'40','4',NULL,1),(22,12,'1','1',NULL,1),(23,12,'3-5','2',NULL,1),(24,12,'5-10','3',NULL,1),(25,12,'10','4',NULL,1),(26,12,'1-3','5',NULL,1),(27,13,'正式工','1',NULL,1),(28,13,'小时工','2',NULL,1),(29,13,'派遣工','3',NULL,1),(30,13,'实习工','4',NULL,1),(31,14,'便装','1',NULL,1),(32,14,'常规厂服','2',NULL,1),(33,14,'分离式无尘服','3',NULL,1),(34,14,'连体式无尘服','4',NULL,1),(35,15,'阅读','1',NULL,1),(36,15,'跳舞','2',NULL,1),(37,15,'音乐','3',NULL,1),(38,15,'运动','4',NULL,1),(39,15,'烹饪','5',NULL,1),(40,16,'坐','1',NULL,1),(41,16,'站立','2',NULL,1),(42,16,'走动','3',NULL,1),(43,17,'白班','1',NULL,1),(44,17,'夜班','2',NULL,1),(45,17,'三班','3',NULL,1),(46,17,'两班','4',NULL,1),(47,18,'0-40','1',NULL,1),(48,18,'40-100','2',NULL,1),(49,18,'100以上','3',NULL,1),(50,19,'星湖街到','1',NULL,1),(51,19,'创业路','2',NULL,1),(52,19,'陕西南路','3',NULL,1),(53,20,'创业大厦','1',NULL,1),(54,20,'喵喵大厦','2',NULL,1),(55,20,'文水苑','3',NULL,1),(56,20,'锦绣苑','4',NULL,1),(57,10,'有吃住','1',NULL,1),(58,10,'班车接送','2',NULL,1),(59,10,'五险一金','3',NULL,1),(60,10,'交通便利','4',NULL,1),(61,10,'位于商圈','5',NULL,1),(62,10,'不加班','6',NULL,1),(63,10,'团建','7',NULL,1),(64,13,'寒暑假工','5',NULL,1),(66,23,'时','1',NULL,1),(67,23,'月','2',NULL,1),(68,23,'日','3',NULL,1),(69,24,'虚假消息','1',NULL,1),(70,24,'返费问题','2',NULL,1),(71,24,'客服态度恶劣','3',NULL,1),(72,24,'其他问题','4',NULL,1),(73,25,'待解决','1',NULL,1),(74,25,'已撤销','2',NULL,1),(75,25,'已处理,等待用户撤销','3',NULL,1),(76,12,'不限','6',NULL,1);
 /*!40000 ALTER TABLE `hr_dictionary_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -372,17 +433,17 @@ CREATE TABLE `hr_group` (
   `Status` int(11) DEFAULT '0' COMMENT '状态 1待审核 2审核通过 3审核未通过',
   `foulNum` int(11) DEFAULT '0' COMMENT '违规次数',
   `CreateTime` datetime DEFAULT NULL COMMENT '创建时间',
-  `DeleteFlag` int(11) DEFAULT '0' COMMENT '0:未删除  1:已删除',
+  `updateTime` datetime DEFAULT NULL COMMENT '审核通过时间',
   `Pid` int(11) DEFAULT NULL COMMENT '父Id',
   `person_num` varchar(255) DEFAULT NULL COMMENT '公司人数',
   `co_policy` varchar(255) DEFAULT NULL COMMENT '公司制度',
   `enterprise_license` varchar(255) DEFAULT NULL COMMENT '企业许可证',
   `registrant_certificate` varchar(255) DEFAULT NULL COMMENT '注册人委托证明',
   `type` int(11) DEFAULT NULL COMMENT '企业类型 0 代招单位 1招聘单位',
-  `groupStatus` int(11) DEFAULT NULL COMMENT '0已启用 1已禁用 2退款中',
+  `groupStatus` int(11) DEFAULT '0' COMMENT '0已启用 1已禁用',
   PRIMARY KEY (`Id`),
   KEY `Pid` (`Pid`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -391,7 +452,7 @@ CREATE TABLE `hr_group` (
 
 LOCK TABLES `hr_group` WRITE;
 /*!40000 ALTER TABLE `hr_group` DISABLE KEYS */;
-INSERT INTO `hr_group` VALUES (1,8,'苏州永拓人力资源有限公司','公司简介','法人','123','问津路','苏州市吴中区星湖街328号','营业执照a','123',NULL,0,1,'2019-01-10 15:46:03',0,NULL,'100-500','股份制',NULL,NULL,0,0),(2,8,'佳能苏州电子厂',NULL,NULL,NULL,NULL,'苏州市吴中区星湖街328号','营业执照b',NULL,NULL,1,0,'2019-01-10 15:46:06',0,1,'20-99','股份制',NULL,NULL,NULL,0),(3,7,'华硕苏州电子厂','公司简介','法人','3333','天堂','苏州市吴中区星湖街328号','营业执照c',NULL,'信息不全',2,2,'2019-01-10 15:46:07',0,NULL,'20-99','股份制',NULL,NULL,1,0),(4,8,'兴华科技','企业简介','法人','123','问津路','龙泉路','营业执照d','','information no all',3,1,'2019-01-10 15:46:22',0,1,'100-500','股份制',NULL,NULL,NULL,0),(5,8,'喵喵厂','公司简介','喵星人','123','漕宝路','龙泉大道','营业执照e',NULL,'有问题的信息',2,0,'2019-06-26 04:00:37',0,1,'200-300','股份制',NULL,NULL,NULL,0),(6,9,'喵喵公司','这个公司很厉害的','ddd','ttt','路','aa街道','urlddd',NULL,NULL,0,0,'2019-08-03 02:06:02',0,1,'100-300','股份制',NULL,NULL,NULL,0),(7,4,'任天堂','这个公司','ddx','ttc','路在何方','水电费第三方','xzgdg',NULL,'咯咯咯',2,0,'2019-08-04 02:19:02',0,NULL,'200-600','股份制',NULL,NULL,1,0),(8,6,'人天公司','这个公司不不不','fvd','dvnb','路在何方sdafsd','水电费第三方khk','gfhhg',NULL,NULL,1,0,'2019-08-04 02:20:16',0,NULL,'100-420','股份制',NULL,NULL,1,0),(9,10,'企业','公司简介','法人','123','淘宝路','苏州市相城区','地方大豆腐','水电费','sdgf',3,1,'2019-08-04 02:21:27',0,NULL,NULL,'私有制',NULL,NULL,1,0),(10,16,'公司','公司简介','法人','123afd','啦啦噜','苏州市虎丘区','ffadsgg','qwetr','dddddd',1,0,'2019-08-04 02:21:38',0,NULL,'200-800','公有制',NULL,NULL,1,0),(11,NULL,'zxc','jhj',NULL,NULL,NULL,'khjk','wewew',NULL,NULL,0,0,NULL,0,1,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `hr_group` VALUES (1,8,'苏州永拓人力资源有限公司','公司简介','法人','123','问津路','苏州市吴中区星湖街328号','营业执照a','123','有问题',2,1,'2019-01-10 15:46:03',NULL,NULL,'100-500','股份制',NULL,NULL,0,0),(2,8,'佳能苏州电子厂','公司简介','法人',NULL,NULL,'苏州市吴中区星湖街328号','营业执照b',NULL,NULL,2,0,'2019-01-10 15:46:06',NULL,1,'20-99','股份制',NULL,NULL,1,0),(3,7,'华硕苏州电子厂','公司简介','法人','3333','天堂','苏州市吴中区星湖街328号','营业执照c',NULL,'',2,2,'2019-01-10 15:46:07',NULL,NULL,'20-99','股份制',NULL,NULL,1,0),(4,8,'兴华科技','企业简介','法人','123','问津路','龙泉路','营业执照d','','information no all',2,1,'2019-01-10 15:46:22',NULL,1,'100-500','股份制',NULL,NULL,NULL,0),(5,8,'喵喵厂','公司简介','喵星人','123','漕宝路','龙泉大道','营业执照e',NULL,'有问题的信息',2,1,'2019-06-26 04:00:37',NULL,1,'200-300','股份制',NULL,NULL,NULL,0),(6,9,'喵喵公司','这个公司很厉害的','ddd','ttt','路','aa街道','urlddd',NULL,'uiyruio',2,0,'2019-08-03 02:06:02',NULL,1,'100-300','股份制',NULL,NULL,NULL,0),(7,6,'任天堂','这个公司','ddx','ttc','路在何方','水电费第三方','xzgdg',NULL,'',1,0,'2019-08-04 02:19:02',NULL,13,'200-600','股份制',NULL,NULL,NULL,0),(8,10,'人天公司','这个公司不不不','fvd','dvnb','路在何方sdafsd','水电费第三方khk','gfhhg',NULL,NULL,2,0,'2019-08-04 02:20:16',NULL,NULL,'100-420','股份制',NULL,NULL,NULL,0),(9,11,'企业','公司简介','法人','123','淘宝路','苏州市相城区','地方大豆腐','水电费','',2,1,'2019-08-04 02:21:27',NULL,NULL,NULL,'私有制',NULL,NULL,NULL,0),(10,12,'公司','公司简介','法人','123afd','啦啦噜','苏州市虎丘区','ffadsgg','qwetr','',1,0,'2019-08-04 02:21:38',NULL,NULL,'200-800','公有制',NULL,NULL,NULL,0),(11,13,'招财公司','jhj','法人','ertert',NULL,'khjk','wewew',NULL,NULL,0,0,'2019-08-23 01:54:13',NULL,1,NULL,'股份制',NULL,NULL,NULL,0),(12,4,'神奇公司','hjkh','法人','gf',NULL,'jlhk','sdsdsd',NULL,'333',3,0,'2019-08-23 01:54:12',NULL,1,NULL,'股份制',NULL,NULL,NULL,0),(13,9,'苏州任云人力资源有限公司','公司简介','法人','dgfd','regergerg','苏州任天疼','cvbju','gdfgdfg','tbdfh',0,0,'2019-08-23 01:54:11',NULL,NULL,'10-250','公有制',NULL,NULL,0,0),(14,9,'喵喵天公司','公司简介','喵星人','123','漕宝路','龙泉大道','营业执照e',NULL,'有问题的信息',0,0,'2019-08-23 02:01:32',NULL,13,'100-200','股份制',NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `hr_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -419,7 +480,7 @@ CREATE TABLE `hr_menu` (
 
 LOCK TABLES `hr_menu` WRITE;
 /*!40000 ALTER TABLE `hr_menu` DISABLE KEYS */;
-INSERT INTO `hr_menu` VALUES ('1',0,'用户管理',1,'',1),('101',1,'推荐人列表',2,'user/getAllUser.do',1),('102',1,'本人列表',2,'user/getAllSelf.do',1),('103',1,'代招单位',2,'user/getAllProxy.do',1),('104',1,'招聘者列表',2,'user/getAllRecruiter.do',1),('2',0,'简章管理',1,NULL,1),('201',2,'简章列表',2,'briefChapter/getAllBriefChapter.do',1),('3',0,'企业管理',1,NULL,1),('301',3,'企业列表',2,'group/getGroupList.do',1),('4',0,'财务管理',1,NULL,1),('402',4,'充值列表',2,'recharge/getAllRechargeList.do',1),('403',4,'提现列表',2,'withdraw/getAllWithdrawRecord.do',1),('5',0,'投诉管理',1,NULL,1),('501',5,'投诉列表',2,'complaint/getAllComplaintRecord.do',1),('6',0,'配置管理',1,NULL,1),('601',6,'岗位配置',2,'post/getAllPost.do',1),('602',6,'投诉类型配置',2,'complaintType/getAllComplaintType.do',1),('603',6,'推荐人身份配置',2,'identity/getAllIdentity.do',1),('604',6,'招聘者身份配置',2,'identity/getAllIdentity1.do',1),('7',0,'账号管理',1,NULL,1),('701',7,'管理员列表',2,'user/getAllAdmin.do',1),('702',7,'角色列表',2,'role/getAllRole.do',1);
+INSERT INTO `hr_menu` VALUES ('1',0,'用户管理',1,'',1),('101',1,'推荐人列表',2,'user/getAllUser.do',1),('102',1,'本人列表',2,'user/getAllSelf.do',1),('103',1,'代招单位',2,'user/getAllProxy.do',1),('104',1,'直招单位',2,'user/getAllRecruiter.do',1),('2',0,'简章管理',1,NULL,1),('201',2,'简章列表',2,'briefChapter/getAllBriefChapter.do',1),('3',0,'企业管理',1,NULL,1),('301',3,'企业列表',2,'group/getGroupList.do',1),('4',0,'财务管理',1,NULL,1),('402',4,'充值列表',2,'recharge/getAllRechargeList.do',1),('403',4,'提现列表',2,'withdraw/getAllWithdrawRecord.do',1),('5',0,'投诉管理',1,NULL,1),('501',5,'投诉列表',2,'complaint/getAllComplaintRecord.do',1),('6',0,'配置管理',1,NULL,1),('601',6,'岗位配置',2,'post/getAllPost.do',1),('602',6,'投诉类型配置',2,'complaintType/getAllComplaintType.do',1),('603',6,'推荐人身份配置',2,'identity/getAllIdentity.do',1),('604',6,'招聘者身份配置',2,'identity/getAllIdentity1.do',1),('7',0,'账号管理',1,NULL,1),('701',7,'管理员列表',2,'user/getAllAdmin.do',1),('702',7,'角色列表',2,'role/getAllRole.do',1);
 /*!40000 ALTER TABLE `hr_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -437,12 +498,13 @@ CREATE TABLE `hr_rebaterecord` (
   `RebateMale` decimal(10,0) DEFAULT NULL COMMENT '返佣金额男',
   `RebateFemale` decimal(10,0) DEFAULT NULL COMMENT '返佣金额女',
   `RebateTime` date DEFAULT NULL COMMENT '返佣时间',
-  `status` int(11) DEFAULT '0' COMMENT '0待返佣 1已返佣 2不返佣 3已确认 41 给付已结束 42 给付失败 43 给付中',
+  `status` int(11) DEFAULT '0' COMMENT '0待返佣 1已返佣 2不返佣 3已确认 4返佣中 5返佣失败',
   `DeleteFlag` int(11) DEFAULT '0' COMMENT '0:未删除  1:已删除',
   `CreateTime` timestamp NULL DEFAULT NULL COMMENT '创建时间',
-  `rebate_variable` decimal(10,0) NOT NULL DEFAULT '0' COMMENT '女返佣金额变量',
+  `rebate_variable` decimal(10,0) DEFAULT '0' COMMENT '女返佣金额变量',
+  `sign_up_id` int(11) DEFAULT NULL COMMENT '报名表id',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -451,39 +513,8 @@ CREATE TABLE `hr_rebaterecord` (
 
 LOCK TABLES `hr_rebaterecord` WRITE;
 /*!40000 ALTER TABLE `hr_rebaterecord` DISABLE KEYS */;
-INSERT INTO `hr_rebaterecord` VALUES (1,6,0,200,100,'2019-07-04',0,0,'2019-01-19 05:45:57',0),(2,1,0,679,6768,'2019-07-22',2,0,'2019-01-19 05:47:13',7900),(3,2,1,33,54,'2018-07-13',42,0,'2019-07-23 04:47:13',0),(4,2,2,200,150,'2018-07-27',2,0,'2019-08-19 05:47:13',0),(5,3,0,200,100,'2018-05-09',1,0,'2019-02-19 06:04:39',155),(6,3,1,200,200,'2019-07-07',2,0,'2019-07-24 06:04:39',0),(7,3,2,200,150,'2019-07-01',0,0,'2019-08-26 06:04:39',0),(8,4,0,200,100,'2019-07-21',2,0,'2019-01-23 06:05:31',0),(9,4,2,200,200,'2019-07-28',0,0,'2019-08-25 06:05:31',0),(10,4,1,200,150,'2019-07-24',41,0,'2019-07-20 06:05:32',0),(11,5,2,200,400,'2018-10-11',1,0,'2019-08-25 08:33:53',0),(12,5,1,200,150,'2019-06-06',42,0,'2019-07-24 08:33:54',0),(13,6,1,200,300,'2019-07-22',1,0,'2019-07-26 01:40:04',0),(14,6,2,200,300,'2019-07-15',43,0,'2019-07-25 03:22:32',0);
+INSERT INTO `hr_rebaterecord` VALUES (1,6,0,200,NULL,'2019-07-04',0,0,'2019-01-19 05:45:57',0,6),(2,1,0,1,NULL,'2019-02-04',2,0,'2019-01-19 05:47:13',17200,2),(3,2,1,NULL,788,'2018-07-13',0,0,'2019-07-23 04:47:13',3029,1),(4,2,2,233,NULL,'2018-07-27',2,0,'2019-08-19 05:47:13',3029,4),(5,3,0,NULL,200,'2019-08-21',1,0,'2019-02-19 06:04:39',155,5),(6,3,1,400,NULL,'2019-08-21',2,0,'2019-07-24 06:04:39',0,3),(7,3,2,NULL,300,'2019-08-21',1,0,'2019-08-26 06:04:39',0,6),(8,4,0,200,NULL,'2019-07-21',2,0,'2019-01-23 06:05:31',0,8),(9,4,2,NULL,200,'2019-07-28',0,0,'2019-08-25 06:05:31',0,15),(10,4,1,200,NULL,'2019-07-24',1,0,'2019-07-20 06:05:32',0,16),(11,5,2,NULL,400,'2018-10-11',1,0,'2019-08-25 08:33:53',0,3),(12,5,1,NULL,150,'2019-08-21',1,0,'2019-07-24 08:33:54',0,16),(13,6,1,200,NULL,'2019-07-22',1,0,'2019-07-26 01:40:04',0,9),(14,6,2,200,NULL,'2019-07-15',1,0,'2019-07-25 03:22:32',0,8),(15,7,0,NULL,500,'2019-08-21',0,0,'2019-08-23 03:02:38',0,9),(16,7,1,NULL,400,'2019-08-21',0,0,'2019-08-23 03:02:39',0,10),(17,7,2,NULL,200,'2019-08-21',0,0,'2019-08-23 03:02:39',0,14),(18,2,1,NULL,343,'2019-08-26',0,0,'2019-08-26 02:19:56',0,2);
 /*!40000 ALTER TABLE `hr_rebaterecord` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `hr_recharge`
---
-
-DROP TABLE IF EXISTS `hr_recharge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hr_recharge` (
-  `Id` int(32) NOT NULL AUTO_INCREMENT COMMENT '充值记录表',
-  `UserId` int(32) DEFAULT NULL COMMENT '被充值者Id',
-  `RechargeTime` timestamp NULL DEFAULT NULL COMMENT '充值时间',
-  `RechargeType` varchar(32) DEFAULT NULL COMMENT '充值方式 0银行卡 1支付宝',
-  `RechargeAmount` decimal(10,0) DEFAULT NULL COMMENT '充值金额',
-  `OperatorId` int(32) DEFAULT NULL COMMENT '操作人',
-  `Status` int(11) DEFAULT NULL COMMENT '线下支付需审核--状态:0待审核 1审核通过 2审核未通过',
-  `DeleteFlag` tinyint(4) DEFAULT '0' COMMENT '0:未删除  1:已删除',
-  `CreateTime` timestamp NULL DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `hr_recharge`
---
-
-LOCK TABLES `hr_recharge` WRITE;
-/*!40000 ALTER TABLE `hr_recharge` DISABLE KEYS */;
-INSERT INTO `hr_recharge` VALUES (1,2,'2019-01-01 09:41:24','1',10000,3,NULL,0,'2018-10-29 09:43:43'),(2,2,'2019-02-19 09:54:29','0',10000,3,0,0,'2018-10-29 09:54:46');
-/*!40000 ALTER TABLE `hr_recharge` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -497,9 +528,8 @@ CREATE TABLE `hr_role` (
   `Id` int(32) NOT NULL AUTO_INCREMENT COMMENT '角色表',
   `Name` varchar(64) NOT NULL COMMENT '名称',
   `Description` varchar(200) DEFAULT NULL COMMENT '描述',
-  `Status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态（已启用1、已禁用0）',
-  `CreateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-  `DeleteFlag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未删除  1:已删除',
+  `Status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态（0已启用 1已禁用）',
+  `CreateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `Power` longtext COMMENT '权限',
   `user_id` int(11) NOT NULL COMMENT '用户id',
   PRIMARY KEY (`Id`)
@@ -512,7 +542,7 @@ CREATE TABLE `hr_role` (
 
 LOCK TABLES `hr_role` WRITE;
 /*!40000 ALTER TABLE `hr_role` DISABLE KEYS */;
-INSERT INTO `hr_role` VALUES (1,'超级管理员','拥有所有权限',1,'2019-02-25 07:20:50',0,'101R,102R,201R,301R,402R,403R,501R,601R,701R,702R,101U,102U,201U,301U,402U,403U,501U,601U,701U,702U,101C,102C,201C,301C,402C,403C,501C,601C,701C,702C,101D,102D,201D,301D,402D,403D,501D,601D,701D,702D',0),(2,'财务人员','负责财务审计',1,'2019-05-28 08:17:21',0,'601R,601C',0),(4,'简章审核人员','审核简章',1,'2019-02-26 08:45:48',0,NULL,0),(6,'user','登录权限',1,'2019-07-05 00:56:25',0,NULL,0);
+INSERT INTO `hr_role` VALUES (1,'超级管理员','拥有所有权限',0,'2019-08-21 06:40:06','101R,102R,201R,301R,402R,403R,501R,601R,701R,702R,101U,102U,201U,301U,402U,403U,501U,601U,701U,702U,101C,102C,201C,301C,402C,403C,501C,601C,701C,702C,101D,102D,201D,301D,402D,403D,501D,601D,701D,702D',0),(2,'财务人员','负责财务审计',0,'2019-08-21 06:40:07','601R,601C',0),(4,'简章审核人员','审核简章',0,'2019-08-21 06:40:07',NULL,0),(6,'user','登录权限',0,'2019-08-21 06:40:09',NULL,0);
 /*!40000 ALTER TABLE `hr_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -543,7 +573,7 @@ CREATE TABLE `hr_signup` (
   `create_time` datetime DEFAULT NULL COMMENT '报名时间',
   `delete_flag` int(11) NOT NULL DEFAULT '0' COMMENT '0 未删除 1 已删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -552,7 +582,7 @@ CREATE TABLE `hr_signup` (
 
 LOCK TABLES `hr_signup` WRITE;
 /*!40000 ALTER TABLE `hr_signup` DISABLE KEYS */;
-INSERT INTO `hr_signup` VALUES (1,2,'王小二',18,1,'320172199611155218','1','2017-10-22','汽修','1,2','2019-07-06',8000,5000,61,0,0,'2019-07-29 03:47:09',0),(2,2,'柳烟',18,1,'320761100187212432','2','2016-10-23','机械','1,2','2019-07-08',9000,6000,62,0,0,'2019-06-29 03:47:12',0),(3,3,'赵霞',16,0,'110882092839282146','3','2018-10-23','学前','1,2','2019-07-19',10000,8000,63,1,1,'2019-05-29 03:47:14',0),(4,4,'张柳烟',18,0,'320761199612212381','2','2019-07-02','信息学','1,2','2019-07-20',5000,4000,62,1,1,'2019-07-26 03:47:17',0),(5,5,'zs',16,0,'320611199712125634','1','2017-06-30','cs','1,2','2019-08-31',2000,1000,62,0,0,'2019-07-21 03:47:19',0),(6,5,'王小二',18,0,'320172199611155218','2','2019-07-11','cs','1,2','2019-07-11',5000,3000,63,0,0,'2019-07-14 03:47:21',0),(7,5,'王小二',24,1,'320172199611155218','3','2019-07-11','cs','1,2','2019-07-11',7000,6000,62,0,0,'2019-07-07 03:47:24',0),(8,10,'赵霞',25,0,'','1','2019-07-11','学前','1,2','2019-07-11',5000,4000,62,0,0,'2019-07-13 03:47:26',1),(9,3,'王五',25,0,'213820197302153263','2','2019-07-17','喵喵','1,2','2019-07-31',10000,8000,62,0,0,'2019-07-07 03:47:28',0),(10,2,'赵六',23,1,'123092199802123789','1','2019-07-18','旺旺','1,2','2019-07-31',12000,10000,62,0,0,'2019-07-01 03:47:32',0),(11,4,'刘博',26,1,'32091219971112273X','2','2019-07-24','学前','1,2','2019-07-25',13000,8000,62,0,0,'2019-07-02 03:47:35',0),(12,2,'hello',27,0,'456789145678902567','1','2019-07-24','mall','1,2','2019-07-24',11111,8000,62,0,0,'2019-07-03 03:47:37',0),(18,2,'sdsd',NULL,1,'32068119961115521X','3','2019-07-01','232','2','2019-08-06',1212,221,22,0,1,NULL,0);
+INSERT INTO `hr_signup` VALUES (1,2,'王小二',18,1,'320172199611155218','1','2017-10-22','汽修','1,2','2019-08-28',8000,5000,1,0,0,'2019-07-29 03:47:09',0),(2,2,'柳烟',18,1,'320761100187212432','2','2016-10-23','机械','1,2','2019-08-28',9000,6000,2,0,0,'2019-06-29 03:47:12',0),(3,3,'赵霞',16,0,'110882092839282146','3','2018-10-23','学前','1,2','2019-08-28',10000,8000,3,1,1,'2019-05-29 03:47:14',0),(4,4,'张柳烟',18,0,'320761199612212381','2','2017-07-02','信息学','1,2','2019-08-30',5000,4000,4,1,1,'2019-07-26 03:47:17',0),(5,2,'zs',16,0,'320611199712125634','1','2017-06-30','cs','1,2','2019-08-29',2000,1000,3,0,0,'2019-07-21 03:47:19',0),(6,6,'王小二',18,0,'320172199611155218','2','2019-07-11','csss','1,2','2019-08-19',5000,3000,2,0,0,'2019-07-14 03:47:21',0),(7,2,'王erxiao',24,1,'320172199611155218','3','2019-07-11','cs','1,2','2019-08-12',7000,6000,1,0,0,'2019-07-07 03:47:24',0),(8,10,'赵文',25,0,'','1','2019-07-11','学前','1,2','2019-08-22',5000,4000,4,0,0,'2019-07-13 03:47:26',0),(9,3,'王五',25,0,'213820197302153263','2','2019-07-17','喵喵','1,2','2019-08-22',10000,8000,3,0,0,'2019-07-07 03:47:28',0),(10,2,'赵六',23,1,'123092199802123789','1','2019-07-18','旺旺','1,2','2019-08-21',12000,10000,2,0,0,'2019-07-01 03:47:32',0),(11,2,'刘博',26,1,'32091219971112273X','2','2019-07-24','学前','1,2','2019-08-21',13000,8000,4,0,0,'2019-07-02 03:47:35',0),(12,3,'hello',27,0,'456789145678902567','1','2019-07-24','mall','1,2','2019-08-17',11111,8000,1,0,0,'2019-07-03 03:47:37',0),(18,2,'sdsd',37,1,'321254025698745123','3','2019-07-01','232','2','2019-08-06',1212,221,4,0,1,'2019-08-14 10:57:30',0),(19,16,'aaaaa',32,1,'320124578451201256','3','2019-08-14','gdfjsk','1,2,3','2019-08-14',10000,1000,2,0,1,'2019-08-14 10:57:29',0);
 /*!40000 ALTER TABLE `hr_signup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -567,13 +597,18 @@ CREATE TABLE `hr_signup_deliveryrecord` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '报名表投递记录表',
   `signup_id` int(11) DEFAULT NULL COMMENT '报名表Id',
   `brief_chapter_id` int(11) DEFAULT NULL COMMENT '简章Id',
-  `job_status` int(11) DEFAULT NULL COMMENT '求职状态 0已报名 1待面试 2待报到 3待返佣 4不合适 5邀请报名 6已完成 7邀请面试 8 未面试 9 未报到 10已面试 11 已报道',
-  `no_pass_reason` int(11) DEFAULT NULL COMMENT '未通过原因 0不合适 1未面试 2未报道 3面试未通过 4返佣中断',
+  `job_status` int(11) DEFAULT NULL COMMENT '求职状态 0已报名 1报名未通过 2待面试 3未面试 4面试未通过 5待报道 6未报道 7待返佣',
+  `status` int(11) DEFAULT NULL COMMENT '0已报名 1待面试 2待报到 3待返佣(返佣中) 4不合适\n 5邀请报名  8 报名未通过 10已面试 12 已完成(三笔返佣都完成了) 13不返佣 14返佣 ',
+  `no_pass_reason` int(11) DEFAULT NULL COMMENT '未通过原因 0 不合适 1未面试 2未报道 3面试未通过 4返佣中断',
   `no_report_reason` int(11) DEFAULT NULL COMMENT '未报道原因 0 社保原因(无责) 1 其他原因(无责) 2 其他原因(有责)',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `delete_flag` int(11) NOT NULL DEFAULT '0' COMMENT '0 未删除 1 已删除',
+  `rebate_interview_time` date DEFAULT NULL COMMENT '面试返佣时间',
+  `rebate_report_time` date DEFAULT NULL COMMENT '报道返佣时间',
+  `rebate_entry_time` date DEFAULT NULL COMMENT '入职返佣时间',
+  `rebate_type` int(11) DEFAULT NULL COMMENT '返佣状态 0 面试返佣 1 报道返佣 2 入职返佣',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -582,7 +617,7 @@ CREATE TABLE `hr_signup_deliveryrecord` (
 
 LOCK TABLES `hr_signup_deliveryrecord` WRITE;
 /*!40000 ALTER TABLE `hr_signup_deliveryrecord` DISABLE KEYS */;
-INSERT INTO `hr_signup_deliveryrecord` VALUES (1,1,1,0,1,1,'2019-07-29 05:57:17',0),(2,2,1,1,2,2,'2019-07-28 05:57:19',0),(3,3,2,2,2,1,'2019-07-29 03:58:16',0),(4,3,3,3,1,1,'2019-07-17 05:58:46',0),(5,3,4,4,2,2,'2019-07-26 05:59:16',0),(6,4,4,0,1,2,'2019-07-15 05:59:47',0),(7,5,5,4,1,1,'2019-07-12 06:00:17',0),(8,5,5,5,1,2,'2019-07-29 07:37:39',0),(9,6,4,0,2,1,'2019-07-27 08:16:03',0),(10,7,5,2,1,2,'2019-07-26 08:16:56',0),(11,8,7,1,1,2,'2019-07-12 08:17:15',0),(12,9,4,0,2,2,'2019-06-30 08:18:07',0),(13,10,5,4,1,1,'2019-07-15 08:18:33',0),(14,11,5,1,1,2,'2019-05-25 08:18:48',0),(15,12,5,2,2,1,'2019-06-20 08:19:09',0),(16,18,5,1,2,1,'2019-07-11 08:19:25',0),(19,10,3,NULL,NULL,NULL,'2019-08-07 17:56:26',0),(20,1,2,3,NULL,NULL,'2019-08-07 18:03:59',0),(21,6,8,10,NULL,NULL,NULL,0),(23,10,3,NULL,NULL,NULL,'2019-08-08 09:11:47',0),(24,1,4,0,NULL,NULL,'2019-08-09 16:55:00',0),(25,1,4,0,NULL,NULL,'2019-08-09 16:56:48',0),(26,1,66,0,NULL,NULL,'2019-08-09 17:04:57',0),(27,100,56,0,NULL,NULL,'2019-08-09 17:25:17',0),(29,100,56,0,NULL,NULL,'2019-08-09 17:43:26',0),(30,100,5,0,NULL,NULL,'2019-08-09 17:45:16',0),(31,100,5,0,NULL,NULL,'2019-08-09 17:46:46',0),(32,20,5,0,NULL,NULL,'2019-08-09 17:48:04',0),(33,20,5,0,NULL,NULL,'2019-08-09 17:49:24',0),(34,20,5,0,NULL,NULL,'2019-08-09 17:51:25',0),(35,NULL,NULL,0,NULL,NULL,'2019-08-09 18:06:16',0),(36,1,5,0,NULL,NULL,'2019-08-09 18:14:37',0),(37,1,6,0,NULL,NULL,'2019-08-09 18:14:37',0),(43,11,6,0,NULL,NULL,'2019-08-09 19:23:36',0);
+INSERT INTO `hr_signup_deliveryrecord` VALUES (1,1,1,0,0,1,1,'2019-07-29 05:57:17',0,'2019-08-18','2019-08-26','2019-08-26',0),(2,2,1,10,10,2,2,'2019-07-28 05:57:19',0,'2019-08-05','2019-08-26','2019-08-26',1),(3,3,3,2,2,2,1,'2019-07-29 03:58:16',0,'2019-08-21','2019-08-26','2019-08-26',2),(4,3,3,12,14,1,1,'2019-07-17 05:58:46',0,'2019-08-26','2019-08-26','2019-08-26',1),(5,3,3,8,8,2,2,'2019-07-26 05:59:16',0,'2019-08-26','2019-08-26','2019-08-26',0),(6,4,5,10,10,1,2,'2019-07-15 05:59:47',0,'2019-08-26','2019-08-26','2019-08-26',1),(7,5,5,2,1,1,2,'2019-07-12 06:00:17',0,'2019-08-26','2019-08-26','2019-08-26',0),(8,5,6,12,12,1,2,'2019-07-29 07:37:39',0,'2019-08-26','2019-08-26','2019-08-26',1),(9,6,4,2,2,2,1,'2019-07-27 08:16:03',0,'2019-08-26','2019-08-26','2019-08-26',0),(10,7,5,12,12,1,2,'2019-07-26 08:16:56',0,'2019-08-26','2019-08-26','2019-08-26',1),(11,8,7,12,12,1,2,'2019-07-12 08:17:15',0,'2019-08-26','2019-08-26','2019-08-26',2),(12,9,3,0,0,2,2,'2019-06-30 08:18:07',0,'2019-08-26','2019-08-26','2019-08-26',0),(13,10,5,4,4,1,1,'2019-07-15 08:18:33',0,'2019-08-26','2019-08-26','2019-08-26',2),(14,11,5,1,1,1,2,'2019-05-25 08:18:48',0,'2019-08-26','2019-08-26','2019-08-26',1),(15,12,5,12,12,2,1,'2019-06-20 08:19:09',0,'2019-08-26','2019-08-26','2019-08-26',0),(16,18,5,1,1,2,1,'2019-07-11 08:19:25',0,'2019-08-26','2019-08-26','2019-08-26',1),(19,10,3,11,11,NULL,NULL,'2019-08-07 17:56:26',0,'2019-08-26','2019-08-26','2019-08-26',2),(20,1,2,3,3,NULL,NULL,'2019-08-07 18:03:59',0,'2019-08-26','2019-08-26','2019-08-26',2),(23,10,3,0,0,NULL,NULL,'2019-08-16 08:42:35',0,'2019-08-26','2019-08-26','2019-08-26',1),(24,3,3,5,5,NULL,NULL,'2019-08-16 08:42:46',0,'2019-08-26','2019-08-26','2019-08-26',1),(25,1,5,12,12,NULL,NULL,'2019-08-16 08:42:54',0,'2019-08-26','2019-08-26','2019-08-26',1),(26,6,3,12,12,NULL,NULL,'2019-08-16 08:42:58',0,'2019-08-26','2019-08-26','2019-08-26',1),(27,5,1,8,8,NULL,NULL,'2019-08-16 17:25:17',0,'2019-08-26','2019-08-26','2019-08-26',1),(29,19,4,12,12,NULL,NULL,'2019-08-09 17:43:26',0,'2019-08-26','2019-08-26','2019-08-26',2),(30,6,6,8,8,NULL,NULL,'2019-08-01 17:45:16',0,'2019-08-26','2019-08-26','2019-08-26',0),(31,1,7,3,3,NULL,NULL,'2019-08-09 17:46:46',0,'2019-08-26','2019-08-26','2019-08-26',1),(32,12,5,9,9,NULL,NULL,'2019-08-09 17:48:04',0,NULL,NULL,NULL,NULL),(33,11,5,11,11,NULL,NULL,'2019-08-09 17:49:24',0,'2019-08-26','2019-08-26','2019-08-26',1),(34,1,5,3,0,NULL,NULL,'2019-08-09 17:51:25',0,'2019-08-26','2019-08-26','2019-08-26',1),(35,11,2,8,8,NULL,NULL,'2019-08-09 18:06:16',0,'2019-08-26','2019-08-26','2019-08-26',1),(36,1,5,0,0,NULL,NULL,'2019-08-09 18:14:37',0,'2019-08-26','2019-08-26','2019-08-26',0),(37,8,6,7,7,NULL,NULL,'2019-08-09 18:14:37',0,'2019-08-26','2019-08-26','2019-08-26',1),(43,11,6,12,12,NULL,NULL,'2019-08-09 19:23:36',0,'2019-08-26','2019-08-26','2019-08-26',1),(44,1,6,12,12,NULL,NULL,'2019-08-12 11:40:45',0,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `hr_signup_deliveryrecord` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -616,13 +651,14 @@ CREATE TABLE `hr_user` (
   `RecommenderId` int(32) DEFAULT NULL COMMENT '推荐人ID',
   `LoginIp` varchar(32) DEFAULT NULL COMMENT '登陆Ip',
   `LoginTime` datetime DEFAULT NULL COMMENT '登陆时间',
-  `DeleteFlag` int(11) DEFAULT '0' COMMENT '0:未删除  1:已删除',
   `type` int(1) DEFAULT NULL COMMENT '0管理员 1本人 2推介者 5招聘单位 6代招单位',
   `isPublic` int(11) DEFAULT NULL COMMENT '是否公开 0公开 1不公开',
   `agreeHelp` int(11) DEFAULT NULL COMMENT '是否同意平台帮助 0是 1否',
   `status` int(11) DEFAULT '0' COMMENT '0已启用 1已禁用',
+  `violation_flag` int(11) DEFAULT '0' COMMENT '违规状态 0 未违规 1 违规 (违规了就停权)',
+  `violation_time` timestamp NULL DEFAULT NULL COMMENT '违规时间',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -631,7 +667,7 @@ CREATE TABLE `hr_user` (
 
 LOCK TABLES `hr_user` WRITE;
 /*!40000 ALTER TABLE `hr_user` DISABLE KEYS */;
-INSERT INTO `hr_user` VALUES (1,'超级管理员X',NULL,1,'e10adc3949ba59abbe56e057f20f883e','erer','3,4','17326122358',NULL,NULL,NULL,NULL,NULL,1,2,NULL,5,10,'推荐说明',1,'192.168.1.45','2019-06-18 20:13:54',0,0,NULL,NULL,NULL),(2,'张三',0,0,'910899ea7106c8e68e9c00c156a47ee4','weqjm','1,3','13024438185','11088209283928213',NULL,NULL,NULL,NULL,10,20,'2018-10-19 14:59:04',20,34,'推荐说明',NULL,NULL,NULL,0,2,0,0,0),(3,'李四',1,0,'910899ea7106c8e68e9c00c156a47ee4','ere','2,4','12345623456','11088209283928212',NULL,NULL,NULL,NULL,5,8,'2018-10-22 09:39:43',11,14,'推荐说明',NULL,NULL,NULL,0,2,0,0,0),(4,'杨晨',0,0,'910899ea7106c8e68e9c00c156a47ee4','http://tongzhe-oss.oss-cn-hangzhou.aliyuncs.com/blog/1563096041838.png','1,2','15750852005','340827','1','1','2019-07-23','2019-07-31',20,50,'2019-07-24 09:58:30',10,20,'推荐说明',4,NULL,NULL,0,1,0,0,1),(6,'财务人员Y',NULL,2,'910899ea7106c8e68e9c00c156a47ee4','erer','1,3','15152899877','547633339867543589',NULL,NULL,NULL,NULL,2,4,'2019-07-24 09:58:31',15,20,'推荐说明',5,'192.168.1.45','2019-02-26 11:33:39',0,1,NULL,NULL,NULL),(7,'招聘者A',NULL,0,'910899ea7106c8e68e9c00c156a47ee4','erer','1,2','13000000000','320684111111111111',NULL,NULL,NULL,NULL,7,9,'2019-01-10 10:23:56',12,32,'推荐说明',6,NULL,NULL,0,5,NULL,NULL,NULL),(8,'代招者A',1,0,'910899ea7106c8e68e9c00c156a47ee4','fdsfd','1,2','13100000000','320684111111111112',NULL,NULL,NULL,NULL,10,15,'2019-01-10 10:23:59',12,45,NULL,7,NULL,NULL,0,6,NULL,NULL,0),(9,'代招者B',1,0,'910899ea7106c8e68e9c00c156a47ee4','gggg','1,4','13200000000','320684111111111113',NULL,NULL,NULL,NULL,2,3,'2019-01-12 11:19:58',11,34,'推荐说明',8,NULL,NULL,0,6,NULL,NULL,0),(10,'王五',1,0,'e10adc3949ba59abbe56e057f20f883e',NULL,'1,2','13300000000','320684111111111114',NULL,NULL,NULL,NULL,5,8,'2019-07-29 10:21:42',5,10,'推荐说明',3,NULL,NULL,0,1,0,0,0),(16,'aaaaa',0,NULL,'123456','ss',NULL,'18620925694','32068119961115521X',NULL,NULL,NULL,NULL,10,15,'2019-07-29 14:29:44',10,20,NULL,NULL,NULL,NULL,0,1,NULL,NULL,0);
+INSERT INTO `hr_user` VALUES (1,'超级管理员X',1,1,'e10adc3949ba59abbe56e057f20f883e','erer','3,4','17326122358',NULL,NULL,NULL,NULL,NULL,1,2,NULL,5,10,'推荐说明',1,'192.168.1.45','2019-06-18 20:13:54',0,NULL,NULL,NULL,0,NULL),(2,'张三',0,0,'910899ea7106c8e68e9c00c156a47ee4','weqjm','1,3','13024438185','11088209283928213',NULL,NULL,NULL,NULL,10,20,'2018-10-19 14:59:04',10,20,'推荐说明',NULL,NULL,NULL,2,0,0,0,0,NULL),(3,'李四',1,0,'910899ea7106c8e68e9c00c156a47ee4','ere','2,4','18620932451','11088209283928212',NULL,NULL,NULL,NULL,5,8,'2018-10-22 09:39:43',20,40,'推荐说明',NULL,NULL,NULL,2,0,0,0,1,'2019-03-02 04:10:20'),(4,'张柳烟',0,0,'910899ea7106c8e68e9c00c156a47ee4','http://tongzhe-oss.oss-cn-hangzhou.aliyuncs.com/blog/1563096041838.png','1,2','15750852005','340827','1','1','2019-07-23','2019-07-31',20,50,'2019-07-24 09:58:30',10,20,'推荐说明',4,NULL,NULL,1,0,0,1,1,'2019-08-17 22:53:46'),(6,'王小二',0,2,'910899ea7106c8e68e9c00c156a47ee4','erer','1,3','15152899877','547633339867543589',NULL,NULL,NULL,NULL,2,4,'2019-07-24 09:58:31',15,20,'推荐说明',5,'192.168.1.45','2019-02-26 11:33:39',1,NULL,NULL,0,NULL,NULL),(7,'招聘者A',1,0,'910899ea7106c8e68e9c00c156a47ee4','erer','1,2','18852545565','320684111111111111',NULL,NULL,NULL,NULL,7,9,'2019-01-10 10:23:56',12,32,'推荐说明',6,NULL,NULL,5,NULL,NULL,0,0,NULL),(8,'代招者A',1,0,'910899ea7106c8e68e9c00c156a47ee4','fdsfd','1,2','18852541125','320684111111111112',NULL,NULL,NULL,NULL,10,15,'2019-01-10 10:23:59',12,45,NULL,7,NULL,NULL,6,NULL,NULL,0,NULL,NULL),(9,'代招者B',1,0,'910899ea7106c8e68e9c00c156a47ee4','gggg','1,4','18620925694','320684111111111113',NULL,NULL,NULL,NULL,2,3,'2019-01-12 11:19:58',11,34,'推荐说明',8,NULL,NULL,6,NULL,NULL,0,NULL,NULL),(10,'赵文',1,0,'e10adc3949ba59abbe56e057f20f883e',NULL,'1,2','13801466262','320684111111111114',NULL,NULL,NULL,NULL,5,8,'2019-07-29 10:21:42',5,10,'推荐说明',3,NULL,NULL,1,0,0,0,0,NULL),(16,'aaaaa',0,1,'123456','ss','1,2','18620925421','32068119961115521X',NULL,NULL,NULL,NULL,10,15,'2019-07-29 14:29:44',10,20,NULL,NULL,NULL,NULL,1,NULL,NULL,0,0,NULL),(17,'王帅',0,0,'910899ea7106c8e68e9c00c156a47ee4','hjt','1,4','13862876415','0214569874','','',NULL,NULL,10,15,'2019-08-15 01:57:50',40,80,'hello推荐说明',4,NULL,'2019-08-15 01:58:30',2,0,0,0,0,NULL);
 /*!40000 ALTER TABLE `hr_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -678,7 +714,7 @@ CREATE TABLE `my_sign_up_table` (
   `status` int(11) DEFAULT NULL COMMENT '0 公开 1 不公开 2 平台帮助 3 自定义名称',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `delete_flag` int(11) DEFAULT '0' COMMENT '删除标识',
-  `user_id` int(11) DEFAULT NULL COMMENT '被推荐人id',
+  `user_id` int(11) DEFAULT NULL COMMENT '被推荐人id(这个分组是谁建立的)',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='我的求职表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -716,7 +752,7 @@ CREATE TABLE `my_sign_up_table_sign_up` (
 
 LOCK TABLES `my_sign_up_table_sign_up` WRITE;
 /*!40000 ALTER TABLE `my_sign_up_table_sign_up` DISABLE KEYS */;
-INSERT INTO `my_sign_up_table_sign_up` VALUES (1,10,3,0,'2019-08-08 01:16:03'),(3,12,10,0,'2019-07-08 01:16:06'),(4,12,4,0,'2019-08-08 01:38:45'),(5,15,6,0,'2019-08-08 01:42:56'),(6,15,5,0,'2019-08-08 01:43:07'),(7,11,6,0,'2019-08-08 01:44:23'),(8,12,6,0,'2019-08-08 03:50:26'),(9,12,8,0,'2019-08-08 03:50:33'),(10,12,10,0,'2019-08-08 03:50:42'),(11,12,12,0,'2019-08-08 03:50:48');
+INSERT INTO `my_sign_up_table_sign_up` VALUES (1,10,3,0,'2019-08-08 01:16:03'),(3,12,5,0,'2019-07-08 01:16:06'),(4,12,4,0,'2019-08-08 01:38:45'),(5,15,2,0,'2019-08-08 01:42:56'),(6,15,5,0,'2019-08-08 01:43:07'),(7,11,3,0,'2019-08-08 01:44:23'),(8,12,2,0,'2019-08-08 03:50:26'),(9,12,8,0,'2019-08-08 03:50:33'),(10,12,10,0,'2019-08-08 03:50:42'),(11,12,12,0,'2019-08-08 03:50:48');
 /*!40000 ALTER TABLE `my_sign_up_table_sign_up` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -798,6 +834,57 @@ INSERT INTO `sp_hat_province` VALUES (1,'110000','北京市'),(2,'120000','天�
 UNLOCK TABLES;
 
 --
+-- Table structure for table `test`
+--
+
+DROP TABLE IF EXISTS `test`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `test` (
+  `endtime` datetime DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `test`
+--
+
+LOCK TABLES `test` WRITE;
+/*!40000 ALTER TABLE `test` DISABLE KEYS */;
+INSERT INTO `test` VALUES ('2019-08-26 20:01:02',1);
+/*!40000 ALTER TABLE `test` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_login_quit`
+--
+
+DROP TABLE IF EXISTS `user_login_quit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_login_quit` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL COMMENT '用户id',
+  `type` int(11) DEFAULT '0' COMMENT '0 登录 1 退出',
+  `create_tiem` datetime DEFAULT NULL COMMENT '创建时间',
+  `delete_flag` int(11) DEFAULT '0' COMMENT '0 未删除 1 已删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='用户登录退出状态';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_login_quit`
+--
+
+LOCK TABLES `user_login_quit` WRITE;
+/*!40000 ALTER TABLE `user_login_quit` DISABLE KEYS */;
+INSERT INTO `user_login_quit` VALUES (1,2,0,'2019-08-14 17:49:50',0),(2,3,0,'2019-08-14 17:50:42',0),(3,4,0,'2019-08-14 17:50:42',0),(4,5,1,'2019-08-14 17:50:42',0),(5,6,0,'2019-08-14 17:50:42',0),(6,7,1,'2019-08-14 17:50:42',0),(7,8,0,'2019-08-14 17:50:42',0),(8,9,0,'2019-08-14 17:50:43',0),(9,17,1,'2019-08-15 02:00:11',0);
+/*!40000 ALTER TABLE `user_login_quit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `violation_record`
 --
 
@@ -806,12 +893,13 @@ DROP TABLE IF EXISTS `violation_record`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `violation_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '违规记录表主键id',
-  `content` varchar(255) DEFAULT NULL COMMENT '违规的内容',
+  `content` int(11) DEFAULT NULL COMMENT '违规的内容',
   `sign_up_id` int(11) NOT NULL COMMENT '报名id',
   `creat_time` date NOT NULL COMMENT '创建时间',
   `delete_flag` int(11) NOT NULL DEFAULT '0' COMMENT '0 未删除 1 已删除',
+  `type` int(11) DEFAULT NULL COMMENT '违规类型 0 社保原因(无责) 1 其他原因(无责) 3 其他原因(有责)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='违规记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='违规记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -820,7 +908,7 @@ CREATE TABLE `violation_record` (
 
 LOCK TABLES `violation_record` WRITE;
 /*!40000 ALTER TABLE `violation_record` DISABLE KEYS */;
-INSERT INTO `violation_record` VALUES (1,'有责未报到3次',1,'2019-07-24',0),(2,'有责未报道2次',9,'2019-08-07',0),(3,'有责未报道4次',4,'2019-07-24',0),(4,'有责未报道5次',12,'2019-07-13',0),(5,'有责未报道6次',6,'2019-07-22',0),(6,'有责未报道7次',8,'2019-07-30',0);
+INSERT INTO `violation_record` VALUES (1,0,1,'2019-07-24',0,0),(2,1,2,'2019-08-07',0,1),(3,2,5,'2019-07-24',0,2),(4,2,10,'2019-07-13',0,2),(5,2,6,'2019-07-22',0,2),(6,1,8,'2019-07-30',0,1),(7,2,5,'2019-08-23',0,3);
 /*!40000 ALTER TABLE `violation_record` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -833,4 +921,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-08-11 16:18:39
+-- Dump completed on 2019-08-26 20:01:09
