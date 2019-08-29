@@ -25,7 +25,7 @@ public interface MyReleaseService {
      * @Date 13:39 2019/7/22
      * @Param [userId, typeId, status]
      **/
-    Map<String, Object> myRelease(Integer userId, Integer typeId, Integer status);
+    Map<String, Object> myRelease(Integer userId, Integer status);
 
 
     /**
@@ -298,6 +298,16 @@ public interface MyReleaseService {
      * @Param [query]
      **/
     Integer editBriefchapterMyRelease(EditBriefchapterQuery query);
+
+    /**
+     * 编辑简章时查询入职返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:52 2019/8/28
+     * @Param [briefchapterId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.EntryResignation>
+     **/
+    List<EntryResignation> selectEntryRebate(Integer briefchapterId);
 
     /**
      * 招聘端 我的发布 不通过 编辑简章

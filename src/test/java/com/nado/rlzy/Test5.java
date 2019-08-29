@@ -1,16 +1,21 @@
 package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
-import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
-import com.nado.rlzy.db.mapper.HrComplaintMapper;
-import com.nado.rlzy.db.mapper.HrSignUpMapper;
+import com.nado.rlzy.bean.query.BriefcharpterQuery;
+import com.nado.rlzy.db.mapper.*;
+import com.nado.rlzy.db.pojo.EntryResignation;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
+import com.nado.rlzy.utils.CollectorsUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName
@@ -29,6 +34,12 @@ public class Test5 extends BaseTest {
 
     @Autowired
     private HrComplaintMapper complaintMapper;
+
+    @Autowired
+    private EntryResignationMapper resignationMapper;
+
+    @Autowired
+    private HrAcctMapper acctMapper;
 
     @Test
     public void test1() {
@@ -110,4 +121,108 @@ public class Test5 extends BaseTest {
         BigDecimal n = add.compareTo(add1) > -1 ? add : add1;
         System.out.println(n);
     }
+
+    @Test
+    public void test4() {
+        List<EntryResignation> entryResignations = resignationMapper.selectByAll(1);
+
+        Map<Integer, BigDecimal> collect = entryResignations.stream().
+                collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
+                        CollectorsUtil.summingBigDecimal(EntryResignation::getRebateMaleEntry)));
+        System.out.println(collect);
+    }
+
+    @Test
+    public void test5() {
+        BriefcharpterQuery query = new BriefcharpterQuery();
+        query.setBriefcharpterId(1);
+        final List<EntryResignation>[] collect = new List[]{null};
+        List<HrBriefchapter> list = mapper.queryBriefcharpterDetileByParams(query);
+        list.stream()
+                .map(dto -> {
+                    collect[0] = dto.getRebateEntryResignation().stream().collect(Collectors.toList());
+                    return dto;
+                }).collect(Collectors.toList());
+        System.out.println(collect[0]);
+    }
+
+    @Test
+    public void test6(){
+       new BigDecimal(0);
+    }
+
+    @Test
+    public void test7(){
+        List<EntryResignation> list = new ArrayList<>();
+        EntryResignation resignation = new EntryResignation();
+        resignation.setRebateMaleEntry(BigDecimal.valueOf(122));
+        resignation.setRebateFemaleEntry(BigDecimal.valueOf(252));
+        resignation.setRebateTime(new Date());
+        resignation.setType(2);
+        EntryResignation resignation2 = new EntryResignation();
+        resignation2.setRebateMaleEntry(BigDecimal.valueOf(456));
+        resignation2.setRebateFemaleEntry(BigDecimal.valueOf(215));
+        resignation2.setRebateTime(new Date());
+        resignation2.setType(2);
+        EntryResignation resignation3 = new EntryResignation();
+        resignation3.setRebateMaleEntry(BigDecimal.valueOf(412));
+        resignation3.setRebateFemaleEntry(BigDecimal.valueOf(789));
+        resignation3.setRebateTime(new Date());
+        EntryResignation resignation4 = new EntryResignation();
+        resignation4.setRebateMaleEntry(BigDecimal.valueOf(749));
+        resignation4.setRebateFemaleEntry(BigDecimal.valueOf(954));
+        resignation4.setRebateTime(new Date());
+        list.add(resignation);
+        list.add(resignation2);
+        list.add(resignation3);
+        list.add(resignation4);
+        resignationMapper.insertList(list);
+    }
+
+    @Test
+    public void test8(){
+        EntryResignation resignation = new EntryResignation();
+        resignation.setRebateMaleEntry(BigDecimal.valueOf(100));
+        resignation.setRebateFemaleEntry(BigDecimal.valueOf(500));
+        resignation.setType(2);
+        resignation.setBriefChapterId(4);
+        resignation.setRebateTime(new Date());
+
+        EntryResignation resignation1 = new EntryResignation();
+        resignation1.setRebateMaleEntry(BigDecimal.valueOf(210));
+        resignation1.setRebateFemaleEntry(BigDecimal.valueOf(320));
+        resignation1.setType(2);
+        resignation1.setBriefChapterId(4);
+        resignation1.setRebateTime(new Date());
+
+        EntryResignation resignation2 = new EntryResignation();
+        resignation2.setRebateMaleEntry(BigDecimal.valueOf(120));
+        resignation2.setRebateFemaleEntry(BigDecimal.valueOf(145));
+        resignation2.setType(2);
+        resignation2.setBriefChapterId(4);
+        resignation2.setRebateTime(new Date());
+
+        EntryResignation resignation4 = new EntryResignation();
+        resignation4.setRebateMaleEntry(BigDecimal.valueOf(152));
+        resignation4.setRebateFemaleEntry(BigDecimal.valueOf(568));
+        resignation4.setType(2);
+        resignation4.setBriefChapterId(4);
+        resignation4.setRebateTime(new Date());
+
+        List<EntryResignation> list = new ArrayList<>();
+        list.add(resignation);
+        list.add(resignation1);
+        list.add(resignation2);
+        list.add(resignation4);
+        Map<Integer, BigDecimal> collect = list.stream().collect(Collectors.groupingBy(EntryResignation::getBriefChapterId, CollectorsUtil.summingBigDecimal(EntryResignation::getRebateMaleEntry)));
+        System.out.println(collect);
+    }
+
+    @Test
+    public void test9(){
+        List<Integer> list = new ArrayList<>();
+
+    }
+
+
 }

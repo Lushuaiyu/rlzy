@@ -9,19 +9,10 @@ package com.nado.rlzy.platform.constants;
  */
 public class RlzyConstant {
 
-    /**
-     * 成功状态码
-     */
-    public static int SUCCESS = 0;
 
-    /**
-     * 失败状态码
-     */
-    public static int ERROR = 1;
-    /**
-     * 成功信息
-     */
-    public static String SUCCESS_MSG = "操作成功";
+
+
+    public static final String ACCOUNT_BALANCE_IS_EMPTY = "账户余额不足请去充值";
     /**
      * 失败信息
      */

@@ -196,21 +196,7 @@ public class Test extends BaseTest {
     }
 
 
-    @org.junit.Test
-    public void test11() {
-        List<HrSignUp> hrSignUps = signUpMapper.selectRebateTime();
-        hrSignUps.stream().map(t -> {
-            t.getRebat().stream().map(tt -> {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date time = tt.getCreateTime();
-                String nowTime = format.format(time);
-                System.out.println(nowTime);
-                return tt;
-            }).collect(Collectors.toList());
-            return t;
-        }).collect(Collectors.toList());
 
-    }
 
     @org.junit.Test
     public void test12() {

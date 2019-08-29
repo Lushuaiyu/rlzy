@@ -157,11 +157,7 @@ public class Test2 extends BaseTest {
 
     }
 
-    @Test
-    public void test10() {
-        //System.out.println(briefchapterMapper.queryBriefchapterBySignUpstatusRecruitment(0));
-        System.out.println(briefchapterMapper.myReleaseRecruitment(7, 5, 2));
-    }
+
 
     @Test
     public void test11() {

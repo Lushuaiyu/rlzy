@@ -1,5 +1,6 @@
 package com.nado.rlzy.bean.query;
 
+import com.nado.rlzy.db.pojo.EntryResignation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName 招聘端 我的发布 编辑简章
@@ -47,7 +50,12 @@ public class EditBriefchapterQuery {
     @ApiModelProperty(value = "入职返佣")
     private Integer rebateTypeTwo;
 
-    @ApiModelProperty(value = "面试返佣金额 男")
+    /**
+     * 有无返佣 0 无返佣 1 有返佣
+     */
+    private Integer rebate;
+
+   /* @ApiModelProperty(value = "面试返佣金额 男")
     private BigDecimal addMoneyMan;
     @ApiModelProperty(value = "面试返佣金额 女")
     private BigDecimal addMoneyWomen;
@@ -62,12 +70,71 @@ public class EditBriefchapterQuery {
     private BigDecimal entryMan;
 
     @ApiModelProperty(value = "入职返佣 女")
-    private BigDecimal entryWomen;
+    private BigDecimal entryWomen;*/
+
+    /**
+     * 男生面试返佣
+     */
+    private BigDecimal rebateMaleInterview = BigDecimal.valueOf(0);
+
+    /**
+     * 女生面试返佣
+     */
+    private BigDecimal rebateFemaleInterview;
+
+    /**
+     * 男生报道返佣
+     */
+    private BigDecimal rebateMaleReport;
+
+    /**
+     * 女生报道返佣
+     */
+    private BigDecimal rebateFemaleReport ;
+
+    /**
+     * 男生入职返佣
+     */
+    private BigDecimal rebateMaleEntry ;
+
+    /**
+     * 男生入职返佣 临时变量
+     */
+    private BigDecimal rebateMEntry;
+
+    /**
+     * 女生入职返佣
+     */
+    private BigDecimal rebateFemaleEntry;
+
+    /**
+     * 女生入职返佣 临时变量
+     */
+    private BigDecimal rebateFentry;
+
+    /**
+     * 返佣时间入职
+     */
+    private Date rebateTimeEntry;
 
     /**
      *  1 代招单位 2 招聘单位
      */
     private Integer typp;
+
+
+    /**
+     * 入职返佣 男 女
+     */
+    private List<EntryResignation> resignations;
+
+    private BigDecimal rebateMoney;
+
+    /**
+     * 发布简章时的返佣表的id
+     */
+    private Integer resignationId;
+
 
 
 }

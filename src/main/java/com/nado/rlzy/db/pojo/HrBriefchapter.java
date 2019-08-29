@@ -262,7 +262,7 @@ public class HrBriefchapter {
     private Integer briefChapterStatus;
 
     /**
-     *
+     * 返佣类型
      */
     private Integer rebateType;
 
@@ -271,36 +271,52 @@ public class HrBriefchapter {
      * 男生面试返佣
      */
     private BigDecimal rebateMaleInterview;
+    private String rebateMaleInterview1;
 
     /**
      * 女生面试返佣
      */
     private BigDecimal rebateFemaleInterview;
+    private String rebateFemaleInterview1;
 
     /**
      * 男生报道返佣
      */
     private BigDecimal rebateMaleReport;
+    private String rebateMaleReport1;
 
     /**
      * 女生报道返佣
      */
     private BigDecimal rebateFemaleReport;
+    private String rebateFemaleReport1;
 
     /**
      * 男生入职返佣
      */
     private BigDecimal rebateMaleEntry;
+    private String rebateMaleEntry1;
 
     /**
      * 女生入职返佣
      */
     private BigDecimal rebateFemaleEntry;
+    private String rebateFemaleEntry1;
 
     /**
-     * 返佣时间入职
+     * 返回给前台的入职返佣
+     */
+    private List<EntryResignation> rebateEntryResignation1;
+
+    /**
+     * 入职返佣时间
      */
     private Date rebateTimeEntry;
+
+    /**
+     * 入职返佣
+     */
+    private List<EntryResignation> rebateEntryResignation;
 
 
 }

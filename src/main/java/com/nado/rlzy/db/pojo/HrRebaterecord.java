@@ -54,6 +54,16 @@ public class HrRebaterecord {
     @Column(name = "status")
     private Integer status;
 
+    /**
+     * 返回给前端的返费状态
+     */
+    @Transient
+    private String rebateStatus;
+
+    private String rebateMaleStr;
+
+    private String rebateFemaleStr;
+
     @Column(name = "DeleteFlag")
     private Byte deleteFlag;
 

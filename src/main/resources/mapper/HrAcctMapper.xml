@@ -15,7 +15,6 @@
   </sql>
 
 
-
     <update id="directAdmission">
         update hr_acct
         <set>
@@ -44,4 +43,40 @@
             </if>
         </set>
     </update>
+    <update id="reimbursement">
+        update hr_acct
+        <set>
+            <if test="null != rebateMoney">
+                AcctBalance = AcctBalance + #{rebateMoney},
+            </if>
+            <if test="null != rebateMoney">
+                IceBalance = IceBalance - #{rebateMoney}
+            </if>
+        </set>
+        <where>
+            <if test="null != userId">
+                UserId = #{userId}
+            </if>
+        </where>
+    </update>
+    <update id="reimbursementAddNum">
+        update hr_acct
+        <set>
+            <if test="null != rebateMoney">
+                AcctBalance = AcctBalance - #{rebateMoney},
+            </if>
+            <if test="null != rebateMoney">
+                IceBalance = IceBalance + #{rebateMoney}
+            </if>
+        </set>
+        <where>
+            <if test="null != userId">
+                UserId = #{userId}
+            </if>
+        </where>
+    </update>
+    <select id="selectAcct" resultMap="BaseResultMap">
+    select AcctBalance, IceBalance from hr_acct where UserId = #{userId}
+
+    </select>
 </mapper>

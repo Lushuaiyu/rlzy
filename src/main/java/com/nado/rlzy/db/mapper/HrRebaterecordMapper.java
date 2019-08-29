@@ -50,7 +50,7 @@ public interface HrRebaterecordMapper {
     List<HrRebaterecord> manOrWomenRebate(@Param("briefchapter") Integer briefchapter);
 
     /**
-     * 增加招聘人数时 修改返佣价格
+     * 增加招聘人数时 修改返佣价格 废弃 应该修改简章表的价格
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:05 2019/7/23

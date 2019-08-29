@@ -7,6 +7,7 @@ import com.nado.rlzy.db.pojo.HrBriefchapter;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -15,7 +16,6 @@ public interface HrBriefchapterMapper {
 
     /**
      * 招聘简章查询接口 代招单位  全部职位
-     *
      * @param query
      * @return
      */
@@ -293,28 +293,29 @@ public interface HrBriefchapterMapper {
      * @Param [query]
      * @return java.lang.Integer
      **/
-    Integer updateAA(EditBriefchapterQuery query);
+    Integer updateNumberOfRecruits(EditBriefchapterQuery query);
 
     /**
-     * 根据求职状态查询简章 代招单位
+     * 根据求职状态和求职者id查询简章 代招单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:39 2019/7/11
      * @param signUpStatus 求职状态
+     * @param id 求职id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> queryBriefchapterBySignUpStatus(@Param("signUpStatus") Integer signUpStatus);
+    List<HrBriefchapter> queryBriefchapterBySignUpStatus(@Param("signUpStatus") List<Integer> signUpStatus, @Param("id") Integer id);
 
     /**
-     * 根据求职状态查询简章 招聘单位
+     * 根据求职状态和求职者id查询简章 招聘单位
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 20:33 2019/8/2
      * @Param [signUpStatus]
+     * @param id 求职id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> queryBriefchapterBySignUpstatusRecruitment(@Param("signUpStatus") Integer signUpStatus);
-
+    List<HrBriefchapter> queryBriefchapterBySignUpstatusRecruitment(@Param("signUpStatus") List<Integer> signUpStatus, @Param("id") Integer id);
 
     /**
      * 招聘端 我的发布 代招单位
@@ -324,7 +325,7 @@ public interface HrBriefchapterMapper {
      * @Param [userId, typeId, status]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> myRelease(@Param("userId") Integer userId, @Param("typeId") Integer typeId, @Param("status") Integer status);
+    List<HrBriefchapter> myRelease(@Param("userId") Integer userId, @Param("status") Integer status);
 
     /**
      * 招聘端 我的发布 招聘单位
@@ -334,7 +335,7 @@ public interface HrBriefchapterMapper {
      * @Param [userId, typeId, status]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> myReleaseRecruitment(@Param("userId") Integer userId, @Param("typeId") Integer typeId, @Param("status") Integer status);
+    List<HrBriefchapter> myReleaseRecruitment(@Param("userId") Integer userId, @Param("status") Integer status);
 
     /**
      * 修改招聘人数
@@ -418,6 +419,28 @@ public interface HrBriefchapterMapper {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     List<HrBriefchapter> companyHomeHistoryRecruitment(@Param("groupId") Integer groupId);
+
+    /**
+     * 修改发布简章时的入职返佣的金额 男女
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:32 2019/8/27
+     * @Param [briefchapterId]
+     * @return int
+     **/
+    int updateRebateEntry(@Param("rebateMaleEntry") BigDecimal rebateMaleEntry,
+                          @Param("rebateFemaleEntry") BigDecimal rebateFemaleEntry,
+                          @Param("briefchapterId") Integer briefchapterId);
+
+    /**
+     * 修改返费金额 面试 报道 男女返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:15 2019/8/28
+     * @Param [query]
+     * @return int
+     **/
+    int updateRebateMoney(EditBriefchapterQuery query);
 
 
 

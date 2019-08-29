@@ -81,6 +81,9 @@
            <!--<table tableName="my_sign_up_table_sign_up">
             <generatedKey column="id" sqlStatement="JDBC"/>
         </table>-->
+       <!-- <table tableName="entry_resignation">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>-->
 
 
     </context>

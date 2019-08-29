@@ -675,7 +675,7 @@
         u.type,
         sd.status,
         s.arrival_time,
-        ifnull(b.id, '0') as noSingUp,
+        ifnull(sd.signup_id, '0') as noSingUp,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, s.relation)
@@ -729,21 +729,20 @@
         s.expected_salary_lower as expectedSalaryLower,
         s.expected_salary_upper as expectedSalaryUpper,
         sd.status as jobStatus,
-        ifnull(b.Id, 0) as noSignUp,
+        ifnull(sd.signup_id, 0) as noSignUp,
         s.relation as relation,
         sd.brief_chapter_id as briefChapterId,
         b.Id as briefChapterId,
-        dii.name as postName
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, b.PostId)
+        and d.pId = 1) as postName
         FROM hr_signup s
         LEFT JOIN hr_signup_deliveryrecord sd
         ON s.id = sd.signup_id and sd.delete_flag = 0
         LEFT JOIN hr_briefchapter b
-        ON sd.brief_chapter_id = b.Id and
-        b.briefChapterStatus = 0
-        LEFT JOIN hr_dictionary_item dii
-        ON b.PostId = dii.value and dii.status = 1 and pId = 1
-        where
-        s.delete_flag = 0
+        ON b.briefChapterStatus = 0
+        where s.delete_flag = 0
         <if test="null != id">
             and s.id = #{id}
         </if>
@@ -758,7 +757,7 @@
         sd.status,
         s.arrival_time,
         s.id,
-        IFNULL(b.id, '0') as noSignUp,
+        IFNULL(sd.signup_id, '0') as noSignUp,
         u.type,
         s.relation,
         (SELECT GROUP_CONCAT(d.name)
@@ -787,7 +786,7 @@
        s.expected_salary_lower as expectedSalaryLower,
        s.expected_salary_upper as expectedSalaryUpper,
        sd.status           as jobStatus,
-       ifnull(b.Id, 0)         as noSignUp,
+       ifnull(sd.signup_id, 0)         as noSignUp,
        s.relation              as relation
         from collect c
                  left join hr_signup s on c.sign_up_id = s.id
@@ -877,7 +876,7 @@
 
     </select>
     <select id="querySignUpUserName" resultMap="BaseResultMap">
-        select distinct s.user_name
+        select distinct s.user_name, s.sex, s.id
         from hr_signup s
         left join hr_user u on s.user_id = u.Id and u.status = 0
         <where>
@@ -895,14 +894,15 @@
         select sd.status,
         sd.brief_chapter_id,
         si.user_name,
-        sd.signup_id
+        sd.signup_id,
+        si.id
         from hr_signup si
         inner join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
         inner join hr_user u on si.user_id = u.id and u.status = 0
         <where>
             si.delete_flag = 0
-            <if test="null != jobUserName">
-                and si.user_name = #{jobUserName}
+            <if test="null != id">
+                and si.id = #{id}
             </if>
         </where>
     </select>
@@ -951,6 +951,7 @@
         s.agree_platform_help,
         b.interviewTime,
         b.registerTime,
+        sd.brief_chapter_id,
         r.RebateTime,
         r.status,
         sd.no_pass_reason,
@@ -1143,7 +1144,7 @@
         <if test="null != briefchapterId">
             and br.id = #{briefchapterId}
         </if>
-        and sd.status = 11;
+        and sd.status = 3;
     </select>
     <select id="rebateInterview" resultType="_int">
         select count(si.id)

@@ -1,7 +1,6 @@
 package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
-import com.nado.rlzy.bean.query.EditBriefchapterQuery;
 import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
 import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
@@ -59,14 +58,7 @@ public class Test4 extends BaseTest {
 
     }
 
-    @Test
-    public void test4() {
-        EditBriefchapterQuery query = new EditBriefchapterQuery();
-        query.setManNumNow(10);
-        query.setWomenNumNow(23);
-        query.setBriefchapter(4);
-        briefchapterMapper.updateAA(query);
-    }
+
 
     @Test
     public void test5() {

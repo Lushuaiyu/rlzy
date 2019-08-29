@@ -2,6 +2,7 @@ package com.nado.rlzy.bean.query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nado.rlzy.base.BaseQuery;
+import com.nado.rlzy.db.pojo.EntryResignation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName 招聘端 -- 发布简章query
@@ -237,21 +239,9 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
     private BigDecimal rebateFemaleReport;
 
     /**
-     * 男生入职返佣
+     * 入职返佣
      */
-    private BigDecimal rebateMaleEntry;
-
-    /**
-     * 女生入职返佣
-     */
-    private BigDecimal rebateFemaleEntry;
-
-
-
-    /**
-     * 返佣时间入职
-     */
-    private Date rebateTimeEntry;
+    private List<EntryResignation> rebateEntry;
 
 
 

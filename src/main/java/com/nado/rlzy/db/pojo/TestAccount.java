@@ -8,7 +8,8 @@ import java.math.BigDecimal;
  * @author lushuaiyu
  */
 @Data
-public class TestAccount {
+public class
+TestAccount {
     private Integer id;
 
     private String name;

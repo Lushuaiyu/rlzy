@@ -8,11 +8,13 @@ import com.nado.rlzy.db.mapper.CollectMapper;
 import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
 import com.nado.rlzy.db.mapper.HrUserMapper;
-import com.nado.rlzy.db.pojo.*;
+import com.nado.rlzy.db.pojo.Collect;
+import com.nado.rlzy.db.pojo.HrBriefchapter;
+import com.nado.rlzy.db.pojo.HrSignUp;
+import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.RecruitmentHomePageService;
 import com.nado.rlzy.utils.CheckParametersUtil;
-import com.nado.rlzy.utils.CollectorsUtil;
 import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -235,20 +237,25 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
                         String s1 = StringUtil.decimalFormat2(value1);
                         String detailSalaryWay = dto.getDetailSalaryWay();
                         dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
-                        Map<Integer, BigDecimal> mapp = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
-                                CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
-                        //对返佣金额进行 foreach 操作, set到返回的结果集里
-                        mapp.forEach((k, v) -> {
-                            BigDecimal mm = v;
-                            double v1 = mm.doubleValue();
-                            String s = StringUtil.decimalFormat2(v1);
-                            if (v != null) {
-                                s = "返" + s + "元";
-                                dto.setRebateRecord(s);
-                            } else {
-                                dto.setRebateRecord("无返佣");
-                            }
-                        });
+                        BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
+                        BigDecimal rebateMaleReport = dto.getRebateMaleReport();
+                        BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
+                        BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
+                        BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
+                        BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
+                        if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
+                                null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
+                            //男生返佣的钱
+                            BigDecimal add = rebateMaleInterview.add(rebateMaleReport)
+                                    .add(rebateMaleEntry);
+
+                            BigDecimal add1 = rebateFemaleInterview.add(rebateFemaleReport)
+                                    .add(rebateFemaleEntry);
+                            //女生返佣的钱
+                            BigDecimal n = add.compareTo(add1) >= 0 ? add : add1;
+                            String rebateMoney = StringUtil.decimalToString(n);
+                            dto.setRebateRecord("返" + rebateMoney + "元");
+                        }
                         return dto;
                     })
                     .collect(Collectors.toList());
@@ -271,20 +278,25 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
                         String s1 = StringUtil.decimalFormat2(value1);
                         String detailSalaryWay = dto.getDetailSalaryWay();
                         dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
-                        Map<Integer, BigDecimal> mapp = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
-                                CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
-                        //对返佣金额进行 foreach 操作, set到返回的结果集里
-                        mapp.forEach((k, v) -> {
-                            BigDecimal mm = v;
-                            double v1 = mm.doubleValue();
-                            String s = StringUtil.decimalFormat2(v1);
-                            if (v != null) {
-                                s = "返" + s + "元";
-                                dto.setRebateRecord(s);
-                            } else {
-                                dto.setRebateRecord("无返佣");
-                            }
-                        });
+                        BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
+                        BigDecimal rebateMaleReport = dto.getRebateMaleReport();
+                        BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
+                        BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
+                        BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
+                        BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
+                        if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
+                                null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
+                            //男生返佣的钱
+                            BigDecimal add = rebateMaleInterview.add(rebateMaleReport)
+                                    .add(rebateMaleEntry);
+
+                            BigDecimal add1 = rebateFemaleInterview.add(rebateFemaleReport)
+                                    .add(rebateFemaleEntry);
+                            //女生返佣的钱
+                            BigDecimal n = add.compareTo(add1) >= 0 ? add : add1;
+                            String rebateMoney = StringUtil.decimalToString(n);
+                            dto.setRebateRecord("返" + rebateMoney + "元");
+                        }
                         return dto;
                     })
                     .collect(Collectors.toList());

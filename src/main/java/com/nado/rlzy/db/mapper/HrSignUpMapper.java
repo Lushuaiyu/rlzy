@@ -149,15 +149,15 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 根据求职者的名字查询求职状态
+     * 根据求职者的名字查询求职状态 废弃  求职状态 前台传过来
      *
-     * @param jobUserName 求职者姓名
+     * @param id 求职者id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 13:54 2019/7/11
      **/
-    List<HrSignUp> querySignUpStatus(@Param("jobUserName") String jobUserName);
+    List<HrSignUp> querySignUpStatus(@Param("id") Integer id);
 
 
     /**

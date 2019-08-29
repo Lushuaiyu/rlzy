@@ -311,7 +311,7 @@ public class JobSearchHomePageController extends BaseController {
     }
 
     /**
-     * 求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 7已面试 是进入到待面试阶段
+     * 求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 2待面试 10已面试 是进入到待面试阶段
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
@@ -321,14 +321,15 @@ public class JobSearchHomePageController extends BaseController {
      **/
     @RequestMapping(value = "queryBriefchapterBySignUpStatus")
     @ResponseBody
-    @ApiOperation(value = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 7已面试 是进入到待面试阶段",
-            notes = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 7已面试 是进入到待面试阶段", httpMethod = "POST")
+    @ApiOperation(value = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 10已面试 是进入到待面试阶段",
+            notes = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 10已面试 是进入到待面试阶段", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "type", name = "登录者身份", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
+            @ApiImplicitParam(value = "type", name = "登录者身份 1 本人  2  推荐人", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "jobStatus", name = "求职状态", dataType = "int", required = true)
     })
-    public ResultJson queryBriefchapterBySignUpStatus(Integer type, Integer userId) {
-        Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(type, userId);
+    public ResultJson queryBriefchapterBySignUpStatus(Integer type, Integer userId, Integer [] jobStatus) {
+        Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(type, userId, jobStatus);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
         resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);

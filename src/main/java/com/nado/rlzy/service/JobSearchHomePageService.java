@@ -117,7 +117,8 @@ public interface JobSearchHomePageService {
      * @Param [query]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> queryBriefcharpterByLongLiveRecruitment(BriefcharpterQuery query);
+    List<HrBriefchapter>
+    queryBriefcharpterByLongLiveRecruitment(BriefcharpterQuery query);
 
 
 
@@ -246,7 +247,7 @@ public interface JobSearchHomePageService {
 
 
     /**
-     *  求职端 首页 我的工作 根据求职状态和求职者名字查询简章
+     *  求职端 首页 我的工作 根据求职状态和求职者名字查询简章  #####################
      *
      * @param type 登录用户的身份
      * @param userId 用户id
@@ -255,7 +256,7 @@ public interface JobSearchHomePageService {
      * @Description //TODO
      * @Date 15:40 2019/7/11
      **/
-    Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId);
+    Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId, Integer [] jobStatus);
 
 
 

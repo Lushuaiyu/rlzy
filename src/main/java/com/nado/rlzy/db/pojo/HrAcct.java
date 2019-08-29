@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -27,10 +28,10 @@ public class HrAcct {
     private Integer userid;
 
     @Column(name = "AcctBalance")
-    private Long acctbalance;
+    private BigDecimal acctbalance;
 
     @Column(name = "IceBalance")
-    private Long icebalance;
+    private BigDecimal icebalance;
 
     @Column(name = "DeleteFlag")
     private Byte deleteflag;

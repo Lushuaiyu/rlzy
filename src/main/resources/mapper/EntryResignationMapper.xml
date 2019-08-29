@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nado.rlzy.db.mapper.EntryResignationMapper">
+    <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.EntryResignation">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="rebate_male_entry" jdbcType="DECIMAL" property="rebateMaleEntry"/>
+        <result column="rebate_female_entry" jdbcType="DECIMAL" property="rebateFemaleEntry"/>
+        <result column="rebate_time" jdbcType="DATE" property="rebateTime"/>
+        <result column="create_time" jdbcType="DATE" property="createTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="brief_chapter_id" jdbcType="INTEGER" property="briefChapterId"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+    </resultMap>
+    <update id="resignationEntry" parameterType="com.nado.rlzy.bean.query.EditBriefchapterQuery">
+        update entry_resignation
+        set
+        <if test="null != rebateMaleEntry">
+            rebate_male_entry = rebate_male_entry + #{rebateMaleEntry},
+        </if>
+        <if test="null != rebateFemaleEntry">
+            rebate_female_entry = rebate_female_entry + #{rebateFemaleEntry},
+        </if>
+        <if test="null != rebateTimeEntry">
+            rebate_time = #{rebateTimeEntry}
+        </if>
+        where
+        <if test="null != resignationId"></if>
+        id = #{resignationId}
+    </update>
+    <select id="selectByAll" resultMap="BaseResultMap">
+        select * from entry_resignation where delete_flag = 0
+        <if test="null != briefchapter">
+            and brief_chapter_id = #{briefchapter}
+        </if>
+    </select>
+    <select id="selectEntryRebate" resultType="entryResignation">
+        select id, rebate_male_entry, rebate_female_entry, rebate_time
+        from entry_resignation
+        <where>
+            delete_flag = 0
+            <if test="null != briefchapterId">
+                and brief_chapter_id = #{briefchapterId}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -2,14 +2,13 @@ package com.nado.rlzy.controller;
 
 import com.nado.rlzy.base.BaseController;
 import com.nado.rlzy.bean.model.*;
+import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.EditBriefchapterQuery;
 import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
-import com.nado.rlzy.db.pojo.HrBriefchapter;
-import com.nado.rlzy.db.pojo.HrDictionaryItem;
-import com.nado.rlzy.db.pojo.HrSignUp;
-import com.nado.rlzy.db.pojo.Province;
+import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.MyReleaseService;
 import com.nado.rlzy.service.PersonCenterService;
 import io.swagger.annotations.Api;
@@ -44,18 +43,20 @@ public class MyReleaseController extends BaseController {
     @Autowired
     private PersonCenterService centerService;
 
+    @Autowired
+    private JobSearchHomePageService jobSearchHomePageService;
+
 
     @RequestMapping(value = "myRelease")
     @ResponseBody
     @ApiOperation(notes = "招聘端 我的发布", value = "招聘端 我的发布", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "typeId", name = "登录身份id", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "status", name = "状态", dataType = "Integer", required = true)
 
     })
-    public ResultJson myRelease(Integer userId, Integer typeId, Integer status) {
-        Map<String, Object> map = service.myRelease(userId, typeId, status);
+    public ResultJson myRelease(Integer userId, Integer status) {
+        Map<String, Object> map = service.myRelease(userId, status);
 
         ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
@@ -422,6 +423,21 @@ public class MyReleaseController extends BaseController {
             map.put("editBriefchapterFail", i);
             resultJson.setData(map);
         }
+        return resultJson;
+    }
+
+    @RequestMapping(value = "selectEditBriefchapter")
+    @ResponseBody
+    @ApiOperation(value = "编辑简章时查询招聘简章", notes = "编辑简章时查询招聘简章", httpMethod = "POST")
+    public ResultJson selectEditBriefchapter(Integer briefchapterId){
+        ResultJson resultJson = new ResultJson();
+        BriefcharpterQuery query = new BriefcharpterQuery();
+        query.setBriefcharpterId(briefchapterId);
+        //查询简章详情
+        Map<String, Object> map = jobSearchHomePageService.queryBriefcharpterListDetileByParams(query);
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(map);
         return resultJson;
     }
 
