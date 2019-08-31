@@ -1,7 +1,7 @@
 package com.nado.rlzy.service.impl;
 
 import com.nado.rlzy.db.mapper.TestAccountMapper;
-import com.nado.rlzy.db.pojo.TestAccount;
+import com.nado.rlzy.db.pojo.test.TestAccount;
 import com.nado.rlzy.service.TestAccountService;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;

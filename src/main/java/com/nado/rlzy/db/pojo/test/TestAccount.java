@@ -1,4 +1,4 @@
-package com.nado.rlzy.db.pojo;
+package com.nado.rlzy.db.pojo.test;
 
 import lombok.Data;
 

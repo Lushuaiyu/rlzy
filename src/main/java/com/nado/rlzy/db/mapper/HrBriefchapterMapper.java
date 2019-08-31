@@ -421,7 +421,7 @@ public interface HrBriefchapterMapper {
     List<HrBriefchapter> companyHomeHistoryRecruitment(@Param("groupId") Integer groupId);
 
     /**
-     * 修改发布简章时的入职返佣的金额 男女
+     * 修改发布简章时的入职返佣的金额 男女 没用上
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:32 2019/8/27
@@ -433,7 +433,7 @@ public interface HrBriefchapterMapper {
                           @Param("briefchapterId") Integer briefchapterId);
 
     /**
-     * 修改返费金额 面试 报道 男女返佣
+     * 修改返费金额 面试 报道 入职 男女返佣 和招聘人数
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:15 2019/8/28
@@ -441,6 +441,18 @@ public interface HrBriefchapterMapper {
      * @return int
      **/
     int updateRebateMoney(EditBriefchapterQuery query);
+
+    /***
+     * 由有返佣改成无返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:55 2019/8/30
+     * @Param [query]
+     * @return int
+     **/
+    int updateRebateToNoRebate (EditBriefchapterQuery query);
+
+
 
 
 

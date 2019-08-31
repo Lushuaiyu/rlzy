@@ -39,6 +39,8 @@ public class HrRebaterecord {
     @Column(name =  "RebateMale")
     private BigDecimal rebateMale;
 
+    private Integer statusTwo;
+
     @Column(name = "RebateFemale")
     private BigDecimal rebateFemale;
 

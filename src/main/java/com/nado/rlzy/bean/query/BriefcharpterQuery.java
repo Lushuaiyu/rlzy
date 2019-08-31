@@ -238,6 +238,10 @@ public class BriefcharpterQuery extends BaseQuery {
      * 男生入职返佣
      */
     private BigDecimal rebateMaleEntry;
+    /**
+     * 女生入职返佣
+     */
+    private BigDecimal rebateFemaleEntry;
 
 
 

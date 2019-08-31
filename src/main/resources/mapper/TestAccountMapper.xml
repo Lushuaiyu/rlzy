@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nado.rlzy.db.mapper.TestAccountMapper" >
-  <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.TestAccount" >
+  <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.test.TestAccount" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="money" property="money" jdbcType="DECIMAL" />
@@ -17,7 +17,7 @@
   </select>
 
 
-  <insert id="insertSelective" parameterType="com.nado.rlzy.db.pojo.TestAccount" >
+  <insert id="insertSelective" parameterType="com.nado.rlzy.db.pojo.test.TestAccount" >
     insert into test_account
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

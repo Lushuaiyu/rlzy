@@ -39,4 +39,36 @@ public interface EntryResignationMapper extends Mapper<EntryResignation>, MySqlM
      **/
     List<EntryResignation> selectEntryRebate(@Param("briefchapterId") Integer briefchapterId);
 
+    /**
+     * 有返佣 到 无返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:27 2019/8/30
+     * @Param [briefchapterId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.EntryResignation>
+     **/
+    int updateDeleteFlagByBriefchapterId(@Param("briefchapterId") Integer briefchapterId);
+
+    /**
+     * 删除入职返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:36 2019/8/31
+     * @Param [id]
+     * @return int
+     **/
+    int deleteEntryRebate(@Param("list") List<Integer> list);
+
+    /**
+     * 修改入职返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:27 2019/8/31
+     * @Param [id]
+     * @return int
+     **/
+    int updateRebate(EntryResignation resignation);
+
+
+
 }

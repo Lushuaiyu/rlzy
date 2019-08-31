@@ -1,6 +1,6 @@
 package com.nado.rlzy.db.mapper;
 
-import com.nado.rlzy.db.pojo.TestAccount;
+import com.nado.rlzy.db.pojo.test.TestAccount;
 import org.springframework.stereotype.Repository;
 
 @Repository

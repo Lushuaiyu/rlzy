@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-
 @Table(name = "entry_resignation")
 public class EntryResignation {
     /**

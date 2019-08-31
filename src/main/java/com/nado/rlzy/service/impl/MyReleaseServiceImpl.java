@@ -1,6 +1,7 @@
 package com.nado.rlzy.service.impl;
 
 import cn.hutool.core.lang.Assert;
+import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.EditBriefchapterQuery;
 import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
@@ -576,326 +577,245 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         return list;
     }
 
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer editBriefchapterMyRelease(EditBriefchapterQuery query) {
-       /* BriefcharpterQuery briefcharpterQuery = new BriefcharpterQuery();
+        BriefcharpterQuery briefcharpterQuery = new BriefcharpterQuery();
         briefcharpterQuery.setBriefcharpterId(query.getBriefchapter());
-
-        List<HrBriefchapter> list = mapper.queryBriefcharpterDetileByParams(briefcharpterQuery);
-        List<HrBriefchapter> hrBriefchapters = mapper.queryBriefcharpterDetileRecruitment(briefcharpterQuery);
-
         //代招单位
-        if (query.getTypp().equals(1)) {
-            list.stream()
-                    .map(m -> {
-                        //发布简章时 招聘的男生数量
-                        var ManNum = m.getManNum();
-                        // 发布简章时 招聘的女生数量
-                        var womenNum = m.getWomenNum();
-                        //编辑简章后 少招多少人 男
-                        var editManNum = ManNum - query.getManNumNow();
-                        editManNum = Math.abs(editManNum);
+        List<HrBriefchapter> list = mapper.queryBriefcharpterDetileByParams(briefcharpterQuery);
+        //无返佣
+        if (query.getRebate().equals(0)) {
+            if (list.size() > 0) {
+                // 有返佣到无返佣 钱从用户的冻结金额到账户余额
+                list.stream()
+                        .map(dto -> {
+                            //入职返佣金额男 简章对应的多有返佣金额
+                            Map<Integer, BigDecimal> rebateMaleEntry = dto.getRebateEntryResignation()
+                                    .stream()
+                                    .filter(x -> x.getType().equals(2))
+                                    .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
+                                            CollectorsUtil.summingBigDecimal(EntryResignation::getRebateMaleEntry)));
+                            //入职返佣金额女 简章对应的多有返佣金额
+                            Map<Integer, BigDecimal> rebateFemaleEntry = dto.getRebateEntryResignation().stream()
+                                    .filter(x -> x.getType().equals(2))
+                                    .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
+                                            CollectorsUtil.summingBigDecimal(EntryResignation::getRebateFemaleEntry)));
+                            //声明
+                            final BigDecimal[] maleEntry = {null};
+                            final BigDecimal[] femaleEntry = {null};
+                            rebateFemaleEntry.forEach((k, v) -> {
+                                maleEntry[0] = v;
+                            });
+                            rebateMaleEntry.forEach((k, v) -> {
+                                femaleEntry[0] = v;
+                            });
+                            BigDecimal maleEntryTernaryOperator = maleEntry[0] != null ? maleEntry[0] : BigDecimal.ZERO;
+                            BigDecimal femaleEntryTernaryOperator = femaleEntry[0] != null ? femaleEntry[0] : BigDecimal.ZERO;
+                            //合并 rebateMaleEntry 和 rebateFemaleEntry 的value
+                            //简章对应的入职返费 男 + 女 这笔钱退到账户余额
+                            BigDecimal rebateEntry = maleEntryTernaryOperator.add(femaleEntryTernaryOperator);
+                            //简章表 简章返佣的钱加起来
+                            BigDecimal reMaInterview = dto.getRebateMaleInterview() != null ? dto.getRebateMaleInterview() : BigDecimal.ZERO;
+                            BigDecimal reMaReport = dto.getRebateMaleReport() != null ? dto.getRebateMaleReport() : BigDecimal.ZERO;
+                            BigDecimal reFemInterview = dto.getRebateFemaleInterview() != null ? dto.getRebateFemaleReport() : BigDecimal.ZERO;
+                            BigDecimal reFemReport = dto.getRebateFemaleReport() != null ? dto.getRebateFemaleReport() : BigDecimal.ZERO;
+                            //登录人该退的返佣的钱 冻结金额 to 账户余额
+                            BigDecimal allRebateMoney = rebateEntry.add(reMaInterview)
+                                    .add(reMaReport)
+                                    .add(reFemInterview)
+                                    .add(reFemReport);
+                            //钱退到账户余额
+                            acctMapper.reimbursement(query.getUserId(), allRebateMoney);
+                            return dto;
+                        }).collect(Collectors.toList());
+                //没有返佣
+                query.setRebate(0);
+                query.setRebateMaleInterview(BigDecimal.valueOf(0));
+                query.setRebateMaleReport(BigDecimal.valueOf(0));
+                query.setRebateMaleEntry(BigDecimal.valueOf(0));
+                query.setRebateFemaleInterview(BigDecimal.valueOf(0));
+                query.setRebateFemaleReport(BigDecimal.valueOf(0));
+                query.setRebateFemaleEntry(BigDecimal.valueOf(0));
+                mapper.updateRebateToNoRebate(query);
+                //把 发布简章的入职返佣的钱清0
+                resignationMapper.updateDeleteFlagByBriefchapterId(query.getBriefchapter());
+            }
+            //有返佣
+        } else if (query.getRebate().equals(1)) {
+            //存在简章
+            if (list.size() > 0) {
+                list.stream()
+                        .map(dto -> {
+                            //发布简章时的人数
+                            Integer manNum = dto.getManNum();
+                            Integer womenNum = dto.getWomenNum();
+                            //编辑简章时的人数
+                            Integer manNumNow = query.getManNumNow();
+                            Integer womenNumNow = query.getWomenNumNow();
+                            // 编辑人数男 - 招聘人数男
+                            int manNumOne = manNumNow - manNum > 0 ? manNumNow - manNum : 0;
+                            //...女...女...
+                            int womenNumOne = womenNumNow - womenNum > 0 ? womenNumNow - womenNum : 0;
 
-                        // 编辑简章后 多招多少人 男
-                        var editManNum1 = query.getManNumNow() - ManNum;
-                        editManNum1 = Math.abs(editManNum1);
-
-                        // 编辑简章后  少招多少人 女
-                        var editWomenNum = womenNum - query.getWomenNumNow();
-                        editWomenNum = Math.abs(editWomenNum);
-                        //编辑简章时 多招多少人 女
-                        var editWomenNum2 = query.getWomenNumNow() - womenNum;
-                        editWomenNum2 = Math.abs(editWomenNum2);
-                       *//* //如果用户输入的返佣金额 < 1000 增加的是用户输入的钱 用户输入的钱 > 1000 就  / 10 面试返佣男 增加的钱
-                        var rebateMaleInterview = query.getRebateMaleInterview().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateMaleInterview() : query.getRebateMaleInterview().divide(BigDecimal.valueOf(10));
-                        //...............面试返佣女 增加的钱
-                        var rebateFemaleInterview = query.getRebateFemaleInterview().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateFemaleInterview() : query.getRebateFemaleInterview().divide(BigDecimal.valueOf(10));
-                        //...............报道返佣男 增加的钱
-                        var rebateMaleReport = query.getRebateMaleReport().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateMaleReport() : query.getRebateMaleReport().divide(BigDecimal.valueOf(10));
-                        //..............报道返佣女 增加的钱
-                        var rebateFemaleReport = query.getRebateFemaleReport().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateFemaleReport() : query.getRebateFemaleReport().divide(BigDecimal.valueOf(10));
-                        //入职返佣男 增加的钱
-                        var rebateMaleEntry = query.getRebateMaleEntry().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateMaleEntry() : query.getRebateMaleEntry().divide(BigDecimal.valueOf(10));*//*
-                        //发布简章时 面试返佣男
-                        BigDecimal maleInterview = m.getRebateMaleInterview() != null ? m.getRebateMaleInterview() : BigDecimal.ZERO;
-                        // 发布简章时 面试返佣女
-                        BigDecimal femaleInterview = m.getRebateFemaleInterview() != null ? m.getRebateFemaleInterview() : BigDecimal.ZERO;
-                        // 发布简章时 报道返佣男
-                        BigDecimal maleReport = m.getRebateMaleReport() != null ? m.getRebateMaleReport() : BigDecimal.ZERO;
-                        //// 发布简章时 报道返佣女
-                        BigDecimal femaleReport = m.getRebateFemaleReport() != null ? m.getRebateFemaleReport() : BigDecimal.ZERO;
-                        //简章对应的入职返佣 男
-                        BigDecimal maleEntry = m.getRebateMaleEntry() != null ? m.getRebateMaleEntry() : BigDecimal.ZERO;
-                        //简章对应的入职返佣 女
-                        BigDecimal femaleEntry = m.getRebateFemaleEntry() != null ? m.getRebateFemaleEntry() : BigDecimal.ZERO;
-                        // 单人返佣 男 减少招聘人数时的的钱 返到账户余额 发布简章时的返佣
-                        BigDecimal allRebateMale = maleInterview.add(femaleInterview)
-                                .add(maleReport)
-                                .add(maleEntry);
-                        // 单人返佣 女 减少招聘人数时的的钱 返到账户余额 发布简章时的返佣
-                        BigDecimal allRebateFemale = femaleInterview
-                                .add(femaleReport)
-                                .add(femaleEntry);
-                        //判断入职返佣是否为空 和多招聘人的相关参数不为空才进行这个操作
-                        //编辑简章时男生入职返佣的钱
-                        Map<Integer, BigDecimal> resignationMaleEntry = query.getResignations()
-                                .stream()
-                                .filter(x -> x.getType().equals(2))
-                                .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
-                                        CollectorsUtil.summingBigDecimal()));
-                        //编辑简章时女生入职返佣的钱
-                        Map<Integer, BigDecimal> resignationFemaleEntry = query.getResignations()
-                                .stream()
-                                .filter(y -> y.getType().equals(2))
-                                .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
-                                        CollectorsUtil.summingBigDecimal(EntryResignation::getRebateFemaleEntry)));
+                            //招聘人数 - 编辑人数 男
+                            int manNumFour = manNum - manNumNow > 0 ? manNum - manNumNow : 0;
+                            //招聘人数 - 编辑人数 女
+                            int womenNumFour = womenNum - womenNumNow > 0 ? womenNum - womenNumNow : 0;
+                            // ========发布简章的面试 报道返佣
+                            BigDecimal reMaInterview = dto.getRebateMaleInterview() != null ? dto.getRebateMaleInterview() : BigDecimal.ZERO;
+                            BigDecimal reMaReport = dto.getRebateMaleReport() != null ? dto.getRebateMaleReport() : BigDecimal.ZERO;
+                            BigDecimal reFemInterview = dto.getRebateFemaleInterview() != null ? dto.getRebateFemaleReport() : BigDecimal.ZERO;
+                            BigDecimal reFemReport = dto.getRebateFemaleReport() != null ? dto.getRebateFemaleReport() : BigDecimal.ZERO;
 
 
-                        //男生入职返佣的钱
-                        resignationMaleEntry.forEach((k, v) ->{
-                            BigDecimal decimal = v != null ? v : BigDecimal.ZERO;
-                            BigDecimal reMale = decimal;
-                            query.setRebateMEntry(reMale);
-                        });
-                        //女生入职返佣的钱
-                        resignationFemaleEntry.forEach((k, v) -> {
-                            BigDecimal decimal = v != null ? v : BigDecimal.ZERO;
-                            BigDecimal reFemale = decimal;
+                            //=========编辑简章时的面试 报道返佣
+                            BigDecimal reMaleInterview = query.getRebateMaleInterview() != null ? query.getRebateMaleInterview() : BigDecimal.ZERO;
+                            BigDecimal reMaleReport = query.getRebateMaleReport() != null ? query.getRebateMaleReport() : BigDecimal.ZERO;
+                            BigDecimal reFemaleInterview = query.getRebateFemaleInterview() != null ? query.getRebateFemaleInterview() : BigDecimal.ZERO;
+                            BigDecimal reFemaleReport = query.getRebateFemaleReport() != null ? query.getRebateFemaleReport() : BigDecimal.ZERO;
 
-                            query.setRebateFentry(reFemale);
-                        } );
-                        BigDecimal rebateMaleInterview = query.getRebateMaleInterview().subtract(maleInterview) != null ? query.getRebateMaleInterview().subtract(maleInterview) : BigDecimal.ZERO;
-                        BigDecimal rebateMaleReport = query.getRebateMaleReport().subtract(maleReport) != null ? query.getRebateMaleReport().subtract(maleReport) : BigDecimal.ZERO;
-                        BigDecimal rebateFemaleInterview = query.getRebateFemaleInterview().subtract(femaleInterview) != null ? query.getRebateFemaleInterview().subtract(femaleInterview) : BigDecimal.ZERO;
-                        BigDecimal rebateFemaleReport = query.getRebateFemaleReport().subtract(femaleReport) != null ? query.getRebateFemaleReport().subtract(femaleReport) : BigDecimal.ZERO;
-                        //编辑简章时男生增加的返佣的钱  修改的返佣的钱 - 原来的钱 * 增加的人数
-                        BigDecimal addMaleRebate = rebateMaleInterview.add(rebateMaleReport)
-                                .add(query.getRebateMEntry());
-                        //编辑简章时女生增加的返佣的钱
-                        BigDecimal addFemaleRebate = rebateFemaleInterview.add(rebateFemaleReport)
-                                .add(query.getRebateFentry());
+                            //发布简章的入职返佣
+                            //入职返佣金额男 简章对应的多笔返佣金额
+                            Map<Integer, BigDecimal> rebateMaleEntry = dto.getRebateEntryResignation()
+                                    .stream()
+                                    .filter(x -> x.getType().equals(2))
+                                    .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
+                                            CollectorsUtil.summingBigDecimal(EntryResignation::getRebateMaleEntry)));
+                            //入职返佣金额女 简章对应的多笔返佣金额
+                            Map<Integer, BigDecimal> rebateFemaleEntry = dto.getRebateEntryResignation().stream()
+                                    .filter(x -> x.getType().equals(2))
+                                    .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
+                                            CollectorsUtil.summingBigDecimal(EntryResignation::getRebateFemaleEntry)));
+                            //声明
+                            final BigDecimal[] maleEntry = {null};
+                            final BigDecimal[] femaleEntry = {null};
+                            rebateFemaleEntry.forEach((k, v) -> {
+                                maleEntry[0] = v;
+                            });
+                            rebateMaleEntry.forEach((k, v) -> {
+                                femaleEntry[0] = v;
+                            });
+                            //发布简章入职返佣 男
+                            BigDecimal maleEntryTernaryOperator = maleEntry[0] != null ? maleEntry[0] : BigDecimal.ZERO;
+                            //发布简章入职返佣 女
+                            BigDecimal femaleEntryTernaryOperator = femaleEntry[0] != null ? femaleEntry[0] : BigDecimal.ZERO;
+                            //发布简章时的男生返佣
+                            BigDecimal addAllMaleRebateDto = reMaInterview.add(reMaReport).add(maleEntryTernaryOperator);
+                            //发布简章时的女生返佣
+                            BigDecimal addAllFemaleRebateDto = (reFemInterview).add(reFemReport).add(femaleEntryTernaryOperator);
 
-                        //查询账户余额 和冻结金额的余额
-                        List<HrAcct> hrAccts = acctMapper.selectAcct(query.getUserId());
-                        // 少招聘 n 个人的返费金额  返费 = 单人返费 * n 男生招聘数量减少
-                        if (query.getManNumNow() < ManNum) {
-                            //男 少招的人的返费金额 退到账户余额
-                            BigDecimal man = allRebateMale.multiply(BigDecimal.valueOf(editManNum));
-                            //钱退到账户余额 账户余额增加钱 冻结金额减少钱
-                            acctMapper.reimbursement(query.getUserId(), man);
-                        }
-                        if (query.getWomenNumNow() < womenNum) {
-                            //女生招聘数量减少
-                            BigDecimal women = allRebateFemale.multiply(BigDecimal.valueOf(editWomenNum));
-                            //女 少招的人的返费金额 退到账户余额
-                            acctMapper.reimbursement(query.getUserId(), women);
 
-                        }
-                        if (query.getManNumNow() > ManNum) {
-                            //男 多招的人的返佣金额 + 原来招的人的差价 返佣的钱从账户余额到 冻结金额
-                            BigDecimal man = addMaleRebate.multiply(BigDecimal.valueOf(editManNum1)).add();
+                            //入职返佣金额男 简章对应的多笔返佣金额 编辑简章时前台传过来
+                            Map<Integer, BigDecimal> queryRebateMaleEntry = query.getResignations()
+                                    .stream()
+                                    .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
+                                            CollectorsUtil.summingBigDecimal(EntryResignation::getRebateMaleEntry)));
+                            //入职返佣金额女 简章对应的多笔返佣金额 编辑简章时前台传过来
+                            Map<Integer, BigDecimal> queryRebateFemaleEntry = query.getResignations().stream()
+                                    .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
+                                            CollectorsUtil.summingBigDecimal(EntryResignation::getRebateFemaleEntry)));
 
-                            hrAccts.stream()
-                                    .map(dto -> {
-                                        //账户余额
-                                        BigDecimal acctbalance = dto.getAcctbalance();
-                                        //账户余额不足 请去充值
-                                        Assert.isFalse(acctbalance.subtract(query.getRebateMoney()).compareTo(BigDecimal.valueOf(0)) <= 0,
-                                                RlzyConstant.ACCOUNT_BALANCE_IS_EMPTY);
-                                        //返费的金额 从账户余额到冻结金额 账户余额 - 钱 冻结金额 + 钱
-                                        acctMapper.reimbursementAddNum(query.getUserId(), man);
-                                        return dto;
+                            final BigDecimal[] queryMaleEntry = {null};
+                            final BigDecimal[] queryFemaleEntry = {null};
+                            queryRebateMaleEntry.forEach((k, v) -> {
+                                queryMaleEntry[0] = v;
+                            });
+                            queryRebateFemaleEntry.forEach((k, v) -> {
+                                queryFemaleEntry[0] = v;
+                            });
+
+                            //编辑简章时入职返佣男
+                            BigDecimal queryMaleEntryOne = queryMaleEntry[0] != null ? queryMaleEntry[0] : BigDecimal.ZERO;
+                            //编辑简章时的入职返佣女
+                            BigDecimal queryFemaleOne = queryFemaleEntry[0] != null ? queryFemaleEntry[0] : BigDecimal.ZERO;
+
+                            //编辑简章时的男生返佣
+                            BigDecimal addAllRebateMaleQuery = reMaleInterview.add(reMaleReport).add(queryMaleEntryOne);
+                            //编辑简章时的女生返佣
+                            BigDecimal addAllRebateFemaleQuery = reFemaleInterview.add(reFemaleReport).add(queryFemaleOne);
+
+                            //男生返佣差价
+                            BigDecimal subtract = addAllRebateMaleQuery.subtract(addAllMaleRebateDto);
+                            //女生返佣差价
+                            BigDecimal subtract1 = addAllRebateFemaleQuery.subtract(addAllFemaleRebateDto);
+
+                            if ((manNumOne > 0) || womenNumOne > 0) {
+                                //招聘人数增加时的男* 编辑返佣 + 原来的招聘人数 * 返佣差价 = 男生总共返佣
+                                BigDecimal multiply1 = addAllRebateMaleQuery.multiply(BigDecimal.valueOf(manNumOne));
+                                BigDecimal multiply = (BigDecimal.valueOf(manNum)).multiply(subtract);
+                                //所有的男生返佣
+                                BigDecimal addAllRebateMale = multiply1.add(multiply);
+
+                                ///招聘人数增加时的女 * 编辑返佣 + 原来的招聘人数 * 返佣差价 = 女生总共返佣
+                                BigDecimal multiply2 = addAllRebateFemaleQuery.multiply(BigDecimal.valueOf(womenNumOne));
+                                BigDecimal multiply3 = BigDecimal.valueOf(womenNum).multiply(subtract1);
+                                BigDecimal addAllRebateFemale = multiply2.add(multiply3);
+
+                                //男生和女生增加人数时的返佣金额
+                                BigDecimal addAllRebate = addAllRebateMale.add(addAllRebateFemale);
+                                //招聘人数增加 钱从账户余额 到冻结金额
+                                acctMapper.reimbursementAddNum(query.getUserId(), addAllRebate);
+                                //简章表修改
+                                query.setRebateMaleEntry(queryMaleEntry[0]);
+                                query.setRebateFemaleEntry(queryFemaleEntry[0]);
+                                mapper.updateRebateMoney(query);
+
+                            } else if (manNumFour > 0 || womenNumFour > 0) {
+                                //招聘人数减少时  减少的人的返佣的钱 退到账户余额 + 剩下的人 * 返佣差价
+                                //减少的人的返佣的钱 男 冻结金额到账户余额
+                                BigDecimal multiply = addAllMaleRebateDto.multiply(BigDecimal.valueOf(manNumFour));
+                                //减少的人的返佣的钱 女 冻结金额到账户余额
+                                BigDecimal multiply2 = addAllFemaleRebateDto.multiply(BigDecimal.valueOf(manNumFour));
+                                //减少的人的返佣的钱 全部 冻结金额到账户余额
+                                BigDecimal allSubtractRebate = multiply.add(multiply2);
+
+                                //剩下的人的返佣差价 男 账户余额到冻结金额
+                                BigDecimal multiply1 = subtract.multiply(BigDecimal.valueOf(manNumNow));
+                                //剩下的人的返佣差价 女 账户余额到冻结金额
+                                BigDecimal multiply3 = subtract1.multiply(BigDecimal.valueOf(womenNumNow));
+                                //剩下的人的返佣差价 全部 账户余额到冻结金额
+                                BigDecimal addSubtractRebate = multiply1.add(multiply3);
+                                //账户余额到冻结金额
+                                acctMapper.reimbursementAddNum(query.getUserId(), addSubtractRebate);
+                                //减少的人的返佣的钱 冻结金额到账户余额
+                                acctMapper.reimbursement(query.getUserId(), allSubtractRebate);
+                                //简章表修改
+                                query.setRebateMaleEntry(queryMaleEntry[0]);
+                                query.setRebateFemaleEntry(queryFemaleEntry[0]);
+                                mapper.updateRebateMoney(query);
+                            }
+                            dto.getRebateEntryResignation().stream()
+                                    .map(d -> {
+                                        //entry_resignation 修改入职反佣
+                                        resignationMapper.updateRebate(d);
+                                        return d;
                                     }).collect(Collectors.toList());
-                        }
-                        if (query.getWomenNumNow() > womenNum) {
-                            //女 多招的人 返佣的钱从账户余额到冻结金额
-                            BigDecimal women = addFemaleRebate.multiply(BigDecimal.valueOf(editWomenNum2));
-                            hrAccts.stream()
-                                    .map(dto -> {
-                                        //账户余额
-                                        BigDecimal acctbalance = dto.getAcctbalance();
-                                        //账户余额不足 请去充值
-                                        Assert.isFalse(acctbalance.subtract(query.getRebateMoney()).compareTo(BigDecimal.valueOf(0)) <= 0,
-                                                RlzyConstant.ACCOUNT_BALANCE_IS_EMPTY);
-                                        //返费的金额 从账户余额到冻结金额 账户余额 - 钱 冻结金额 + 钱
-                                        acctMapper.reimbursementAddNum(query.getUserId(), women);
-                                        return dto;
-                                    }).collect(Collectors.toList());
-                        }
-                        //修改入职返佣的钱 简章表
-                        query.setRebateMaleEntry(query.getRebateMEntry());
-                        query.setRebateFemaleEntry(query.getRebateFentry());
-                        //修改返费金额 面试 报道 男女返佣
-                        mapper.updateRebateMoney(query);
-                        //修改入职返佣的钱 发布简章时返佣的表
-                        query.getResignations().stream()
-                                .map(t -> {
-                                    resignationMapper.resignationEntry(query);
-                                    return t;
-                                }).collect(Collectors.toList());
-                        //修改 男生 女生的招聘人数
-                        mapper.updateNumberOfRecruits(query);
-                        //修改招聘状态 从正在招到待审核
-                        mapper.updateStatus(query.getBriefchapter());
-                        return m;
-                    }).collect(Collectors.toList());
+                            return dto;
+                        }).collect(Collectors.toList());
+
+
+            }
+
+
         } else {
-            //招聘单位
-            hrBriefchapters.stream()
-                    .map(m -> {
-                        //发布简章时 招聘的男生数量
-                        var ManNum = m.getManNum();
-                        // 发布简章时 招聘的女生数量
-                        var womenNum = m.getWomenNum();
-                        //编辑简章后 少招多少人 男
-                        var editManNum = ManNum - query.getManNumNow();
-                        editManNum = Math.abs(editManNum);
-
-                        // 编辑简章后 多招多少人 男
-                        var editManNum1 = query.getManNumNow() - ManNum;
-                        editManNum1 = Math.abs(editManNum1);
-
-                        // 编辑简章后  少招多少人 女
-                        var editWomenNum = womenNum - query.getWomenNumNow();
-                        editWomenNum = Math.abs(editWomenNum);
-                        //编辑简章时 多招多少人 女
-                        var editWomenNum2 = query.getWomenNumNow() - womenNum;
-                        editWomenNum2 = Math.abs(editWomenNum2);
-                       *//* //如果用户输入的返佣金额 < 1000 增加的是用户输入的钱 用户输入的钱 > 1000 就  / 10 面试返佣男 增加的钱
-                        var rebateMaleInterview = query.getRebateMaleInterview().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateMaleInterview() : query.getRebateMaleInterview().divide(BigDecimal.valueOf(10));
-                        //...............面试返佣女 增加的钱
-                        var rebateFemaleInterview = query.getRebateFemaleInterview().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateFemaleInterview() : query.getRebateFemaleInterview().divide(BigDecimal.valueOf(10));
-                        //...............报道返佣男 增加的钱
-                        var rebateMaleReport = query.getRebateMaleReport().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateMaleReport() : query.getRebateMaleReport().divide(BigDecimal.valueOf(10));
-                        //..............报道返佣女 增加的钱
-                        var rebateFemaleReport = query.getRebateFemaleReport().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateFemaleReport() : query.getRebateFemaleReport().divide(BigDecimal.valueOf(10));
-                        //入职返佣男 增加的钱
-                        var rebateMaleEntry = query.getRebateMaleEntry().compareTo(BigDecimal.valueOf(1000)) < 0 ?
-                                query.getRebateMaleEntry() : query.getRebateMaleEntry().divide(BigDecimal.valueOf(10));*//*
-                        //发布简章时 面试返佣男
-                        BigDecimal maleInterview = m.getRebateMaleInterview();
-                        // 发布简章时 面试返佣女
-                        BigDecimal femaleInterview = m.getRebateFemaleInterview();
-                        // 发布简章时 报道返佣男
-                        BigDecimal maleReport = m.getRebateMaleReport();
-                        //// 发布简章时 报道返佣女
-                        BigDecimal femaleReport = m.getRebateFemaleReport();
-                        //简章对应的入职返佣 男
-                        BigDecimal maleEntry = m.getRebateMaleEntry();
-                        //简章对应的入职返佣 女
-                        BigDecimal femaleEntry = m.getRebateFemaleEntry();
-                        // 单人返佣 男 减少招聘人数时的的钱 返到账户余额 发布简章时的返佣
-                        BigDecimal allRebateMale = maleInterview.add(femaleInterview)
-                                .add(maleReport)
-                                .add(maleEntry);
-                        // 单人返佣 女 减少招聘人数时的的钱 返到账户余额 发布简章时的返佣
-                        BigDecimal allRebateFemale = femaleInterview
-                                .add(femaleReport)
-                                .add(femaleEntry);
-                        //编辑简章时男生入职返佣的钱
-                        Map<Integer, BigDecimal> resignationMaleEntry = query.getResignations()
-                                .stream()
-                                .filter(x -> x.getType().equals(2))
-                                .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
-                                        CollectorsUtil.summingBigDecimal(EntryResignation::getRebateMaleEntry)));
-                        //编辑简章时男生入职返佣的钱
-                        Map<Integer, BigDecimal> resignationFemaleEntry = query.getResignations()
-                                .stream()
-                                .filter(y -> y.getType().equals(2))
-                                .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
-                                        CollectorsUtil.summingBigDecimal(EntryResignation::getRebateFemaleEntry)));
-                        final BigDecimal[] reMale = {null};
-                        final BigDecimal[] reFemale = {null};
-                        //男生入职返佣的钱
-                        resignationMaleEntry.forEach((k, v) -> reMale[0] = v);
-                        //女生入职返佣的钱
-                        resignationFemaleEntry.forEach((k, v) -> reFemale[0] = v);
-                        //编辑简章时男生增加的返佣的钱
-                        BigDecimal addMaleRebate = query.getRebateMaleInterview().add(query.getRebateMaleReport())
-                                .add(reMale[0]);
-                        //编辑简章时女生增加的返佣的钱
-                        BigDecimal addFemaleRebate = query.getRebateFemaleInterview().add(query.getRebateFemaleReport())
-                                .add(reFemale[0]);
-
-                        //查询账户余额 和冻结金额的余额
-                        List<HrAcct> hrAccts = acctMapper.selectAcct(query.getUserId());
-                        // 少招聘 n 个人的返费金额  返费 = 单人返费 * n 男生招聘数量减少
-                        if (query.getManNumNow() < ManNum) {
-                            //男 少招的人的返费金额 退到账户余额
-                            BigDecimal man = allRebateMale.multiply(BigDecimal.valueOf(editManNum));
-                            //钱退到账户余额 账户余额增加钱 冻结金额减少钱
-                            acctMapper.reimbursement(query.getUserId(), man);
-                        }
-                        if (query.getWomenNumNow() < womenNum) {
-                            //女生招聘数量减少
-                            BigDecimal women = allRebateFemale.multiply(BigDecimal.valueOf(editWomenNum));
-                            //女 少招的人的返费金额 退到账户余额
-                            acctMapper.reimbursement(query.getUserId(), women);
-
-                        }
-                        if (query.getManNumNow() > ManNum) {
-                            //男 多招的人 返佣的钱从账户余额到 冻结金额
-                            BigDecimal man = addMaleRebate.multiply(BigDecimal.valueOf(editManNum1));
-
-                            hrAccts.stream()
-                                    .map(dto -> {
-                                        //账户余额
-                                        BigDecimal acctbalance = dto.getAcctbalance();
-                                        //账户余额不足 请去充值
-                                        Assert.isFalse(acctbalance.subtract(query.getRebateMoney()).compareTo(BigDecimal.valueOf(0)) <= 0,
-                                                RlzyConstant.ACCOUNT_BALANCE_IS_EMPTY);
-                                        //返费的金额 从账户余额到冻结金额 账户余额 - 钱 冻结金额 + 钱
-                                        acctMapper.reimbursementAddNum(query.getUserId(), man);
-                                        return dto;
-                                    }).collect(Collectors.toList());
-                        }
-                        if (query.getWomenNumNow() > womenNum) {
-                            //女 多招的人 返佣的钱从账户余额到冻结金额
-                            BigDecimal women = addFemaleRebate.multiply(BigDecimal.valueOf(editWomenNum2));
-                            hrAccts.stream()
-                                    .map(dto -> {
-                                        //账户余额
-                                        BigDecimal acctbalance = dto.getAcctbalance();
-                                        //账户余额不足 请去充值
-                                        Assert.isFalse(acctbalance.subtract(query.getRebateMoney()).compareTo(BigDecimal.valueOf(0)) <= 0,
-                                                RlzyConstant.ACCOUNT_BALANCE_IS_EMPTY);
-                                        //返费的金额 从账户余额到冻结金额 账户余额 - 钱 冻结金额 + 钱
-                                        acctMapper.reimbursementAddNum(query.getUserId(), women);
-                                        return dto;
-                                    }).collect(Collectors.toList());
-                        }
-                        //修改入职返佣的钱 简章表
-                        query.setRebateMaleEntry(reMale[0]);
-                        query.setRebateFemaleEntry(reFemale[0]);
-                        //修改返费金额 面试 报道 男女返佣
-                        mapper.updateRebateMoney(query);
-                        //修改入职返佣的钱 发布简章时返佣的表
-                        query.getResignations().stream()
-                                .map(t -> {
-                                    resignationMapper.resignationEntry(query);
-                                    return t;
-                                }).collect(Collectors.toList());
-                        //修改 男生 女生的招聘人数
-                        mapper.updateNumberOfRecruits(query);
-                        //修改招聘状态 从正在招
-                        mapper.updateStatus(query.getBriefchapter());
-                        return m;
-                    }).collect(Collectors.toList());
-        }*/
+            Assert.isFalse(query.getRebate() != 0 || query.getRebate() != 1, "未选择是否返佣, 请重新选择");
+        }
 
 
         return 1;
     }
+
+    @Override
+    public Integer editBriefchapterMyReleaseRecruitment(EditBriefchapterQuery query) {
+        BriefcharpterQuery briefcharpterQuery = new BriefcharpterQuery();
+        briefcharpterQuery.setBriefcharpterId(query.getBriefchapter());
+        //招聘单位
+        List<HrBriefchapter> hrBriefchapters = mapper.queryBriefcharpterDetileRecruitment(briefcharpterQuery);
+        return null;
+    }
+
 
     @Override
     public Map<String, Object> selectGroupName(Integer type, Integer userId, Integer status) {

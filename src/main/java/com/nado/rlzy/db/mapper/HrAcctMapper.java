@@ -36,7 +36,7 @@ public interface HrAcctMapper extends Mapper<HrAcct> {
     int returnMoney(@Param("userId") Integer userId, @Param("money") BigDecimal money);
 
     /**
-     * 编辑简章时, 招聘人数减少, 钱退到账户 账户余额增加钱 冻结账户减少钱
+     * 编辑简章时, 招聘人数减少 | 有返佣 到 没返佣 , 钱退到账户余额 账户余额增加钱 冻结账户减少钱
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:28 2019/8/28

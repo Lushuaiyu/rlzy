@@ -1,7 +1,6 @@
 package com.nado.rlzy.service;
 
-import com.alipay.api.domain.Account;
-import com.nado.rlzy.db.pojo.TestAccount;
+import com.nado.rlzy.db.pojo.test.TestAccount;
 
 /**
  * @ClassName 模拟转账service

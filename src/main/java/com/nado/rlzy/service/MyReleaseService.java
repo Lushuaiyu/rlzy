@@ -289,7 +289,7 @@ public interface MyReleaseService {
     List<HrDictionaryItem> selectContentByType(String type);
 
     /**
-     * 招聘端 我的发布  正在招 编辑简章
+     * 招聘端 我的发布  正在招 编辑简章 代招单位
      *
      * @return java.lang.Integer
      * @Author lushuaiyu
@@ -299,8 +299,10 @@ public interface MyReleaseService {
      **/
     Integer editBriefchapterMyRelease(EditBriefchapterQuery query);
 
+    Integer editBriefchapterMyReleaseRecruitment(EditBriefchapterQuery query);
+
     /**
-     * 编辑简章时查询入职返佣
+     * 编辑简章时查询入职返佣 查到的入职返佣信息 随着编辑简章的提交 传到后台 ========
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:52 2019/8/28

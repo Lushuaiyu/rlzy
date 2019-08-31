@@ -102,10 +102,11 @@
 
     <resultMap id="entryREsignation" type="com.nado.rlzy.db.pojo.EntryResignation">
         <result column="rebate_time" property="rebateTime" jdbcType="TIMESTAMP"/>
-        <result column="rebate_male_entry" property="rebateMaleEntry" jdbcType="DECIMAL"/>
-        <result column="rebate_female_entry" property="rebateFemaleEntry" jdbcType="DECIMAL"/>
+        <result column="rebateMaleEntry" property="rebateMaleEntry" jdbcType="DECIMAL"/>
+        <result column="rebateFemaleEntry" property="rebateFemaleEntry" jdbcType="DECIMAL"/>
         <result column="brief_chapter_id" property="briefChapterId" jdbcType="INTEGER"/>
         <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
     </resultMap>
     <resultMap type="com.nado.rlzy.db.pojo.HrRebaterecord" id="rebaterecord">
         <result column="rebateOne" property="rebateOne" jdbcType="TIMESTAMP"/>
@@ -117,6 +118,8 @@
         <result column="BriefChapterId" property="briefchapterId" jdbcType="INTEGER"/>
         <result column="CreateTime" property="createTime" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="rebStatus" property="statusTwo" jdbcType="INTEGER"/>
+        <result column="rebateId" property="id" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--<resultMap id="groupp" type="com.nado.rlzy.db.pojo.HrGroup">
@@ -608,31 +611,71 @@
         </if>
     </update>
     <update id="updateRebateMoney" parameterType="com.nado.rlzy.bean.query.EditBriefchapterQuery">
-        update hr_briefchapter set
+        update hr_briefchapter
+        <set>
+            <if test="null != rebateMaleInterview">
+                rebate_male_interview = rebate_male_interview + #{rebateMaleInterview},
+            </if>
+            <if test="null != rebateMaleReport">
+                rebate_male_report = rebate_male_report + #{rebateMaleReport},
+            </if>
+            <if test="null != rebateMaleEntry">
+                rebate_male_entry = rebate_male_entry + #{rebateMaleEntry},
+            </if>
+            <if test="null != rebateFemaleInterview">
+                rebate_female_interview = rebate_female_interview + #{rebateFemaleInterview},
+            </if>
+            <if test="null != rebateFemaleReport">
+                rebate_female_report = rebate_female_report + #{rebateFemaleReport},
+            </if>
+            <if test="null!= rebateFemaleEntry">
+                rebate_female_entry = rebate_female_entry + #{rebateFemaleEntry}
+            </if>
+            <if test="null != manNumNow">
+                man_num = #{manNumNow},
+            </if>
+            <if test="null != womenNumNow">
+                women_num = #{womenNumNow}
+            </if>
+        </set>
+        <where>
+            <if test="null != briefchapter">
+                Id = #{briefchapter}
+            </if>
+            and briefChapterStatus = 0
+        </where>
+    </update>
+    <update id="updateRebateToNoRebate" parameterType="com.nado.rlzy.bean.query.EditBriefchapterQuery">
+        update hr_briefchapter
+        <set>
         <if test="null != rebateMaleInterview">
-            rebate_male_interview = rebate_male_interview + #{rebateMaleInterview},
+            rebate_male_interview = #{rebateMaleInterview},
         </if>
         <if test="null != rebateMaleReport">
-            rebate_male_report = rebate_male_report + #{rebateMaleReport},
+            rebate_male_report = #{rebateMaleReport},
         </if>
         <if test="null != rebateMaleEntry">
-            rebate_male_entry = rebate_male_entry + #{rebateMaleEntry},
+            rebate_male_entry = #{rebateMaleEntry},
         </if>
         <if test="null != rebateFemaleInterview">
-            rebate_female_interview = rebate_female_interview + #{rebateFemaleInterview},
+            rebate_female_interview = #{rebateFemaleInterview},
         </if>
         <if test="null != rebateFemaleReport">
-            rebate_female_report = rebate_female_report + #{rebateFemaleReport},
+            rebate_female_report = #{rebateFemaleReport},
         </if>
-        <if test="nul了!= rebateFemaleEntry">
-            rebate_female_entry = rebate_female_entry + #{rebateFemaleEntry}
+        <if test="null != rebateFentry">
+            rebate_female_entry = #{rebateFemaleEntry},
         </if>
         <if test="null != rebate">
             Rebate = #{rebate}
         </if>
+        </set>
+        <where>
         <if test="null != briefchapter">
-            Id = #{briefchapter}
+         Id = #{briefchapter}
         </if>
+         and briefChapterStatus = 0
+        </where>
     </update>
     <select id="queryBriefcharpterDtoByParams" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
@@ -838,8 +881,8 @@
         br.rebate_female_report,
         br.rebate_male_entry,
         br.rebate_female_entry,
-        er.rebate_male_entry,
-        er.rebate_female_entry,
+        er.rebate_male_entry as rebateMaleEntry,
+        er.rebate_female_entry as rebateFemaleEntry,
         er.rebate_time,
         er.id,
         (SELECT GROUP_CONCAT(d.name)
@@ -854,7 +897,10 @@
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
         br.man_num,
-        br.women_num
+        br.women_num,
+        er.brief_chapter_id,
+        er.rebate_time,
+        er.type
         from hr_briefchapter br
         left join entry_resignation er on br.id = er.brief_chapter_id and er.delete_flag = 0 and er.type = 2
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
@@ -1294,8 +1340,9 @@
         re.RebateFemale,
         re.RebateMale,
         re.RebateTime,
-        re.status,
-        re.sign_up_id
+        re.status as rebStatus,
+        re.sign_up_id,
+        re.Id as rebateId
         from hr_briefchapter br
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
@@ -1536,8 +1583,8 @@
         br.rebate_female_report,
         br.rebate_male_entry,
         br.rebate_female_entry,
-        er.rebate_male_entry,
-        er.rebate_female_entry,
+        er.rebate_male_entry as rebateMaleEntry,
+        er.rebate_female_entry as rebateFemaleEntry,
         er.rebate_time,
         er.id,
         (SELECT GROUP_CONCAT(d.name)
@@ -1552,7 +1599,10 @@
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
         br.man_num,
-        br.women_num
+        br.women_num,
+        er.brief_chapter_id,
+        er.rebate_time,
+        er.type
         from hr_briefchapter br
         left join entry_resignation er on br.id = er.brief_chapter_id and er.delete_flag = 0 and er.type = 2
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
@@ -1890,7 +1940,7 @@
         re.RebateFemale,
         re.RebateMale,
         re.RebateTime,
-        re.status,
+        re.status as rebStatus,
         re.sign_up_id
         from hr_briefchapter br
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0

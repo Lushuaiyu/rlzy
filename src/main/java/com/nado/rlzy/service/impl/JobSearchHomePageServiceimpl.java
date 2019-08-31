@@ -1370,8 +1370,10 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                             .map(d -> {
                                 if (finalSex.equals(0)) {
                                     //女生返费
-                                    Integer status1 = d.getStatus();
-                                    if (status1.equals(1)) {
+                                    Integer status1 = d.getStatusTwo();
+                                    if (status1.equals(0)) {
+                                        d.setRebateStatus("待返佣");
+                                    } else if (status1.equals(1)) {
                                         d.setRebateStatus("给付已结束");
                                     } else if (status1.equals(2)) {
                                         d.setRebateStatus("给付失败");
@@ -1384,8 +1386,10 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                                     d.setRebateMaleStr("金额: ¥" + s);
                                 } else if (finalSex.equals(1)) {
                                     //男生返费
-                                    Integer status1 = d.getStatus();
-                                    if (status1.equals(1)) {
+                                    Integer status1 = d.getStatusTwo();
+                                    if (status1.equals(0)) {
+                                        d.setRebateStatus("待返佣");
+                                    } else if (status1.equals(1)) {
                                         d.setRebateStatus("给付已结束");
                                     } else if (status1.equals(2)) {
                                         d.setRebateStatus("给付失败");
@@ -1439,8 +1443,10 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                                     .map(d -> {
                                         if (finalSex.equals(0)) {
                                             //女生返费
-                                            Integer status1 = d.getStatus();
-                                            if (status1.equals(1)) {
+                                            Integer status1 = d.getStatusTwo();
+                                            if (status1.equals(0)) {
+                                                d.setRebateStatus("待返佣");
+                                            } else if (status1.equals(1)) {
                                                 d.setRebateStatus("给付已结束");
                                             } else if (status1.equals(2)) {
                                                 d.setRebateStatus("给付失败");
@@ -1453,8 +1459,10 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                                             d.setRebateMaleStr("金额: ¥" + s);
                                         } else if (finalSex.equals(1)) {
                                             //男生返费
-                                            Integer status1 = d.getStatus();
-                                            if (status1.equals(1)) {
+                                            Integer status1 = d.getStatusTwo();
+                                            if (status1.equals(0)) {
+                                                d.setRebateStatus("待返佣");
+                                            } else if (status1.equals(1)) {
                                                 d.setRebateStatus("给付已结束");
                                             } else if (status1.equals(2)) {
                                                 d.setRebateStatus("给付失败");

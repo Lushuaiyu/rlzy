@@ -30,6 +30,53 @@
         <if test="null != resignationId"></if>
         id = #{resignationId}
     </update>
+    <update id="updateDeleteFlagByBriefchapterId">
+        update entry_resignation
+        <set>
+            delete_flag = 1,
+            type = 2
+        </set>
+        <where>
+            <if test="null != briefchapterId">
+                brief_chapter_id = #{briefchapterId}
+            </if>
+        </where>
+    </update>
+    <update id="deleteEntryRebate">
+        update entry_resignation
+         <set>
+         delete_flag = 1
+         </set>
+         <where>
+         <if test="null !=list">
+         id in
+         <foreach collection="list" item="item" separator="," open="(" close=")">
+             #{item}
+         </foreach>
+
+         </if>
+         </where>
+    </update>
+    <update id="updateRebate" parameterType="com.nado.rlzy.db.pojo.EntryResignation">
+        update entry_resignation
+        <set>
+        <if test="null != rebateMaleEntry">
+         rebate_male_entry = #{rebateMaleEntry},
+        </if>
+        <if test="null != rebateFemaleEntry">
+        rebate_female_entry = #{rebateFemaleEntry},
+        </if>
+        <if test="null != rebateTime">
+        rebate_time = #{rebateTime}
+        </if>
+        </set>
+        <where>
+        <if test="null != id">
+         id = #{id}
+        </if>
+
+        </where>
+    </update>
     <select id="selectByAll" resultMap="BaseResultMap">
         select * from entry_resignation where delete_flag = 0
         <if test="null != briefchapter">

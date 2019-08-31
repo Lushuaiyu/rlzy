@@ -147,12 +147,12 @@ public class Test5 extends BaseTest {
     }
 
     @Test
-    public void test6(){
-       new BigDecimal(0);
+    public void test6() {
+        new BigDecimal(0);
     }
 
     @Test
-    public void test7(){
+    public void test7() {
         List<EntryResignation> list = new ArrayList<>();
         EntryResignation resignation = new EntryResignation();
         resignation.setRebateMaleEntry(BigDecimal.valueOf(122));
@@ -180,7 +180,7 @@ public class Test5 extends BaseTest {
     }
 
     @Test
-    public void test8(){
+    public void test8() {
         EntryResignation resignation = new EntryResignation();
         resignation.setRebateMaleEntry(BigDecimal.valueOf(100));
         resignation.setRebateFemaleEntry(BigDecimal.valueOf(500));
@@ -219,9 +219,25 @@ public class Test5 extends BaseTest {
     }
 
     @Test
-    public void test9(){
+    public void test9() {
         List<Integer> list = new ArrayList<>();
+    }
 
+    @Test
+    public void test10() {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(3);
+        System.out.println(mapper.queryBriefchapterBySignUpstatusRecruitment(list, 1));
+    }
+
+    @Test
+    public void test11() {
+       /* EditBriefchapterQuery query = new EditBriefchapterQuery();
+        query.setRebateMaleInterview(BigDecimal.valueOf(102));
+        query.setRebateMaleReport(BigDecimal.valueOf(254));
+        query.setBriefchapter(3);
+        System.out.println(mapper.updateRebateMoney(query));*/
+        resignationMapper.updateDeleteFlagByBriefchapterId(3);
     }
 
 
