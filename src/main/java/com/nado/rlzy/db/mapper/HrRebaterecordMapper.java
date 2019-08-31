@@ -5,15 +5,17 @@ import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.common.MySqlMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface HrRebaterecordMapper {
+public interface HrRebaterecordMapper  {
 
 
     /**
-     * 发布简章 返佣金额 添加 废弃 这个东西在简章表里 不需要批量修改
+     * 发布简章 返佣金额 添加
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:45 2019/7/23
@@ -106,6 +108,21 @@ public interface HrRebaterecordMapper {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrRebaterecord>
      **/
     int selectReId(HrRebaterecord rebaterecord);
+
+    /**
+     * 发布简章 返佣金额 添加 添加入职返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:45 2019/7/23
+     * @Param [query]
+     * @return int
+     **/
+    int insertListt(@Param("list") List<HrRebaterecord> list);
+
+
+
+
+
 
 
 }

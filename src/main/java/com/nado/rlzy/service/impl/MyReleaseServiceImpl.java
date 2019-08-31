@@ -145,6 +145,8 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                 int brId = initBriefcharpterRebate(query);
                 //入职返佣表
                 initEntryResignation(query, brId);
+                //返佣记录表
+                initRebate(query, brId);
 
             } else {
                 //不返佣
@@ -160,6 +162,8 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                 int brId = initBriefcharpterRebate(query);
                 //入职返佣表
                 initEntryResignation(query, brId);
+                //入职返佣表
+                initEntryResignation(query, brId);
 
             } else {
                 //不返佣
@@ -168,6 +172,24 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             }
         }
 
+    }
+
+    private void initRebate(ReleaseBriefcharpterQuery query, int brId) {
+        HrRebaterecord rebaterecord = new HrRebaterecord();
+        List<EntryResignation> entry = query.getRebateEntry();
+        entry.stream()
+                .map(dto -> {
+                    rebaterecord.setBriefchapterId(brId);
+                    rebaterecord.setCreateTime(new Date());
+                    rebaterecord.setRebateTime(dto.getRebateTime());
+                    rebaterecord.setRebateMale(dto.getRebateMaleEntry());
+                    rebaterecord.setRebateFemale(dto.getRebateFemaleEntry());
+                    return dto;
+                }).collect(Collectors.toList());
+        ArrayList<HrRebaterecord> rebaterecords = new ArrayList<>();
+        rebaterecords.add(rebaterecord);
+        //批量添加入职返佣
+        rebaterecordMapper.insertListt(rebaterecords);
     }
 
     private void initEntryResignation(ReleaseBriefcharpterQuery query, int brId) {
@@ -302,6 +324,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         int signup = signUpMapper.recruitmentInterviewSuccess(signUpId, briefChapterId);
         HrRebaterecord hrRebaterecord = new HrRebaterecord();
         hrRebaterecord.setBriefchapterId(briefChapterId);
+
         hrRebaterecord.setRebateType(rebateType);
         //查询返佣id
         int reId = rebaterecordMapper.selectReId(hrRebaterecord);

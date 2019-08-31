@@ -129,7 +129,7 @@ public interface MyReleaseService {
     int recruitmentInterviewFailed(Integer signUpId, Integer briefChapterId);
 
     /**
-     * 招聘详情 待面试 已面试 面试已通过
+     * 招聘详情 待面试 已面试 面试已通过 面试返佣
      *
      * @return int
      * @Author lushuaiyu

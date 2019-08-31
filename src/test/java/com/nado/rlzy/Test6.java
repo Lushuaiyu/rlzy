@@ -2,10 +2,16 @@ package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
 import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
+import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
+import com.nado.rlzy.db.pojo.HrRebaterecord;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @ClassName
@@ -18,6 +24,9 @@ public class Test6 extends BaseTest {
 
     @Autowired
     private HrBriefchapterMapper mapper;
+
+    @Autowired
+    private HrRebaterecordMapper rebaterecordMapper;
 
     @Test
     public void test1() {
@@ -248,6 +257,43 @@ public class Test6 extends BaseTest {
         // 后男生返佣的钱
         //(编辑返佣男 * 男生增加的人数) + 返佣差价 * 发布简章的人数 这笔钱 账户余额 到 冻结金额
         //BigDecimal multiply = add1.multiply(BigDecimal.valueOf(i)).add(subtract).multiply(BigDecimal.valueOf(num1));
+
+
+    }
+
+    @Test
+    public void test5(){
+        HrRebaterecord rebaterecord = new HrRebaterecord();
+        rebaterecord.setRebateMale(BigDecimal.valueOf(44));
+        rebaterecord.setRebateFemale(BigDecimal.valueOf(543));
+        rebaterecord.setRebateTime(new Date());
+        rebaterecord.setBriefchapterId(4);
+        rebaterecord.setRebateType(7);
+        HrRebaterecord rebaterecord2 = new HrRebaterecord();
+        rebaterecord2.setRebateMale(BigDecimal.valueOf(44));
+        rebaterecord2.setRebateFemale(BigDecimal.valueOf(543));
+        rebaterecord2.setRebateTime(new Date());
+        rebaterecord2.setBriefchapterId(4);
+        rebaterecord2.setRebateType(7);
+        HrRebaterecord rebaterecord3 = new HrRebaterecord();
+        rebaterecord3.setRebateMale(BigDecimal.valueOf(44));
+        rebaterecord3.setRebateFemale(BigDecimal.valueOf(543));
+        rebaterecord3.setRebateTime(new Date());
+        rebaterecord3.setBriefchapterId(4);
+        rebaterecord3.setRebateType(7);
+        HrRebaterecord rebaterecord4 = new HrRebaterecord();
+        rebaterecord4.setRebateMale(BigDecimal.valueOf(44));
+        rebaterecord4.setRebateFemale(BigDecimal.valueOf(543));
+        rebaterecord4.setRebateTime(new Date());
+        rebaterecord4.setBriefchapterId(4);
+        rebaterecord4.setRebateType(7);
+        ArrayList<HrRebaterecord> rebaterecords = new ArrayList<>();
+        rebaterecords.add(rebaterecord);
+        rebaterecords.add(rebaterecord2);
+        rebaterecords.add(rebaterecord3);
+        rebaterecords.add(rebaterecord4);
+
+        rebaterecordMapper.insertListt(rebaterecords);
 
 
     }

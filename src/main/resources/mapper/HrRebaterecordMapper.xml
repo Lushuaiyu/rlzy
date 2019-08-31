@@ -166,7 +166,19 @@
         <where>
             DeleteFlag = 0 and status = 1
         </where>
-
-
     </select>
+
+
+    <insert id="insertListt">
+    insert into hr_rebaterecord (BriefChapterId, RebateType, RebateMale, RebateFemale, RebateTime, CreateTime)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+        (#{item.briefchapterId},#{item.rebateType}, #{item.rebateMale}, #{item.rebateFemale}, #{item.rebateTime},
+        #{item.createTime})
+    </foreach>
+    </insert>
+
+
+
+
 </mapper>

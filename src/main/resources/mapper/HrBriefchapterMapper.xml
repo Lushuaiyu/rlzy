@@ -648,33 +648,33 @@
     <update id="updateRebateToNoRebate" parameterType="com.nado.rlzy.bean.query.EditBriefchapterQuery">
         update hr_briefchapter
         <set>
-        <if test="null != rebateMaleInterview">
-            rebate_male_interview = #{rebateMaleInterview},
-        </if>
-        <if test="null != rebateMaleReport">
-            rebate_male_report = #{rebateMaleReport},
-        </if>
-        <if test="null != rebateMaleEntry">
-            rebate_male_entry = #{rebateMaleEntry},
-        </if>
-        <if test="null != rebateFemaleInterview">
-            rebate_female_interview = #{rebateFemaleInterview},
-        </if>
-        <if test="null != rebateFemaleReport">
-            rebate_female_report = #{rebateFemaleReport},
-        </if>
-        <if test="null != rebateFentry">
-            rebate_female_entry = #{rebateFemaleEntry},
-        </if>
-        <if test="null != rebate">
-            Rebate = #{rebate}
-        </if>
+            <if test="null != rebateMaleInterview">
+                rebate_male_interview = #{rebateMaleInterview},
+            </if>
+            <if test="null != rebateMaleReport">
+                rebate_male_report = #{rebateMaleReport},
+            </if>
+            <if test="null != rebateMaleEntry">
+                rebate_male_entry = #{rebateMaleEntry},
+            </if>
+            <if test="null != rebateFemaleInterview">
+                rebate_female_interview = #{rebateFemaleInterview},
+            </if>
+            <if test="null != rebateFemaleReport">
+                rebate_female_report = #{rebateFemaleReport},
+            </if>
+            <if test="null != rebateFentry">
+                rebate_female_entry = #{rebateFemaleEntry},
+            </if>
+            <if test="null != rebate">
+                Rebate = #{rebate}
+            </if>
         </set>
         <where>
-        <if test="null != briefchapter">
-         Id = #{briefchapter}
-        </if>
-         and briefChapterStatus = 0
+            <if test="null != briefchapter">
+                Id = #{briefchapter}
+            </if>
+            and briefChapterStatus = 0
         </where>
     </update>
     <select id="queryBriefcharpterDtoByParams" resultMap="BaseResultMap"
@@ -2230,6 +2230,17 @@
         <if test="null != groupId">
             and gr.Id = #{groupId}
         </if>
+    </select>
+
+    <select id="interviewRebateOrReportRebate" resultMap="BaseResultMap">
+        select rebate_female_interview, rebate_male_interview, rebate_male_report, rebate_female_report from
+        hr_briefchapter
+        <where>
+            briefChapterStatus = 0
+            <if test="null != briechapterId">
+                and Id = #{briechapterId}
+            </if>
+        </where>
     </select>
 
 </mapper>

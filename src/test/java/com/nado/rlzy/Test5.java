@@ -232,12 +232,7 @@ public class Test5 extends BaseTest {
 
     @Test
     public void test11() {
-       /* EditBriefchapterQuery query = new EditBriefchapterQuery();
-        query.setRebateMaleInterview(BigDecimal.valueOf(102));
-        query.setRebateMaleReport(BigDecimal.valueOf(254));
-        query.setBriefchapter(3);
-        System.out.println(mapper.updateRebateMoney(query));*/
-        resignationMapper.updateDeleteFlagByBriefchapterId(3);
+        System.out.println(mapper.interviewRebateOrReportRebate(1));
     }
 
 

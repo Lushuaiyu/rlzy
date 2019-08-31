@@ -452,6 +452,10 @@ public interface HrBriefchapterMapper {
      **/
     int updateRebateToNoRebate (EditBriefchapterQuery query);
 
+    List<HrBriefchapter> interviewRebateOrReportRebate(@Param("briechapterId") Integer briechapterId);
+
+
+
 
 
 
