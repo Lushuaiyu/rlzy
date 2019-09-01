@@ -57,7 +57,7 @@ public interface HrAcctMapper extends Mapper<HrAcct> {
     int reimbursementAddNum(@Param("userId") Integer userId, @Param("rebateMoney") BigDecimal rebateMoney);
 
     /**
-     * 查询登录用户的资金情况
+     * 查询登录用户的资金情况 如果账户余额钱不够 那就要去充钱
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:29 2019/8/28
@@ -65,6 +65,20 @@ public interface HrAcctMapper extends Mapper<HrAcct> {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrAcct>
      **/
     List<HrAcct> selectAcct(@Param("userId") Integer userId);
+
+    /**
+     * 面试 报道 入职返佣 钱从商家账户到用户账户  这里是用户账户增加钱
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 14:43 2019-09-01
+     * @Param [userId, money]
+     * @return int
+     */
+    int rebateUser(@Param("userId") Integer userId, @Param("userMoney") BigDecimal userMoney);
+
+    int rebateBusiness(@Param("userId") Integer userId, @Param("businessMoney") BigDecimal businessMoney );
+
+
 
 
 }
