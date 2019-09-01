@@ -62,10 +62,9 @@
         select grr.Id, grr.GroupName
         from hr_group grr
         left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0
-        left join hr_group gr on br.userId = gr.CertifierId and gr.DeleteFlag = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_user u on gr.CertifierId = u.Id and u.status = 0
-        where grr.DeleteFlag = 0
-        and grr.DeleteFlag = 0
+        where grr.groupStatus = 0
         <if test="null != type">
             and u.type = #{type}
         </if>
@@ -104,8 +103,8 @@
             gr.pid = grr.Id
             and gr.CertifierId = u.id
             and grr.CertifierId = u.id
-            and gr.DeleteFlag = 0
-            and grr.DeleteFlag = 0
+            and gr.groupStatus = 0
+            and grr.groupStatus = 0
             and u.status = 0
             <if test="null != userId">
                 and u.id = #{userId}
@@ -125,7 +124,7 @@
         gr.Id
         from hr_group gr
         left join hr_user u on gr.CertifierId = u.id and u.status = 0
-        where gr.DeleteFlag = 0
+        where gr.groupStatus = 0
         and gr.type = 1
         <if test="null != userId">
             and u.Id = #{userId}
@@ -144,8 +143,7 @@
         from hr_group grr
         left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0
         left join hr_user u on grr.CertifierId = u.Id and u.status = 0
-        where grr.DeleteFlag = 0
-        and grr.DeleteFlag = 0
+        where grr.groupStatus = 0
         and grr.type = 1
         <if test="null != type">
             and u.type = #{type}
