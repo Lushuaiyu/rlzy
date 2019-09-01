@@ -5,8 +5,6 @@ import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
-import tk.mybatis.mapper.common.Mapper;
-import tk.mybatis.mapper.common.MySqlMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -118,6 +116,8 @@ public interface HrRebaterecordMapper  {
      * @return int
      **/
     int insertListt(@Param("list") List<HrRebaterecord> list);
+
+
 
 
 

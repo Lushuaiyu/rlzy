@@ -452,6 +452,14 @@ public interface HrBriefchapterMapper {
      **/
     int updateRebateToNoRebate (EditBriefchapterQuery query);
 
+    /**
+     * 查询面试返佣 报道返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:44 2019/9/1
+     * @Param [briechapterId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
     List<HrBriefchapter> interviewRebateOrReportRebate(@Param("briechapterId") Integer briechapterId);
 
 

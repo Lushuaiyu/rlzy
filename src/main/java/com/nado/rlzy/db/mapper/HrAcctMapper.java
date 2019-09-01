@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @author lushuaiyu
@@ -64,19 +63,27 @@ public interface HrAcctMapper extends Mapper<HrAcct> {
      * @Param [userId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrAcct>
      **/
-    List<HrAcct> selectAcct(@Param("userId") Integer userId);
+    int selectAcct(@Param("userId") Integer userId);
 
     /**
-     * 面试 报道 入职返佣 钱从商家账户到用户账户  这里是用户账户增加钱
+     * 面试 报道 入职返佣 钱从公司账户到用户账户  这里是用户账户增加钱
      * @Author chengpunan
      * @Description  lushuaiyu
      * @Date 14:43 2019-09-01
      * @Param [userId, money]
      * @return int
      */
-    int rebateUser(@Param("userId") Integer userId, @Param("userMoney") BigDecimal userMoney);
+    int rebateUser(@Param("userMoney") BigDecimal userMoney, @Param("userId") Integer userId );
 
-    int rebateBusiness(@Param("userId") Integer userId, @Param("businessMoney") BigDecimal businessMoney );
+    /**
+     * 面试 报道 入职返佣 钱从商家账户到用户账户  这里是公司账户减少的钱 钱到消费金额
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:21 2019/9/1
+     * @Param [userId, businessMoney]
+     * @return int
+     **/
+    int rebateBusiness(@Param("businessMoney") BigDecimal businessMoney, @Param("userId") Integer userId );
 
 
 

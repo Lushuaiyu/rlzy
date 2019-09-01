@@ -252,12 +252,16 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true),
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integet", required = true),
             @ApiImplicitParam(value = "userId", name = "推荐人id | 本人id", dataType = "integet", required = true),
+
             @ApiImplicitParam(value = "type", name = "1 招聘详情 待面试 已面试 2 未面试 3 已面试 面试未通过 |" +
                     "招聘详情 待面试 已面试 面试未通过 | 4 招聘详情 待面试 已面试 面试已通过",
                     dataType = "integet", required = true) ,
-            @ApiImplicitParam(value = "rebateType", name = "返佣类型 0 面试返佣", dataType = "int", required = true)
+            @ApiImplicitParam(value = "sex", name = "性别 0 女 1 男 type = 4 时 用得到", dataType = "int", required = true),
+            @ApiImplicitParam(value = "signUpUserid", name = "求职者或者推荐人id", dataType = "int", required = true),
+            @ApiImplicitParam(value = "busInessUserId", name = "企业用户id", dataType = "int", required = true)
     })
-    public ResultJson recruitmentInterviewd(Integer signUpId, Integer type, Integer userId, Integer briefChapterId, Integer rebateType) {
+    public ResultJson recruitmentInterviewd(Integer signUpId, Integer type, Integer userId, Integer briefChapterId,
+                                            Integer sex, Integer signUpUserid, Integer busInessUserId) {
         ResultJson resultJson = new ResultJson();
         if (type.equals(1)) {
             // 招聘详情 待面试 已面试
@@ -279,7 +283,7 @@ public class MyReleaseController extends BaseController {
             resultJson.setData(count);
         } else if (type.equals(4)) {
             //招聘详情 待面试 已面试 面试已通过
-            int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, rebateType);
+            int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, sex, signUpUserid, busInessUserId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
@@ -296,10 +300,13 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "reason", name = "未报到原因", dataType = "integer", required = true),
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "rebateType", name = "返佣类型 1 报道", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "type", name = "违规类型 0 0 社保原因(无责) 1 其他原因(无责) 3 其他原因(有责)", dataType = "integer", required = true)
+            @ApiImplicitParam(value = "type", name = "违规类型 0 0 社保原因(无责) 1 其他原因(无责) 3 其他原因(有责)", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "sex", name = "性别 0 女 1 男 type = 2 时 用得到", dataType = "int", required = true),
+            @ApiImplicitParam(value = "signUpUserid", name = "求职者或者推荐人id", dataType = "int", required = true),
+            @ApiImplicitParam(value = "busInessUserId", name = "企业用户id", dataType = "int", required = true)
     })
-    public ResultJson notReported(Integer signUpId, Integer typp, Integer reason, Integer briefChapterId, Integer userId, Integer rebateType, Integer type ) {
+    public ResultJson notReported(Integer signUpId, Integer typp, Integer reason, Integer briefChapterId,
+                                  Integer userId, Integer type, Integer sex, Integer signUpUserid, Integer busInessUserId ) {
         ResultJson resultJson = new ResultJson();
         if (typp.equals(1)) {
             Map<String, Object> map = service.notReported(signUpId, briefChapterId, userId);
@@ -307,7 +314,7 @@ public class MyReleaseController extends BaseController {
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
         } else if (typp.equals(2)) {
-            int count = service.reported(signUpId, briefChapterId, rebateType);
+            int count = service.reported(signUpId, briefChapterId, sex, signUpUserid, busInessUserId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
@@ -409,12 +416,20 @@ public class MyReleaseController extends BaseController {
         HashMap<String, Object> map = new HashMap<>();
         ResultJson resultJson = new ResultJson();
         if (type.equals(1)) {
-            //正在招
+            if (query.getTypp().equals(1)){
+            //正在招 代招单位
             Integer count = service.editBriefchapterMyRelease(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             map.put("editBriefchapterMyRelease", count);
             resultJson.setData(map);
+            } else {
+                //招聘单位
+                Integer count = service.editBriefchapterMyReleaseRecruitment(query);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+                map.put("editBriefchapterMyReleaseRecruitment", count);
+            }
         } else {
             //未通过
             int i = service.editBriefchapterFail(query1);

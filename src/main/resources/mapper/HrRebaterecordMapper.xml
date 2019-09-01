@@ -170,11 +170,11 @@
 
 
     <insert id="insertListt">
-    insert into hr_rebaterecord (BriefChapterId, RebateType, RebateMale, RebateFemale, RebateTime, CreateTime)
+    insert into hr_rebaterecord (BriefChapterId, RebateType, RebateMale, RebateFemale, RebateTime, CreateTime, sign_up_id)
     VALUES
     <foreach collection="list" item="item" separator=",">
         (#{item.briefchapterId},#{item.rebateType}, #{item.rebateMale}, #{item.rebateFemale}, #{item.rebateTime},
-        #{item.createTime})
+        #{item.createTime}, #{item.signUpId})
     </foreach>
     </insert>
 

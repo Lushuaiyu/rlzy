@@ -371,7 +371,6 @@ public class JobSearchHomePageController extends BaseController {
 
     /**
      * 求职端 添加和取消收藏
-     *
      * @return com.nado.rlzy.bean.model.ResultInfo
      * @Author lushuaiyu
      * @Description //TODO

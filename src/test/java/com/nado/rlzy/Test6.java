@@ -7,7 +7,6 @@ import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -293,11 +292,11 @@ public class Test6 extends BaseTest {
         rebaterecord4.setRebateType(7);
         ArrayList<HrRebaterecord> rebaterecords = new ArrayList<>();
         rebaterecords.add(rebaterecord);
-        rebaterecords.add(rebaterecord2);
+      /*  rebaterecords.add(rebaterecord2);
         rebaterecords.add(rebaterecord3);
-        rebaterecords.add(rebaterecord4);
+        rebaterecords.add(rebaterecord4);*/
 
-        rebaterecordMapper.selectByPrimaryK(1);
+        rebaterecordMapper.insertListt(rebaterecords);
 
 
     }

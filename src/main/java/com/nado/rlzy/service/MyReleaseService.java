@@ -137,7 +137,7 @@ public interface MyReleaseService {
      * @Date 13:50 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer rebateType);
+    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserid, Integer busInessUserId);
 
     /**
      * 招聘详情 待报道 未报到
@@ -151,7 +151,7 @@ public interface MyReleaseService {
     Map<String, Object> notReported(Integer signUpId, Integer briefChapterId, Integer userId);
 
     /**
-     * 招聘详情 待报道 已报道
+     * 招聘详情 待报道 确认报道(已报到) 报道返佣
      *
      * @return int
      * @Author lushuaiyu
@@ -159,7 +159,7 @@ public interface MyReleaseService {
      * @Date 14:40 2019/7/19
      * @Param [signUpId]
      **/
-    int reported(Integer signUpId, Integer briefChapterId, Integer rebateType);
+    int reported(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserid, Integer busInessUserId);
 
 
     /**
@@ -299,10 +299,18 @@ public interface MyReleaseService {
      **/
     Integer editBriefchapterMyRelease(EditBriefchapterQuery query);
 
+    /**
+     * 招聘端 我的发布  正在招 编辑简章 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:41 2019/9/1
+     * @Param [query]
+     * @return java.lang.Integer
+     **/
     Integer editBriefchapterMyReleaseRecruitment(EditBriefchapterQuery query);
 
     /**
-     * 编辑简章时查询入职返佣 查到的入职返佣信息 随着编辑简章的提交 传到后台 ========
+     * 编辑简章时查询入职返佣 查到的入职返佣信息 随着编辑简章的提交 传到后台 ======== 这个没啥用 入职返佣信息 发布简章时就有了
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:52 2019/8/28

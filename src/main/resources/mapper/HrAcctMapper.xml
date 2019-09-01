@@ -75,8 +75,30 @@
             </if>
         </where>
     </update>
-    <select id="selectAcct" resultMap="BaseResultMap">
-    select AcctBalance, IceBalance from hr_acct where UserId = #{userId}
+    <update id="rebateUser">
+        update hr_acct
+        <set>
+            <if test="null != userMoney">
+                AcctBalance = AcctBalance + #{userMoney}
+            </if>
+        </set>
+        <where>
+            <if test="null != userId">
+                UserId = #{userId}
+            </if>
+        </where>
+    </update>
+    <update id="rebateBusiness">
+    update hr_acct set IceBalance = IceBalance - #{businessMoney}, already_consumed = already_consumed + #{businessMoney} where UserId = #{userId}
 
+    </update>
+    <select id="selectAcct" resultType="_int">
+         select AcctBalance from hr_acct
+          <where>
+          <if test="null != userId">
+          UserId = #{userId}
+          </if>
+          </where>
     </select>
+
 </mapper>
