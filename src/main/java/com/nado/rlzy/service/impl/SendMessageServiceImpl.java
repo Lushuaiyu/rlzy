@@ -6,11 +6,11 @@ import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.MessageService;
 import com.nado.rlzy.utils.RandomCodesUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +38,7 @@ public class SendMessageServiceImpl implements MessageService {
     private String templateId;
 
 
-    @Autowired
+    @Resource
     private RedisTemplate redisTemplate;
 
     @Override

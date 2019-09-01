@@ -11,10 +11,10 @@ import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -22,10 +22,10 @@ import java.util.*;
 
 
 public class RlzyApplicationTests extends BaseTest {
-    @Autowired
+    @Resource
     private HrBriefchapterMapper mapper;
 
-    @Autowired
+    @Resource
     private RedisTemplate redisTemplate;
 
 

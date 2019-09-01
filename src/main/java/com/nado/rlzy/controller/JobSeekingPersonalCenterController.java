@@ -12,11 +12,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,10 +31,10 @@ import java.util.List;
 @Api(description = "求职端 个人中心 Controller")
 @RequestMapping(value = "personalCenter")
 public class JobSeekingPersonalCenterController {
-    @Autowired
+    @Resource
     private JobSeekingPersonalCenterService service;
 
-    @Autowired
+    @Resource
     private PersonCenterService personCenterService;
 
     /**

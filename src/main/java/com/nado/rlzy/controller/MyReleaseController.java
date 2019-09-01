@@ -16,12 +16,12 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.var;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +37,13 @@ import java.util.Map;
 @Api(description = " 招聘端 我的发布 controller")
 @RequestMapping(value = "myRelease")
 public class MyReleaseController extends BaseController {
-    @Autowired
+    @Resource
     private MyReleaseService service;
 
-    @Autowired
+    @Resource
     private PersonCenterService centerService;
 
-    @Autowired
+    @Resource
     private JobSearchHomePageService jobSearchHomePageService;
 
 

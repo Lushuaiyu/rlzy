@@ -8,8 +8,8 @@ import com.nado.rlzy.db.pojo.Collect;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrSignupDeliveryrecord;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,25 +24,25 @@ import java.util.stream.Collectors;
  */
 public class Test3 extends BaseTest {
 
-    @Autowired
+    @Resource
     private HrSignupDeliveryrecordMapper deliveryrecordMapper;
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper mapper;
 
-    @Autowired
+    @Resource
     private HrSignUpMapper signUpMapper;
 
-    @Autowired
+    @Resource
     private HrGroupMapper groupMapper;
 
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
 
-    @Autowired
+    @Resource
     private CollectMapper collectMapper;
 
-    @Autowired
+    @Resource
     private HrComplaintMapper complaintMapper;
 
     @Test

@@ -6,10 +6,10 @@ import com.nado.rlzy.db.mapper.HrUserMapper;
 import com.nado.rlzy.db.pojo.Feedback;
 import com.nado.rlzy.db.pojo.HrUser;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 @Import(RlzyApplication.class)
 public class CommonMapperTest extends BaseTest {
 
-    @Autowired
+    @Resource
     private FeedbackMapper mapper;
 
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
 
     @Test

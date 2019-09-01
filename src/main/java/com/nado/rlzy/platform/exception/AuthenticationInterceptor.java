@@ -9,11 +9,11 @@ import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.annotation.PassToken;
 import com.nado.rlzy.platform.annotation.UserLoginToken;
 import com.nado.rlzy.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  * @Version 1.0
  */
 public class AuthenticationInterceptor implements HandlerInterceptor {
-    @Autowired
+    @Resource
     UserService userService;
 
     @Override

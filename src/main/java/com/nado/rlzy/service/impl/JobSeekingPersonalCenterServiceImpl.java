@@ -9,9 +9,9 @@ import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
 import com.nado.rlzy.utils.StringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,16 +26,16 @@ import java.util.stream.Collectors;
 @Service
 public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCenterService {
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper mapper;
 
-    @Autowired
+    @Resource
     private HrSignUpMapper signUpMapper;
 
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
 
-    @Autowired
+    @Resource
     private HrGroupMapper groupMapper;
 
     @Override

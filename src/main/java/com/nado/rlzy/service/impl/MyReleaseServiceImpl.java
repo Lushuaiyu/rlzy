@@ -13,11 +13,11 @@ import com.nado.rlzy.utils.CollectorsUtil;
 import com.nado.rlzy.utils.StringUtil;
 import com.nado.rlzy.utils.ValidationUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,36 +36,36 @@ import java.util.stream.Stream;
 @Service
 public class MyReleaseServiceImpl implements MyReleaseService {
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper mapper;
 
-    @Autowired
+    @Resource
     private ProvinceMapper provinceMapper;
 
-    @Autowired
+    @Resource
     private HrRebaterecordMapper rebaterecordMapper;
 
-    @Autowired
+    @Resource
     private HrSignUpMapper signUpMapper;
 
-    @Autowired
+    @Resource
     private HrAcctMapper acctMapper;
-    @Autowired
+    @Resource
     private HrAcctDetailMapper acctDetailMapper;
 
-    @Autowired
+    @Resource
     private HrDictionaryItemMapper dictionaryItemMapper;
 
-    @Autowired
+    @Resource
     private HrGroupMapper groupMapper;
 
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
 
-    @Autowired
+    @Resource
     private ViolationRecordMapper violationRecordMapper;
 
-    @Autowired
+    @Resource
     private EntryResignationMapper resignationMapper;
 
     @Override
@@ -163,7 +163,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                 //入职返佣表
                 initEntryResignation(query, brId);
                 //入职返佣表
-                initEntryResignation(query, brId);
+                initRebate(query, brId);
 
             } else {
                 //不返佣
@@ -321,19 +321,19 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer rebateType) {
+        //改变求职状态
         int signup = signUpMapper.recruitmentInterviewSuccess(signUpId, briefChapterId);
         HrRebaterecord hrRebaterecord = new HrRebaterecord();
-        hrRebaterecord.setBriefchapterId(briefChapterId);
+        //面试返佣
 
-        hrRebaterecord.setRebateType(rebateType);
-        //查询返佣id
-        int reId = rebaterecordMapper.selectReId(hrRebaterecord);
+        //钱从企业冻结金额到求职者 或者推荐人余额
+        
 
-        hrRebaterecord.setId(reId);
-        hrRebaterecord.setRebateTime(new Date());
-        //改变返佣状态
-        int rebateStatus = rebaterecordMapper.updateRebateStatus(hrRebaterecord);
-        return signup >= 1 && reId >= 1 && rebateStatus >= 1 ? RlzyConstant.OPS_SUCCESS_CODE : RlzyConstant.OPS_FAILED_CODE;
+        //钱从企业冻结金额到消费金额
+
+
+       return 1;
+
     }
 
     @Override

@@ -10,8 +10,8 @@ import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,16 +27,16 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 public class Test4 extends BaseTest {
-    @Autowired
+    @Resource
     private HrSignUpMapper signUpMapper;
 
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
 
-    @Autowired
+    @Resource
     private HrRebaterecordMapper rebaterecordMapper;
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper briefchapterMapper;
 
     @Test

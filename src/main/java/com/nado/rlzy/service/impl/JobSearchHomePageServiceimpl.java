@@ -13,10 +13,10 @@ import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.utils.CollectorsUtil;
 import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,44 +35,44 @@ import java.util.stream.Stream;
 @Service
 public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper mapper;
 
-    @Autowired
+    @Resource
     private HrRebaterecordMapper rebaterecordMapper;
 
-    @Autowired
+    @Resource
     private HrGroupMapper groupMapper;
 
-    @Autowired
+    @Resource
     private HrSignUpMapper signUpMapper;
 
-    @Autowired
+    @Resource
     private CollectMapper collectMapper;
 
-    @Autowired
+    @Resource
     private MySignUpTableMapper tableMapper;
 
 
-    @Autowired
+    @Resource
     private HrComplaintMapper complaintMapper;
 
-    @Autowired
+    @Resource
     private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
 
-    @Autowired
+    @Resource
     private HrAcctMapper acctMapper;
 
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
 
-    @Autowired
+    @Resource
     private HrDictionaryItemMapper dictionaryItemMapper;
 
-    @Autowired
+    @Resource
     private MySignUpTableSignUpMapper tableSignUpMapper;
 
-    @Autowired
+    @Resource
     private EntryResignationMapper resignationMapper;
 
     @Override
@@ -1598,7 +1598,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                                Date graduationTime, String profession,
                                String registrationPositionId, Date arrivalTime,
                                BigDecimal expectedSalaryLower, BigDecimal expectedSalaryUpper,
-                               Integer relation, Integer itIsPublic, Integer agreePlatformHelp,
+                               String relation, Integer itIsPublic, Integer agreePlatformHelp,
                                Integer userId, String idCard) {
         HrSignUp signUp = new HrSignUp();
         signUp.setUserName(userName);
@@ -1621,7 +1621,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     private void checkAddSignUp(String userName, Integer sex, String education, Date graduationTime, String profession,
                                 String registrationPositionId, Date arrivalTime, BigDecimal expectedSalaryLower, BigDecimal expectedSalaryUpper,
-                                Integer relation, Integer itIsPublic, Integer agreePlatformHelp, Integer userId, String idCard) {
+                                String relation, Integer itIsPublic, Integer agreePlatformHelp, Integer userId, String idCard) {
         Assert.isFalse(StringUtils.isBlank(userName), "用户名不能为空");
         Assert.isFalse(null == sex, "性别不能为空");
         Assert.isFalse(StringUtils.isBlank(education), "学历不能为空");
@@ -1631,7 +1631,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         Assert.isFalse(null == arrivalTime, "到岗时间不能为空");
         Assert.isFalse(null == expectedSalaryLower, "工资上限不能为空");
         Assert.isFalse(null == expectedSalaryUpper, "工资下限不能为空");
-        Assert.isFalse(null == relation, "年龄不能为空");
+        Assert.isFalse(StringUtils.isBlank(relation), "年龄不能为空");
         Assert.isFalse(null == itIsPublic, "是否公开不能为空");
         Assert.isFalse(null == agreePlatformHelp, "是否获取平台帮助不能为空");
         Assert.isFalse(null == userId, "用户id不能为空");

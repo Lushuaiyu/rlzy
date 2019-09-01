@@ -16,7 +16,6 @@ import com.nado.rlzy.utils.StringUtil;
 import com.nado.rlzy.utils.ValidationUtil;
 import lombok.var;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
@@ -38,28 +37,28 @@ import java.util.stream.Stream;
  */
 public class Test extends BaseTest {
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper hrBriefchapterMapper;
 
-    @Autowired
+    @Resource
     private RedisTemplate redisTemplate;
 
-    @Autowired
+    @Resource
     private RedisService service;
 
-    @Autowired
+    @Resource
     private HrSignUpMapper signUpMapper;
 
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
 
-    @Autowired
+    @Resource
     private HrComplaintMapper complaintMapper;
 
     @Resource
     private MessageService messageService;
 
-    @Autowired
+    @Resource
     private HrGroupMapper groupMapper;
 
     @Resource

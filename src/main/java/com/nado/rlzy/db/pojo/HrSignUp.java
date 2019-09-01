@@ -139,7 +139,7 @@ public class HrSignUp {
 
     @ApiModelProperty(value = "与推荐人关系")
     @Column(name = "relation")
-    private Integer relation;
+    private String relation;
 
     @ApiModelProperty(value = "是否公开")
     @Column(name = "it_is_public")

@@ -6,10 +6,10 @@ import com.nado.rlzy.db.mapper.AttentionMapper;
 import com.nado.rlzy.db.pojo.Attention;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.ChatService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 /**
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Service
 public class ChatServiceImpl implements ChatService {
 
-    @Autowired
+    @Resource
     private AttentionMapper attentionMapper;
 
     @Override

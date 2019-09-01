@@ -1,12 +1,13 @@
 package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
+import com.nado.rlzy.bean.query.JobListQuery;
 import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
 import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
+import com.nado.rlzy.db.mapper.HrSignUpMapper;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -22,11 +23,14 @@ import java.util.Date;
  */
 public class Test6 extends BaseTest {
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper mapper;
 
-    @Autowired
+    @Resource
     private HrRebaterecordMapper rebaterecordMapper;
+
+    @Resource
+    private HrSignUpMapper signUpMapper;
 
     @Test
     public void test1() {
@@ -293,7 +297,15 @@ public class Test6 extends BaseTest {
         rebaterecords.add(rebaterecord3);
         rebaterecords.add(rebaterecord4);
 
-        rebaterecordMapper.insertListt(rebaterecords);
+        rebaterecordMapper.selectByPrimaryK(1);
+
+
+    }
+    @Test
+    public void test6(){
+        JobListQuery query = new JobListQuery();
+        query.setSex(0);
+        System.out.println(signUpMapper.selectJobListOverview(query));
 
 
     }

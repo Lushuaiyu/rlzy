@@ -9,9 +9,9 @@ import com.nado.rlzy.utils.Base64Utils;
 import com.nado.rlzy.utils.StringUtil;
 import lombok.var;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -31,37 +31,37 @@ import java.util.stream.Collectors;
  */
 public class Test2 extends BaseTest {
 
-    @Autowired
+    @Resource
     private HrSignUpMapper mapper;
 
-    @Autowired
+    @Resource
     private HrAcctMapper acctMapper;
 
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
 
-    @Autowired
+    @Resource
     private AttentionMapper attentionMapper;
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper briefchapterMapper;
 
-    @Autowired
+    @Resource
     private HrDictionaryItemMapper dictionaryItemMapper;
 
-    @Autowired
+    @Resource
     private HrGroupMapper groupMapper;
 
-    @Autowired
+    @Resource
     private CollectMapper collectMapper;
 
-    @Autowired
+    @Resource
     private HrComplaintMapper complaintMapper;
 
-    @Autowired
+    @Resource
     private HrSignupDeliveryrecordMapper deliveryrecordMapper;
 
-    @Autowired
+    @Resource
     private MySignUpTableMapper tableMapper;
 
     @Test

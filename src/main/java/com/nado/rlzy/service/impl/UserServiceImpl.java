@@ -43,7 +43,7 @@ import java.util.Date;
 public class UserServiceImpl implements UserService {
     @Resource
     private HrUserMapper userMapper;
-    @Autowired
+    @Resource
     private RedisTemplate redisTemplate;
 
     @Value("${yuntongxun.templateId}")

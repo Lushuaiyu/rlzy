@@ -245,4 +245,6 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
 
 
 
+
+
 }

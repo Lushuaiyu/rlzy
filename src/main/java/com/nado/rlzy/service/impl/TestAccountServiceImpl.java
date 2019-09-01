@@ -4,10 +4,10 @@ import com.nado.rlzy.db.mapper.TestAccountMapper;
 import com.nado.rlzy.db.pojo.test.TestAccount;
 import com.nado.rlzy.service.TestAccountService;
 import lombok.var;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 @Service
 public class TestAccountServiceImpl implements TestAccountService {
 
-    @Autowired
+    @Resource
     private TestAccountMapper mapper;
     @Override
     public TestAccount getAccount( ) {

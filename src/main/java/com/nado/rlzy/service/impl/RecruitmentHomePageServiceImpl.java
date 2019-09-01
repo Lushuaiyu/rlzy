@@ -18,10 +18,10 @@ import com.nado.rlzy.utils.CheckParametersUtil;
 import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,17 +39,17 @@ import java.util.stream.Collectors;
 @Service
 public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageService {
 
-    @Autowired
+    @Resource
     private HrSignUpMapper mapper;
 
-    @Autowired
+    @Resource
     private CollectMapper collectMapper;
 
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper briefchapterMapper;
 
-    @Autowired
+    @Resource
     private HrUserMapper userMapper;
 
 

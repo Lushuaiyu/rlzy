@@ -25,12 +25,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
@@ -47,13 +47,13 @@ import java.util.Map;
 @RequestMapping(value = "personCenter")
 @Api(description = "个人中心controller")
 public class PersonCenterController extends BaseController {
-    @Autowired
+    @Resource
     private PersonCenterService service;
 
-    @Autowired
+    @Resource
     private RecruitmentHomePageService homePageService;
 
-    @Autowired
+    @Resource
     private JobSearchHomePageService jobSearchHomePageService;
 
 

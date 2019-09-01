@@ -10,8 +10,8 @@ import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.utils.CollectorsUtil;
 import com.nado.rlzy.utils.StringUtil;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +26,13 @@ import java.util.stream.Collectors;
  */
 public class EditBriefchapterTest extends BaseTest {
 
-    @Autowired
+    @Resource
     private HrBriefchapterMapper briefchapterMapper;
 
-    @Autowired
+    @Resource
     private HrRebaterecordMapper rebaterecordMapper;
 
-    @Autowired
+    @Resource
     private HrAcctMapper acctMapper;
     BriefcharpterQuery query = new BriefcharpterQuery();
     Integer i = 4;

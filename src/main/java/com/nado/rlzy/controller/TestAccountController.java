@@ -6,11 +6,11 @@ import com.nado.rlzy.db.mapper.HrSignUpMapper;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping(value = "account")
 public class TestAccountController {
 
-    @Autowired
+    @Resource
     private HrSignUpMapper signUpMapper;
 
     @RequestMapping(value = "index")
