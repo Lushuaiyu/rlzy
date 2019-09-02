@@ -453,12 +453,12 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Date 14:31 2019/7/19
      * @Param [signUpId]
      **/
-    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si SET sd.job_status = 9\n" +
+    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si SET no_pass_reason = 2" +
             " WHERE sd.delete_flag = 0 and si.delete_flag = 0 and si.id = sd.signup_id and si.id = #{signUpId} and sd.brief_chapter_id = #{briefChapterId}")
     int notReported(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
     /**
-     * 招聘详情 待报道 已报道
+     * 招聘详情 待报道 确认报道 到待返佣
      *
      * @return int
      * @Author lushuaiyu
@@ -688,6 +688,8 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [briefchapterId]
      **/
     int rebateEntry(@Param("briefchapterId") Integer briefchapterId);
+
+
 
 
 }

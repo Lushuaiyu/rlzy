@@ -261,7 +261,7 @@ public interface JobSearchHomePageService {
 
 
     /**
-     * 求职端 首页 简章详情 我要报名 身份是本人
+     * 求职端 首页 简章详情 我要报名 身份是本人 简章id前台传过来
      * @return int
      * @Author lushuaiyu
      * @Description //TODO
@@ -270,7 +270,7 @@ public interface JobSearchHomePageService {
     int IWantToSignUp(HrSignupDeliveryrecord deliveryrecord);
 
     /**
-     * 求职端 首页 我的报名表 推荐人给被推荐人报名
+     * 求职端 首页 我的报名表 推荐人给被推荐人报名 简章id前台传过来
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:26 2019/8/7

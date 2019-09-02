@@ -5,6 +5,7 @@ import com.nado.rlzy.bean.query.EditBriefchapterQuery;
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -285,6 +286,8 @@ public interface HrBriefchapterMapper {
      **/
     Integer update(ReleaseBriefcharpterQuery query);
 
+    int update2(EditBriefchapterQuery query);
+
     /**
      * 修改招聘人数
      * @Author lushuaiyu
@@ -461,6 +464,27 @@ public interface HrBriefchapterMapper {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     List<HrBriefchapter> interviewRebateOrReportRebate(@Param("briechapterId") Integer briechapterId);
+
+    /**
+     * 查询面试 报道 入职返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:15 2019/9/2
+     * @Param [bridfchapterId]
+     * @return com.nado.rlzy.db.pojo.HrBriefchapter
+     **/
+    HrBriefchapter selectRebateByBriefcapterId(@Param("id") Integer id);
+
+    /**
+     * 修改简章状态
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 20:02 2019/9/2
+     * @Param [id]
+     * @return int
+     **/
+    @Update(value = "update hr_briefchapter set Status = #{status} where briefChapterStatus = 0 and Id = #{id}")
+    int updateBriefchapterStatus(@Param("id") Integer id, @Param("status") Integer status);
 
 
 

@@ -15,11 +15,27 @@
         <result column="rebate_report_time" jdbcType="DATE" property="rebateReportTime"/>
         <result column="rebate_entry_time" jdbcType="DATE" property="rebateEntryTime"/>
         <result column="rebate_type" jdbcType="INTEGER" property="rebateType"/>
+        <result column="accept_rebate_amount" jdbcType="DECIMAL" property="acceptRebateAmount"/>
+        <result column="rebate_interview_status" jdbcType="INTEGER" property="rebateInterviewStatus"/>
+        <result column="rebate_report_status" jdbcType="INTEGER" property="rebateReportStatus"/>
+        <result column="rebate_entry_status" jdbcType="INTEGER" property="rebateEntryStatus"/>
     </resultMap>
     <insert id="referrerToSIgnUp">
-        insert into hr_signup_deliveryrecord (signup_id, brief_chapter_id, job_status, status, create_time) values
+        insert into hr_signup_deliveryrecord (signup_id, brief_chapter_id, job_status, status, create_time, accept_rebate_amount) values
     <foreach collection="entites" item="item" separator=",">
-        (#{item.signupId}, #{item.briefChapterId}, #{item.jobStatus}, #{item.status}, #{item.createTime})
+        (#{item.signupId}, #{item.briefChapterId}, #{item.jobStatus}, #{item.status}, #{item.createTime}, #{item.acceptRebateAmount})
     </foreach>
     </insert>
+
+    <update id="reducedRebateAmount" parameterType="hrSignupDeliveryrecord">
+        update hr_signup_deliveryrecord set accept_rebate_amount = accept_rebate_amount - #{acceptRebateAmount},
+        rebate_interview_status = 1
+        where delete_flag = 0
+        <if test="null != signupId">
+            and signup_id = #{signupId}
+        </if>
+        <if test="null != briefChapterId">
+            and brief_chapter_id = #{briefChapterId}
+        </if>
+    </update>
 </mapper>

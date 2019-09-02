@@ -44,38 +44,47 @@
     </update>
     <update id="deleteEntryRebate">
         update entry_resignation
-         <set>
-         delete_flag = 1
-         </set>
-         <where>
-         <if test="null !=list">
-         id in
-         <foreach collection="list" item="item" separator="," open="(" close=")">
-             #{item}
-         </foreach>
+        <set>
+            delete_flag = 1
+        </set>
+        <where>
+            <if test="null !=list">
+                id in
+                <foreach collection="list" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
 
-         </if>
-         </where>
+            </if>
+        </where>
     </update>
     <update id="updateRebate" parameterType="com.nado.rlzy.db.pojo.EntryResignation">
         update entry_resignation
         <set>
-        <if test="null != rebateMaleEntry">
-         rebate_male_entry = #{rebateMaleEntry},
-        </if>
-        <if test="null != rebateFemaleEntry">
-        rebate_female_entry = #{rebateFemaleEntry},
-        </if>
-        <if test="null != rebateTime">
-        rebate_time = #{rebateTime}
-        </if>
+            <if test="null != rebateMaleEntry">
+                rebate_male_entry = #{rebateMaleEntry},
+            </if>
+            <if test="null != rebateFemaleEntry">
+                rebate_female_entry = #{rebateFemaleEntry},
+            </if>
+            <if test="null != rebateTime">
+                rebate_time = #{rebateTime}
+            </if>
         </set>
         <where>
-        <if test="null != id">
-         id = #{id}
-        </if>
+            <if test="null != id">
+                id = #{id}
+            </if>
 
         </where>
+    </update>
+    <update id="updateArrayListt">
+            update entry_resignation set
+                rebate_male_entry = #{itemm.rebateMaleEntry},
+                rebate_female_entry = #{itemm.rebateFemaleEntry},
+                rebate_time = #{itemm.rebateTime} where
+                id = #{itemm.id}
+
+
     </update>
     <select id="selectByAll" resultMap="BaseResultMap">
         select * from entry_resignation where delete_flag = 0

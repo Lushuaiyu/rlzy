@@ -677,6 +677,143 @@
             and briefChapterStatus = 0
         </where>
     </update>
+    <update id="update2" parameterType="com.nado.rlzy.bean.query.EditBriefchapterQuery">
+        update hr_briefchapter
+        <set>
+            <if test="recruitedCompanyId != null">
+                recruitedCompanyId = #{recruitedCompanyId},
+            </if>
+            <if test="postId != null">
+                PostId = #{postId},
+            </if>
+            <if test="null != recruitingNo">
+                RecruitingNo = #{recruitingNo},
+            </if>
+            <if test="avgSalary != null">
+                avgSalary = #{avgSalary},
+            </if>
+            <if test="detailSalary != null">
+                detailSalary = #{detailSalary},
+            </if>
+            <if test="detailSalaryWay != null">
+                detailSalaryWay = #{detailSalaryWay},
+            </if>
+            <if test="educationId != null">
+                educationId = #{educationId},
+            </if>
+            <if test="experienceId != null">
+                experienceId = #{experienceId},
+            </if>
+            <if test="welfareId != null">
+                welfareId = #{welfareId},
+            </if>
+            <if test="postDetail != null">
+                PostDetail = #{postDetail},
+            </if>
+
+            <if test="interviewTime != null">
+                interviewTime = #{interviewTime},
+            </if>
+            <if test="interviewAddress != null">
+                interview_address = #{interviewAddress},
+            </if>
+            <if test="registerTime != null">
+                registerTime = #{registerTime},
+            </if>
+            <if test="contractWay != null">
+                contractWay = #{contractWay},
+            </if>
+            <if test="contractTime != null">
+                contractTime = #{contractTime},
+            </if>
+            <if test="hireWay != null">
+                hireWay = #{hireWay},
+            </if>
+            <if test="rebate != null">
+                Rebate = #{rebate},
+            </if>
+            <if test="userId != null">
+                userId = #{userId},
+            </if>
+            <if test="status != null">
+                Status = #{status},
+            </if>
+            <if test="null != manNumNow">
+                man_num = #{manNumNow},
+            </if>
+            <if test="null != womenNumNow">
+                women_num = #{womenNumNow},
+            </if>
+            <if test="null != manAgeId">
+                man_age_id = #{manAgeId},
+            </if>
+            <if test="null != womenAgeId">
+                women_age_id = #{womenAgeId},
+            </if>
+            <if test="null != professionId">
+                profession_id = #{professionId},
+            </if>
+            <if test="null != workWayId">
+                work_way_id = #{workWayId},
+            </if>
+            <if test="null != workTimeArrangeId">
+                work_time_arrange_id = #{workTimeArrangeId},
+            </if>
+            <if test="null != clothingRequirementId">
+                clothing_requirement_id = #{clothingRequirementId},
+            </if>
+            <if test="null != workAddress">
+                work_address = #{workAddress},
+            </if>
+            <if test="null != hobbyId">
+                hobby_id = #{hobbyId},
+            </if>
+            <if test="null != overtimeTimeId">
+                overtime_times_id = #{overtimeTimeId},
+            </if>
+            <if test="null != descriptionJobPhotoUrl">
+                description_job_photo_url = #{descriptionJobPhotoUrl},
+            </if>
+            <if test="null != noEmployerAddress">
+                no_employer_address = #{noEmployerAddress},
+            </if>
+            <if test="null != employerCertificatePhotoUrl">
+                employer_certificate_photo_url = #{employerCertificatePhotoUrl},
+            </if>
+            <if test="null != contractWayDetailId">
+                contract_way_detail_id = #{contractWayDetailId},
+            </if>
+            <if test="null != acceptRecommendedResume">
+                accept_recommended_resume = #{acceptRecommendedResume},
+            </if>
+            <if test="null != rebateMaleInterview">
+                rebate_male_interview = #{rebateMaleInterview},
+            </if>
+            <if test="null != rebateMaleReport">
+                rebate_male_report = #{rebateMaleReport} ,
+            </if>
+            <if test="null != rebateMaleEntry">
+                rebate_male_entry = #{rebateMaleEntry},
+            </if>
+            <if test="null != rebateFemaleInterview">
+                rebate_female_interview = #{rebateFemaleInterview},
+            </if>
+            <if test="null != rebateFemaleReport">
+                rebate_female_report = #{rebateFemaleReport},
+            </if>
+            <if test="null != rebateFemaleEntry">
+                rebate_female_entry = #{rebateFemaleEntry},
+            </if>
+            <if test="null != rebateTimeEntry">
+                rebate_time_entry,
+            </if>
+        </set>
+        where
+        <if test="briefchapter">
+            Id = #{briefchapter}
+        </if>
+
+    </update>
     <select id="queryBriefcharpterDtoByParams" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
         select (SELECT GROUP_CONCAT(d.name)
@@ -2233,7 +2370,7 @@
     </select>
 
     <select id="interviewRebateOrReportRebate" resultMap="BaseResultMap">
-        select rebate_female_interview, rebate_male_interview, rebate_male_report, rebate_female_report from
+        select Rebate, rebate_female_interview, rebate_male_interview, rebate_male_report, rebate_female_report from
         hr_briefchapter
         <where>
             briefChapterStatus = 0
@@ -2241,6 +2378,19 @@
                 and Id = #{briechapterId}
             </if>
         </where>
+    </select>
+    <select id="selectRebateByBriefcapterId" resultMap="BaseResultMap">
+        select rebate_male_interview,
+         rebate_male_report,
+          rebate_male_entry,
+           rebate_female_interview,
+            rebate_female_report,
+             rebate_female_entry,
+             Rebate
+              from hr_briefchapter where
+              briefChapterStatus = 0
+               <if test="null != id"></if>
+               and Id = #{id}
     </select>
 
 </mapper>

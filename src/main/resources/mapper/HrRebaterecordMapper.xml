@@ -138,10 +138,10 @@
                 RebateMale = #{item.rebateMale} ,
                 RebateFemale = #{item.rebateFemale},
                 RebateTime = #{item.rebateTime}
+            </set>
                 <where>
                     BriefChapterId = #{item.briefchapterId} and RebateType = #{item.rebateType}
                 </where>
-            </set>
         </foreach>
 
     </update>

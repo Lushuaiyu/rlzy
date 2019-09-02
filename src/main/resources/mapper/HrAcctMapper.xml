@@ -100,5 +100,8 @@
           </if>
           </where>
     </select>
+    <select id="selectAcctIdByUserId" resultMap="BaseResultMap">
+    select Id, AcctBalance, IceBalance from hr_acct where UserId = #{userId}
+    </select>
 
 </mapper>

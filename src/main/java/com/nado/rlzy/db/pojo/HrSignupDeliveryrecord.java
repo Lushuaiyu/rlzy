@@ -3,6 +3,7 @@ package com.nado.rlzy.db.pojo;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -35,9 +36,16 @@ public class HrSignupDeliveryrecord {
     @Column(name = "job_status")
     private Integer jobStatus;
 
+    /**
+     * 未面试
+     */
     @Transient
     private String interviewFont;
 
+    /**
+     * 未报到
+     */
+    @Transient
     private String reportFont;
 
     /**
@@ -90,5 +98,18 @@ public class HrSignupDeliveryrecord {
 
     @Column(name = "rebate_type")
     private Integer rebateType;
+
+    @Column(name = "accept_rebate_amount")
+    private BigDecimal acceptRebateAmount;
+
+    @Column(name = "rebate_interview_status")
+    private Integer rebateInterviewStatus;
+
+    @Column(name = "rebate_report_status")
+    private Integer rebateReportStatus;
+
+    @Column(name = "rebate_entry_status")
+    private Integer rebateEntryStatus;
+
 
 }

@@ -1495,18 +1495,60 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int IWantToSignUp(HrSignupDeliveryrecord deliveryrecord) {
+        //查询待返佣金额 简章id前台传过来
+        Integer id = deliveryrecord.getBriefChapterId();
+        HrBriefchapter hrBriefchapter = mapper.selectRebateByBriefcapterId(id);
+        BigDecimal maleInterview = hrBriefchapter.getRebateMaleInterview();
+        BigDecimal maleReport = hrBriefchapter.getRebateMaleReport();
+        BigDecimal maleEntry = hrBriefchapter.getRebateMaleEntry();
+        BigDecimal femaleInterview = hrBriefchapter.getRebateFemaleInterview();
+        BigDecimal femaleReport = hrBriefchapter.getRebateFemaleReport();
+        BigDecimal femaleEntry = hrBriefchapter.getRebateFemaleEntry();
+        //待返佣的金钱
+        BigDecimal addRebate = maleInterview.add(maleReport).add(maleEntry).add(femaleInterview).add(femaleReport).add(femaleEntry);
         HrSignupDeliveryrecord deliveryrecord1 = new HrSignupDeliveryrecord();
         deliveryrecord1.setSignupId(deliveryrecord.getSignupId());
         deliveryrecord1.setBriefChapterId(deliveryrecord.getBriefChapterId());
         deliveryrecord1.setJobStatus(0);
         deliveryrecord.setStatus(0);
         deliveryrecord1.setCreateTime(LocalDateTime.now());
-        return signupDeliveryrecordMapper.insertSelective(deliveryrecord1);
+        deliveryrecord1.setAcceptRebateAmount(addRebate);
+         signupDeliveryrecordMapper.insertSelective(deliveryrecord1);
+        //招聘人数 --
+        Integer[] number = deliveryrecord.getNumber();
+        List<Integer> list = Arrays.asList(number);
+        long count = list.stream().count();
+        Integer count1 = (int) count;
+
+        Assert.isFalse(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
+        //查询简章的招聘人数
+        List<HrBriefchapter> hrBriefchapters = mapper.queryRecruitingNo(deliveryrecord.getBriefChapterId());
+        hrBriefchapters.stream()
+                .map(d -> {
+                    Integer recruitingNo = d.getRecruitingNo();
+                    if (recruitingNo.compareTo(0) <= 0) {
+                        //招聘人数 <= 0 简章已结束(已过期)
+                        mapper.updateBriefchapterStatus(deliveryrecord.getBriefChapterId(), 4 );
+                    }
+                    return d;
+                }).collect(Collectors.toList());
+        return 1;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int referrerToSIgnUp(HrSignupDeliveryrecord deliveryrecord) {
+        //查询待返佣金额 简章id前台传过来
+        Integer id = deliveryrecord.getBriefChapterId();
+        HrBriefchapter hrBriefchapter = mapper.selectRebateByBriefcapterId(id);
+        BigDecimal maleInterview = hrBriefchapter.getRebateMaleInterview();
+        BigDecimal maleReport = hrBriefchapter.getRebateMaleReport();
+        BigDecimal maleEntry = hrBriefchapter.getRebateMaleEntry();
+        BigDecimal femaleInterview = hrBriefchapter.getRebateFemaleInterview();
+        BigDecimal femaleReport = hrBriefchapter.getRebateFemaleReport();
+        BigDecimal femaleEntry = hrBriefchapter.getRebateFemaleEntry();
+        //待返佣的金钱
+        BigDecimal addRebate = maleInterview.add(maleReport).add(maleEntry).add(femaleInterview).add(femaleReport).add(femaleEntry);
         List<HrSignupDeliveryrecord> deliveryrecords = new ArrayList<>();
         List<HrSignupDeliveryrecord> list1 = new ArrayList<>();
         list1.add(deliveryrecord);
@@ -1517,12 +1559,13 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                     dto.setJobStatus(0);
                     dto.setStatus(0);
                     dto.setCreateTime(LocalDateTime.now());
+                    dto.setAcceptRebateAmount(addRebate);
                     deliveryrecords.add(dto);
                     return dto;
                 })
                 .collect(Collectors.toList());
-        Assert.isFalse(signupDeliveryrecordMapper.referrerToSIgnUp(deliveryrecords) < 1, RlzyConstant.OPS_FAILED_MSG);
-        //招聘人数 -
+        Assert.isFalse(signupDeliveryrecordMapper.insertList(deliveryrecords) < 1, RlzyConstant.OPS_FAILED_MSG);
+        //招聘人数 --
         Integer[] number = deliveryrecord.getNumber();
         List<Integer> list = Arrays.asList(number);
         long count = list.stream().count();
@@ -1530,6 +1573,17 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
         Assert.isFalse(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
 
+        //查询简章的招聘人数
+        List<HrBriefchapter> hrBriefchapters = mapper.queryRecruitingNo(deliveryrecord.getBriefChapterId());
+        hrBriefchapters.stream()
+                .map(d -> {
+                    Integer recruitingNo = d.getRecruitingNo();
+                    if (recruitingNo.compareTo(0) <= 0) {
+                        //招聘人数 <= 0 简章已结束(已过期)
+                        mapper.updateBriefchapterStatus(deliveryrecord.getBriefChapterId(), 4 );
+                    }
+                    return d;
+                }).collect(Collectors.toList());
         return 1;
     }
 

@@ -664,7 +664,6 @@
     </update>
     <update id="waitingForCommissionToBecomeRebateSIgnUp"></update>
 
-
     <select id="selectJobListOverview" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.JobListQuery">
 

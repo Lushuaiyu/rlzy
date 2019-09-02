@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.var;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -49,13 +50,18 @@ public class MyReleaseController extends BaseController {
 
     @RequestMapping(value = "myRelease")
     @ResponseBody
-    @ApiOperation(notes = "招聘端 我的发布", value = "招聘端 我的发布", httpMethod = "POST")
+    @ApiOperation(notes = "招聘端 我的发布 简章概览", value = "招聘端 我的发布 简章概览", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "status", name = "状态", dataType = "Integer", required = true)
+            @ApiImplicitParam(value = "status", name = "状态", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "简章状态", dataType = "Integer", required = true)
 
     })
-    public ResultJson myRelease(Integer userId, Integer status) {
+    public ResultJson myRelease(Integer userId, Integer status, Integer type) {
+        if (type.equals(2)){
+            //未通过
+
+        }
         Map<String, Object> map = service.myRelease(userId, status);
 
         ResultJson result = new ResultJson();
@@ -119,7 +125,7 @@ public class MyReleaseController extends BaseController {
                     @ApiImplicitParam(name = "type", value = "身份, 代招单位还是招聘单位", dataType = "Integer", required = true)
             }
     )
-    public ResultInfo save(ReleaseBriefcharpterQuery query, Integer type) {
+    public ResultInfo save(@RequestBody ReleaseBriefcharpterQuery query, Integer type) {
         //图片上传
         String head = centerService.updateHead(query.getDescriptionJobPhotoFile());
         query.setDescriptionJobPhotoUrl(head);
@@ -255,13 +261,13 @@ public class MyReleaseController extends BaseController {
 
             @ApiImplicitParam(value = "type", name = "1 招聘详情 待面试 已面试 2 未面试 3 已面试 面试未通过 |" +
                     "招聘详情 待面试 已面试 面试未通过 | 4 招聘详情 待面试 已面试 面试已通过",
-                    dataType = "integet", required = true) ,
+                    dataType = "integet", required = true),
             @ApiImplicitParam(value = "sex", name = "性别 0 女 1 男 type = 4 时 用得到", dataType = "int", required = true),
-            @ApiImplicitParam(value = "signUpUserid", name = "求职者或者推荐人id", dataType = "int", required = true),
+            @ApiImplicitParam(value = "signUpUserId", name = "求职者或者推荐人id", dataType = "int", required = true),
             @ApiImplicitParam(value = "busInessUserId", name = "企业用户id", dataType = "int", required = true)
     })
     public ResultJson recruitmentInterviewd(Integer signUpId, Integer type, Integer userId, Integer briefChapterId,
-                                            Integer sex, Integer signUpUserid, Integer busInessUserId) {
+                                            Integer sex, Integer signUpUserId, Integer busInessUserId) {
         ResultJson resultJson = new ResultJson();
         if (type.equals(1)) {
             // 招聘详情 待面试 已面试
@@ -283,7 +289,7 @@ public class MyReleaseController extends BaseController {
             resultJson.setData(count);
         } else if (type.equals(4)) {
             //招聘详情 待面试 已面试 面试已通过
-            int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, sex, signUpUserid, busInessUserId);
+            int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, sex, signUpUserId, busInessUserId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
@@ -300,13 +306,12 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "reason", name = "未报到原因", dataType = "integer", required = true),
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "type", name = "违规类型 0 0 社保原因(无责) 1 其他原因(无责) 3 其他原因(有责)", dataType = "integer", required = true),
             @ApiImplicitParam(value = "sex", name = "性别 0 女 1 男 type = 2 时 用得到", dataType = "int", required = true),
-            @ApiImplicitParam(value = "signUpUserid", name = "求职者或者推荐人id", dataType = "int", required = true),
+            @ApiImplicitParam(value = "signUpUserId", name = "求职者或者推荐人id", dataType = "int", required = true),
             @ApiImplicitParam(value = "busInessUserId", name = "企业用户id", dataType = "int", required = true)
     })
     public ResultJson notReported(Integer signUpId, Integer typp, Integer reason, Integer briefChapterId,
-                                  Integer userId, Integer type, Integer sex, Integer signUpUserid, Integer busInessUserId ) {
+                                  Integer userId, Integer sex, Integer signUpUserId, Integer busInessUserId) {
         ResultJson resultJson = new ResultJson();
         if (typp.equals(1)) {
             Map<String, Object> map = service.notReported(signUpId, briefChapterId, userId);
@@ -314,13 +319,13 @@ public class MyReleaseController extends BaseController {
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
         } else if (typp.equals(2)) {
-            int count = service.reported(signUpId, briefChapterId, sex, signUpUserid, busInessUserId);
+            int count = service.reported(signUpId, briefChapterId, sex, signUpUserId, busInessUserId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
 
         } else if (typp.equals(3)) {
-            int count = service.noReportedReason(reason, signUpId, briefChapterId, type);
+            int count = service.noReportedReason(reason, signUpId, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
@@ -409,42 +414,43 @@ public class MyReleaseController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "query", name = "编辑简章 入参 详见 EditBriefchapter", dataType = "EditBriefchapter", required = true),
             @ApiImplicitParam(value = "query1", name = "编辑简章 入参 详见 ReleaseBriefcharpterQuery", dataType = "EditBriefchapter", required = true),
-            @ApiImplicitParam(value = "type", name = "1 正在招 2 未通过", dataType = "EditBriefchapter", required = true),
-            @ApiImplicitParam(value = "typp", name = "1 代招单位 2 招聘单位", dataType = "EditBriefchapter", required = true)
+            @ApiImplicitParam(value = "typp", name = "1 正在招和未通过是一个接口 正在招 前台禁止用户填就可以 2 待审核 3 已结束", dataType = "EditBriefchapter", required = true)
     })
-    public ResultJson editBriefchapterMyRelease(EditBriefchapterQuery query, ReleaseBriefcharpterQuery query1, Integer type) {
+    public ResultJson editBriefchapterMyRelease(@RequestBody EditBriefchapterQuery query, Integer type) {
         HashMap<String, Object> map = new HashMap<>();
         ResultJson resultJson = new ResultJson();
-        if (type.equals(1)) {
-            if (query.getTypp().equals(1)){
-            //正在招 代招单位
-            Integer count = service.editBriefchapterMyRelease(query);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-            map.put("editBriefchapterMyRelease", count);
-            resultJson.setData(map);
+
+            if (query.getTypp().equals(1)) {
+                //正在招 代招单位
+                //图片上传
+                String descriptionJobPhoto = centerService.updateHead(query.getDescriptionJobPhotoUrl2());
+                String employerCertificatePhoto = centerService.updateHead(query.getEmployerCertificatePhotoUrl2());
+                query.setDescriptionJobPhotoUrl(descriptionJobPhoto);
+                query.setEmployerCertificatePhotoUrl(employerCertificatePhoto);
+                Integer count = service.editBriefchapterMyRelease(query);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+                map.put("editBriefchapterMyRelease", count);
+                resultJson.setData(map);
             } else {
                 //招聘单位
+                //图片上传
+                String descriptionJobPhoto = centerService.updateHead(query.getDescriptionJobPhotoUrl2());
+                String employerCertificatePhoto = centerService.updateHead(query.getEmployerCertificatePhotoUrl2());
+                query.setDescriptionJobPhotoUrl(descriptionJobPhoto);
+                query.setEmployerCertificatePhotoUrl(employerCertificatePhoto);
                 Integer count = service.editBriefchapterMyReleaseRecruitment(query);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
                 map.put("editBriefchapterMyReleaseRecruitment", count);
             }
-        } else {
-            //未通过
-            int i = service.editBriefchapterFail(query1);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-            map.put("editBriefchapterFail", i);
-            resultJson.setData(map);
-        }
         return resultJson;
     }
 
     @RequestMapping(value = "selectEditBriefchapter")
     @ResponseBody
     @ApiOperation(value = "编辑简章时查询招聘简章", notes = "编辑简章时查询招聘简章", httpMethod = "POST")
-    public ResultJson selectEditBriefchapter(Integer briefchapterId){
+    public ResultJson selectEditBriefchapter(Integer briefchapterId) {
         ResultJson resultJson = new ResultJson();
         BriefcharpterQuery query = new BriefcharpterQuery();
         query.setBriefcharpterId(briefchapterId);

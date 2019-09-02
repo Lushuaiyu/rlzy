@@ -239,9 +239,25 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
     private BigDecimal rebateFemaleReport;
 
     /**
+     * 男生入职返佣 总计
+     */
+    private BigDecimal rebateMaleEntry;
+
+    /**
+     * 女生入职返佣 总计
+     */
+    private BigDecimal rebateFemaleEntry;
+
+    /**
      * 入职返佣
      */
     private List<EntryResignation> rebateEntry;
+
+    /**
+     * 返佣类型 0 面试 报道 入职
+     */
+    private Integer rebType;
+
 
 
 

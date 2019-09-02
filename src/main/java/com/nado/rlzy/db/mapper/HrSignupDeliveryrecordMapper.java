@@ -20,5 +20,16 @@ public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrec
     int referrerToSIgnUp(@Param("entites") List<HrSignupDeliveryrecord> entites);
 
 
+    /**
+     * 待返佣金额减少 面试返佣状态变成已返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:58 2019/9/2
+     * @Param [deliveryrecord]
+     * @return int
+     **/
+    int reducedRebateAmount(HrSignupDeliveryrecord deliveryrecord);
+
+
 
 }

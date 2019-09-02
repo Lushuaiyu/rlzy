@@ -1,207 +1,34 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nado.rlzy.db.mapper.HrAcctDetailMapper" >
-  <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrAcctDetail" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="acctId" property="acctid" jdbcType="INTEGER" />
-    <result column="amount" property="amount" jdbcType="DECIMAL" />
-    <result column="beforeAmount" property="beforeamount" jdbcType="DECIMAL" />
-    <result column="afterAmount" property="afteramount" jdbcType="DECIMAL" />
-    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
-    <result column="withdrawWay" property="withdrawway" jdbcType="INTEGER" />
-    <result column="payWay" property="payway" jdbcType="INTEGER" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="type" property="type" jdbcType="INTEGER" />
-    <result column="alipayNum" property="alipaynum" jdbcType="VARCHAR" />
-    <result column="withdrawAmount" property="withdrawamount" jdbcType="DECIMAL" />
-    <result column="accountName" property="accountname" jdbcType="VARCHAR" />
-    <result column="bankName" property="bankname" jdbcType="VARCHAR" />
-    <result column="bankcardNum" property="bankcardnum" jdbcType="VARCHAR" />
-    <result column="signUpId" property="signupid" jdbcType="INTEGER" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nado.rlzy.db.mapper.HrAcctDetailMapper">
+  <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrAcctDetail">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="acctId" jdbcType="INTEGER" property="acctid" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="beforeAmount" jdbcType="DECIMAL" property="beforeamount" />
+    <result column="afterAmount" jdbcType="DECIMAL" property="afteramount" />
+    <result column="withdrawFee" jdbcType="DECIMAL" property="withdrawfee" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="withdrawWay" jdbcType="INTEGER" property="withdrawway" />
+    <result column="payWay" jdbcType="INTEGER" property="payway" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="alipayNum" jdbcType="VARCHAR" property="alipaynum" />
+    <result column="withdrawAmount" jdbcType="DECIMAL" property="withdrawamount" />
+    <result column="accountName" jdbcType="VARCHAR" property="accountname" />
+    <result column="bankName" jdbcType="VARCHAR" property="bankname" />
+    <result column="bankcardNum" jdbcType="VARCHAR" property="bankcardnum" />
+    <result column="signUpId" jdbcType="INTEGER" property="signupid" />
+    <result column="briefChapterId" jdbcType="INTEGER" property="briefchapterid" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, acctId, amount, beforeAmount, afterAmount, createTime, withdrawWay, payWay, status, 
-    type, alipayNum, withdrawAmount, accountName, bankName, bankcardNum, signUpId
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from hr_acct_detail
-    where id = #{id,jdbcType=INTEGER}
-  </select>
 
-
-  <insert id="insertSelective" parameterType="com.nado.rlzy.db.pojo.HrAcctDetail" >
-    insert into hr_acct_detail
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="acctid != null" >
-        acctId,
-      </if>
-      <if test="amount != null" >
-        amount,
-      </if>
-      <if test="beforeamount != null" >
-        beforeAmount,
-      </if>
-      <if test="afteramount != null" >
-        afterAmount,
-      </if>
-      <if test="createtime != null" >
-        createTime,
-      </if>
-      <if test="withdrawway != null" >
-        withdrawWay,
-      </if>
-      <if test="payway != null" >
-        payWay,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="type != null" >
-        type,
-      </if>
-      <if test="alipaynum != null" >
-        alipayNum,
-      </if>
-      <if test="withdrawamount != null" >
-        withdrawAmount,
-      </if>
-      <if test="accountname != null" >
-        accountName,
-      </if>
-      <if test="bankname != null" >
-        bankName,
-      </if>
-      <if test="bankcardnum != null" >
-        bankcardNum,
-      </if>
-      <if test="signupid != null" >
-        signUpId,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="acctid != null" >
-        #{acctid,jdbcType=INTEGER},
-      </if>
-      <if test="amount != null" >
-        #{amount,jdbcType=DECIMAL},
-      </if>
-      <if test="beforeamount != null" >
-        #{beforeamount,jdbcType=DECIMAL},
-      </if>
-      <if test="afteramount != null" >
-        #{afteramount,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="withdrawway != null" >
-        #{withdrawway,jdbcType=INTEGER},
-      </if>
-      <if test="payway != null" >
-        #{payway,jdbcType=INTEGER},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="type != null" >
-        #{type,jdbcType=INTEGER},
-      </if>
-      <if test="alipaynum != null" >
-        #{alipaynum,jdbcType=VARCHAR},
-      </if>
-      <if test="withdrawamount != null" >
-        #{withdrawamount,jdbcType=DECIMAL},
-      </if>
-      <if test="accountname != null" >
-        #{accountname,jdbcType=VARCHAR},
-      </if>
-      <if test="bankname != null" >
-        #{bankname,jdbcType=VARCHAR},
-      </if>
-      <if test="bankcardnum != null" >
-        #{bankcardnum,jdbcType=VARCHAR},
-      </if>
-      <if test="signupid != null" >
-        #{signupid,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
 
   <insert id="accountDetailTableAddsReferrerRebate" parameterType="com.nado.rlzy.db.pojo.HrAcctDetail">
     insert into hr_acct_detail (acctId, amount, signUpId, createTime)
     values
-    (
-    <if test="null != acctid">
-    #{acctid},
-    </if>
-    <if test="null != amount">
-     #{amount},
-    </if>
-    <if test="null != signupid">
-      #{signupid},
-    </if>
-    <if test="null != createtime">
-       #{createtime})
-    </if>
+    (#{acctid},#{amount},#{signupid},#{createtime})
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nado.rlzy.db.pojo.HrAcctDetail" >
-    update hr_acct_detail
-    <set >
-      <if test="acctid != null" >
-        acctId = #{acctid,jdbcType=INTEGER},
-      </if>
-      <if test="amount != null" >
-        amount = #{amount,jdbcType=DECIMAL},
-      </if>
-      <if test="beforeamount != null" >
-        beforeAmount = #{beforeamount,jdbcType=DECIMAL},
-      </if>
-      <if test="afteramount != null" >
-        afterAmount = #{afteramount,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null" >
-        createTime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="withdrawway != null" >
-        withdrawWay = #{withdrawway,jdbcType=INTEGER},
-      </if>
-      <if test="payway != null" >
-        payWay = #{payway,jdbcType=INTEGER},
-      </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=INTEGER},
-      </if>
-      <if test="alipaynum != null" >
-        alipayNum = #{alipaynum,jdbcType=VARCHAR},
-      </if>
-      <if test="withdrawamount != null" >
-        withdrawAmount = #{withdrawamount,jdbcType=DECIMAL},
-      </if>
-      <if test="accountname != null" >
-        accountName = #{accountname,jdbcType=VARCHAR},
-      </if>
-      <if test="bankname != null" >
-        bankName = #{bankname,jdbcType=VARCHAR},
-      </if>
-      <if test="bankcardnum != null" >
-        bankcardNum = #{bankcardnum,jdbcType=VARCHAR},
-      </if>
-      <if test="signupid != null" >
-        signUpId = #{signupid,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-
 </mapper>

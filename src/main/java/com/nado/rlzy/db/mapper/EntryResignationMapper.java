@@ -71,4 +71,6 @@ public interface EntryResignationMapper extends Mapper<EntryResignation>, MySqlM
 
 
 
+
+
 }

@@ -137,7 +137,7 @@ public interface MyReleaseService {
      * @Date 13:50 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserid, Integer busInessUserId);
+    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserId, Integer busInessUserId);
 
     /**
      * 招聘详情 待报道 未报到
@@ -159,7 +159,7 @@ public interface MyReleaseService {
      * @Date 14:40 2019/7/19
      * @Param [signUpId]
      **/
-    int reported(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserid, Integer busInessUserId);
+    int reported(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserId, Integer busInessUserId);
 
 
     /**
@@ -172,7 +172,7 @@ public interface MyReleaseService {
      * @Description //TODO
      * @Date 14:59 2019/7/19
      **/
-    int noReportedReason(Integer reason, Integer signUpId, Integer briefChapterId, Integer type);
+    int noReportedReason(Integer reason, Integer signUpId, Integer briefChapterId);
 
 
     /**
@@ -319,16 +319,15 @@ public interface MyReleaseService {
      **/
     List<EntryResignation> selectEntryRebate(Integer briefchapterId);
 
-    /**
-     * 招聘端 我的发布 不通过 编辑简章
-     *
+   /* *//**
+     * 招聘端 我的发布 不通过 编辑简章 代招单位 和正在招一样
      * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:18 2019/8/20
      * @Param [query]
-     **/
-    int editBriefchapterFail(ReleaseBriefcharpterQuery query);
+     **//*
+    int editBriefchapterFail(ReleaseBriefcharpterQuery query);*/
 
 
     /**

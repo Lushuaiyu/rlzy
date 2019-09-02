@@ -85,6 +85,16 @@ public interface HrAcctMapper extends Mapper<HrAcct> {
      **/
     int rebateBusiness(@Param("businessMoney") BigDecimal businessMoney, @Param("userId") Integer userId );
 
+    /**
+     * 查询acct id
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:02 2019/9/2
+     * @Param [hrAcct]
+     * @return com.nado.rlzy.db.pojo.HrAcct
+     **/
+    HrAcct selectAcctIdByUserId(@Param("userId") Integer userId);
+
 
 
 

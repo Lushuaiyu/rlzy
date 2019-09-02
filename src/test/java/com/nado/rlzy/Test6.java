@@ -1,17 +1,19 @@
 package com.nado.rlzy;
 
+import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.base.BaseTest;
-import com.nado.rlzy.bean.query.JobListQuery;
-import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
-import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
-import com.nado.rlzy.db.mapper.HrSignUpMapper;
+import com.nado.rlzy.db.mapper.*;
+import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
+import com.nado.rlzy.db.pojo.HrSignupDeliveryrecord;
+import com.nado.rlzy.platform.constants.RlzyConstant;
 import org.junit.Test;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName
@@ -31,6 +33,17 @@ public class Test6 extends BaseTest {
     @Resource
     private HrSignUpMapper signUpMapper;
 
+    @Resource
+    private HrAcctDetailMapper detailMapper;
+
+    @Resource
+    private HrAcctMapper acctMapper;
+
+    @Resource
+    private EntryResignationMapper resignationMapper;
+
+    @Resource
+    private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
     @Test
     public void test1() {
 
@@ -302,12 +315,52 @@ public class Test6 extends BaseTest {
     }
     @Test
     public void test6(){
-        JobListQuery query = new JobListQuery();
+        /*JobListQuery query = new JobListQuery();
         query.setSex(0);
-        System.out.println(signUpMapper.selectJobListOverview(query));
+        System.out.println(signUpMapper.selectJobListOverview(query));*/
+        //查询账户id hracct 表
+      /*  HrAcct hrAcct = acctMapper.selectAcctIdByUserId(4);
+        Integer acctId = hrAcct.getId();
+        System.out.println(acctId);*/
+        HrRebaterecord rebaterecord = new HrRebaterecord();
+        rebaterecord.setRebateMale(BigDecimal.valueOf(555));
+        rebaterecord.setStatus(1);
+        rebaterecord.setBriefchapterId(2);
+        rebaterecord.setRebateType(1);
+        List<HrRebaterecord> list = new ArrayList<>();
+
+        rebaterecordMapper.updateBatch(list);
 
 
     }
+
+    @Test
+    public void test7(){
+        //查询待返佣金额 简章id前台传过来
+
+        HrBriefchapter hrBriefchapter = mapper.selectRebateByBriefcapterId(1);
+        BigDecimal maleInterview = hrBriefchapter.getRebateMaleInterview();
+        BigDecimal maleReport = hrBriefchapter.getRebateMaleReport();
+        BigDecimal maleEntry = hrBriefchapter.getRebateMaleEntry();
+        BigDecimal femaleInterview = hrBriefchapter.getRebateFemaleInterview();
+        BigDecimal femaleReport = hrBriefchapter.getRebateFemaleReport();
+        BigDecimal femaleEntry = hrBriefchapter.getRebateFemaleEntry();
+        //待返佣的金钱
+        BigDecimal addRebate = maleInterview.add(maleReport).add(maleEntry).add(femaleInterview).add(femaleReport).add(femaleEntry);
+        System.out.println(addRebate);
+        HrSignupDeliveryrecord recd = new HrSignupDeliveryrecord();
+        recd.setStatus(1);
+        recd.setJobStatus(4);
+        recd.setAcceptRebateAmount(BigDecimal.valueOf(55));
+        recd.setBriefChapterId(1);
+        recd.setAcceptRebateAmount(addRebate);
+        List<HrSignupDeliveryrecord> list = new ArrayList<>();
+        list.add(recd);
+
+        Assert.isFalse(signupDeliveryrecordMapper.insertList(list) < 1, RlzyConstant.OPS_FAILED_MSG);
+    }
+
+
 
 
 }

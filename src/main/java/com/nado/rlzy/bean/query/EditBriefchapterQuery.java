@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -23,6 +24,79 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EditBriefchapterQuery {
+
+    private Integer id;
+    /**
+     * 代招单位
+     */
+    private String recruitedCompanyId;
+
+    private Integer postId;
+
+    private Integer recruitingNo;
+
+    private BigDecimal avgSalary;
+
+    private BigDecimal detailSalary;
+
+    private String detailSalaryWay;
+
+    private String educationId;
+
+    private String experienceId;
+
+    private String welfareId;
+
+    private String postDetail;
+
+    private String interviewTime;
+
+    private String interviewAddress;
+
+    private String registerTime;
+
+    private Integer contractWay;
+
+    private String contractTime;
+
+    private Integer hireWay;
+
+   private Integer status;
+
+   private Integer manAgeId;
+
+   private Integer womenAgeId;
+
+   private Integer professionId;
+
+   private Integer workWayId;
+
+   private Integer workTimeArrangeId;
+
+   private Integer clothingRequirementId;
+
+   private String workAddress;
+
+   private Integer hobbyId;
+
+   private Integer overtimeTimeId;
+
+   private MultipartFile descriptionJobPhotoUrl2;
+
+   private String descriptionJobPhotoUrl;
+
+   private MultipartFile employerCertificatePhotoUrl2;
+
+   private String employerCertificatePhotoUrl;
+
+   private String noEmployerAddress;
+
+   private Integer contractWayDetailId;
+
+   private Integer acceptRecommendedResume;
+
+
+
     @ApiModelProperty(value = "编辑简章时 返佣的钱 男")
     private BigDecimal rebateNowMan;
 
@@ -75,7 +149,7 @@ public class EditBriefchapterQuery {
     /**
      * 男生面试返佣
      */
-    private BigDecimal rebateMaleInterview = BigDecimal.valueOf(0);
+    private BigDecimal rebateMaleInterview;
 
     /**
      * 女生面试返佣
@@ -90,12 +164,12 @@ public class EditBriefchapterQuery {
     /**
      * 女生报道返佣
      */
-    private BigDecimal rebateFemaleReport ;
+    private BigDecimal rebateFemaleReport;
 
     /**
      * 男生入职返佣
      */
-    private BigDecimal rebateMaleEntry ;
+    private BigDecimal rebateMaleEntry;
 
     /**
      * 男生入职返佣 临时变量
@@ -118,7 +192,7 @@ public class EditBriefchapterQuery {
     private Date rebateTimeEntry;
 
     /**
-     *  1 代招单位 2 招聘单位
+     * 1 代招单位 2 招聘单位
      */
     private Integer typp;
 
@@ -134,7 +208,6 @@ public class EditBriefchapterQuery {
      * 发布简章时的返佣表的id
      */
     private Integer resignationId;
-
 
 
 }

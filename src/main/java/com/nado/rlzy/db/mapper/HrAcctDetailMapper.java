@@ -1,13 +1,9 @@
 package com.nado.rlzy.db.mapper;
 
 import com.nado.rlzy.db.pojo.HrAcctDetail;
+import tk.mybatis.mapper.common.Mapper;
 
-public interface HrAcctDetailMapper {
-    int insertSelective(HrAcctDetail record);
-
-    HrAcctDetail selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(HrAcctDetail record);
+public interface HrAcctDetailMapper extends Mapper<HrAcctDetail> {
 
 
     /**
