@@ -1514,8 +1514,8 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         deliveryrecord1.setCreateTime(LocalDateTime.now());
         deliveryrecord1.setAcceptRebateAmount(addRebate);
          signupDeliveryrecordMapper.insertSelective(deliveryrecord1);
-        //招聘人数 --
-        Integer[] number = deliveryrecord.getNumber();
+        //招聘人数 - 1 本人报名 就一个人
+        Integer[] number = new Integer[] {1};
         List<Integer> list = Arrays.asList(number);
         long count = list.stream().count();
         Integer count1 = (int) count;
