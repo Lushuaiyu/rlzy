@@ -9,6 +9,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import tk.mybatis.spring.annotation.MapperScan;
@@ -25,6 +26,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @Slf4j
 @EnableWebMvc
+
 @MapperScan(basePackages = "com.nado.rlzy.db.mapper")
 public class RlzyApplication extends SpringBootServletInitializer {
     @Override

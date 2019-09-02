@@ -37,7 +37,7 @@ public interface HrRebaterecordMapper  {
      * @Date 19:29 2019/7/18
      * @Param []
      **/
-    List<HrSignUp> selectRebateTime();
+    List<HrRebaterecord> selectRebateTime();
 
     /**
      * 查询 男 和 女 单人面试 报道 入职的总共返佣金额

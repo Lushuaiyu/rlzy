@@ -486,6 +486,17 @@ public interface HrBriefchapterMapper {
     @Update(value = "update hr_briefchapter set Status = #{status} where briefChapterStatus = 0 and Id = #{id}")
     int updateBriefchapterStatus(@Param("id") Integer id, @Param("status") Integer status);
 
+    /**
+     *  当 now > 简章面试时间 修改面试状态
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 23:06 2019-09-02
+     * @Param []
+     * @return int
+     */
+    @Update(value = "update hr_briefchapter set Status = 4 where interviewTime > now()")
+    int updateInterviewStatus();
+
 
 
 

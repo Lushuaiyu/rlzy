@@ -10,6 +10,7 @@ import org.junit.Test;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,8 +54,21 @@ public class Test7 extends BaseTest {
         hrBriefchapters.stream().map(dto -> {
             BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
             BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
+            System.out.println(rebateMaleInterview);
             System.out.println(rebateFemaleInterview);
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    @Test
+    public void test3(){
+        /*Integer[] number = new Integer[] {1};
+        List<Integer> list = Arrays.asList(number);
+        long count = list.stream().count();
+        Integer count1 = (int) count;
+        System.out.println(count1);*/
+        //简章面试时间过了 进入已结束
+        // 现在时间 > 面试时间 把简章状态改为已过期(已结束)
+
     }
 }

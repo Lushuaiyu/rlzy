@@ -3,14 +3,17 @@ package com.nado.rlzy.config;
 import com.nado.rlzy.db.mapper.HrComplaintMapper;
 import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
+import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,14 +32,15 @@ import java.util.stream.Collectors;
  */
 @Component
 @Slf4j
+@EnableScheduling
 public class ScheduledTask {
-    @Autowired
+    @Resource
     private HrSignUpMapper mapper;
 
-    @Autowired
+    @Resource
     private HrComplaintMapper complaintMapper;
 
-    @Autowired
+    @Resource
     private HrRebaterecordMapper rebaterecordMapper;
 
     /**
@@ -102,7 +106,7 @@ public class ScheduledTask {
 
 
     /**
-     * 定时任务 返佣
+     * 定时任务 返佣 代码可能有问题
      *
      * @return void
      * @Author lushuaiyu
@@ -110,13 +114,13 @@ public class ScheduledTask {
      * @Date 19:25 2019/7/18
      * @Param []
      **/
-    @Scheduled(cron = "*/1 * * * *")
+    @Scheduled(cron = "0/3 * * * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void task3() {
-        List<HrSignUp> list = rebaterecordMapper.selectRebateTime();
+        List<HrRebaterecord> list = rebaterecordMapper.selectRebateTime();
         list.stream().map(s -> {
-            s.getRebat().stream().map(c -> {
-                Date time = c.getCreateTime();
+
+                Date time = s.getRebateTime();
                 //String dateToStr = StringUtil.DateToStr(time);
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 //现在时间
@@ -136,8 +140,6 @@ public class ScheduledTask {
                 }
 
 
-                return c;
-            }).collect(Collectors.toList());
             return s;
         }).collect(Collectors.toList());
 
@@ -153,7 +155,7 @@ public class ScheduledTask {
      * @Date 18:02 2019/7/19
      * @Param []
      **/
-    @Scheduled(cron = "*/1 * * * *")
+    @Scheduled(cron = "0/3 * * * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void task4() {
         List<HrSignUp> ups = mapper.recruitmentInterviewOver();
@@ -189,7 +191,7 @@ public class ScheduledTask {
      * @Param []
      * @return void
      **/
-    @Scheduled(cron = "0 59 23 * * ? *")
+    @Scheduled(cron = "0 59 23 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void task5(){
         var id = complaintMapper.queryParams();
@@ -221,6 +223,26 @@ public class ScheduledTask {
 
 
     }
+
+    /**
+     * now > 简章的面试时间 简章状态改为 已过期
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 23:02 2019-09-02
+     * @Param []
+     * @return void
+     */
+    @Scheduled(cron = "0/3 * * * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void task6(){
+        mapper.updateInterviewStatus();
+        System.out.println("aaaaa");
+
+
+
+    }
+
+
 
 
 }
