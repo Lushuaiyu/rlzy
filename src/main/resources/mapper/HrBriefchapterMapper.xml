@@ -1478,7 +1478,7 @@
         re.RebateMale,
         re.RebateTime,
         re.status as rebStatus,
-        re.sign_up_id,
+        re.signup_deliveryrecord_id,
         re.Id as rebateId
         from hr_briefchapter br
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
@@ -2078,7 +2078,7 @@
         re.RebateMale,
         re.RebateTime,
         re.status as rebStatus,
-        re.sign_up_id
+        re.signup_deliveryrecord_id
         from hr_briefchapter br
         left join hr_rebaterecord re on br.Id = re.BriefChapterId and re.DeleteFlag = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0

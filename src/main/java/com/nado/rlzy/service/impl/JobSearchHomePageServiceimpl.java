@@ -1343,29 +1343,33 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
             //判断集合是否为空
             if (list.size() > 0) {
                 collect = list.stream().map(dto -> {
-                    //显示男生的全部返费金额
-                    Map<Integer, BigDecimal> allMaleRebate = dto.getRebat().stream()
-                            .collect(Collectors.groupingBy(HrRebaterecord::getSignupDeliveryrecordId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
-                    //显示女生的全部返费金额
-                    Map<Integer, BigDecimal> allFemaleRebate = dto.getRebat()
-                            .stream()
-                            .collect(Collectors.groupingBy(HrRebaterecord::getSignupDeliveryrecordId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
-                    if (finalSex.equals(0)) {
-                        //女生的全部返费
-                        allMaleRebate.forEach((k, v) -> {
-                            double vv = v.doubleValue();
-                            String s = StringUtil.decimalFormat2(vv);
-                            dto.setRebateRecord(s);
-                        });
-                    }
+                    //显示男生 女生的全部返费金额
+                    BigDecimal rebateMaleInterview = dto.getRebateMaleInterview() != null ? dto.getRebateMaleInterview() : BigDecimal.ZERO;
+                    BigDecimal rebateMaleReport = dto.getRebateMaleReport() != null ? dto.getRebateMaleReport() : BigDecimal.ZERO;
+                    BigDecimal rebateMaleEntry = dto.getRebateMaleEntry() != null ? dto.getRebateMaleEntry() : BigDecimal.ZERO;
+                    BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview() != null ? dto.getRebateFemaleInterview() : BigDecimal.ZERO;
+                    BigDecimal rebateFemaleReport = dto.getRebateFemaleReport() != null ? dto.getRebateFemaleReport() : BigDecimal.ZERO;
+                    BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry() != null ? dto.getRebateFemaleEntry() : BigDecimal.ZERO;
+
+                    //男生返佣的钱
+                    BigDecimal maleRebate = rebateMaleInterview.add(rebateMaleReport)
+                            .add(rebateMaleEntry);
+                    //女生返佣的钱
+                    BigDecimal femaleRebate = rebateFemaleInterview.add(rebateFemaleReport)
+                            .add(rebateFemaleEntry);
+
                     if (finalSex.equals(1)) {
                         //男生的全部返费
-                        allFemaleRebate.forEach((k, v) -> {
-                            double v1 = v.doubleValue();
-                            String format2 = StringUtil.decimalFormat2(v1);
-                            dto.setRebateRecord("返费" + format2);
-                        });
+
+                        dto.setRebateRecord("返费" + maleRebate);
                     }
+
+                    if (finalSex.equals(0)) {
+                        //女生的全部返费
+                        dto.setRebateRecord("返费" + femaleRebate);
+                    }
+
+
                     dto.getRebat().stream()
                             .map(d -> {
                                 if (finalSex.equals(0)) {
@@ -1408,34 +1412,36 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
             }
             //招聘单位
-            //招聘单位
             List<HrBriefchapter> hrBriefchapters = mapper.queryBriefchapterBySignUpstatusRecruitment(list2, id);
             if (hrBriefchapters.size() > 0) {
                 list1 = hrBriefchapters.stream()
                         .map(dto -> {
-                            //显示男生的全部返费金额
-                            Map<Integer, BigDecimal> allMaleRebate = dto.getRebat().stream()
-                                    .collect(Collectors.groupingBy(HrRebaterecord::getSignupDeliveryrecordId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
-                            //显示女生的全部返费金额
-                            Map<Integer, BigDecimal> allFemaleRebate = dto.getRebat()
-                                    .stream()
-                                    .collect(Collectors.groupingBy(HrRebaterecord::getSignupDeliveryrecordId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
-                            if (finalSex.equals(0)) {
-                                //女生的全部返费
-                                allMaleRebate.forEach((k, v) -> {
-                                    double vv = v.doubleValue();
-                                    String s = StringUtil.decimalFormat2(vv);
-                                    dto.setRebateRecord(s);
-                                });
-                            }
+                            //显示男生 女生的全部返费金额
+                            BigDecimal rebateMaleInterview = dto.getRebateMaleInterview() != null ? dto.getRebateMaleInterview() : BigDecimal.ZERO;
+                            BigDecimal rebateMaleReport = dto.getRebateMaleReport() != null ? dto.getRebateMaleReport() : BigDecimal.ZERO;
+                            BigDecimal rebateMaleEntry = dto.getRebateMaleEntry() != null ? dto.getRebateMaleEntry() : BigDecimal.ZERO;
+                            BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview() != null ? dto.getRebateFemaleInterview() : BigDecimal.ZERO;
+                            BigDecimal rebateFemaleReport = dto.getRebateFemaleReport() != null ? dto.getRebateFemaleReport() : BigDecimal.ZERO;
+                            BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry() != null ? dto.getRebateFemaleEntry() : BigDecimal.ZERO;
+
+                            //男生返佣的钱
+                            BigDecimal maleRebate = rebateMaleInterview.add(rebateMaleReport)
+                                    .add(rebateMaleEntry);
+                            //女生返佣的钱
+                            BigDecimal femaleRebate = rebateFemaleInterview.add(rebateFemaleReport)
+                                    .add(rebateFemaleEntry);
+
                             if (finalSex.equals(1)) {
                                 //男生的全部返费
-                                allFemaleRebate.forEach((k, v) -> {
-                                    double v1 = v.doubleValue();
-                                    String format2 = StringUtil.decimalFormat2(v1);
-                                    dto.setRebateRecord("返费" + format2);
-                                });
+
+                                dto.setRebateRecord("返费" + maleRebate);
                             }
+
+                            if (finalSex.equals(0)) {
+                                //女生的全部返费
+                                dto.setRebateRecord("返费" + femaleRebate);
+                            }
+
 
                             dto.getRebat().stream()
                                     .map(d -> {
@@ -1474,6 +1480,8 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                                         }
                                         return d;
                                     }).collect(Collectors.toList());
+
+
                             return dto;
                         })
                         .collect(Collectors.toList());
@@ -1511,9 +1519,9 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         deliveryrecord.setStatus(0);
         deliveryrecord1.setCreateTime(LocalDateTime.now());
         deliveryrecord1.setAcceptRebateAmount(addRebate);
-         signupDeliveryrecordMapper.insertSelective(deliveryrecord1);
+        signupDeliveryrecordMapper.insertSelective(deliveryrecord1);
         //招聘人数 - 1 本人报名 就一个人
-        Integer[] number = new Integer[] {1};
+        Integer[] number = new Integer[]{1};
         List<Integer> list = Arrays.asList(number);
         long count = list.stream().count();
         Integer count1 = (int) count;
@@ -1526,7 +1534,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                     Integer recruitingNo = d.getRecruitingNo();
                     if (recruitingNo.compareTo(0) <= 0) {
                         //招聘人数 <= 0 简章已结束(已过期)
-                        mapper.updateBriefchapterStatus(deliveryrecord.getBriefChapterId(), 4 );
+                        mapper.updateBriefchapterStatus(deliveryrecord.getBriefChapterId(), 4);
                     }
                     return d;
                 }).collect(Collectors.toList());
@@ -1578,7 +1586,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                     Integer recruitingNo = d.getRecruitingNo();
                     if (recruitingNo.compareTo(0) <= 0) {
                         //招聘人数 <= 0 简章已结束(已过期)
-                        mapper.updateBriefchapterStatus(deliveryrecord.getBriefChapterId(), 4 );
+                        mapper.updateBriefchapterStatus(deliveryrecord.getBriefChapterId(), 4);
                     }
                     return d;
                 }).collect(Collectors.toList());
