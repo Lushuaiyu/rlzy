@@ -14,7 +14,10 @@ import java.math.BigDecimal;
  */
 @Data
 public class RebateQuery {
-    @ApiModelProperty(value = "用户id")
+
+    private Integer id;
+
+    @ApiModelProperty(value = "求职者id")
     private Integer userId;
 
     @ApiModelProperty(value = "增加的钱")
@@ -29,7 +32,8 @@ public class RebateQuery {
     @ApiModelProperty(value = "求职表id")
     private Integer signUpId;
 
-    @ApiModelProperty(value = "")
+    private Integer signupDeliveryrecordId;
+
     private Integer rebateId;
     /**
      * 性别
@@ -40,5 +44,20 @@ public class RebateQuery {
      * 类型
      */
     private Integer type;
+
+    /**
+     * 商户的userId
+     */
+    private Integer busInessUserId;
+
+    /**
+     * 简章id
+     */
+    private Integer briefchapterId;
+
+    /**
+     * 返佣的金额
+     */
+    private String rebateMon;
 
 }

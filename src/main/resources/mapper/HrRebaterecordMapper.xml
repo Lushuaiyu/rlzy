@@ -12,7 +12,7 @@
         <result column="DeleteFlag" property="deleteFlag" jdbcType="TINYINT"/>
         <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="rebate_variable" property="rebateVariable" jdbcType="DECIMAL"/>
-        <result column="sign_up_id" property="signUpId" jdbcType="DECIMAL"/>
+        <result column="signup_deliveryrecord_id" property="signup_deliveryrecord_id" jdbcType="DECIMAL"/>
     </resultMap>
     <sql id="Base_Column_List">
         Id, BriefChapterId, RebateType, RebateTime, RebateMale, RebateFemale, status, DeleteFlag,
@@ -139,16 +139,16 @@
                 RebateFemale = #{item.rebateFemale},
                 RebateTime = #{item.rebateTime}
             </set>
-                <where>
-                    BriefChapterId = #{item.briefchapterId} and RebateType = #{item.rebateType}
-                </where>
+            <where>
+                BriefChapterId = #{item.briefchapterId} and RebateType = #{item.rebateType}
+            </where>
         </foreach>
 
     </update>
-    <update id="updateRebateStatus" parameterType="hrRebaterecord" >
+    <update id="updateRebateStatus" parameterType="hrRebaterecord">
         update hr_rebaterecord
         <set>
-                status = 1,
+            status = 1,
             <if test="null != rebateTime">
                 RebateTime = #{rebateTime}
             </if>
@@ -162,7 +162,7 @@
     </update>
 
     <select id="selectRebateTime" resultMap="BaseResultMap">
-        select CreateTime from hr_rebaterecord
+        select RebateTime from hr_rebaterecord
         <where>
             DeleteFlag = 0 and status = 1
         </where>
@@ -170,15 +170,36 @@
 
 
     <insert id="insertListt">
-    insert into hr_rebaterecord (BriefChapterId, RebateType, RebateMale, RebateFemale, RebateTime, CreateTime, sign_up_id)
-    VALUES
-    <foreach collection="list" item="item" separator=",">
-        (#{item.briefchapterId},#{item.rebateType}, #{item.rebateMale}, #{item.rebateFemale}, #{item.rebateTime},
-        #{item.createTime}, #{item.signUpId})
-    </foreach>
+        insert into hr_rebaterecord (BriefChapterId, RebateType, RebateMale, RebateFemale, RebateTime, CreateTime,
+        sign_up_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.briefchapterId},#{item.rebateType}, #{item.rebateMale}, #{item.rebateFemale}, #{item.rebateTime},
+            #{item.createTime}, #{item.signUpId})
+        </foreach>
     </insert>
 
-
+    <select id="rebate" resultMap="BaseResultMap">
+        select re.status,
+        re.RebateFemale,
+        re.RebateMale,
+        re.RebateTime,
+        re.RebateType,
+        re.status,
+        re.id
+        from hr_rebaterecord re
+        left join hr_signup_deliveryrecord hsd on re.signup_deliveryrecord_id = hsd.id and hsd.delete_flag = 0
+        left join hr_briefchapter br on re.BriefChapterId = hsd.brief_chapter_id and br.briefChapterStatus = 0
+        left join hr_signup si on si.id = hsd.signup_id and si.delete_flag = 0
+        where re.DeleteFlag = 0
+        <if test="null != signUpId">
+            and si.id = #{signUpId}
+        </if>
+        <if test="null != briefchapterId">
+            and br.Id = #{briefchapterId}
+        </if>
+        order by re.CreateTime asc
+    </select>
 
 
 </mapper>

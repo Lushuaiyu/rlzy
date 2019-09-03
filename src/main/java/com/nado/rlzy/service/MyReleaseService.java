@@ -137,7 +137,8 @@ public interface MyReleaseService {
      * @Date 13:50 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserId, Integer busInessUserId);
+    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer sex,
+                                    Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId);
 
     /**
      * 招聘详情 待报道 未报到
@@ -159,7 +160,7 @@ public interface MyReleaseService {
      * @Date 14:40 2019/7/19
      * @Param [signUpId]
      **/
-    int reported(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserId, Integer busInessUserId);
+    int reported(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId);
 
 
     /**
@@ -184,21 +185,21 @@ public interface MyReleaseService {
      * @Date 16:01 2019/7/19
      * @Param [userId]
      **/
-    List<HrSignUp> rebatee(Integer signUpId, Integer sex);
+    List<HrRebaterecord> rebatee(Integer signUpId, Integer briefchapterId, Integer sex);
 
     /**
-     * 招聘详情 待返佣 没有返佣
+     * 招聘详情 待返佣 不返佣
      *
      * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:45 2019/7/19
-     * @Param [rebateId]
+     * @param query
      **/
-    int noRebate(Integer rebateId);
+    int noRebate(RebateQuery query);
 
     /**
-     * 招聘详情 待返佣 返佣计划
+     * 招聘详情 待返佣 具体是入职返佣 返佣
      *
      * @param query 入参
      * @return int
@@ -207,6 +208,8 @@ public interface MyReleaseService {
      * @Date 17:05 2019/7/19
      **/
     int rebate(RebateQuery query);
+
+
 
     /**
      * 重置求职者报名状态

@@ -283,7 +283,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     int updateJobStatusReport(@Param("report") Integer report);
 
     /**
-     * 把待报道改为已报道 通过定时任务
+     * 把待报道改为已报道(待面试) 通过定时任务
      *
      * @return int
      * @Author lushuaiyu
@@ -433,7 +433,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     /**
-     * 定时任务: 把已面试改为不合适 和面试不通过
+     * 定时任务: 把已面试改不合适和面试不通过
      *
      * @return int
      * @Author lushuaiyu
@@ -441,7 +441,13 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Date 14:17 2019/7/19
      * @Param []
      **/
-    @Update(value = "update hr_signup set job_status = 4, no_pass_reason = 3 where  delete_flag = 0 and job_status = 10")
+    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si\n" +
+            "set sd.no_pass_reason = 3,\n" +
+            "    sd.status         = 4,\n" +
+            "    sd.job_status     = 4\n" +
+            "where sd.delete_flag = 0\n" +
+            "  and si.delete_flag = 0\n" +
+            "  and sd.status = 10")
     int updateInterviewStatus();
 
     /**
@@ -482,20 +488,11 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      **/
     int noReportedReason(@Param("reason") Integer reason, @Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
-    /**
-     * 招聘详情 待返佣 查询返佣
-     *
-     * @param signUpId 报名id
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 15:56 2019/7/19
-     **/
-    List<HrSignUp> rebate(@Param("signUpId") Integer signUpId);
+
 
 
     /**
-     * 招聘详情 待返佣 没有返佣
+     * 招聘详情 待返佣 不返佣
      *
      * @return int
      * @Author lushuaiyu

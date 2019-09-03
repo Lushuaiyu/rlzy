@@ -36,6 +36,8 @@ public class HrRebaterecord {
     @Column(name = "RebateTime")
     private Date rebateTime;
 
+    private String rebateTimeFrontEnd;
+
     @Column(name =  "RebateMale")
     private BigDecimal rebateMale;
 
@@ -77,8 +79,8 @@ public class HrRebaterecord {
     @Column(name = "rebate_variable")
     private BigDecimal rebateVariable;
 
-    @Column(name = "sign_up_id")
-    private Integer signUpId;
+    @Column(name = "signup_deliveryrecord_id")
+    private Integer signupDeliveryrecordId;
 
 
 }

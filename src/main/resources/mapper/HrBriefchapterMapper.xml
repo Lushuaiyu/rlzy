@@ -2381,16 +2381,23 @@
     </select>
     <select id="selectRebateByBriefcapterId" resultMap="BaseResultMap">
         select rebate_male_interview,
-         rebate_male_report,
-          rebate_male_entry,
-           rebate_female_interview,
-            rebate_female_report,
-             rebate_female_entry,
-             Rebate
-              from hr_briefchapter where
-              briefChapterStatus = 0
-               <if test="null != id"></if>
-               and Id = #{id}
+        rebate_male_report,
+        rebate_male_entry,
+        rebate_female_interview,
+        rebate_female_report,
+        rebate_female_entry,
+        Rebate
+        from hr_briefchapter where
+        briefChapterStatus = 0
+        <if test="null != id"></if>
+        and Id = #{id}
     </select>
+    <select id="selectIdByBriefchapterId" resultType="int">
+           select Id
+    from hr_briefchapter
+    where briefChapterStatus = 0
+      and Status = 4
+    </select>
+
 
 </mapper>

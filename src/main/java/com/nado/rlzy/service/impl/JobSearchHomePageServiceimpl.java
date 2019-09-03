@@ -1345,11 +1345,11 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                 collect = list.stream().map(dto -> {
                     //显示男生的全部返费金额
                     Map<Integer, BigDecimal> allMaleRebate = dto.getRebat().stream()
-                            .collect(Collectors.groupingBy(HrRebaterecord::getSignUpId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
+                            .collect(Collectors.groupingBy(HrRebaterecord::getSignupDeliveryrecordId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
                     //显示女生的全部返费金额
                     Map<Integer, BigDecimal> allFemaleRebate = dto.getRebat()
                             .stream()
-                            .collect(Collectors.groupingBy(HrRebaterecord::getSignUpId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
+                            .collect(Collectors.groupingBy(HrRebaterecord::getSignupDeliveryrecordId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
                     if (finalSex.equals(0)) {
                         //女生的全部返费
                         allMaleRebate.forEach((k, v) -> {
@@ -1407,8 +1407,6 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                 }).collect(Collectors.toList());
 
             }
-
-
             //招聘单位
             //招聘单位
             List<HrBriefchapter> hrBriefchapters = mapper.queryBriefchapterBySignUpstatusRecruitment(list2, id);
@@ -1417,11 +1415,11 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                         .map(dto -> {
                             //显示男生的全部返费金额
                             Map<Integer, BigDecimal> allMaleRebate = dto.getRebat().stream()
-                                    .collect(Collectors.groupingBy(HrRebaterecord::getSignUpId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
+                                    .collect(Collectors.groupingBy(HrRebaterecord::getSignupDeliveryrecordId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
                             //显示女生的全部返费金额
                             Map<Integer, BigDecimal> allFemaleRebate = dto.getRebat()
                                     .stream()
-                                    .collect(Collectors.groupingBy(HrRebaterecord::getSignUpId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
+                                    .collect(Collectors.groupingBy(HrRebaterecord::getSignupDeliveryrecordId, CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateMale)));
                             if (finalSex.equals(0)) {
                                 //女生的全部返费
                                 allMaleRebate.forEach((k, v) -> {

@@ -69,6 +69,26 @@ public interface EntryResignationMapper extends Mapper<EntryResignation>, MySqlM
      **/
     int updateRebate(EntryResignation resignation);
 
+    /**
+     * 查询简章状态为已过期的入职返佣的第一笔和最后一笔
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:22 2019/9/3
+     * @Param [briefchapterId]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    List<EntryResignation> selectEntryStatusOver(@Param("briefchapterId") Integer briefchapterId);
+
+    /**
+     * 查询简章的最后一笔入职返佣
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:35 2019/9/3
+     * @Param [briefchapterId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.EntryResignation>
+     **/
+    List<EntryResignation> selectLastRebatetimeByBriefchapterId(@Param("briefchapterId") Integer briefchapterId);
+
 
 
 

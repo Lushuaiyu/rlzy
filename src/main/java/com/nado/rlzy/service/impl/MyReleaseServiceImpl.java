@@ -350,7 +350,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserId,
-                                           Integer busInessUserId) {
+                                           Integer busInessUserId, Integer signupDeliveryrecordId) {
         //改变求职状态
         signUpMapper.recruitmentInterviewSuccess(signUpId, briefChapterId);
         // 查询简章表 面试返佣的钱
@@ -372,7 +372,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             rebaterecord.setBriefchapterId(briefChapterId);
                             rebaterecord.setRebateTime(new Date());
                             rebaterecord.setCreateTime(new Date());
-                            rebaterecord.setSignUpId(signUpId);
+                            rebaterecord.setSignupDeliveryrecordId(signupDeliveryrecordId);
                             rebaterecord.setRebateType(0);
                             rebaterecord.setStatus(1);
                             List<HrRebaterecord> hrRebaterecords = new ArrayList<>();
@@ -415,7 +415,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             rebaterecord.setBriefchapterId(briefChapterId);
                             rebaterecord.setRebateTime(new Date());
                             rebaterecord.setCreateTime(new Date());
-                            rebaterecord.setSignUpId(signUpId);
+                            rebaterecord.setSignupDeliveryrecordId(signupDeliveryrecordId);
                             rebaterecord.setRebateType(0);
                             rebaterecord.setStatus(1);
                             List<HrRebaterecord> hrRebaterecords = new ArrayList<>();
@@ -495,7 +495,8 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int reported(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserId, Integer busInessUserId) {
+    public int reported(Integer signUpId, Integer briefChapterId, Integer sex,
+                        Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId) {
 
         signUpMapper.reported(signUpId, briefChapterId);
 
@@ -516,7 +517,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             rebaterecord.setBriefchapterId(briefChapterId);
                             rebaterecord.setRebateTime(new Date());
                             rebaterecord.setCreateTime(new Date());
-                            rebaterecord.setSignUpId(signUpId);
+                            rebaterecord.setSignupDeliveryrecordId(signupDeliveryrecordId);
                             rebaterecord.setRebateType(0);
                             rebaterecord.setStatus(1);
                             List<HrRebaterecord> hrRebaterecords = new ArrayList<>();
@@ -558,7 +559,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             rebaterecord.setBriefchapterId(briefChapterId);
                             rebaterecord.setRebateTime(new Date());
                             rebaterecord.setCreateTime(new Date());
-                            rebaterecord.setSignUpId(signUpId);
+                            rebaterecord.setSignupDeliveryrecordId(signupDeliveryrecordId);
                             rebaterecord.setRebateType(0);
                             rebaterecord.setStatus(1);
                             List<HrRebaterecord> hrRebaterecords = new ArrayList<>();
@@ -575,7 +576,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             //账户id
                             Integer acctId = hrAcct.getId();
                             //账户余额
-                            BigDecimal acctbalance = hrAcct.getAcctbalance();
+                            BigDecimal acctbalance = hrAcct.getAcctbalance() != null ? hrAcct.getAcctbalance() : BigDecimal.ZERO;
                             //账户详情
                             HrAcctDetail detail = new HrAcctDetail();
                             detail.setAcctid(acctId);
@@ -607,57 +608,89 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     @Transactional(rollbackFor = Exception.class)
     public int noReportedReason(Integer reason, Integer signUpId, Integer briefChapterId) {
         int noReported = signUpMapper.noReportedReason(reason, signUpId, briefChapterId);
-        /*ViolationRecord record = new ViolationRecord();
-        record.setContent(reason);
-        record.setSignUpId(signUpId);
-        record.setCreatTime(new Date());
-        record.setType(type);
-        int violationRecord = violationRecordMapper.insertSelective(record);*/
         return noReported >= 1 ? 1 : 0;
     }
 
     @Override
-    public List<HrSignUp> rebatee(Integer signUpId, Integer sex) {
-        List<HrSignUp> sign = signUpMapper.rebate(signUpId);
-        List<HrSignUp> list = sign.stream().map(signUp -> {
-            signUp.getRebat().stream().map(rebat -> {
-                if (sex.equals(0)) {
-                    BigDecimal female = rebat.getRebateFemale();
-                    rebat.setRebateOne(female);
-                    rebat.setRebateFemale(BigDecimal.valueOf(0));
-                    rebat.setRebateMale(BigDecimal.valueOf(0));
-                }
-                if (sex.equals(1)) {
-                    BigDecimal male = rebat.getRebateMale();
-                    rebat.setRebateOne(male);
-                    rebat.setRebateFemale(BigDecimal.valueOf(0));
-                    rebat.setRebateMale(BigDecimal.valueOf(0));
-                }
-
-                return rebat;
-            }).collect(Collectors.toList());
-
-            return signUp;
+    public List<HrRebaterecord> rebatee(Integer signUpId, Integer briefchapterId, Integer sex) {
+        List<HrRebaterecord> sign = rebaterecordMapper.rebate(signUpId, briefchapterId);
+        sign.stream().map(rebat -> {
+            if (sex.equals(0)) {
+                BigDecimal female = rebat.getRebateFemale() != null ? rebat.getRebateFemale() : BigDecimal.ZERO;
+                rebat.setRebateMon("金额: ¥" + female);
+                rebat.setRebateFemale(BigDecimal.valueOf(0));
+                rebat.setRebateMale(BigDecimal.valueOf(0));
+            }
+            if (sex.equals(1)) {
+                BigDecimal male = rebat.getRebateMale() != null ? rebat.getRebateMale() : BigDecimal.ZERO;
+                rebat.setRebateMon("金额: ¥" + male);
+                rebat.setRebateFemale(BigDecimal.valueOf(0));
+                rebat.setRebateMale(BigDecimal.valueOf(0));
+            }
+            return rebat;
         }).collect(Collectors.toList());
-        return list;
+        return sign;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int noRebate(Integer rebateId) {
-        return signUpMapper.noRebate(rebateId);
+    public int noRebate(RebateQuery query) {
+        List<HrRebaterecord> sign = rebaterecordMapper.rebate(query.getSignUpId(), query.getBriefchapterId());
+        sign.stream()
+                .map(dto -> {
+                    //返佣表id前台传过来 id在查询返佣记录时传给前台了
+                    signUpMapper.noRebate(query.getId());
+                    return dto;
+                }).collect(Collectors.toList());
+        return 1;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int rebate(RebateQuery query) {
+        // 查询返佣详情
+        List<HrRebaterecord> sign = rebaterecordMapper.rebate(query.getSignUpId(), query.getBriefchapterId());
+        sign.stream()
+                .map(dto -> {
+                    //更改返佣状态
+                    signUpMapper.rebateOne(query.getRebateId());
+                    String rebateMon = query.getRebateMon();
+                    String substring = rebateMon.substring(5, 8);
+                    //返佣金额
+                    BigDecimal rebateMoney = StringUtil.decimal(substring) != null ? StringUtil.decimal(substring) : BigDecimal.ZERO;
+                    //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
+                    acctMapper.rebateUser(rebateMoney, query.getUserId());
+                    //企业冻结金额减少 消费金额增加
+                    acctMapper.rebateBusiness(rebateMoney, query.getBusInessUserId());
+                    //acctDetail 增加数据 账户余额增加
+                    //查询账户id, 账户余额
+                    HrAcct hrAcct = acctMapper.selectAcctIdByUserId(query.getUserId());
+                    //账户id
+                    Integer acctId = hrAcct.getId();
+                    //账户余额
+                    BigDecimal acctbalance = hrAcct.getAcctbalance();
+                    //账户详情
+                    HrAcctDetail detail = new HrAcctDetail();
+                    detail.setAcctid(acctId);
+                    detail.setAmount(rebateMoney);
+                    detail.setBeforeamount(acctbalance);
+                    detail.setAfteramount(rebateMoney.add(acctbalance));
+                    detail.setCreatetime(LocalDateTime.now());
+                    detail.setStatus(1);
+                    detail.setType(2);
+                    detail.setBriefchapterid(query.getBriefchapterId());
+                    //增加账户余额
+                    acctDetailMapper.insertSelective(detail);
+                    // 报名表投递表  待返佣金额减少 面试返佣状态改变
+                    HrSignupDeliveryrecord deliveryrecord = new HrSignupDeliveryrecord();
+                    deliveryrecord.setAcceptRebateAmount(rebateMoney);
+                    deliveryrecord.setSignupId(query.getSignUpId());
+                    deliveryrecord.setBriefChapterId(query.getBriefchapterId());
+                    signupDeliveryrecordMapper.reducedRebateAmount(deliveryrecord);
+                    return dto;
+                }).collect(Collectors.toList());
 
-        //更改返佣状态
-        signUpMapper.rebateOne(query.getRebateId());
-        // 本人 -- 求职者账户增加钱
-        signUpMapper.rebateAdd(query);
-        // 企业 -- 从企业账户冻结金额扣钱
-        signUpMapper.rebateSubtraction(query);
+
         return 1;
     }
 

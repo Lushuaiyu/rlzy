@@ -247,7 +247,7 @@ public interface JobSearchHomePageService {
 
 
     /**
-     *  求职端 首页 我的工作 根据求职状态和求职者名字查询简章  #####################
+     *  求职端 首页 我的工作 根据求职状态和求职者名字查询简章  代码有问题 关于简章概览的简章返佣 代码有问题
      *
      * @param type 登录用户的身份
      * @param userId 用户id

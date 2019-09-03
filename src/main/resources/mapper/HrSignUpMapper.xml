@@ -997,40 +997,9 @@
     </select>
 
     <select id="recruitmentInterviewOver" resultType="com.nado.rlzy.db.pojo.HrSignUp">
-        select
-        b.registerTime
-        from hr_signup s
-        left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_user u on s.user_id = u.Id and u.status = 0
-        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0
-        left join hr_rebaterecord r on sd.brief_chapter_id = r.BriefChapterId and r.status = 0 and r.DeleteFlag = 0
-        <where>
-            s.delete_flag = 0
-            order by r.CreateTime desc
-        </where>
+        select registerTime from hr_briefchapter where  briefChapterStatus = 0
     </select>
-    <select id="rebate" resultMap="BaseResultMap">
-        select re.status,
-        re.RebateFemale,
-        re.RebateMale,
-        re.CreateTime,
-        re.RebateType,
-        si.id,
-        si.user_id,
-        re.Id as rebateId
-        from hr_rebaterecord re
-        left join hr_briefchapter br on re.BriefChapterId = br.id and br.briefChapterStatus = 0
-        left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
-        left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
-        left join hr_user u on si.user_id = u.Id and u.status = 0
-        <where>
-            re.DeleteFlag = 0
-            <if test="null != signUpId">
-                and si.id = #{signUpId}
-            </if>
-            order by re.CreateTime asc
-        </where>
-    </select>
+
 
     <select id="grouper" resultMap="BaseResultMap">
         select si.user_name, si.id, mt.group_name
