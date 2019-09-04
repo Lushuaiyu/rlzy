@@ -4,10 +4,7 @@ import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.bean.dto.JobListDto;
 import com.nado.rlzy.bean.frontEnd.JobListtFront;
 import com.nado.rlzy.bean.query.JobListQuery;
-import com.nado.rlzy.db.mapper.CollectMapper;
-import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
-import com.nado.rlzy.db.mapper.HrSignUpMapper;
-import com.nado.rlzy.db.mapper.HrUserMapper;
+import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.Collect;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrSignUp;
@@ -52,6 +49,9 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     @Resource
     private HrUserMapper userMapper;
 
+    @Resource
+    private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
+
 
     @Override
     public List<HrSignUp> selectJobListOverview(JobListQuery query) {
@@ -95,13 +95,16 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
             String s2 = StringUtil.toString(briefChapterId);
             front.setBriefChapterId(s2);
 
-            double expectedSalaryLower = dto.getExpectedSalaryLower().doubleValue();
-            String s5 = StringUtil.decimalFormatByInt(expectedSalaryLower);
-            front.setExpectedSalaryLower(s5);
+            double expectedSalaryUpper = dto.getExpectedSalaryUpper().doubleValue();
+            String s5 = StringUtil.decimalFormatByInt(expectedSalaryUpper);
+            front.setExpectedSalaryUpper(s5);
 
-            double doubleValue = dto.getExpectedSalaryUpper().doubleValue();
-            String s6 = StringUtil.decimalFormatByInt(doubleValue);
-            front.setExpectedSalaryUpper(s6);
+            double expectedSalaryLower = dto.getExpectedSalaryLower().doubleValue();
+            String s6 = StringUtil.decimalFormatByInt(expectedSalaryLower);
+            front.setExpectedSalaryLower(s6);
+            front.setExpectedSalary(s6 + "k" + "-" + s5 + "k");
+
+
 
             Integer sex1 = dto.getSex();
             String s7 = StringUtil.toString(sex1);
@@ -138,56 +141,6 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
             return dto;
         }).collect(Collectors.toList());
     }
-
-   /* @Override
-    public List<JobListtFront> selectCollectList() {
-        List<JobListDto> dtos = mapper.selectCollectList();
-              return dtos.stream().map(dto -> {
-
-                  JobListtFront front = new JobListtFront();
-                  BeanUtils.copyProperties(dto, front);
-                  Integer noSignUp = dto.getNoSignUp();
-                  String s = StringUtil.toString(noSignUp);
-                  front.setNoSignUp(s);
-
-                  Integer age = dto.getAge();
-                  String s1 = StringUtil.toString(age);
-                  front.setAge(s1);
-
-                  Integer jobStatus = dto.getJobStatus();
-                  String s3 = StringUtil.toString(jobStatus);
-                  front.setJobStatus(s3);
-                  Integer relation = dto.getRelation();
-                  String s4 = StringUtil.toString(relation);
-                  front.setRelation(s4);
-
-
-                  Integer briefChapterId = dto.getBriefChapterId();
-                  String s2 = StringUtil.toString(briefChapterId);
-                  front.setBriefChapterId(s2);
-
-                  double expectedSalaryLower = dto.getExpectedSalaryLower().doubleValue();
-                  String s5 = StringUtil.decimalFormatByInt(expectedSalaryLower);
-                  front.setExpectedSalaryLower(s5);
-
-                  double doubleValue = dto.getExpectedSalaryUpper().doubleValue();
-                  String s6 = StringUtil.decimalFormatByInt(doubleValue);
-                  front.setExpectedSalaryUpper(s6);
-
-                  Integer sex1 = dto.getSex();
-                  String s7 = StringUtil.toString(sex1);
-                  front.setSex(s7);
-
-
-                  if (front.getNoSignUp().equals("0")) {
-                      throw new IllegalArgumentException("error param!");
-                  }
-                  return front;
-
-
-
-        }).collect(Collectors.toList());
-    }*/
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -310,9 +263,8 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     public List<HrUser> referrer(JobListQuery query) {
         List<HrUser> hrUsers = userMapper.selectReferrer(query);
         List<HrUser> collect = hrUsers.stream().map(dto -> {
-            Integer recommendNoLower = dto.getRecommendNoLower();
-            Integer recommendNoUpper = dto.getRecommendNoUpper();
-            dto.setRecommend(recommendNoLower + "-" + recommendNoUpper + "人");
+            Integer recommendNo = dto.getRecommendNo();
+            dto.setRecommend(recommendNo + "人");
             return dto;
         }).collect(Collectors.toList());
         return collect;
@@ -327,18 +279,21 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
         int noReported = userMapper.noReported(userId);
         int noInterview = userMapper.noInterview(userId);
         int jobSeeker = userMapper.jobSeeker(userId);
+        int numberViolations = signupDeliveryrecordMapper.selectNumberViolations(userId);
+
+
         list.stream()
                 .map(dto -> {
-                    Integer recommendNoLower = dto.getRecommendNoLower();
-                    Integer recommendNoUpper = dto.getRecommendNoUpper();
-                    dto.setRecommend(recommendNoLower + "-" + recommendNoUpper + "人");
+
+                    Integer recommendNo = dto.getRecommendNo();
+                    dto.setRecommend(recommendNo + "人");
                     dto.setInterviewed("参加面试" + interviewed + "人");
                     dto.setArReported("报道" + arReported + "人");
                     dto.setNoInterview( "未面试" + noInterview + "人");
                     dto.setNoReported("未报到" + noReported + "人");
 
                     dto.setJobSeeker( "拥有求职者" +jobSeeker + "人");
-                    dto.setViolationRecord("有责未报到" + dto.getViolationRecord() + "次  ");
+                    dto.setViolationRecord("有责未报到" + numberViolations + "次  ");
                     return dto;
                 })
                 .collect(Collectors.toList());

@@ -12,7 +12,14 @@
         <result column="DeleteFlag" property="deleteFlag" jdbcType="TINYINT"/>
         <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="rebate_variable" property="rebateVariable" jdbcType="DECIMAL"/>
-        <result column="signup_deliveryrecord_id" property="signup_deliveryrecord_id" jdbcType="DECIMAL"/>
+        <result column="signup_deliveryrecord_id" property="signupDeliveryrecordId" jdbcType="DECIMAL"/>
+        <result column="rebateHour" property="rebateHour" jdbcType="INTEGER"/>
+        <result column="userId" property="userId" jdbcType="INTEGER"/>
+        <result column="businessUserId" property="businessUserId" jdbcType="INTEGER"/>
+        <result column="sex" property="sex" jdbcType="INTEGER"/>
+        <result column="brId" property="brId" jdbcType="INTEGER"/>
+        <result column="registerTime" property="registerTime" jdbcType="DATE"/>
+        <result column="hsdId" property="hsdId" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
         Id, BriefChapterId, RebateType, RebateTime, RebateMale, RebateFemale, status, DeleteFlag,
@@ -162,10 +169,29 @@
     </update>
 
     <select id="selectRebateTime" resultMap="BaseResultMap">
-        select RebateTime from hr_rebaterecord
-        <where>
-            DeleteFlag = 0 and status = 1
-        </where>
+                select ifnull(TIMESTAMPDIFF(HOUR, NOW(), RebateTime), 0) as rebateHour,
+       re.Id,
+       u.Id                                   as userId,
+       br.userId                              as businessUserId,
+       si.sex,
+       re.RebateMale,
+       re.RebateFemale,
+       br.Id as brId
+        from hr_rebaterecord re,
+             hr_signup_deliveryrecord hsd,
+             hr_signup si,
+             hr_briefchapter br,
+             hr_user u
+        where hsd.id = re.signup_deliveryrecord_id
+          and hsd.delete_flag = 0
+          and hsd.signup_id = si.id
+          and si.delete_flag = 0
+          and hsd.brief_chapter_id = br.Id
+          and br.briefChapterStatus = 0
+          and si.user_id = u.Id
+          and re.DeleteFlag = 0
+          and re.RebateType = 2
+          and u.status = 0
     </select>
 
 
@@ -186,7 +212,9 @@
         re.RebateTime,
         re.RebateType,
         re.status,
-        re.id
+        re.id,
+        re.signup_deliveryrecord_id,
+        hsd.id as hsdId
         from hr_rebaterecord re
         left join hr_signup_deliveryrecord hsd on re.signup_deliveryrecord_id = hsd.id and hsd.delete_flag = 0
         left join hr_briefchapter br on re.BriefChapterId = hsd.brief_chapter_id and br.briefChapterStatus = 0
@@ -199,6 +227,52 @@
             and br.Id = #{briefchapterId}
         </if>
         order by re.CreateTime asc
+    </select>
+
+    <update id="rebateOne">
+        update hr_rebaterecord
+        <set>
+            status = 1,
+            <if test="null != signupDeliveryrecordId">
+                signup_deliveryrecord_id = #{signupDeliveryrecordId}
+            </if>
+            <where>
+                DeleteFlag = 0
+                <if test="null != rebateId">
+                    and Id = #{rebateId}
+                </if>
+            </where>
+        </set>
+    </update>
+
+    <select id="signUpIdByReport" resultMap="BaseResultMap">
+        select re.Id,
+           u.Id      as userId,
+           br.userId as businessUserId,
+           si.sex,
+           re.RebateMale,
+           re.RebateFemale,
+           br.Id     as brId,
+           br.registerTime,
+           re.signup_deliveryrecord_id,
+           hsd.id as hsdId
+    from hr_signup_deliveryrecord hsd,
+         hr_rebaterecord re,
+         hr_signup si,
+         hr_briefchapter br,
+         hr_user u
+    where hsd.id = re.signup_deliveryrecord_id
+      and hsd.delete_flag = 0
+      and hsd.signup_id = si.id
+      and si.delete_flag = 0
+      and hsd.brief_chapter_id = br.Id
+      and br.briefChapterStatus = 0
+      and si.user_id = u.Id
+      and re.DeleteFlag = 0
+      and re.RebateType = 2
+      and u.status = 0
+      and hsd.status = 2
+
     </select>
 
 

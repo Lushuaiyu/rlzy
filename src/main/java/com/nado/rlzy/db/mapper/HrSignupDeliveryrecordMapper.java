@@ -30,6 +30,16 @@ public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrec
      **/
     int reducedRebateAmount(HrSignupDeliveryrecord deliveryrecord);
 
+    /**
+     * 查询推荐人下的报名者的违规人数
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:43 2019/9/4
+     * @Param [userId]
+     * @return int
+     **/
+    int selectNumberViolations(@Param("userId") Integer userId);
+
 
 
 }

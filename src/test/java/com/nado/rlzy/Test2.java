@@ -6,7 +6,6 @@ import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.utils.Base64Utils;
-import com.nado.rlzy.utils.StringUtil;
 import lombok.var;
 import org.junit.Test;
 import tk.mybatis.mapper.entity.Example;
@@ -64,15 +63,7 @@ public class Test2 extends BaseTest {
     @Resource
     private MySignUpTableMapper tableMapper;
 
-    @Test
-    public void test1() {
-        List<HrSignUp> ups = mapper.signUpId();
 
-        List<HrSignUp> u = mapper.signUpIdByReport();
-        //System.out.println(ups.stream().collect(Collectors.toList()));
-
-        System.out.println(u.stream().collect(Collectors.toList()));
-    }
 
     @Test
     public void test2() {
@@ -237,22 +228,7 @@ public class Test2 extends BaseTest {
         }).collect(Collectors.toList());
     }
 
-    @Test
-    public void test17() {
-        List<HrUser> hrUsers = userMapper.personalInformation(4);
-        hrUsers.stream()
-                .map(dto -> {
-                    Double salaryLower = dto.getExpectedSalaryLower().doubleValue();
-                    System.out.println(salaryLower);
-                    Double salaryUpper = dto.getExpectedSalaryUpper().doubleValue();
-                    System.out.println(salaryUpper);
-                    String format = StringUtil.decimalFormat(salaryLower);
-                    String format1 = StringUtil.decimalFormat(salaryUpper);
-                    String s = format + "k" + "-" + format1;
-                    dto.setExpectedSalary(s);
-                    return dto;
-                }).collect(Collectors.toList());
-    }
+
 
     @Test
     public void test18(){

@@ -518,7 +518,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             rebaterecord.setRebateTime(new Date());
                             rebaterecord.setCreateTime(new Date());
                             rebaterecord.setSignupDeliveryrecordId(signupDeliveryrecordId);
-                            rebaterecord.setRebateType(0);
+                            rebaterecord.setRebateType(1);
                             rebaterecord.setStatus(1);
                             List<HrRebaterecord> hrRebaterecords = new ArrayList<>();
                             hrRebaterecords.add(rebaterecord);
@@ -560,7 +560,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             rebaterecord.setRebateTime(new Date());
                             rebaterecord.setCreateTime(new Date());
                             rebaterecord.setSignupDeliveryrecordId(signupDeliveryrecordId);
-                            rebaterecord.setRebateType(0);
+                            rebaterecord.setRebateType(1);
                             rebaterecord.setStatus(1);
                             List<HrRebaterecord> hrRebaterecords = new ArrayList<>();
                             hrRebaterecords.add(rebaterecord);
@@ -639,7 +639,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         sign.stream()
                 .map(dto -> {
                     //返佣表id前台传过来 id在查询返佣记录时传给前台了
-                    signUpMapper.noRebate(query.getId());
+                    rebaterecordMapper.noRebate(query.getId());
                     return dto;
                 }).collect(Collectors.toList());
         return 1;
@@ -652,45 +652,42 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         List<HrRebaterecord> sign = rebaterecordMapper.rebate(query.getSignUpId(), query.getBriefchapterId());
         sign.stream()
                 .map(dto -> {
-                    //更改返佣状态
-                    signUpMapper.rebateOne(query.getRebateId());
-                    String rebateMon = query.getRebateMon();
-                    String substring = rebateMon.substring(5, 8);
-                    //返佣金额
-                    BigDecimal rebateMoney = StringUtil.decimal(substring) != null ? StringUtil.decimal(substring) : BigDecimal.ZERO;
-                    //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
-                    acctMapper.rebateUser(rebateMoney, query.getUserId());
-                    //企业冻结金额减少 消费金额增加
-                    acctMapper.rebateBusiness(rebateMoney, query.getBusInessUserId());
-                    //acctDetail 增加数据 账户余额增加
-                    //查询账户id, 账户余额
-                    HrAcct hrAcct = acctMapper.selectAcctIdByUserId(query.getUserId());
-                    //账户id
-                    Integer acctId = hrAcct.getId();
-                    //账户余额
-                    BigDecimal acctbalance = hrAcct.getAcctbalance();
-                    //账户详情
-                    HrAcctDetail detail = new HrAcctDetail();
-                    detail.setAcctid(acctId);
-                    detail.setAmount(rebateMoney);
-                    detail.setBeforeamount(acctbalance);
-                    detail.setAfteramount(rebateMoney.add(acctbalance));
-                    detail.setCreatetime(LocalDateTime.now());
-                    detail.setStatus(1);
-                    detail.setType(2);
-                    detail.setBriefchapterid(query.getBriefchapterId());
-                    //增加账户余额
-                    acctDetailMapper.insertSelective(detail);
-                    // 报名表投递表  待返佣金额减少 面试返佣状态改变
-                    HrSignupDeliveryrecord deliveryrecord = new HrSignupDeliveryrecord();
-                    deliveryrecord.setAcceptRebateAmount(rebateMoney);
-                    deliveryrecord.setSignupId(query.getSignUpId());
-                    deliveryrecord.setBriefChapterId(query.getBriefchapterId());
-                    signupDeliveryrecordMapper.reducedRebateAmount(deliveryrecord);
+                    if (query.getRebateType().equals(0)) {
+                        //不返佣
+                        rebaterecordMapper.noRebate(query.getId());
+                    } else {
+                        //更改返佣状态
+                        rebaterecordMapper.rebateOne(query.getRebateId(), dto.getHsdId());
+                        String rebateMon = query.getRebateMon();
+                        String substring = rebateMon.substring(5, 8);
+                        //返佣金额
+                        BigDecimal rebateMoney = StringUtil.decimal(substring) != null ? StringUtil.decimal(substring) : BigDecimal.ZERO;
+                        //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
+                        acctMapper.rebateUser(rebateMoney, query.getUserId());
+                        //企业冻结金额减少 消费金额增加
+                        acctMapper.rebateBusiness(rebateMoney, query.getBusInessUserId());
+                        //acctDetail 增加数据 账户余额增加
+                        //查询账户id, 账户余额
+                        HrAcct hrAcct = acctMapper.selectAcctIdByUserId(query.getUserId());
+                        //账户id
+                        Integer acctId = hrAcct.getId();
+                        //账户余额
+                        BigDecimal acctbalance = hrAcct.getAcctbalance();
+                        //账户详情
+                        HrAcctDetail detail = new HrAcctDetail();
+                        detail.setAcctid(acctId);
+                        detail.setAmount(rebateMoney);
+                        detail.setBeforeamount(acctbalance);
+                        detail.setAfteramount(rebateMoney.add(acctbalance));
+                        detail.setCreatetime(LocalDateTime.now());
+                        detail.setStatus(1);
+                        detail.setType(2);
+                        detail.setBriefchapterid(query.getBriefchapterId());
+                        //增加账户余额
+                        acctDetailMapper.insertSelective(detail);
+                    }
                     return dto;
                 }).collect(Collectors.toList());
-
-
         return 1;
     }
 

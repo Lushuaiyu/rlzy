@@ -168,12 +168,12 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         return userMapper.personalInformation(userId)
                 .stream()
                 .map(dto -> {
-                    Double salaryLower = dto.getExpectedSalaryLower().doubleValue();
-                    Double salaryUpper = dto.getExpectedSalaryUpper().doubleValue();
-                    String format = StringUtil.decimalFormat2(salaryLower);
-                    String format1 = StringUtil.decimalFormat2(salaryUpper);
-                    String s = format + "k" + "-" + format1 + "k";
-                    dto.setExpectedSalary(s);
+                    double v = dto.getExpectedSalaryUpper().doubleValue();
+                    String format1 = StringUtil.decimalFormat2(v);
+                    double v1 = dto.getExpectedSalaryLower().doubleValue();
+                    String s1 = StringUtil.decimalFormat2(v1);
+                    String s = s1 + "k" + format1  + "k";
+                    dto.setExpectedSalaryy(s);
                     return dto;
                 }).collect(Collectors.toList());
 
@@ -183,9 +183,9 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     public List<HrUser> personalInformationReferrer(Integer userId) {
         List<HrUser> hrSignUps = userMapper.personalInformationReferrer(userId);
         List<HrUser> collect = hrSignUps.stream().map(dto -> {
-            Integer lower = dto.getRecommendNoLower();
-            Integer noUpper = dto.getRecommendNoUpper();
-            String number = lower + "-" + noUpper + "人";
+
+            Integer noUpper = dto.getRecommendNo();
+            String number = noUpper + "人";
             dto.setRecommendedNumber(number);
             return dto;
         }).collect(Collectors.toList());
@@ -209,8 +209,7 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         user.setHeadImage(query.getUrl());
         user.setRecommenderId(query.getUserId());
         user.setPostIdStr(query.getPostIdStr());
-        user.setRecommendNoLower(query.getRecommendNoLower());
-        user.setRecommendNoUpper(query.getRecommendNoUpper());
+        user.setRecommendNo(query.getRecommendNo());
         user.setRecommendInfo(query.getRecommendInfo());
         user.setPublicIs(query.getItIsPublic());
         user.setAgreeHelp(query.getAgreePlatformHelp());
@@ -260,11 +259,12 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         String arrivalTime = query.getArrivalTime();
         Date date1 = StringUtil.StrToDate(arrivalTime);
         up.setArrivalTime(date1);
-        up.setExpectedSalaryLower(query.getExpectedSalaryLower());
         up.setExpectedSalaryUpper(query.getExpectedSalaryUpper());
+        up.setExpectedSalaryLower(query.getExpectedSalaryLower());
         up.setItIsPublic(query.getItIsPublic());
         up.setAgreePlatformHelp(query.getAgreePlatformHelp());
-        Assert.isFalse(signUpMapper.updatePesronInformation(up) < 1, RlzyConstant.ADD_FAILED);
+        //
+        Assert.isFalse(signUpMapper.updateByPrimaryKeySelective(up) < 1, RlzyConstant.ADD_FAILED);
 
     }
 
@@ -287,9 +287,8 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         List<HrUser> hrUsers = userMapper.collectReferrer(userId);
         return hrUsers.stream()
                 .map(dto -> {
-                    Integer recommendNoLower = dto.getRecommendNoLower();
-                    Integer recommendNoUpper = dto.getRecommendNoUpper();
-                    dto.setRecommend(recommendNoLower + "-" + recommendNoUpper + "人");
+                    Integer recommendNo = dto.getRecommendNo();
+                    dto.setRecommend(recommendNo + "人");
                     return dto;
                 }).collect(Collectors.toList());
     }
@@ -305,8 +304,8 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         hrUser.setProfession(query.getProfession());
         hrUser.setPostIdStr(query.getPostIdStr());
         hrUser.setArrivalTime(query.getArrivalTime());
-        hrUser.setExpectedSalaryLower(query.getExpectedSalaryLower());
         hrUser.setExpectedSalaryUpper(query.getExpectedSalaryUpper());
+        hrUser.setExpectedSalaryLower(query.getExpectedSalaryLower());
         hrUser.setPublicIs(query.getItIsPublic());
         hrUser.setAgreeHelp(query.getAgreePlatformHelp());
         Assert.isFalse(userMapper.editPersonData(hrUser) < 1, RlzyConstant.ADD_FAILED);

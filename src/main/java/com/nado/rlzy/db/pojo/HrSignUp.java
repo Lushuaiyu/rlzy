@@ -90,11 +90,12 @@ public class HrSignUp {
     @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
     private Date arrivalTime;
 
-    @ApiModelProperty(value = "期望薪资上限")
+
+
+    @ApiModelProperty(value = "期望薪资下限")
     @Column(name = "expected_salary_upper")
     private BigDecimal expectedSalaryUpper;
 
-    @ApiModelProperty(value = "期望薪资下限")
     @Column(name = "expected_salary_lower")
     private BigDecimal expectedSalaryLower;
 
@@ -168,9 +169,9 @@ public class HrSignUp {
     @Transient
     private String headImage;
 
-    @ApiModelProperty(value = "推荐人数下限")
+    @ApiModelProperty(value = "推荐人数")
     @Transient
-    private String recommendNoLower;
+    private String recommendNo;
 
     /**
      * 推荐人名字
@@ -182,10 +183,6 @@ public class HrSignUp {
      * 推荐人名字
      */
     private String commendName;
-
-    @ApiModelProperty(value = "推荐人数上限")
-    @Transient
-    private String recommendNoUpper;
 
     @ApiModelProperty(value = "推荐说明")
     @Transient

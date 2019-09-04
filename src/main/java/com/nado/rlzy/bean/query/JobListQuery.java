@@ -81,15 +81,12 @@ public class JobListQuery {
      */
     private String uid;
 
-    /**
-     * 推荐人数下限
-     */
-    private String recommendNoLower;
+
 
     /**
-     * 推荐人数上限
+     * 推荐人数
      */
-    private String recommendNoUpper;
+    private String recommendNo;
 
     /**
      * 意向岗位 简章表的postId

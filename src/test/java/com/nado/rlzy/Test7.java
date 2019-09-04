@@ -4,6 +4,7 @@ import com.nado.rlzy.base.BaseTest;
 import com.nado.rlzy.db.mapper.EntryResignationMapper;
 import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
 import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
+import com.nado.rlzy.db.mapper.HrSignUpMapper;
 import com.nado.rlzy.db.pojo.EntryResignation;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
@@ -33,6 +34,9 @@ public class Test7 extends BaseTest {
 
     @Resource
     private EntryResignationMapper resignationMapper;
+
+    @Resource
+    private HrSignUpMapper signUpMapper;
 
 
     @Test
@@ -120,14 +124,37 @@ public class Test7 extends BaseTest {
 
 
     @Test
-    public void test6(){
+    public void test6() {
         BigDecimal female = new BigDecimal(100);
         String a = "金额: ¥" + female;
 
         String substring = a.substring(5, 8);
         BigDecimal decimal = StringUtil.decimal(substring);
-        System.out.println(decimal);
+        //System.out.println(decimal);
+        List<HrRebaterecord> hrRebaterecords = rebaterecordMapper.selectRebateTime();
+        //System.out.println(hrRebaterecords);
+        hrRebaterecords.stream()
+                .map(dto -> {
+                    Integer rebateHour = dto.getRebateHour();
+                    Integer id = dto.getId();
+                    Integer dtoUserId = dto.getUserId();
+                    Integer businessUserId = dto.getBusinessUserId();
+                    BigDecimal rebateMale = dto.getRebateMale();
+                    BigDecimal rebateFemale = dto.getRebateFemale();
+                    Integer sex = dto.getSex();
+                    if (rebateHour.compareTo(72) > 0){
+                       System.out.println(rebateHour + "===" + id + "===" + dtoUserId + "===" + businessUserId +
+                               rebateMale + "===" + rebateFemale + "===" + sex);
+                   }
+                    return dto;
+                }).collect(Collectors.toList());
+    }
 
+    @Test
+    public void test7(){
+        List<HrRebaterecord> list = rebaterecordMapper.signUpIdByReport();
+
+        System.out.println(list);
     }
 
 }

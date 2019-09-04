@@ -912,11 +912,11 @@
         <if test="null != contractWay">
             and br.contractWay = #{contractWay}
         </if>
-        <if test="null != expectedSalaryLower">
-            and si.expected_salary_lower = #{expectedSalaryLower}
-        </if>
         <if test="null != expectedSalaryUpper">
             and si.expected_salary_upper = #{expectedSalaryUpper}
+        </if>
+        <if test="null != expectedSalaryLower">
+            and si.expected_salary_lower = #{expectedSalaryLower}
         </if>
         <if test="null != educationId">
             and si.education = #{educationId}
@@ -1637,12 +1637,13 @@
         <if test="null != contractWay">
             and br.contractWay = #{contractWay}
         </if>
-        <if test="null != expectedSalaryLower">
-            and si.expected_salary_lower = #{expectedSalaryLower}
-        </if>
         <if test="null != expectedSalaryUpper">
             and si.expected_salary_upper = #{expectedSalaryUpper}
         </if>
+        <if test="null != expectedSalaryLower">
+            and si.expected_salary_lower = #{expectedSalaryLower}
+        </if>
+
         <if test="null != educationId">
             and si.education = #{educationId}
         </if>

@@ -38,10 +38,10 @@ public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
 
     @ApiModelProperty(value = "到岗时间")
     private String arrivalTime;
+
     @ApiModelProperty(value = "期望工资上限")
     private String expectedSalaryUpper;
 
-    @ApiModelProperty(value = "期望工资下限")
     private String expectedSalaryLower;
 
     @ApiModelProperty(value = "是否公开")
@@ -53,11 +53,8 @@ public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
     @ApiModelProperty(value = "推荐人意向岗位")
     private String postIdStr;
 
-    @ApiModelProperty(value = "推荐人数上限")
-    private Integer recommendNoUpper;
-
-    @ApiModelProperty(value = "推荐人数上限")
-    private Integer recommendNoLower;
+    @ApiModelProperty(value = "推荐人数")
+    private Integer recommendNo;
 
     @ApiModelProperty(value = "推荐说明")
     private String recommendInfo;

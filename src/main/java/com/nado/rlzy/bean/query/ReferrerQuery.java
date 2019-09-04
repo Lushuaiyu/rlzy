@@ -18,14 +18,11 @@ public class ReferrerQuery {
     private String id;
 
     /**
-     * 推荐人数下限
+     * 推荐人数
      */
-    private String recommendNoLower;
+    private String recommendNo;
 
-    /**
-     * 推荐人数上限
-     */
-    private String recommendNoUpper;
+
 
     /**
      * 意向岗位 简章表的postId

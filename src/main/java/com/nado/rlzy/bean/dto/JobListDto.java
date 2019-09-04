@@ -47,11 +47,11 @@ public class JobListDto {
     @ApiModelProperty(value = "学历")
     private String education;
 
-    @ApiModelProperty(value = "期望工资下限")
-    private BigDecimal expectedSalaryLower;
+
 
     @ApiModelProperty(value = "期望工资上限")
     private BigDecimal expectedSalaryUpper;
+    private BigDecimal expectedSalaryLower;
 
     @ApiModelProperty(value = "未报名")
     private Integer noSignUp;

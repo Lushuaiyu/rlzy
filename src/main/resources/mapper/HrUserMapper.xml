@@ -16,12 +16,10 @@
         <result column="graduationTime" property="graduationTime" jdbcType="VARCHAR"/>
         <result column="arrivalTime" property="arrivalTime" jdbcType="VARCHAR"/>
         <result column="RegisterTime" property="registerTime" jdbcType="TIMESTAMP"/>
-        <result column="RecommendNoUpper" property="recommendNoUpper" jdbcType="INTEGER"/>
-        <result column="expectedSalaryLower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
         <result column="expectedSalaryUpper" property="expectedSalaryUpper" jdbcType="DECIMAL"/>
+        <result column="expectedSalaryLower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
         <result column="GroupName" property="groupName" jdbcType="VARCHAR"/>
-        <result column="RecommendNoLower" property="recommendNoLower" jdbcType="INTEGER"/>
-        <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
+        <result column="RecommendNo" property="recommendNo" jdbcType="INTEGER"/>
         <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
         <result column="sex" property="sex" jdbcType="INTEGER"/>
         <result column="LoginIp" property="loginIp" jdbcType="VARCHAR"/>
@@ -37,6 +35,7 @@
         <result column="violation_time" property="violationTime" jdbcType="TIMESTAMP"/>
         <result column="usId" property="userId" jdbcType="INTEGER"/>
         <result column="briefId" property="briefChapterId" jdbcType="INTEGER"/>
+        <result column="improve_information" property="improveInformation" jdbcType="INTEGER"/>
         <collection property="signUp" resultMap="resultMap" ofType="com.nado.rlzy.db.pojo.HrSignUp"/>
         <collection property="groups" resultMap="resultMap" ofType="com.nado.rlzy.db.pojo.HrSignUp"/>
         <collection property="deliveryrecords" resultMap="deliveryrecordsMap"
@@ -54,122 +53,6 @@
         <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
         <result column="no_report_reason" property="noReportReason" jdbcType="INTEGER"/>
     </resultMap>
-
-    <insert id="save" parameterType="com.nado.rlzy.db.pojo.HrUser" useGeneratedKeys="true" keyProperty="id">
-        insert into hr_user
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                Id,
-            </if>
-            <if test="userName != null">
-                UserName,
-            </if>
-            <if test="roleId != null">
-                RoleId,
-            </if>
-            <if test="password != null">
-                Password,
-            </if>
-            <if test="headImage != null">
-                HeadImage,
-            </if>
-            <if test="postIdStr != null">
-                PostIdStr,
-            </if>
-            <if test="mobile != null">
-                Mobile,
-            </if>
-            <if test="idCard != null">
-                IdCard,
-            </if>
-            <if test="registerTime != null">
-                RegisterTime,
-            </if>
-            <if test="recommendNoUpper != null">
-                RecommendNoUpper,
-            </if>
-            <if test="recommendNoLower != null">
-                RecommendNoLower,
-            </if>
-            <if test="recommendInfo != null">
-                RecommendInfo,
-            </if>
-            <if test="recommenderId != null">
-                RecommenderId,
-            </if>
-            <if test="loginIp != null">
-                LoginIp,
-            </if>
-            <if test="loginTime != null">
-                LoginTime,
-            </if>
-            <if test="deleteFlag != null">
-                DeleteFlag,
-            </if>
-            <if test="type != null">
-                type,
-            </if>
-            <if test="publicIs != null">
-                isPublic,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=INTEGER},
-            </if>
-            <if test="username != null">
-                #{userName,jdbcType=VARCHAR},
-            </if>
-            <if test="roleId != null">
-                #{roleId,jdbcType=INTEGER},
-            </if>
-            <if test="password != null">
-                #{password,jdbcType=VARCHAR},
-            </if>
-            <if test="headImage != null">
-                #{headImage,jdbcType=VARCHAR},
-            </if>
-            <if test="postIdStr != null">
-                #{postIdStr,jdbcType=VARCHAR},
-            </if>
-            <if test="mobile != null">
-                #{mobile,jdbcType=VARCHAR},
-            </if>
-            <if test="idCard != null">
-                #{idCard,jdbcType=VARCHAR},
-            </if>
-            <if test="registerTime != null">
-                #{registerTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="recommendNoUpper != null">
-                #{recommendNoUpper,jdbcType=VARCHAR},
-            </if>
-            <if test="recommendNoLower != null">
-                #{recommendNoLower,jdbcType=VARCHAR},
-            </if>
-            <if test="recommendInfo != null">
-                #{recommendInfo,jdbcType=VARCHAR},
-            </if>
-            <if test="recommenderId != null">
-                #{recommenderId,jdbcType=INTEGER},
-            </if>
-            <if test="loginIp != null">
-                #{loginIp,jdbcType=VARCHAR},
-            </if>
-            <if test="loginTime != null">
-                #{loginTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="deleteFlag != null">
-                #{deleteFlag, jdbcType=BIT},
-            </if>
-            <if test="type != null">
-                #{type,jdbcType=INTEGER},
-            </if>
-            <if test="publicIs != null">
-                #{publicIs, jdbcType=INTEGER},
-            </if>
-        </trim>
-    </insert>
 
     <update id="editPersonData" parameterType="com.nado.rlzy.db.pojo.HrUser">
         update hr_user
@@ -198,12 +81,13 @@
             <if test="registerTime != null">
                 RegisterTime = #{registerTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="recommendNoUpper != null">
-                RecommendNoUpper = #{recommendNoUpper,jdbcType=INTEGER},
+            <if test="recommendNo != null">
+                RecommendNo = #{recommendNo,jdbcType=INTEGER},
             </if>
-            <if test="recommendNoLower != null">
-                RecommendNoLower = #{recommendNoLower,jdbcType=VARCHAR},
+            <if test="null != expectedSalary">
+                expectedSalary = #{expectedSalary}
             </if>
+
             <if test="recommendInfo != null and '' != recommendInfo">
                 RecommendInfo = #{recommendInfo,jdbcType=VARCHAR},
             </if>
@@ -270,7 +154,7 @@
         </where>
     </update>
 
-    <select id="getUserByMobile" resultType="com.nado.rlzy.db.pojo.HrUser" parameterType="map">
+    <select id="getUserByMobile" resultMap="BaseResultMap" parameterType="map">
         select id,
         userName as userName,
         headImage as headImage,
@@ -279,8 +163,7 @@
         mobile as mobile,
         idCard as idCard,
         type as type,
-        RecommendNoUpper as recommendNoUpper,
-        RecommendNoLower as recommendNoLower,
+        RecommendNo as recommendNo,
         RecommendInfo as recommendInfo
         from HR_User
         <where>
@@ -294,7 +177,7 @@
     </select>
 
 
-    <select id="getUserByMobileAndPwd" resultType="com.nado.rlzy.db.pojo.HrUser">
+    <select id="getUserByMobileAndPwd" resultMap="BaseResultMap">
         select id,
         userName,
         headImage,
@@ -303,8 +186,7 @@
         mobile,
         idCard,
         type,
-        RecommendNoUpper as recommendNoUpper,
-        RecommendNoLower as recommendNoLower,
+        RecommendNo as recommendNo,
         RecommendInfo as recInfo
         from hr_user
         where mobile= #{mobile} and password =#{password} and status = 0
@@ -324,8 +206,7 @@
     </select>
     <select id="selectReferrerInfo" resultMap="BaseResultMap">
         select u.UserName,
-        u.RecommendNoUpper,
-        u.RecommendNoLower,
+        u.RecommendNo,
         u.PostIdStr,
         u.RecommendInfo,
         si.user_name,
@@ -364,8 +245,7 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
         and d.pId = 1) as PostIdStr,
-        u.RecommendNoLower,
-        u.RecommendNoUpper,
+        u.RecommendNo,
         u.RecommendInfo,
         u.isPublic,
         u.agreeHelp
@@ -399,8 +279,7 @@
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
         and d.pId = 1) as PostIdStr,
         u.arrivalTime,
-        u.expectedSalaryLower,
-        u.expectedSalaryUpper,
+        u.expectedSalary,
         u.isPublic,
         u.agreeHelp,
         u.PostIdStr
@@ -421,15 +300,14 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
         and d.pId = 1) as postName,
-        u.RecommendNoLower,
-        u.RecommendNoUpper
+        u.RecommendNo
         from hr_user u
         left join user_login_quit ulq on u.id = ulq.user_id
         and ulq.delete_flag = 0
         where u.status = 0
         and u.type = 2
-        <if test="null != recommendNoLower and null != recommendNoUpper">
-            and (u.RecommendNoLower = #{recommendNoLower} and u.RecommendNoUpper = #{recommendNoUpper})
+        <if test="null != recommendNo">
+            and u.RecommendNo = #{recommendNo}
         </if>
         <if test="null != postId">
             and u.PostIdStr like concat('%', #{postId}, '%');
@@ -439,19 +317,13 @@
     <select id="selectReferrerDetails" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.JobListQuery">
         select u.UserName,
-        u.RecommendNoLower,
+        u.RecommendNo,
         u.Id,
-        u.RecommendNoUpper,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
-        and d.pId = 1)  as postName,
-        u.RecommendInfo,
-        (select count(v.id)
-        from violation_record v
-        left join hr_signup si on v.sign_up_id = si.id and si.delete_flag = 0
-        where v.delete_flag = 0
-        and v.type = 2) as violationRecord
+        and d.pId = 1) as postName,
+        u.RecommendInfo
         from hr_user u
         left join hr_signup si on u.id = si.user_id and si.delete_flag = 0
         where u.status = 0
@@ -524,8 +396,7 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, uu.PostIdStr)
         and d.pId = 1) as postName,
-        uu.RecommendNoLower,
-        uu.RecommendNoUpper
+        uu.RecommendNo,
         from collect c
         left join hr_user u on c.user_id = u.id and u.status = 0
         left join hr_user uu on c.recruiter_id = uu.Id and uu.status = 0
@@ -547,8 +418,9 @@
             and u.Id = #{userId}
         </if>
     </select>
-  <select id="queryReferrerVillation" resultMap="BaseResultMap">
-        select hsd.status, u.UserName, gr.GroupName, u.violation_flag, hsd.status, hsd.brief_chapter_id as briefId, si.user_id as usId
+    <select id="queryReferrerVillation" resultMap="BaseResultMap">
+        select hsd.status, u.UserName, gr.GroupName, u.violation_flag, hsd.status, hsd.brief_chapter_id as briefId,
+        si.user_id as usId
         from hr_signup si
         left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
         left join hr_user u on si.user_id = u.id and u.status = 0
@@ -574,4 +446,29 @@
             and hsd.brief_chapter_id = #{briefChapterId}
         </if>
     </select>
+    <select id="login" resultMap="BaseResultMap">
+        select Id, improve_information, violation_flag, violation_time from hr_user where status = 0
+        <if test="null != phone">
+            and Mobile = #{phone}
+        </if>
+        <if test="null != password">
+            and Password = #{password}
+        </if>
+    </select>
+    <select id="selectPhoneByPhone" resultMap="BaseResultMap">
+        select UserName, Mobile, Password from hr_user where status = 0
+        <if test="null != phone">
+            and Mobile = #{phone}
+        </if>
+    </select>
+    <select id="queryUser" resultType="hrUser">
+        select * from hr_user where  status = 1
+        <if test="null != phone">
+            and Mobile = #{phone}
+        </if>
+        <if test="null != password">
+            and Password = #{password}
+        </if>
+    </select>
+
 </mapper>

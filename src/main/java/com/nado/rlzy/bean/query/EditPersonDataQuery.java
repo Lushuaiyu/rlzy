@@ -61,14 +61,14 @@ public class EditPersonDataQuery {
     @ApiModelProperty(value = "期望薪资上限")
     private BigDecimal expectedSalaryUpper;
 
-    @ApiModelProperty(value = "期望薪资下限")
     private BigDecimal expectedSalaryLower;
 
-    @ApiModelProperty(value = "推荐人数量下限")
-    private Integer recommendNoLower;
+
+
+
 
     @ApiModelProperty(value = "推荐人数量上限")
-    private Integer recommendNoUpper;
+    private Integer recommendNo;
 
     @ApiModelProperty(value = "是否公开")
     private Integer itIsPublic;

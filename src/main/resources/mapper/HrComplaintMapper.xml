@@ -188,10 +188,7 @@
         select c.id,
         grr.GroupName as groupName,
         c.brief_chapter_id as briefChapterId,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, c.status)
-        and d.pId = 25) as status,
+        c.status,
         c.create_time as createTime,
         s.id as signUpId
         from hr_complaint c
@@ -295,10 +292,7 @@
         select c.id,
         gr.GroupName as groupName,
         c.brief_chapter_id as briefChapterId,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, c.status)
-        and d.pId = 25) as status,
+        c.status,
         c.create_time as createTime
         from hr_complaint c
         left join hr_user u on c.user_id = u.id and u.status = 0

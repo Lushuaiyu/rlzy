@@ -12,9 +12,8 @@ import tk.mybatis.mapper.common.Mapper;
 import java.util.List;
 
 public interface HrSignUpMapper extends Mapper<HrSignUp> {
-    int insertSe(HrSignUp record);
 
-    int updateBy(HrSignUp signUp);
+
 
     /**
      * 报名表查询所有
@@ -26,19 +25,6 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [userId]
      **/
     List<HrSignUp> queryAll(@Param("userId") Integer userId);
-
-
-    /**
-     * 编辑个人资料 本人
-     *
-     * @return int
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 14:49 2019/7/9
-     * @Param [userId, typeId]
-     **/
-    int updatePesronInformation(HrSignUp signUp);
-
 
     /**
      * 招聘端 查询求职列表概览
@@ -304,18 +290,6 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      **/
     List<HrSignUp> signUpId();
 
-    /**
-     * 根据status 为待报道的查id
-     *
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 18:09 2019/7/18
-     * @Param []
-     **/
-    List<HrSignUp> signUpIdByReport();
-
-
 
 
     /**
@@ -491,29 +465,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
 
-    /**
-     * 招聘详情 待返佣 不返佣
-     *
-     * @return int
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 16:29 2019/7/19
-     * @Param [rebateId]
-     **/
-    @Update(value = "update hr_rebaterecord set status = 2 where DeleteFlag = 0 and id = #{rebateId}")
-    int noRebate(@Param("rebateId") Integer rebateId);
 
-
-    /**
-     * 招聘端 招聘详情 待返佣 返佣
-     *
-     * @return int
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 18:04 2019/7/30
-     * @Param []
-     **/
-    int rebateOne(@Param("rebateId") Integer rebateId);
 
     /**
      * 招聘单位 扣的返佣的钱

@@ -1,9 +1,9 @@
 package com.nado.rlzy.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.base.BaseController;
 import com.nado.rlzy.bean.model.CommonResult;
 import com.nado.rlzy.bean.model.ResultInfo;
+import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterHobHuntingQuery;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterQuery;
 import com.nado.rlzy.db.pojo.HrUser;
@@ -98,22 +98,34 @@ public class UserController extends BaseController {
             @ApiImplicitParam(value = "phone", name = "手机号", dataType = "string", required = true),
             @ApiImplicitParam(value = "password", name = "密码", dataType = "string", required = true)
     })
-    public Object login(String phone, String password) {
-        JSONObject jsonObject = new JSONObject();
+    public ResultJson login(String phone, String password) {
+        ResultJson resultJson = new ResultJson();
         HrUser phone1 = service.findByPhone(phone);
-        if (null == phone) {
-            jsonObject.put("message", "登录失败,用户不存在");
-            return jsonObject;
+
+        HrUser hrUser = service.queryUser(phone, password);
+        if (null != hrUser){
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg("用户已禁用");
+            return resultJson;
+        }
+
+        if (null == phone1) {
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMsg("登录失败,用户不存在");
+            return resultJson;
         } else {
-            //密码先不加 salt
+
             if (!(phone1.getPassword().equals(MD5.getMD5(password + RlzyConstant.PASSWORD_SALT)))) {
-                jsonObject.put("message", "登录失败,密码错误");
-                return jsonObject;
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMsg("登录失败,密码错误");
+                return resultJson;
             } else {
-                String token = tokenService.getToken(phone1);
-                jsonObject.put("token", token);
-                jsonObject.put("user", phone);
-                return jsonObject;
+                //可以登录
+                HrUser login = service.login(phone, password);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(login);
+                return resultJson;
             }
         }
     }

@@ -41,7 +41,8 @@ public class RebateQuery {
      private Integer sex;
 
     /**
-     * 类型
+     * 返佣类型 1 招聘详情 待返佣 查询返佣 2 招聘详情 待返佣 不返佣
+     * 3招聘详情 待返佣 返佣过程 需要signUpId 知道是返佣给哪个报名者
      */
     private Integer type;
 
@@ -59,5 +60,10 @@ public class RebateQuery {
      * 返佣的金额
      */
     private String rebateMon;
+
+    /**
+     * 是否返佣 0 不返佣 1 返佣
+     */
+    private Integer rebateType;
 
 }

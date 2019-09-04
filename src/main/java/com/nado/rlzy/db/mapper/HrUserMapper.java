@@ -21,7 +21,6 @@ import java.util.Map;
 public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
 
 
-    int save(HrUser record);
 
     HrUser finrdUserById(String userId);
 
@@ -51,6 +50,27 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
     String getPassword(@Param("phone") String phone);
 
     /**
+     * 查询用户是否已经登录
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 20:04 2019/9/4
+     * @Param [phone]
+     * @return com.nado.rlzy.db.pojo.HrUser
+     **/
+    HrUser selectPhoneByPhone(@Param("phone") String phone);
+
+
+    /**
+     * 查询用户是否被禁用
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 20:16 2019/9/4
+     * @Param
+     * @return
+     **/
+    HrUser queryUser(@Param("phone") String phone, @Param("password") String password);
+
+    /**
      * 注册
      *
      * @return int
@@ -60,6 +80,16 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      * @param phone 手机号
      **/
     HrUser queryUserByPhone(@Param("phone") String phone);
+
+    /**
+     * 登录
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 19:39 2019/9/4
+     * @Param [phone, password]
+     * @return com.nado.rlzy.db.pojo.HrUser
+     **/
+    HrUser login(@Param("phone") String phone , @Param("password") String password);
 
 
     /**

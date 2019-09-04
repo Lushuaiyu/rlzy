@@ -38,7 +38,7 @@ public class HrRebaterecord {
 
     private String rebateTimeFrontEnd;
 
-    @Column(name =  "RebateMale")
+    @Column(name = "RebateMale")
     private BigDecimal rebateMale;
 
     private Integer statusTwo;
@@ -81,6 +81,42 @@ public class HrRebaterecord {
 
     @Column(name = "signup_deliveryrecord_id")
     private Integer signupDeliveryrecordId;
+
+    /**
+     * 现在时间和入职返佣时间的差
+     */
+    @Transient
+    private Integer rebateHour;
+
+    /**
+     * 用户id
+     */
+    @Transient
+    private Integer userId;
+
+    /**
+     * 商户id
+     */
+    @Transient
+    private Integer businessUserId;
+
+    @Transient
+    private Integer sex;
+
+    /**
+     * 简章表id
+     */
+    private Integer brId;
+
+    /**
+     * 报道时间
+     */
+    private Date registerTime;
+
+    /**
+     * 报名投递表id
+     */
+    private Integer hsdId;
 
 
 }

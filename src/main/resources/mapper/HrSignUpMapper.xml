@@ -16,9 +16,9 @@
         <result column="profession" property="profession" jdbcType="VARCHAR"/>
         <result column="arrival_time" property="arrivalTime" jdbcType="DATE"/>
         <result column="expected_salary_upper" property="expectedSalaryUpper" jdbcType="DECIMAL"/>
+        <result column="expected_salary_lower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
         <result column="recommendName" property="recommendName" jdbcType="VARCHAR"/>
         <result column="commendName" property="commendName" jdbcType="VARCHAR"/>
-        <result column="expected_salary_lower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
         <result column="enter_time" property="enterTime" jdbcType="TIMESTAMP"/>
         <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
         <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
@@ -33,8 +33,7 @@
         <result column="it_is_public" property="itIsPublic" jdbcType="INTEGER"/>
         <result column="agree_platform_help" property="agreePlatformHelp" jdbcType="INTEGER"/>
         <result column="HeadImage" property="headImage" jdbcType="VARCHAR"/>
-        <result column="RecommendNoLower" property="recommendNoLower" jdbcType="VARCHAR"/>
-        <result column="RecommendNoUpper" property="recommendNoUpper" jdbcType="VARCHAR"/>
+        <result column="RecommendNo" property="recommendNo" jdbcType="VARCHAR"/>
         <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
         <result column="value" property="value" jdbcType="DECIMAL"/>
         <result column="postId" property="postId" jdbcType="VARCHAR"/>
@@ -67,280 +66,6 @@
         <result column="brief_chapter_id" property="id" jdbcType="INTEGER"/>
 
     </resultMap>
-    <insert id="insertSe" parameterType="com.nado.rlzy.db.pojo.HrSignUp">
-        insert into hr_signup
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="userId != null">
-                user_id,
-            </if>
-            <if test="groupId != null">
-                group_id,
-            </if>
-            <if test="briefChapterId != null">
-                brief_chapter_id,
-            </if>
-            <if test="userName != null">
-                user_name,
-            </if>
-            <if test="sex != null">
-                sex,
-            </if>
-            <if test="idCard != null">
-                id_card,
-            </if>
-            <if test="education != null">
-                education,
-            </if>
-            <if test="graduationTime != null">
-                graduation_time,
-            </if>
-            <if test="profession != null">
-                profession,
-            </if>
-            <if test="arrivalTime != null">
-                arrival_time,
-            </if>
-            <if test="expectedSalaryUpper != null">
-                expected_salary_upper,
-            </if>
-            <if test="expectedSalaryLower != null">
-                expected_salary_lower,
-            </if>
-            <if test="enterTime != null">
-                enter_time,
-            </if>
-            <if test="jobStatus != null">
-                status,
-            </if>
-            <if test="noPassReason != null">
-                no_pass_reason,
-            </if>
-            <if test="deleteFlag != null">
-                delete_flag,
-            </if>
-            <if test="registrationPositionId != null">
-                registration_position_id,
-            </if>
-            <if test="age != null">
-                age,
-            </if>
-            <if test="relation != null">
-                relation,
-            </if>
-            <if test="null != itIsPublic">
-                it_is_public,
-            </if>
-            <if test="null != agreePlatformHelp">
-                agree_platform_help,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=INTEGER},
-            </if>
-            <if test="userId != null">
-                #{userId,jdbcType=INTEGER},
-            </if>
-            <if test="groupId != null">
-                #{groupId,jdbcType=INTEGER},
-            </if>
-            <if test="briefChapterId != null">
-                #{briefChapterId,jdbcType=INTEGER},
-            </if>
-            <if test="userName != null">
-                #{userName,jdbcType=VARCHAR},
-            </if>
-            <if test="sex != null">
-                #{sex,jdbcType=INTEGER},
-            </if>
-            <if test="idCard != null">
-                #{idCard,jdbcType=VARCHAR},
-            </if>
-            <if test="education != null">
-                #{education,jdbcType=VARCHAR},
-            </if>
-            <if test="graduationTime != null">
-                #{graduationTime,jdbcType=DATE},
-            </if>
-            <if test="profession != null">
-                #{profession,jdbcType=VARCHAR},
-            </if>
-            <if test="arrivalTime != null">
-                #{arrivalTime,jdbcType=DATE},
-            </if>
-            <if test="expectedSalaryUpper != null">
-                #{expectedSalaryUpper,jdbcType=VARCHAR},
-            </if>
-            <if test="expectedSalaryLower != null">
-                #{expectedSalaryLower,jdbcType=VARCHAR},
-            </if>
-            <if test="enterTime != null">
-                #{enterTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="jobStatus != null">
-                #{jobStatus,jdbcType=INTEGER},
-            </if>
-            <if test="noPassReason != null">
-                #{noPassReason,jdbcType=INTEGER},
-            </if>
-            <if test="deleteFlag != null">
-                #{deleteFlag,jdbcType=TINYINT},
-            </if>
-            <if test="registrationPositionId != null">
-                #{registrationPositionId,jdbcType=INTEGER},
-            </if>
-            <if test="age != null">
-                #{age,jdbcType=INTEGER},
-            </if>
-            <if test="relation != null">
-                #{relation,jdbcType=INTEGER},
-            </if>
-            <if test="null != itIsPublic">
-                #{itIsPublic},
-            </if>
-            <if test="null != agreePlatformHelp">
-                #{agreePlatformHelp}
-            </if>
-        </trim>
-    </insert>
-
-    <update id="updateBy">
-        update hr_signup
-        <set>
-            <if test="userId != null">
-                user_id = #{userId,jdbcType=INTEGER},
-            </if>
-            <!--  <if test="groupId != null">
-                  group_id = #{groupId,jdbcType=INTEGER},
-              </if>-->
-            <if test="briefChapterId != null">
-                brief_chapter_id = #{briefChapterId,jdbcType=INTEGER},
-            </if>
-            <if test="userName != null">
-                user_name = #{userName,jdbcType=VARCHAR},
-            </if>
-            <if test="sex != null">
-                sex = #{sex,jdbcType=INTEGER},
-            </if>
-            <if test="idCard != null">
-                id_card = #{idCard,jdbcType=VARCHAR},
-            </if>
-            <if test="education != null">
-                education = #{education,jdbcType=VARCHAR},
-            </if>
-            <if test="graduationTime != null">
-                graduation_time = #{graduationTime,jdbcType=DATE},
-            </if>
-            <if test="profession != null">
-                profession = #{profession,jdbcType=VARCHAR},
-            </if>
-            <if test="arrivalTime != null">
-                arrival_time = #{arrivalTime,jdbcType=DATE},
-            </if>
-            <if test="expectedSalaryUpper != null">
-                expected_salary_upper = #{expectedSalaryUpper,jdbcType=VARCHAR},
-            </if>
-            <if test="expectedSalaryLower != null">
-                expected_salary_lower = #{expectedSalaryLower,jdbcType=VARCHAR},
-            </if>
-            <if test="enterTime != null">
-                enter_time = #{enterTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="jobStatus != null">
-                status = 0,
-            </if>
-            <if test="noPassReason != null">
-                no_pass_reason = #{noPassReason,jdbcType=INTEGER},
-            </if>
-            <if test="deleteFlag != null">
-                delete_flag = #{deleteFlag,jdbcType=TINYINT},
-            </if>
-            <if test="registrationPositionId != null">
-                registration_position_id = #{registrationPositionId,jdbcType=INTEGER},
-            </if>
-            <if test="age != null">
-                age = #{age,jdbcType=INTEGER},
-            </if>
-            <if test="relation != null">
-                relation = #{relation,jdbcType=INTEGER},
-            </if>
-        </set>
-        where
-        delete_flag = 0
-        <if test="null != userId">
-            and user_id = #{userId}
-        </if>
-    </update>
-    <update id="updatePesronInformation" parameterType="com.nado.rlzy.db.pojo.HrSignUp">
-        update hr_signup
-        <set>
-            <if test="userId != null">
-                user_id = #{userId,jdbcType=INTEGER},
-            </if>
-            <if test="groupId != null">
-                group_id = #{groupId,jdbcType=INTEGER},
-            </if>
-            <if test="briefChapterId != null">
-                brief_chapter_id = #{briefChapterId,jdbcType=INTEGER},
-            </if>
-            <if test="userName != null">
-                user_name = #{userName,jdbcType=VARCHAR},
-            </if>
-            <if test="sex != null">
-                sex = #{sex,jdbcType=INTEGER},
-            </if>
-            <if test="idCard != null">
-                id_card = #{idCard,jdbcType=VARCHAR},
-            </if>
-            <if test="education != null">
-                education = #{education,jdbcType=VARCHAR},
-            </if>
-            <if test="graduationTime != null">
-                graduation_time = #{graduationTime,jdbcType=DATE},
-            </if>
-            <if test="profession != null">
-                profession = #{profession,jdbcType=VARCHAR},
-            </if>
-            <if test="arrivalTime != null">
-                arrival_time = #{arrivalTime,jdbcType=DATE},
-            </if>
-            <if test="expectedSalaryUpper != null">
-                expected_salary_upper = #{expectedSalaryUpper,jdbcType=VARCHAR},
-            </if>
-            <if test="expectedSalaryLower != null">
-                expected_salary_lower = #{expectedSalaryLower,jdbcType=VARCHAR},
-            </if>
-            <if test="enterTime != null">
-                enter_time = #{enterTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="jobStatus != null">
-                status = #{jobStatus,jdbcType=INTEGER},
-            </if>
-            <if test="noPassReason != null">
-                no_pass_reason = #{noPassReason,jdbcType=INTEGER},
-            </if>
-            <if test="deleteFlag != null">
-                delete_flag = #{deleteFlag,jdbcType=TINYINT},
-            </if>
-            <if test="registrationPositionId != null">
-                registration_position_id = #{registrationPositionId,jdbcType=INTEGER},
-            </if>
-            <if test="age != null">
-                age = #{age,jdbcType=INTEGER},
-            </if>
-            <if test="relation != null">
-                relation = #{relation,jdbcType=INTEGER},
-            </if>
-        </set>
-        where delete_flag = 0
-        <if test="null != userId">
-            and user_id = #{userId}
-        </if>
-    </update>
-
 
     <update id="invitationToRegister">
         update hr_signup_deliveryrecord sd, hr_signup si
@@ -617,19 +342,7 @@
             </foreach>
         </where>
     </update>
-    <update id="rebateOne">
-        update hr_rebaterecord
-        <set>
-            status = 1
-            <where>
-                DeleteFlag = 0
-                <if test="null != rebateId">
-                    and Id = #{rebateId}
-                </if>
-            </where>
 
-        </set>
-    </update>
     <update id="rebateAdd" parameterType="com.nado.rlzy.bean.query.RebateQuery">
         update hr_acct
         <set>
@@ -730,8 +443,7 @@
         s.education as education,
         s.arrival_time as arrivalTime,
         s.graduation_time as graduationTime,
-        s.expected_salary_lower as expectedSalaryLower,
-        s.expected_salary_upper as expectedSalaryUpper,
+        s.expected_salary as expectedSalary,
         sd.status as jobStatus,
         ifnull(sd.signup_id, 0) as noSignUp,
         s.relation as relation,
@@ -787,8 +499,7 @@
        s.education             as education,
        s.arrival_time          as arrivalTime,
        s.graduation_time       as graduationTime,
-       s.expected_salary_lower as expectedSalaryLower,
-       s.expected_salary_upper as expectedSalaryUpper,
+       s.expected_salary as expectedSalary,
        sd.status           as jobStatus,
        ifnull(sd.signup_id, 0)         as noSignUp,
        s.relation              as relation
@@ -984,13 +695,6 @@
     <select id="signUpId" resultMap="BaseResultMap">
         select si.id from hr_signup si
         left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0 and sd.status = 1
-        <where>
-            si.delete_flag = 0
-        </where>
-    </select>
-    <select id="signUpIdByReport" resultMap="BaseResultMap">
-        select si.id from hr_signup si
-        left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0 and sd.status = 2
         <where>
             si.delete_flag = 0
         </where>

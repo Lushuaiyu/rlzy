@@ -71,6 +71,26 @@ public interface UserService {
      **/
     int registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query);
 
+    /**
+     * 登录
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 19:44 2019/9/4
+     * @Param [phone, password]
+     * @return com.nado.rlzy.db.pojo.HrUser
+     **/
+    HrUser login(String phone, String password);
+
+    /**
+     * 查询用户是否被禁用
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 20:19 2019/9/4
+     * @Param [phone, password]
+     * @return com.nado.rlzy.db.pojo.HrUser
+     **/
+    HrUser queryUser(String phone, String password);
+
 
 
 

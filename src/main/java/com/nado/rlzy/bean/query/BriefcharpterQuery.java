@@ -189,15 +189,14 @@ public class BriefcharpterQuery extends BaseQuery {
      */
     private Date graduationTime;
 
-    /**
-     * 期望薪资下限
-     */
-    private BigDecimal expectedSalaryLower;
+
 
     /**
      * 期望薪资上限
      */
     private BigDecimal expectedSalaryUpper;
+
+    private BigDecimal expectedSalaryLower;
 
     /**
      * 学历

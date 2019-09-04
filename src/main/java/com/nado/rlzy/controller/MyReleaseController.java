@@ -338,8 +338,7 @@ public class MyReleaseController extends BaseController {
 
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "sex", name = "性别", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "type", name = "1 招聘详情 待返佣 查询返佣 2 招聘详情 待返佣 不返佣" +
-                    "3招聘详情 待返佣 返佣过程 需要signUpId 知道是返佣给哪个报名者)", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "type", name = "1 招聘详情 待返佣 查询返佣 2招聘详情 待返佣 返佣过程 需要signUpId 知道是返佣给哪个报名者", dataType = "integer", required = true),
             @ApiImplicitParam(value = "下面是返佣计划的入参", name = "下面是返佣计划的入参", dataType = "string", required = true),
             @ApiImplicitParam(value = "userId", name = "招聘单位 id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "addMoney", name = "增加的钱 和 减少的钱 必须保持一致", dataType = "BigDecimal", required = true),
@@ -357,11 +356,6 @@ public class MyReleaseController extends BaseController {
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(list);
         } else if (query.getType().equals(2)) {
-            int count = service.noRebate(query);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
-        } else if (query.getType().equals(3)) {
             int count = service.rebate(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);

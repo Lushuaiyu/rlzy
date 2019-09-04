@@ -11,7 +11,6 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,7 +27,6 @@ import java.util.List;
 
 @Data
 @ApiModel(description = "报名表")
-@Table(name = "hr_signup")
 public class SignUpQuery {
     @ApiModelProperty(value = "报名表主键id")
     @Column(name = "id")
@@ -78,11 +76,12 @@ public class SignUpQuery {
     @Column(name = "arrival_time")
     private LocalDateTime arrivalTime;
 
-    @ApiModelProperty(value = "期望薪资上限")
+
+
+    @ApiModelProperty(value = "期望薪资")
     @Column(name = "expected_salary_upper")
     private BigDecimal expectedSalaryUpper;
 
-    @ApiModelProperty(value = "期望薪资下限")
     @Column(name = "expected_salary_lower")
     private BigDecimal expectedSalaryLower;
 
@@ -147,13 +146,9 @@ public class SignUpQuery {
     @Transient
     private String headImage;
 
-    @ApiModelProperty(value = "推荐人数下限")
+    @ApiModelProperty(value = "推荐人数")
     @Transient
-    private String recommendNoLower;
-
-    @ApiModelProperty(value = "推荐人数上限")
-    @Transient
-    private Integer recommendNoUpper;
+    private String recommendNo;
 
     @ApiModelProperty(value = "推荐说明")
     @Transient

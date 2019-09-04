@@ -64,6 +64,7 @@ public class HrUser {
     /**
      * 意向岗位
      */
+    @Transient
     private String postName;
 
     @Column(name = "Mobile")
@@ -80,13 +81,10 @@ public class HrUser {
     @ApiModelProperty(value = "注册时间")
     private LocalDateTime registerTime;
 
-    @Column(name = "RecommendNoUpper")
-    @ApiModelProperty(value = "推荐人数上限")
-    private Integer recommendNoUpper;
 
-    @Column(name = "RecommendNoLower")
-    @ApiModelProperty(value = "推荐人数下限")
-    private Integer recommendNoLower;
+    @Column(name = "RecommendNo")
+    @ApiModelProperty(value = "推荐人数")
+    private Integer recommendNo;
 
     /**
      * 推荐人数
@@ -187,16 +185,16 @@ public class HrUser {
     @Column(name = "arrivalTime")
     private String arrivalTime;
 
-    @ApiModelProperty(value = "期望薪资上限")
-    @Column(name = "expectedSalaryUpper")
-    private BigDecimal expectedSalaryUpper;
-
-    @Transient
-    private String groupName;
-
     @ApiModelProperty(value = "期望薪资下限")
     @Column(name = "expectedSalaryLower")
     private BigDecimal expectedSalaryLower;
+
+    @Column(name = "expectedSalaryUpper")
+    private BigDecimal expectedSalaryUpper;
+
+
+    @Transient
+    private String groupName;
 
     @ApiModelProperty(value = "推荐人数")
     @Transient
@@ -204,7 +202,7 @@ public class HrUser {
 
     @ApiModelProperty(value = "期望薪资")
     @Transient
-    private String expectedSalary;
+    private String expectedSalaryy;
 
     /**
      * 违规状态 0 未违规 1 违规 (违规了就停权)
@@ -228,6 +226,9 @@ public class HrUser {
 
     @Transient
     private String report;
+
+    @Column(name = "improve_information")
+    private Integer improveInformation;
 
 
 }

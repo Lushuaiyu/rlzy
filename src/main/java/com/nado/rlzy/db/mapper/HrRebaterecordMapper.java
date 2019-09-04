@@ -29,7 +29,7 @@ public interface HrRebaterecordMapper {
 
 
     /**
-     * 定时任务 返佣 查询返佣时间
+     * 定时任务 返佣 查询入职返佣时间
      *
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      * @Author lushuaiyu
@@ -63,8 +63,6 @@ public interface HrRebaterecordMapper {
                           @Param("briefchapter") Integer briefchapter,
                           @Param("rebateType") Integer rebateType);
 
-    @Update(value = "update hr_rebaterecord set RebateMale = #{rebateMale}, RebateFemale = #{rebateFemale} where BriefChapterId = #{brId} and DeleteFlag = 0")
-    int updateReba(@Param("rebateMale") BigDecimal rebateMale, @Param("rebateFemale") BigDecimal rebateFemale, @Param("brId") Integer brId);
 
     /**
      * 招聘端 我的发布 修改返佣价格
@@ -135,6 +133,41 @@ public interface HrRebaterecordMapper {
      * @Date 15:56 2019/7/19
      **/
     List<HrRebaterecord> rebate(@Param("signUpId") Integer signUpId, @Param("briefchapterId") Integer briefchapterId);
+
+
+    /**
+     * 招聘端 招聘详情 待返佣 返佣
+     *
+     * @return int
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 18:04 2019/7/30
+     * @Param []
+     **/
+    int rebateOne(@Param("rebateId") Integer rebateId, @Param("signupDeliveryrecordId") Integer signupDeliveryrecordId);
+
+    /**
+     * 招聘详情 待返佣 不返佣
+     * @return int
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:29 2019/7/19
+     * @Param [rebateId]
+     **/
+    @Update(value = "update hr_rebaterecord set status = 2 where DeleteFlag = 0 and id = #{rebateId}")
+    int noRebate(@Param("rebateId") Integer rebateId);
+
+
+    /**
+     * 根据status 为待报到 查询 和报道返佣相关的信息
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 18:09 2019/7/18
+     * @Param []
+     **/
+    List<HrRebaterecord> signUpIdByReport();
 
 
 }

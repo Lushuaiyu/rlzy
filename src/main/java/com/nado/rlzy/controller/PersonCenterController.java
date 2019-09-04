@@ -211,15 +211,13 @@ public class PersonCenterController extends BaseController {
             @ApiImplicitParam(value = "profession", name = "专业", dataType = "string", required = true),
             @ApiImplicitParam(value = "registrationPositionId", name = "报名岗位id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "ArrivalTime", name = "到岗时间", dataType = "date", required = true),
-            @ApiImplicitParam(value = "ExpectedSalaryLower", name = "期望薪资下限", dataType = "string", required = true),
-            @ApiImplicitParam(value = "ExpectedSalaryUpper", name = "期望薪资上限", dataType = "string", required = true),
+            @ApiImplicitParam(value = "ExpectedSalary", name = "期望薪资", dataType = "string", required = true),
             @ApiImplicitParam(value = "ItIsPublic", name = "是否公开 0 公开 1 不公开", dataType = "integer", required = true),
             @ApiImplicitParam(value = "AgreePlatformHelp", name = "是否需要平台帮助 0 是 1 否", dataType = "integer", required = true),
             @ApiImplicitParam(value = "=====下面是推荐人信息=====", name = "下面是推荐人信息"),
             @ApiImplicitParam(value = "recommenderId", name = "推荐人id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "postIdStr", name = "推荐人的意向岗位", dataType = "string", required = true),
-            @ApiImplicitParam(value = "RecommendNoLower", name = "推荐人数量下限", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "RecommendNoUpper", name = "推荐人数量上限", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "RecommendNo", name = "推荐人数量上限", dataType = "integer", required = true),
             @ApiImplicitParam(value = "recommendInfo", name = "推荐说明", dataType = "string", required = true),
             @ApiImplicitParam(value = "itIsPublic", name = "是否公开", dataType = "integer", required = true),
             @ApiImplicitParam(value = "file", name = "上传的文件", dataType = "MultipartFile", required = true)
@@ -240,7 +238,6 @@ public class PersonCenterController extends BaseController {
         }
         return null;
     }
-
 
 
     /**
@@ -265,11 +262,11 @@ public class PersonCenterController extends BaseController {
         ResultJson result = new ResultJson();
         if (typ1.equals(1)) {
             //投诉详情
-        HashMap<String, Object> complaint = service.complaint(complaintId, type);
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(complaint);
-        }  else {
+            HashMap<String, Object> complaint = service.complaint(complaintId, type);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(complaint);
+        } else {
             //撤销投诉
             ComplaintQuery query = new ComplaintQuery();
             query.setId(id);
@@ -370,8 +367,8 @@ public class PersonCenterController extends BaseController {
     @ResponseBody
     @ApiOperation(notes = "招聘端 个人中心 信用中心 投诉待处理 已撤销", value = "招聘端 个人中心 信用中心 投诉待处理 已撤销", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "status", name = "投诉状态 1, 3 待处理 | 已处理  2 已撤销 ",  required = true),
-            @ApiImplicitParam(value = "userId", name = "用户id",  required = true)
+            @ApiImplicitParam(value = "status", name = "投诉状态 1, 3 待处理 | 已处理  2 已撤销 ", required = true),
+            @ApiImplicitParam(value = "userId", name = "用户id", required = true)
     })
     public Result<ComplaintDto> creditCenter(Integer[] status, Integer userId) {
         var list = jobSearchHomePageService.creditCenter(status, userId);
@@ -386,7 +383,7 @@ public class PersonCenterController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "招聘端 个人中心 信用中心 查看投诉", notes = "招聘端 个人中心 信用中心 查看投诉", httpMethod = "POST")
     @ApiImplicitParam(name = "coId", value = "简章id", required = true)
-    public ResultJson selectComplaint(Integer coId){
+    public ResultJson selectComplaint(Integer coId) {
         ResultJson resultJson = new ResultJson();
         List<HrComplaint> hrComplaints = jobSearchHomePageService.selectComplaint(coId);
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);

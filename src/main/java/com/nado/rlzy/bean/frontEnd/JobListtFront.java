@@ -43,11 +43,16 @@ public class JobListtFront implements Serializable {
     @ApiModelProperty(value = "学历")
     private String education;
 
-    @ApiModelProperty(value = "期望工资下限")
-    private String expectedSalaryLower;
 
     @ApiModelProperty(value = "期望工资上限")
     private String expectedSalaryUpper;
+
+    /**
+     * 期望工资下限
+     */
+    private String expectedSalaryLower;
+
+    private String expectedSalary;
 
     @ApiModelProperty(value = "未报名")
     private String noSignUp;
