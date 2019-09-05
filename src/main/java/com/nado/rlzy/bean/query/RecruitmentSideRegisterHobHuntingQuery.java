@@ -20,6 +20,8 @@ import java.util.Date;
 @Data
 public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
 
+    private String id;
+
     @ApiModelProperty(value = "性别")
     private Integer sex;
     @ApiModelProperty(value = "学历")

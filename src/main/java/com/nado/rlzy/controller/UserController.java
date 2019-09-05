@@ -103,7 +103,7 @@ public class UserController extends BaseController {
         HrUser phone1 = service.findByPhone(phone);
 
         HrUser hrUser = service.queryUser(phone, password);
-        if (null != hrUser){
+        if (null != hrUser) {
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMsg("用户已禁用");
             return resultJson;
@@ -132,7 +132,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "registerUser")
     @ResponseBody
-    @ApiOperation(value = "招聘端注册", notes = "招聘端注册", httpMethod = "POST")
+    @ApiOperation(value = "招聘端完善信息 在注册或者登陆时", notes = "招聘端完善信息 在注册或者登陆时", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "入参, 具体参数见上面", dataType = "RecruitmentSideRegisterQuery", required = true)
     public CommonResult registerUser(RecruitmentSideRegisterQuery query) {
         //图片上传
@@ -142,9 +142,18 @@ public class UserController extends BaseController {
         return CommonResult.success(registerUser, RlzyConstant.OPS_SUCCESS_MSG);
     }
 
+    @RequestMapping(value = "registerRecruitment")
+    @ResponseBody
+    @ApiOperation(value ="招聘端注册", notes = "招聘端注册", httpMethod = "POST")
+    public ResultJson registerRecruitment(RecruitmentSideRegisterHobHuntingQuery query){
+        return null;
+
+
+    }
+
     @RequestMapping(value = "registerJobHunt")
     @ResponseBody
-    @ApiOperation(value = "求职端注册 完善信息", notes = "求职端注册 完善信息", httpMethod = "POST")
+    @ApiOperation(value = "求职端完善信息 在注册或者登陆时", notes = "求职端完善信息 在注册或者登陆时", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "入参, 具体参数见上面", dataType = "RecruitmentSideRegisterHobHuntingQuery", required = true)
     public CommonResult registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
         String head = centerService.updateHead(query.getFile());
@@ -154,7 +163,17 @@ public class UserController extends BaseController {
         return CommonResult.success(registerJobHunting, RlzyConstant.OPS_SUCCESS_MSG);
     }
 
-
+    @RequestMapping(value = "register")
+    @ResponseBody
+    @ApiOperation(value = "求职端注册")
+    public ResultJson register(RecruitmentSideRegisterHobHuntingQuery query) {
+        int register = service.register(query);
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(register);
+        return resultJson;
+    }
 
 
 

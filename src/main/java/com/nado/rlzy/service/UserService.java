@@ -72,6 +72,16 @@ public interface UserService {
     int registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query);
 
     /**
+     * 求职端注册
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 21:11 2019-09-04
+     * @Param [query]
+     * @return int
+     */
+    int register(RecruitmentSideRegisterHobHuntingQuery query);
+
+    /**
      * 登录
      * @Author lushuaiyu
      * @Description //TODO

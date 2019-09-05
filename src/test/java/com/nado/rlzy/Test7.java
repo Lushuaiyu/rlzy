@@ -1,15 +1,12 @@
 package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
-import com.nado.rlzy.db.mapper.EntryResignationMapper;
-import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
-import com.nado.rlzy.db.mapper.HrRebaterecordMapper;
-import com.nado.rlzy.db.mapper.HrSignUpMapper;
-import com.nado.rlzy.db.pojo.EntryResignation;
-import com.nado.rlzy.db.pojo.HrBriefchapter;
-import com.nado.rlzy.db.pojo.HrRebaterecord;
+import com.nado.rlzy.db.mapper.*;
+import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.utils.StringUtil;
 import org.junit.Test;
+import org.springframework.web.bind.annotation.ResponseBody;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -37,6 +34,9 @@ public class Test7 extends BaseTest {
 
     @Resource
     private HrSignUpMapper signUpMapper;
+
+    @Resource
+    private HrUserMapper userMapper;
 
 
     @Test
@@ -142,19 +142,31 @@ public class Test7 extends BaseTest {
                     BigDecimal rebateMale = dto.getRebateMale();
                     BigDecimal rebateFemale = dto.getRebateFemale();
                     Integer sex = dto.getSex();
-                    if (rebateHour.compareTo(72) > 0){
-                       System.out.println(rebateHour + "===" + id + "===" + dtoUserId + "===" + businessUserId +
-                               rebateMale + "===" + rebateFemale + "===" + sex);
-                   }
+                    if (rebateHour.compareTo(72) > 0) {
+                        System.out.println(rebateHour + "===" + id + "===" + dtoUserId + "===" + businessUserId +
+                                rebateMale + "===" + rebateFemale + "===" + sex);
+                    }
                     return dto;
                 }).collect(Collectors.toList());
     }
 
     @Test
-    public void test7(){
+    public void test7() {
         List<HrRebaterecord> list = rebaterecordMapper.signUpIdByReport();
 
         System.out.println(list);
+    }
+
+    @Test
+    public void test8() {
+        HrUser hrUser = new HrUser();
+        hrUser.setRecommendInfo("afdsff");
+        hrUser.setId(String.valueOf(6));
+        userMapper.updateByPrimaryKey(hrUser);
+
+
+
+
     }
 
 }

@@ -273,22 +273,6 @@ public class Test extends BaseTest {
 
     }
 
-    @org.junit.Test
-    public void test17() {
-       /* String password = "123456";
-        String p = "910899ea7106c8e68e9c00c156a47ee4";
-
-        String md5 = MD5.getMD5(password + RlzyConstant.PASSWORD_SALT);
-        boolean equals = p.equals(MD5.getMD5(password + RlzyConstant.PASSWORD_SALT ));
-        System.out.println(equals);
-        System.out.println(md5);*/
-
-        HrUser hrUser = new HrUser();
-        hrUser.setId("1");
-        hrUser.setDeleteFlag(0);
-        HrUser one = userMapper.selectOne(hrUser);
-        System.out.println(one);
-    }
 
 
     @org.junit.Test

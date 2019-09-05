@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -218,8 +219,8 @@ public class UserServiceImpl implements UserService {
     public HrUser findUserById(String userId) {
 
         HrUser hrUser = new HrUser();
-        hrUser.setId("1");
-        hrUser.setDeleteFlag(0);
+        hrUser.setId(userId);
+        hrUser.setStatus(0);
         HrUser one = userMapper.selectOne(hrUser);
 
         return one;
@@ -234,18 +235,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public HrUser login(String phone, String password) {
         String md5 = MD5.getMD5(password + RlzyConstant.PASSWORD_SALT);
-       return userMapper.login(phone, md5);
+        return userMapper.login(phone, md5);
     }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
+        if (query.getUnitType().equals(1)) {
+            //本人
+            initUserJobHunt(query.getId(),
+                    query.getImageHead(), query.getUserName(), query.getIdCard(), query.getUnitType(),
+                    query.getSex(), query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(), query.getProfession(), query.getArrivalTime(),
+                    query.getExpectedSalaryUpper(), query.getExpectedSalaryLower());
+
+            //报名表
+            Integer signUpId = initSignUp(query.getId(), query.getSex(), query.getUserName(), query.getIdCard(),
+                    query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(),
+                    query.getProfession(), query.getArrivalTime(),
+                    query.getExpectedSalaryUpper(), query.getExpectedSalaryLower(), query.getItIsPublic(), query.getAgreePlatformHelp());
+            //报名表投递记录表
+            initSignUpDeliveryrecord(signUpId, query.getJobStatus());
+
+        } else {
+            //推荐人
+            initUserReferrer(query.getId(), query.getImageHead(), query.getUserName(), query.getIdCard(), query.getPostIdStr(),
+                    query.getRecommendNo(), query.getRecommendInfo(), query.getItIsPublic(), query.getAgreePlatformHelp());
+
+        }
+        return 1;
+    }
+
+    @Override
+    public int register(RecruitmentSideRegisterHobHuntingQuery query) {
         //校验参数
-        checkJobHunting(query.getPhone(), query.getCode(), query.getPassword(), query.getConfirmPassword(),
-                query.getUnitType(), query.getImageHead(), query.getUserName(), query.getSex(), query.getIdCard(),
-                query.getEducation(), query.getGraduationTime(), query.getProfession(), query.getRegistrationPositionId(), query.getArrivalTime(),
-                query.getExpectedSalaryUpper(), query.getExpectedSalaryLower(), query.getItIsPublic(), query.getAgreePlatformHelp(),
-                query.getPostIdStr(),  query.getRecommendNo(), query.getRecommendInfo());
+        checkregister(query.getPhone(), query.getCode(), query.getPassword(), query.getConfirmPassword());
         //查缓存 判断验证码
         String key = "phone::" + query.getPhone() + "templateCode::" + templateId;
         //判断 key 过期时间
@@ -260,26 +284,44 @@ public class UserServiceImpl implements UserService {
 
         if (query.getUnitType().equals(1)) {
             //本人
-            Integer userId = initUserJobHunt(query.getPhone(), query.getPassword(),
-                    query.getImageHead(), query.getUserName(), query.getIdCard(), query.getUnitType(),
-                    query.getSex(), query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(), query.getProfession(), query.getArrivalTime(),
-                     query.getExpectedSalaryUpper(), query.getExpectedSalaryLower());
-
-            //报名表
-            Integer signUpId = initSignUp(userId,query.getSex(),query.getUserName(),query.getIdCard(),
-                    query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(),
-                    query.getProfession(), query.getArrivalTime(),
-                    query.getExpectedSalaryUpper(), query.getExpectedSalaryLower(), query.getItIsPublic(), query.getAgreePlatformHelp());
-            //报名表投递记录表
-            initSignUpDeliveryrecord(signUpId, query.getJobStatus());
-
+            Integer userId = initregisterUser(query.getPhone(), MD5.getMD5(query.getPassword() + RlzyConstant.PASSWORD_SALT));
+            return userId;
         } else {
             //推荐人
-            initUserReferrer(query.getImageHead(), query.getUserName(), query.getIdCard(), query.getPostIdStr(),
-                    query.getRecommendNo(), query.getRecommendInfo(), query.getItIsPublic(), query.getAgreePlatformHelp());
-
+            Integer userId = initRegisterReferrer(query.getPhone(), MD5.getMD5(query.getPassword() + RlzyConstant.PASSWORD_SALT));
+            return userId;
         }
-        return 1;
+    }
+
+    private Integer initRegisterReferrer(String phone, String md5) {
+        HrUser user = new HrUser();
+        user.setMobile(phone);
+        user.setPassword(md5);
+        user.setRegisterTime(LocalDateTime.now());
+        user.setImproveInformation(1);
+        userMapper.insertSelective(user);
+        return Integer.valueOf(user.getId());
+
+    }
+
+    private Integer initregisterUser(String phone, String md5) {
+        HrUser user = new HrUser();
+        user.setMobile(phone);
+        user.setPassword(md5);
+        user.setRegisterTime(LocalDateTime.now());
+        user.setImproveInformation(1);
+        userMapper.insertSelective(user);
+        return Integer.valueOf(user.getId());
+    }
+
+    private void checkregister(String phone, String code, String password, String confirmPassword) {
+        PhoneUtil.phone(phone);
+        Assert.isFalse(StringUtils.isBlank(code), "验证码不能为空");
+        Assert.isFalse(StringUtils.isBlank(password), "密码不能为空");
+        Assert.isFalse(StringUtils.isBlank(confirmPassword), "确认密码不能为空");
+        Assert.isFalse(!password.equals(confirmPassword), "密码与确认密码不一致");
+
+
     }
 
     private void initSignUpDeliveryrecord(Integer signUpId, Integer jobStatus) {
@@ -291,10 +333,11 @@ public class UserServiceImpl implements UserService {
         Assert.isFalse(signupDeliveryrecordMapper.insertSelective(deliveryrecord) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
-    private void initUserReferrer(String imageHead, String userName, String idCard,
+    private void initUserReferrer(String id, String imageHead, String userName, String idCard,
                                   String postIdStr, Integer recommendNo,
                                   String recommendInfo, Integer itIsPublic, Integer agreePlatformHelp) {
         HrUser user = new HrUser();
+        user.setId(id);
         user.setHeadImage(imageHead);
         user.setUserName(userName);
         user.setIdCard(idCard);
@@ -304,10 +347,10 @@ public class UserServiceImpl implements UserService {
         user.setPublicIs(itIsPublic);
         user.setAgreeHelp(agreePlatformHelp);
         user.setRegisterTime(LocalDateTime.now());
-        Assert.isFalse(userMapper.insertSelective(user) < 1, RlzyConstant.OPS_FAILED_MSG);
+        Assert.isFalse(userMapper.updateByPrimaryKey(user) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
-    private Integer initSignUp(Integer userId,Integer sex, String userName,String idCard, String education, Date graduationTime,
+    private Integer initSignUp(String userId, Integer sex, String userName, String idCard, String education, Date graduationTime,
                                String registrationPositionId, String profession, String arrivalTime,
                                String expectedSalaryUpper, String expectedSalaryLower, Integer itIsPublic, Integer agreePlatformHelp) {
         HrSignUp signUp = new HrSignUp();
@@ -319,7 +362,7 @@ public class UserServiceImpl implements UserService {
         int ageByIdCard = IdcardUtil.getAgeByIdCard(idCard);
         signUp.setAge(ageByIdCard);
         signUp.setEducation(education);
-        signUp.setUserId(userId);
+        signUp.setUserId(Integer.valueOf(userId));
         signUp.setGraduationTime(graduationTime);
         signUp.setRegistrationPositionId(registrationPositionId);
         signUp.setProfession(profession);
@@ -337,13 +380,12 @@ public class UserServiceImpl implements UserService {
         return signUp.getId();
     }
 
-    private Integer initUserJobHunt(String phone, String password, String imageHead, String userName, String idCard, Integer unitType,
-                                    Integer sex, String education, Date graduationTime,
-                                    String registrationPositionId, String profession, String arrivalTime,
-                                     String expectedSalaryUpper, String expectedSalaryLower) {
+    private void initUserJobHunt(String id, String imageHead, String userName, String idCard, Integer unitType,
+                                 Integer sex, String education, Date graduationTime,
+                                 String registrationPositionId, String profession, String arrivalTime,
+                                 String expectedSalaryUpper, String expectedSalaryLower) {
         HrUser user = new HrUser();
-        user.setMobile(phone);
-        user.setPassword(password);
+        user.setId(id);
         user.setHeadImage(imageHead);
         user.setUserName(userName);
         boolean b = IdcardUtil.isvalidCard18(idCard);
@@ -361,23 +403,15 @@ public class UserServiceImpl implements UserService {
         user.setExpectedSalaryUpper(lowerExpectedSalaryUpper);
         BigDecimal lowerExpectedSalary = StringUtil.decimal(expectedSalaryLower);
         user.setExpectedSalaryLower(lowerExpectedSalary);
-
-        Assert.isFalse(userMapper.insertSelective(user) < 1, RlzyConstant.OPS_FAILED_MSG);
-        return Integer.valueOf(user.getId());
+        Assert.isFalse(userMapper.updateByPrimaryKey(user) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
-    private void checkJobHunting(String phone, String code, String password, String confirmPassword,
-                                 Integer unitType, String imageHead, String userName, Integer sex,
+    private void checkJobHunting(Integer unitType, String imageHead, String userName, Integer sex,
                                  String idCard, String education, Date graduationTime,
                                  String profession, String registrationPositionId, String arrivalTime,
-                                  String expectedSalaryUpper, String expectedSalaryLower, Integer itIsPublic,
+                                 String expectedSalaryUpper, String expectedSalaryLower, Integer itIsPublic,
                                  Integer agreePlatformHelp, String postIdStr,
                                  Integer recommendNo, String recommendInfo) {
-        PhoneUtil.phone(phone);
-        Assert.isFalse(StringUtils.isBlank(code), "验证码不能为空");
-        Assert.isFalse(StringUtils.isBlank(password), "密码不能为空");
-        Assert.isFalse(StringUtils.isBlank(confirmPassword), "确认密码不能为空");
-        Assert.isFalse(!password.equals(confirmPassword), "密码与确认密码不一致");
         Assert.isFalse(null == unitType, "身份类型不能为空");
         Assert.isFalse(StringUtils.isBlank(imageHead), "头像不能为空");
         Assert.isFalse(StringUtils.isBlank(userName), "用户名不能为空");

@@ -101,6 +101,7 @@ public class HrUser {
     /**
      * 已报到
      */
+    @Transient
     private String arReported;
     /**
      * 未报到
@@ -142,10 +143,6 @@ public class HrUser {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime loginTime;
-
-    @Column(name = "DeleteFlag")
-    @ApiModelProperty(value = "是否删除")
-    private Integer deleteFlag;
 
     @Column(name = "type")
     @ApiModelProperty(value = "身份")
