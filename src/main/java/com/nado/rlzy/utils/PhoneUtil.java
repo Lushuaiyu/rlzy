@@ -1,9 +1,9 @@
 package com.nado.rlzy.utils;
 
-import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -12,14 +12,19 @@ import java.util.regex.Pattern;
  * @author Administrator
  */
 public class PhoneUtil {
-    public  static void phone(String phone) {
-        Assert.isFalse(StringUtils.isBlank(phone), RlzyConstant.PHONE_NULL);
-        Assert.isTrue(!(Pattern.matches("^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\\\d{8}$",
-                phone)), RlzyConstant.PHONE_NOT_LEGITIMATE);
-
+    public static void phone(String phone) {
+        AssertUtil.isTrue(StringUtils.isBlank(phone), RlzyConstant.PHONE_NULL);
+        String regex = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17[013678])|(18[0,5-9]))\\d{8}$";
+        AssertUtil.isTrue(phone.length() != 11, "手机号应为11位数");
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(phone);
+        boolean isMatch = m.matches();
+        AssertUtil.isTrue(isMatch == false, RlzyConstant.PHONE_NOT_LEGITIMATE);
     }
 
     public static void main(String[] args) {
-        phone("13801466261");
+        phone("18620956947");
+
+
     }
 }

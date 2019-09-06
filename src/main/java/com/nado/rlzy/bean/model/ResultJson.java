@@ -12,12 +12,12 @@ import lombok.Data;
 @Data
 public class ResultJson {
 
-    private String msg;
     private Integer code;
+    private String message;
     private Object data;
 
-    public ResultJson(String msg, Integer code, Object data) {
-        this.msg = msg;
+    public ResultJson(String message, Integer code, Object data) {
+        this.message = message;
         this.code = code;
         this.data = data;
     }
@@ -25,8 +25,8 @@ public class ResultJson {
     public ResultJson() {
     }
 
-    public ResultJson(String msg) {
-        this.msg = msg;
+    public ResultJson(String message) {
+        this.message = message;
     }
 
     public ResultJson(Integer code, Object data) {
@@ -34,8 +34,8 @@ public class ResultJson {
         this.data = data;
     }
 
-    public ResultJson(String msg, Object data) {
-        this.msg = msg;
+    public ResultJson(String message, Object data) {
+        this.message = message;
         this.data = data;
     }
 
@@ -46,5 +46,8 @@ public class ResultJson {
     public ResultJson(Integer code) {
         this.code = code;
     }
+
+
+
 
 }

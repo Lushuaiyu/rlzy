@@ -318,5 +318,10 @@ public class HrBriefchapter {
      */
     private List<EntryResignation> rebateEntryResignation;
 
+    /**
+     * 被推荐人名字
+     */
+    private String userName;
+
 
 }

@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrecord>, MySqlMapper<HrSignupDeliveryrecord> {
@@ -39,6 +40,26 @@ public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrec
      * @return int
      **/
     int selectNumberViolations(@Param("userId") Integer userId);
+
+    /**
+     * 修改返佣状态为返佣已完成
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:46 2019/9/5
+     * @Param
+     * @return
+     **/
+    int updateReba(@Param("signupDeliveryrecordId") Integer signupDeliveryrecordId);
+
+    /**
+     * 入职返佣完成一笔 待返佣金额就减去一笔
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:04 2019/9/5
+     * @Param
+     * @return int
+     **/
+    int updateWaitingForCommission(@Param("acceptRebateAmount") BigDecimal acceptRebateAmount, @Param("briefchpterId") Integer briefchpterId, @Param("signUpId") Integer signUpId);
 
 
 

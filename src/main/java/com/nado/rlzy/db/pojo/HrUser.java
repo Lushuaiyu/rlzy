@@ -180,7 +180,7 @@ public class HrUser {
 
     @ApiModelProperty(value = "到岗时间")
     @Column(name = "arrivalTime")
-    private String arrivalTime;
+    private Date arrivalTime;
 
     @ApiModelProperty(value = "期望薪资下限")
     @Column(name = "expectedSalaryLower")

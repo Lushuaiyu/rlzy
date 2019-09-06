@@ -617,14 +617,44 @@ public interface HrBriefchapterMapper {
 
     /**
      * 招聘端 我的发布 已结束 返佣结束
+     *
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:45 2019/9/3
      * @Param [briefchapterId]
-     * @return int
      **/
     @Update(value = "update hr_briefchapter set over_status = 4 where briefChapterStatus = 0 and Status = 4 and Id = #{briefchapterId}")
     int alreadyRebate(@Param("briefchapterId") Integer briefchapterId);
+
+    /** 查询身份是本人求职 简章是代招单位下的单位 的面试时间 > 现在时间
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:34 2019/9/6
+     * @Param []
+     **/
+    List<HrBriefchapter> interviewAllPerson();
+
+    /**
+     * 查询身份是本人求职 简章是招聘单位的简章 的面试时间 > 现在时间
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:50 2019/9/6
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> interviewAllPersonRecruitment();
+
+    /**
+     * 推荐人给被推荐人报名 简章是代招单位下的单位 的面试时间 > 现在时间
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:44 2019/9/6
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> intervieweAllPersonReferrer();
 
 
 }

@@ -24,7 +24,6 @@
         <result column="sex" property="sex" jdbcType="INTEGER"/>
         <result column="LoginIp" property="loginIp" jdbcType="VARCHAR"/>
         <result column="LoginTime" property="loginTime" jdbcType="TIMESTAMP"/>
-        <result column="DeleteFlag" property="deleteFlag" jdbcType="INTEGER"/>
         <result column="type" property="type" jdbcType="INTEGER"/>
         <result column="isPublic" property="publicIs" jdbcType="INTEGER"/>
         <result column="agreeHelp" property="agreeHelp" jdbcType="INTEGER"/>
@@ -400,9 +399,9 @@
         from collect c
         left join hr_user u on c.user_id = u.id and u.status = 0
         left join hr_user uu on c.recruiter_id = uu.Id and uu.status = 0
-        where c.delete_flag = 0
+        where
         <if test="null != userId">
-            and c.user_id = #{userId}
+             c.user_id = #{userId}
         </if>
         and c.recruiter_id is not null
     </select>

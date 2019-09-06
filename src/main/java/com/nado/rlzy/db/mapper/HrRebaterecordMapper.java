@@ -154,7 +154,7 @@ public interface HrRebaterecordMapper {
      * @Date 16:29 2019/7/19
      * @Param [rebateId]
      **/
-    @Update(value = "update hr_rebaterecord set status = 2 where DeleteFlag = 0 and id = #{rebateId}")
+    @Update(value = "update hr_rebaterecord set status = 13 where DeleteFlag = 0 and id = #{rebateId}")
     int noRebate(@Param("rebateId") Integer rebateId);
 
 
@@ -168,6 +168,17 @@ public interface HrRebaterecordMapper {
      * @Param []
      **/
     List<HrRebaterecord> signUpIdByReport();
+
+
+    /**
+     * 查询入职返佣有没有全部返费完成
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:19 2019/9/5
+     * @Param [signUpId]
+     * @return int
+     **/
+    List<Integer> selectNotStatusRebate(@Param("userId") Integer userId);
 
 
 }

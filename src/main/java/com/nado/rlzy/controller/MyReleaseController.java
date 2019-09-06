@@ -62,7 +62,7 @@ public class MyReleaseController extends BaseController {
 
         ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(map);
         return result;
     }
@@ -83,7 +83,7 @@ public class MyReleaseController extends BaseController {
         ResultJson result = new ResultJson();
         List<Province> provinces = service.getPCA();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(provinces);
         return result;
     }
@@ -96,7 +96,7 @@ public class MyReleaseController extends BaseController {
         List<ReleaseBriefcharpterFront> vals = service.queryReleaseBriefcharpterByparams(query);
         Result<ReleaseBriefcharpterFront> result = new Result<>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(vals);
         return result;
 
@@ -141,7 +141,7 @@ public class MyReleaseController extends BaseController {
         List<HrSignUp> list = service.recruitmentDetailsOverview(jobStatus);
         Result<HrSignUp> result = new Result<>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(list);
         return result;
 
@@ -155,7 +155,7 @@ public class MyReleaseController extends BaseController {
         List<HrBriefchapter> signUpNumberDtos = service.numberOfRecruitsFull(briefchapter);
         Result<HrBriefchapter> result = new Result<>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(signUpNumberDtos);
         return result;
     }
@@ -174,13 +174,13 @@ public class MyReleaseController extends BaseController {
             //不合适
             int notSuitable = service.notSuitable(signUpId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(notSuitable);
         } else {
             //邀请面试
             int interview = service.invitationInterview(signUpId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(interview);
         }
         return resultJson;
@@ -202,13 +202,13 @@ public class MyReleaseController extends BaseController {
             //邀请报名
             int invitationToRegister = service.invitationToRegister(signUpId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(invitationToRegister);
         } else {
             //直接录取
             int admission = service.directAdmission(signUpId, userId, sex, briefchapter);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(admission);
         }
         return resultJson;
@@ -228,19 +228,19 @@ public class MyReleaseController extends BaseController {
             //招聘详情 已报名 不合适
             int count = service.reportNotSuitable(signUpId, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
         } else if (type.equals(2)) {
             //招聘详情 已报名 邀请面试
             int count = service.recruitmentDetailsInvitationInterview(signUpId, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
         } else if (type.equals(3)) {
             //招聘详情 已报名 直接录取
             int count = service.recruitmentDetailsDirectAdmission(signUpId, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
 
         }
@@ -270,25 +270,25 @@ public class MyReleaseController extends BaseController {
             // 招聘详情 待面试 已面试
             int count = service.recruitmentInterviewd(signUpId, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
         } else if (type.equals(2)) {
             //招聘详情 待面试 未面试
             Map<String, Object> map = service.recruitmentNoInterviewd(signUpId, userId, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
         } else if (type.equals(3)) {
             //招聘详情 待面试 已面试 面试未通过
             int count = service.recruitmentInterviewFailed(signUpId, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
         } else if (type.equals(4)) {
             //招聘详情 待面试 已面试 面试已通过
             int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, sex, signUpUserId, busInessUserId, signupDeliveryrecordId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
         }
         return resultJson;
@@ -314,18 +314,18 @@ public class MyReleaseController extends BaseController {
         if (typp.equals(1)) {
             Map<String, Object> map = service.notReported(signUpId, briefChapterId, userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
         } else if (typp.equals(2)) {
             int count = service.reported(signUpId, briefChapterId, sex, signUpUserId, busInessUserId, signupDeliveryrecordId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
 
         } else if (typp.equals(3)) {
             int count = service.noReportedReason(reason, signUpId, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
         }
         return resultJson;
@@ -353,12 +353,12 @@ public class MyReleaseController extends BaseController {
         if (query.getType().equals(1)) {
             List<HrRebaterecord> list = service.rebatee(query.getSignUpId(), query.getBriefchapterId(), query.getSex());
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(list);
         } else if (query.getType().equals(2)) {
             int count = service.rebate(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
         }
         return resultJson;
@@ -395,7 +395,7 @@ public class MyReleaseController extends BaseController {
         List<HrDictionaryItem> options = service.selectContentByType(type);
         Result<HrDictionaryItem> result = new Result<>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(options);
         return result;
 
@@ -422,7 +422,7 @@ public class MyReleaseController extends BaseController {
                 query.setEmployerCertificatePhotoUrl(employerCertificatePhoto);
                 Integer count = service.editBriefchapterMyRelease(query);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 map.put("editBriefchapterMyRelease", count);
                 resultJson.setData(map);
             } else {
@@ -434,7 +434,7 @@ public class MyReleaseController extends BaseController {
                 query.setEmployerCertificatePhotoUrl(employerCertificatePhoto);
                 Integer count = service.editBriefchapterMyReleaseRecruitment(query);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 map.put("editBriefchapterMyReleaseRecruitment", count);
             }
         return resultJson;
@@ -450,7 +450,7 @@ public class MyReleaseController extends BaseController {
         //查询简章详情
         Map<String, Object> map = jobSearchHomePageService.queryBriefcharpterListDetileByParams(query);
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(map);
         return resultJson;
     }
@@ -467,7 +467,7 @@ public class MyReleaseController extends BaseController {
         var list = service.selectGroupName(type, userId, status);
         var result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(list);
         return result;
     }

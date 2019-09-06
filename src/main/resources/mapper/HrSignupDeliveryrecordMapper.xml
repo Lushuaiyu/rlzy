@@ -40,6 +40,35 @@
             and brief_chapter_id = #{briefChapterId}
         </if>
     </update>
+    <update id="updateReba">
+        update hr_signup_deliveryrecord
+        <set>
+            <if test="null != signUpId">
+                status = 12,
+            </if>
+            <if test="null != briefChapterId">
+                job_status = 8
+            </if>
+        </set>
+        <where>
+            delete_flag = 0
+            <if test="null != signupDeliveryrecordId">
+                and id = #{signupDeliveryrecordId}
+            </if>
+        </where>
+    </update>
+    <update id="updateWaitingForCommission">
+        update hr_signup_deliveryrecord
+
+        accept_rebate_amount = accept_rebate_amount - #{acceptRebateAmount} where delete_flag = 0
+        <if test="null != briefchpterId">
+            and brief_chapter_id = #{briefchpterId}
+        </if>
+        <if test="null != signUpId">
+            and signup_id = #{signUpId}
+        </if>
+
+    </update>
     <select id="selectNumberViolations" resultType="_int">
         select count(si.id)
         from hr_signup_deliveryrecord hsd

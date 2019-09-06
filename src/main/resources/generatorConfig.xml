@@ -84,10 +84,14 @@
        <!-- <table tableName="entry_resignation">
             <generatedKey column="id" sqlStatement="JDBC"/>
         </table>-->
-        <table tableName="hr_acct_detail">
+      <!--  <table tableName="hr_acct_detail">
           <generatedKey column="id" sqlStatement="JDBC"/>
-      </table>
+      </table>-->
 
+       <!-- <table tableName="message">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+-->
 
     </context>
 </generatorConfiguration>

@@ -10,7 +10,7 @@ import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.JobSearchHomePageService;
-import com.nado.rlzy.utils.CollectorsUtil;
+import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -1526,7 +1526,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         long count = list.stream().count();
         Integer count1 = (int) count;
 
-        Assert.isFalse(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
         //查询简章的招聘人数
         List<HrBriefchapter> hrBriefchapters = mapper.queryRecruitingNo(deliveryrecord.getBriefChapterId());
         hrBriefchapters.stream()
@@ -1570,14 +1570,14 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                     return dto;
                 })
                 .collect(Collectors.toList());
-        Assert.isFalse(signupDeliveryrecordMapper.insertList(deliveryrecords) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(signupDeliveryrecordMapper.insertList(deliveryrecords) < 1, RlzyConstant.OPS_FAILED_MSG);
         //招聘人数 --
         Integer[] number = deliveryrecord.getNumber();
         List<Integer> list = Arrays.asList(number);
         long count = list.stream().count();
         Integer count1 = (int) count;
 
-        Assert.isFalse(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
 
         //查询简章的招聘人数
         List<HrBriefchapter> hrBriefchapters = mapper.queryRecruitingNo(deliveryrecord.getBriefChapterId());
@@ -1628,7 +1628,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
         //初始化报名表投递记录表参数
         initSignUpDeliveryrecord(up, userId);
-        Assert.isFalse(signUpMapper.insertSelective(query) < 1, "参数添加失败");
+        AssertUtil.isTrue(signUpMapper.insertSelective(query) < 1, "参数添加失败");
 
         //初始化我的求职表和报名表的中间表参数
         initMySignUpTable(query.getMySignUpTableId(), userId);
@@ -1641,7 +1641,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         up.setMySignUpTableId(mySignUpTableId);
         up.setSignUpId(userId);
         up.setCreateTime(LocalDateTime.now());
-        Assert.isFalse(tableSignUpMapper.insertSelective(up) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(tableSignUpMapper.insertSelective(up) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
     private void initSignUpDeliveryrecord(HrSignUp up, Integer userId) {
@@ -1651,7 +1651,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         record.setJobStatus(up.getJobStatus());
         record.setNoPassReason(up.getNoPassReason());
         record.setNoReportReason(up.getNoReportReason());
-        Assert.isFalse(signupDeliveryrecordMapper.insertSelective(record) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(signupDeliveryrecordMapper.insertSelective(record) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
     private Integer initSignUp(String userName, Integer sex, String education,
@@ -1675,42 +1675,42 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         signUp.setAgreePlatformHelp(agreePlatformHelp);
         signUp.setUserId(userId);
         signUp.setIdCard(idCard);
-        Assert.isFalse(signUpMapper.insertSelective(signUp) < 1, "参数添加失败");
+        AssertUtil.isTrue(signUpMapper.insertSelective(signUp) < 1, "参数添加失败");
         return signUp.getId();
     }
 
     private void checkAddSignUp(String userName, Integer sex, String education, Date graduationTime, String profession,
                                 String registrationPositionId, Date arrivalTime, BigDecimal expectedSalaryLower, BigDecimal expectedSalaryUpper,
                                 String relation, Integer itIsPublic, Integer agreePlatformHelp, Integer userId, String idCard) {
-        Assert.isFalse(StringUtils.isBlank(userName), "用户名不能为空");
-        Assert.isFalse(null == sex, "性别不能为空");
-        Assert.isFalse(StringUtils.isBlank(education), "学历不能为空");
-        Assert.isFalse(null == graduationTime, "毕业时间不能为空");
-        Assert.isFalse(StringUtils.isBlank(profession), "专业不能为空");
-        Assert.isFalse(null == registrationPositionId, "意向岗位不能为空");
-        Assert.isFalse(null == arrivalTime, "到岗时间不能为空");
-        Assert.isFalse(null == expectedSalaryLower, "工资上限不能为空");
-        Assert.isFalse(null == expectedSalaryUpper, "工资下限不能为空");
-        Assert.isFalse(StringUtils.isBlank(relation), "年龄不能为空");
-        Assert.isFalse(null == itIsPublic, "是否公开不能为空");
-        Assert.isFalse(null == agreePlatformHelp, "是否获取平台帮助不能为空");
-        Assert.isFalse(null == userId, "用户id不能为空");
-        //Assert.isFalse(null == briefchapterId, "简章id不能为空");
+        AssertUtil.isTrue(StringUtils.isBlank(userName), "用户名不能为空");
+        AssertUtil.isTrue(null == sex, "性别不能为空");
+        AssertUtil.isTrue(StringUtils.isBlank(education), "学历不能为空");
+        AssertUtil.isTrue(null == graduationTime, "毕业时间不能为空");
+        AssertUtil.isTrue(StringUtils.isBlank(profession), "专业不能为空");
+        AssertUtil.isTrue(null == registrationPositionId, "意向岗位不能为空");
+        AssertUtil.isTrue(null == arrivalTime, "到岗时间不能为空");
+        AssertUtil.isTrue(null == expectedSalaryLower, "工资上限不能为空");
+        AssertUtil.isTrue(null == expectedSalaryUpper, "工资下限不能为空");
+        AssertUtil.isTrue(StringUtils.isBlank(relation), "年龄不能为空");
+        AssertUtil.isTrue(null == itIsPublic, "是否公开不能为空");
+        AssertUtil.isTrue(null == agreePlatformHelp, "是否获取平台帮助不能为空");
+        AssertUtil.isTrue(null == userId, "用户id不能为空");
+        //AssertUtil.isTrue(null == briefchapterId, "简章id不能为空");
         boolean card = IdcardUtil.isValidCard(idCard);
-        Assert.isFalse(false == card, "身份证输入不正确");
+        AssertUtil.isTrue(false == card, "身份证输入不正确");
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertSelective(MySignUpTable record) {
 
-        Assert.isFalse(StringUtils.isBlank(record.getGroupName()), "分组名字不能为空");
+        AssertUtil.isTrue(StringUtils.isBlank(record.getGroupName()), "分组名字不能为空");
         record.setGroupName(record.getGroupName());
         record.setStatus(3);
         record.setCreateTime(new Date());
         record.setUserId(record.getUserId());
         boolean flag = tableMapper.insertSelective(record) < 1;
-        Assert.isFalse(flag, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(flag, RlzyConstant.OPS_FAILED_MSG);
         int a = flag == false ? 0 : 1;
         return a;
     }
@@ -1737,7 +1737,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         complaint.setPhone(query.getPhone());
 
 
-        Assert.isFalse(complaintMapper.save(complaint) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(complaintMapper.save(complaint) < 1, RlzyConstant.OPS_FAILED_MSG);
         return 1;
 
     }
@@ -1919,17 +1919,17 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     private void checkNoNull(String name, Integer briefChapterId, String complaintTypeId, String description, String evidence) {
-        Assert.isFalse(StringUtils.isBlank(name), "投诉人不能为空");
-        Assert.isFalse(null == briefChapterId, "简章不能为空");
-        Assert.isFalse(StringUtils.isBlank(complaintTypeId), "投诉类型不能为空");
-        Assert.isFalse(StringUtils.isBlank(description), "问题描述不能为空");
-        Assert.isFalse(StringUtils.isBlank(evidence), "凭证不能为空");
+        AssertUtil.isTrue(StringUtils.isBlank(name), "投诉人不能为空");
+        AssertUtil.isTrue(null == briefChapterId, "简章不能为空");
+        AssertUtil.isTrue(StringUtils.isBlank(complaintTypeId), "投诉类型不能为空");
+        AssertUtil.isTrue(StringUtils.isBlank(description), "问题描述不能为空");
+        AssertUtil.isTrue(StringUtils.isBlank(evidence), "凭证不能为空");
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int complaintWithdrawn(ComplaintQuery query) {
-        Assert.isFalse(complaintMapper.updateCom(query) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(complaintMapper.updateCom(query) < 1, RlzyConstant.OPS_FAILED_MSG);
         return 1;
     }
 

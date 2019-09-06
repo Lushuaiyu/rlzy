@@ -1,6 +1,5 @@
 package com.nado.rlzy.service.impl;
 
-import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.bean.dto.ComplaintDto;
 import com.nado.rlzy.bean.dto.PersonCoDto;
 import com.nado.rlzy.bean.query.AddCoQuery;
@@ -13,6 +12,7 @@ import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.ImgException;
 import com.nado.rlzy.service.PersonCenterService;
+import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.CheckParametersUtil;
 import com.nado.rlzy.utils.OSSClientUtil;
 import com.nado.rlzy.utils.StringUtil;
@@ -77,10 +77,10 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     private void checkParams(String content, Integer userId, String name, String phone) {
-        Assert.isFalse(StringUtils.isBlank(content), RlzyConstant.FEEDBACK_NOT_NULL);
-        Assert.isFalse(null == userId, RlzyConstant.USERID_NOT_NULL);
-        Assert.isFalse(StringUtils.isBlank(name), RlzyConstant.FEEDBACK_NAME_NOT_NULL);
-        Assert.isFalse(StringUtils.isBlank(phone), RlzyConstant.FEEDBACK_PHONE_NOT_NULL);
+        AssertUtil.isTrue(StringUtils.isBlank(content), RlzyConstant.FEEDBACK_NOT_NULL);
+        AssertUtil.isTrue(null == userId, RlzyConstant.USERID_NOT_NULL);
+        AssertUtil.isTrue(StringUtils.isBlank(name), RlzyConstant.FEEDBACK_NAME_NOT_NULL);
+        AssertUtil.isTrue(StringUtils.isBlank(phone), RlzyConstant.FEEDBACK_PHONE_NOT_NULL);
 
     }
 
@@ -135,7 +135,7 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         hrGroup.setPid(id);
         hrGroup.setCertifierid(query.getUserId());
         boolean b = hrGroupMapper.insertSelective(hrGroup) < 1;
-        Assert.isFalse(b, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(b, RlzyConstant.OPS_FAILED_MSG);
         return hrGroup.getId();
 
     }
@@ -213,7 +213,7 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         user.setRecommendInfo(query.getRecommendInfo());
         user.setPublicIs(query.getItIsPublic());
         user.setAgreeHelp(query.getAgreePlatformHelp());
-        Assert.isFalse(userMapper.editPersonData(user) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(userMapper.editPersonData(user) < 1, RlzyConstant.OPS_FAILED_MSG);
 
     }
 
@@ -264,7 +264,7 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         up.setItIsPublic(query.getItIsPublic());
         up.setAgreePlatformHelp(query.getAgreePlatformHelp());
         //
-        Assert.isFalse(signUpMapper.updateByPrimaryKeySelective(up) < 1, RlzyConstant.ADD_FAILED);
+        AssertUtil.isTrue(signUpMapper.updateByPrimaryKeySelective(up) < 1, RlzyConstant.ADD_FAILED);
 
     }
 
@@ -303,12 +303,14 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         hrUser.setGraduationTime(date);
         hrUser.setProfession(query.getProfession());
         hrUser.setPostIdStr(query.getPostIdStr());
-        hrUser.setArrivalTime(query.getArrivalTime());
+        String arrivalTime = query.getArrivalTime();
+        Date date1 = StringUtil.StrToDate(arrivalTime);
+        hrUser.setArrivalTime(date1);
         hrUser.setExpectedSalaryUpper(query.getExpectedSalaryUpper());
         hrUser.setExpectedSalaryLower(query.getExpectedSalaryLower());
         hrUser.setPublicIs(query.getItIsPublic());
         hrUser.setAgreeHelp(query.getAgreePlatformHelp());
-        Assert.isFalse(userMapper.editPersonData(hrUser) < 1, RlzyConstant.ADD_FAILED);
+        AssertUtil.isTrue(userMapper.editPersonData(hrUser) < 1, RlzyConstant.ADD_FAILED);
     }
 
 

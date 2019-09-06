@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @ApiModel(description = "招聘端注册")
 public class RecruitmentSideRegisterQuery extends BaseQuery {
 
-
+    private String id;
 
     @ApiModelProperty(value = "公司名称")
     private String groupName;

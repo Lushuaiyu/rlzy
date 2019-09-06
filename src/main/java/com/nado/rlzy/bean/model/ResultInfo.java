@@ -1,56 +1,36 @@
 package com.nado.rlzy.bean.model;
 
+import lombok.Data;
+
 /**
  * Created by lsy on 2018/11/9 0009.
  *
  * @author Administrator
  */
+@Data
 public class ResultInfo {
     private Integer code = 200;
-    private String msg;
+    private String message;
     private Object result;
 
-    public ResultInfo(Integer code, String msg, Object result) {
+    public ResultInfo(Integer code, String message, Object result) {
         this.code = code;
-        this.msg = msg;
+        this.message = message;
         this.result = result;
     }
 
-    public Object getResult() {
-        return result;
-    }
-
-    public void setResult(Object result) {
-        this.result = result;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
 
     public ResultInfo() {
 
     }
 
-    public ResultInfo(Integer code, String msg) {
+    public ResultInfo(Integer code, String message) {
         this.code = code;
-        this.msg = msg;
+        this.message = message;
     }
 
-    public ResultInfo(String msg) {
-        this.msg = msg;
+    public ResultInfo(String message) {
+        this.message = message;
     }
 
     public ResultInfo(Integer code) {

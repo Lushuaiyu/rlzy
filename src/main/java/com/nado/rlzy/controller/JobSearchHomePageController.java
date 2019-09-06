@@ -72,7 +72,7 @@ public class JobSearchHomePageController extends BaseController {
         map.put("queryBriefcharpterByParams", map2);
         ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(map);
         return result;
 
@@ -114,17 +114,17 @@ public class JobSearchHomePageController extends BaseController {
             map.put("queryBriefcharpterDetileByParams", list);
             map.put("recommendAPosition", hrBriefchapters);
             json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            json.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             json.setData(map);
 
             json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            json.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             json.setData(map);
         } else if (query.getType1().equals(1)) {
             // 除了求职端首页简章列表以外的简章详情
             Map<String, Object> detile = service.queryBriefcharpterListDetileByParams(query);
             json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            json.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             json.setData(detile);
         }
         return json;
@@ -163,7 +163,7 @@ public class JobSearchHomePageController extends BaseController {
             map.put("queryBriefcharpterByLongLive", list);
             map.put("queryBriefcharpterByLongLiveRecruitment", vals);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else if (query.getType1().equals(1)) {
             // 有吃住按返费高低排
@@ -172,7 +172,7 @@ public class JobSearchHomePageController extends BaseController {
             map.put("queryBriefcharpterByLongEat", list);
             map.put("queryBriefcharpterByLongEatRecruitment", vals);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else if (query.getType1().equals(2)) {
             // 推荐费top10
@@ -181,7 +181,7 @@ public class JobSearchHomePageController extends BaseController {
             map.put("recommendedFeeTop10", list);
             map.put("recommendedFeeTop10Recruitment", vals);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else if (query.getType1().equals(3)) {
             // 学生专区
@@ -190,7 +190,7 @@ public class JobSearchHomePageController extends BaseController {
             map.put("studentDivision", list);
             map.put("studentDivisionRecruitment", vals);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else if (query.getType1().equals(4)) {
             // 工资排行榜
@@ -199,7 +199,7 @@ public class JobSearchHomePageController extends BaseController {
             map.put("salaryLeaderboard", list);
             map.put("salaryLeaderboardRecruitment", vals);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else if (query.getType1().equals(5)) {
             // 企业直招
@@ -208,7 +208,7 @@ public class JobSearchHomePageController extends BaseController {
             map.put("directBusiness", list);
             map.put("directBusinessRecruitment", vals);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else if (query.getType1().equals(6)) {
             // 直接录取
@@ -217,7 +217,7 @@ public class JobSearchHomePageController extends BaseController {
             map.put("directAdmission", list);
             map.put("directAdmissionRecruitment", vals);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         }
         return result;
@@ -239,14 +239,14 @@ public class JobSearchHomePageController extends BaseController {
             List<HrGroup> groups = service.coHomePage(groupId);
             map.put("coHomePage", groups);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else if (type.equals(2)) {
             // 求职端公司主页在招职位 代招单位
             List<HrBriefchapter> list = service.atThePosition(groupId);
             map.put("atThePosition", list);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(list);
         } else {
             //历史记录
@@ -260,7 +260,7 @@ public class JobSearchHomePageController extends BaseController {
             map.put("companyHomeHistory", hrBriefchapters);
             map.put("interviewReportEntry", entry);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         }
         return result;
@@ -282,14 +282,14 @@ public class JobSearchHomePageController extends BaseController {
             List<HrGroup> groups = service.coHomePage(groupId);
             map.put("coHomePage", groups);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else if (type.equals(2)) {
             // 求职端公司主页在招职位 招聘单位
             List<HrBriefchapter> list = service.atThePositionRecruitment(groupId);
             map.put("atThePosition", list);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(list);
         } else {
             //历史记录
@@ -302,7 +302,7 @@ public class JobSearchHomePageController extends BaseController {
             map.put("companyHomeHistory", hrBriefchapters);
             map.put("interviewReportEntry", entry);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         }
         return result;
@@ -332,7 +332,7 @@ public class JobSearchHomePageController extends BaseController {
         Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(type, userId, jobStatus);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(map);
         return resultJson;
     }
@@ -354,7 +354,7 @@ public class JobSearchHomePageController extends BaseController {
             //我要报名 本人
             int count = service.IWantToSignUp(deliveryrecord);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
             return resultJson;
         }
@@ -362,7 +362,7 @@ public class JobSearchHomePageController extends BaseController {
             //推荐人给被推荐人报名
             int count = service.referrerToSIgnUp(deliveryrecord);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(count);
             return resultJson;
         }
@@ -392,13 +392,13 @@ public class JobSearchHomePageController extends BaseController {
         if (collect.getType().equals(0)) {
             int i = service.addCancelBriefchapter(collect);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             map.put("addCancelBriefchapter", i);
             resultJson.setData(map);
         } else {
             int ii = service.updateCollect(collect);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             map.put("updateCollect", ii);
             resultJson.setData(map);
         }
@@ -459,7 +459,7 @@ public class JobSearchHomePageController extends BaseController {
         int i = service.insertSelective(record);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(i);
         return resultJson;
     }
@@ -489,7 +489,7 @@ public class JobSearchHomePageController extends BaseController {
         int complaint = service.addComplaint(query, head);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(complaint);
         return resultJson;
     }
@@ -507,7 +507,7 @@ public class JobSearchHomePageController extends BaseController {
         Map<String, Object> map = service.complaintPage(typeId, userId, brieId, dictionary);
         ResultJson json = new ResultJson();
         json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        json.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         json.setData(map);
         return json;
     }
@@ -521,7 +521,7 @@ public class JobSearchHomePageController extends BaseController {
         Map<String, Object> tables = service.searchGroupingInformation(userId);
         ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(tables);
         return result;
     }
@@ -540,7 +540,7 @@ public class JobSearchHomePageController extends BaseController {
         Map<String, Object> grouper = service.grouper(groupName, signUpName, type, userId);
         ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(grouper);
         return result;
     }

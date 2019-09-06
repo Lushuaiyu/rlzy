@@ -1,7 +1,6 @@
 package com.nado.rlzy;
 
 import cn.hutool.core.codec.Base64;
-import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.base.BaseTest;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.db.mapper.*;
@@ -10,10 +9,7 @@ import com.nado.rlzy.db.pojo.test.Account;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.MessageService;
 import com.nado.rlzy.service.RedisService;
-import com.nado.rlzy.utils.Base64Utils;
-import com.nado.rlzy.utils.CollectorsUtil;
-import com.nado.rlzy.utils.StringUtil;
-import com.nado.rlzy.utils.ValidationUtil;
+import com.nado.rlzy.utils.*;
 import lombok.var;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -327,8 +323,8 @@ public class Test extends BaseTest {
         String phone = "123654";
         String key = "phone::" + phone + "templateCode";
         String code = "";
-        Assert.isFalse(!(redisTemplate.hasKey(key)), RlzyConstant.SMS_CODE_STALEDATED);
-        Assert.isFalse(!(redisTemplate.opsForValue().get(key).toString().equals(code)), RlzyConstant.SMS_MESSAGE_FAILED);
+        AssertUtil.isTrue(!(redisTemplate.hasKey(key)), RlzyConstant.SMS_CODE_STALEDATED);
+        AssertUtil.isTrue(!(redisTemplate.opsForValue().get(key).toString().equals(code)), RlzyConstant.SMS_MESSAGE_FAILED);
 
     }
 

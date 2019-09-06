@@ -1,17 +1,17 @@
 package com.nado.rlzy.controller;
 
 import com.nado.rlzy.base.BaseController;
-import com.nado.rlzy.bean.model.CommonResult;
-import com.nado.rlzy.bean.model.ResultInfo;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterHobHuntingQuery;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterQuery;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.MessageService;
 import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.service.TokenService;
 import com.nado.rlzy.service.UserService;
+import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.MD5;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -56,9 +56,12 @@ public class UserController extends BaseController {
             @ApiImplicitParam(value = "phone", name = "手机号码", dataType = "string", required = true),
             @ApiImplicitParam(value = "type", name = "身份类型", dataType = "integer", required = true)
     })
-    public ResultInfo sendMessage(String phone, Integer type) {
+    public ResultJson sendMessage(String phone, Integer type) {
         messageService.sendMessage(phone, type);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+        return resultJson;
     }
 
     @RequestMapping(value = "changePassword")
@@ -70,11 +73,28 @@ public class UserController extends BaseController {
             @ApiImplicitParam(value = "passWord", name = "密码", dataType = "String", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
     })
-    public ResultInfo changePassword(String phone, String code, String passWord, Integer userId) {
-        service.changePasswoed(phone, code, passWord, userId);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+    public ResultJson changePassword(String phone, String code, String passWord, Integer userId) {
+
+        ResultJson resultJson = new ResultJson();
+        try {
+            //图片上传
+            int i = service.changePasswoed(phone, code, passWord, userId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(i);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
 
     }
+
 
     @ResponseBody
     @RequestMapping(value = "switchIdentity")
@@ -83,12 +103,12 @@ public class UserController extends BaseController {
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "type", name = "身份类型", dataType = "Integer", required = true)
     })
-    public ResultInfo switchIdentity(Integer userId, Integer type) {
+    public ResultJson switchIdentity(Integer userId, Integer type) {
         service.switchIdentity(userId, type);
-
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
-
-
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+        return resultJson;
     }
 
     @RequestMapping(value = "login")
@@ -103,27 +123,22 @@ public class UserController extends BaseController {
         HrUser phone1 = service.findByPhone(phone);
 
         HrUser hrUser = service.queryUser(phone, password);
-        if (null != hrUser) {
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg("用户已禁用");
-            return resultJson;
-        }
-
+        AssertUtil.isTrue(null != hrUser, "用户已禁用");
         if (null == phone1) {
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg("登录失败,用户不存在");
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+            resultJson.setMessage("登录失败,用户不存在");
             return resultJson;
         } else {
 
             if (!(phone1.getPassword().equals(MD5.getMD5(password + RlzyConstant.PASSWORD_SALT)))) {
-                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                resultJson.setMsg("登录失败,密码错误");
+                resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                resultJson.setMessage("登录失败,密码错误");
                 return resultJson;
             } else {
                 //可以登录
                 HrUser login = service.login(phone, password);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 resultJson.setData(login);
                 return resultJson;
             }
@@ -134,48 +149,81 @@ public class UserController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "招聘端完善信息 在注册或者登陆时", notes = "招聘端完善信息 在注册或者登陆时", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "入参, 具体参数见上面", dataType = "RecruitmentSideRegisterQuery", required = true)
-    public CommonResult registerUser(RecruitmentSideRegisterQuery query) {
-        //图片上传
-        String head = centerService.updateHead(query.getFile());
-        query.setImageHead(head);
-        int registerUser = service.registerUser(query);
-        return CommonResult.success(registerUser, RlzyConstant.OPS_SUCCESS_MSG);
-    }
+    public ResultJson registerUser(RecruitmentSideRegisterQuery query) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            //图片上传
+            String head = centerService.updateHead(query.getFile());
+            query.setImageHead(head);
+            int registerUser = service.registerUser(query);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(registerUser);
 
-    @RequestMapping(value = "registerRecruitment")
-    @ResponseBody
-    @ApiOperation(value ="招聘端注册", notes = "招聘端注册", httpMethod = "POST")
-    public ResultJson registerRecruitment(RecruitmentSideRegisterHobHuntingQuery query){
-        return null;
-
-
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
     }
 
     @RequestMapping(value = "registerJobHunt")
     @ResponseBody
     @ApiOperation(value = "求职端完善信息 在注册或者登陆时", notes = "求职端完善信息 在注册或者登陆时", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "入参, 具体参数见上面", dataType = "RecruitmentSideRegisterHobHuntingQuery", required = true)
-    public CommonResult registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
-        String head = centerService.updateHead(query.getFile());
-        // photo upload
-        query.setImageHead(head);
-        int registerJobHunting = service.registerJobHunting(query);
-        return CommonResult.success(registerJobHunting, RlzyConstant.OPS_SUCCESS_MSG);
+    public ResultJson registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            //图片上传
+            //String head = centerService.updateHead(query.getFile());
+            //query.setImageHead("head");
+            int registerJobHunting = service.registerJobHunting(query);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(registerJobHunting);
+
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
+
     }
 
     @RequestMapping(value = "register")
     @ResponseBody
-    @ApiOperation(value = "求职端注册")
+    @ApiOperation(value = "求职端|招聘端注册")
     public ResultJson register(RecruitmentSideRegisterHobHuntingQuery query) {
-        int register = service.register(query);
+
         ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(register);
+
+        try {
+            int register = service.register(query);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(register);
+
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return resultJson;
     }
-
-
 
 
 }

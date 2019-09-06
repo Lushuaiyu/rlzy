@@ -8,8 +8,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-
 /**
  * @ClassName 求职端登录注册入参
  * @Description TODO
@@ -30,7 +28,7 @@ public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
     @ApiModelProperty(value = "毕业时间")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date graduationTime;
+    private String graduationTime;
 
     @ApiModelProperty(value = "专业")
     private String profession;

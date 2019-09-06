@@ -10,31 +10,31 @@ import com.nado.rlzy.bean.model.ResultInfo;
  */
 public class BaseController {
 
-    public ResultInfo success(Integer code, String msg, Object result) {
+    public ResultInfo success(Integer code, String Message, Object result) {
         ResultInfo resultInfo = new ResultInfo();
         resultInfo.setCode(code);
-        resultInfo.setMsg(msg);
+        resultInfo.setMessage(Message);
         resultInfo.setResult(result);
         return resultInfo;
     }
 
-    public ResultInfo success(String msg, Object result) {
+    public ResultInfo success(String Message, Object result) {
         ResultInfo resultInfo = new ResultInfo();
-        resultInfo.setMsg(msg);
+        resultInfo.setMessage(Message);
         resultInfo.setResult(result);
         return resultInfo;
     }
 
-    public ResultInfo success(Integer code, String msg) {
+    public ResultInfo success(Integer code, String Message) {
         ResultInfo resultInfo = new ResultInfo();
         resultInfo.setCode(code);
-        resultInfo.setMsg(msg);
+        resultInfo.setMessage(Message);
         return resultInfo;
     }
 
-    public ResultInfo success(String msg) {
+    public ResultInfo success(String Message) {
         ResultInfo resultInfo = new ResultInfo();
-        resultInfo.setMsg(msg);
+        resultInfo.setMessage(Message);
         return resultInfo;
     }
 

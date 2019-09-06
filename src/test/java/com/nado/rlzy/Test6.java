@@ -1,12 +1,12 @@
 package com.nado.rlzy;
 
-import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.base.BaseTest;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.db.pojo.HrSignupDeliveryrecord;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.utils.AssertUtil;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -357,7 +357,7 @@ public class Test6 extends BaseTest {
         List<HrSignupDeliveryrecord> list = new ArrayList<>();
         list.add(recd);
 
-        Assert.isFalse(signupDeliveryrecordMapper.insertList(list) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(signupDeliveryrecordMapper.insertList(list) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
 

@@ -68,13 +68,13 @@ public class RecruitmentHomePageController extends BaseController {
             //求职列表
             List<HrSignUp> list = service.selectJobListOverview(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             map.put("selectJobListOverview", list);
             resultJson.setData(map);
         } else {
             List<HrUser> users = service.referrer(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             map.put("referrer", users);
             resultJson.setData(map);
         }
@@ -99,7 +99,7 @@ public class RecruitmentHomePageController extends BaseController {
         Result<JobListtFront> result = new Result<>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
 
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(fronts);
         return result;
 
@@ -115,7 +115,7 @@ public class RecruitmentHomePageController extends BaseController {
         List<HrUser> hrUsers = service.referrerDetails(userId);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(hrUsers);
         return resultJson;
 
@@ -130,7 +130,7 @@ public class RecruitmentHomePageController extends BaseController {
         List<JobListtFront> fronts = service.selectCollectList();
         Result<JobListtFront> result = new Result<>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(fronts);
         return result;
     }*/
@@ -147,7 +147,7 @@ public class RecruitmentHomePageController extends BaseController {
         ResultJson resultJson = new ResultJson();
         Map<String, Object> map = service.recruitmentBriefchapter(userId, type);
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(map);
         return resultJson;
     }
@@ -169,14 +169,14 @@ public class RecruitmentHomePageController extends BaseController {
             int sign = service.collectSignUPTable(userId, signUpId);
             map.put("collectSignUPTable", sign);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
         } else {
             //cancel collect
             int cancel = service.collectCancel(id);
             map.put("collectCancel", cancel);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
         }
         return resultJson;
@@ -197,13 +197,13 @@ public class RecruitmentHomePageController extends BaseController {
             int referrer = service.collectReferrer(userId);
             map.put("collectReferrer", referrer);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
         } else {
             int cancel = service.collectCancel(id);
             map.put("collectCancel", cancel);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
         }
         return resultJson;

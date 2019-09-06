@@ -1,24 +1,23 @@
 package com.nado.rlzy;
 
-import cn.hutool.core.lang.Assert;
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
-
 import com.nado.rlzy.base.BaseTest;
 import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
 import com.nado.rlzy.db.pojo.Collect;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.data.redis.core.RedisTemplate;
 
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
-
-
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
 
 
 public class RlzyApplicationTests extends BaseTest {
@@ -37,9 +36,6 @@ public class RlzyApplicationTests extends BaseTest {
     }
 
 
-
-
-
     @Test
     public void test4() {
         String phone = "";
@@ -49,7 +45,7 @@ public class RlzyApplicationTests extends BaseTest {
     }
 
     @Test
-    public void test5(){
+    public void test5() {
         HashMap<String, Object> result = null;
 
         //初始化SDK
@@ -92,26 +88,26 @@ public class RlzyApplicationTests extends BaseTest {
         //*result = restAPI.sendTemplateSMS("13800000000","1" ,new String[]{"6532","5"});																		  *
         //*则13800000000手机号收到的短信内容是：【云通讯】您使用的是云通讯短信模板，您的验证码是6532，请于5分钟内正确输入     *
         //*********************************************************************************************************************
-        result = restAPI.sendTemplateSMS("18620925694","445678" ,new String[]{"8286","5"});
+        result = restAPI.sendTemplateSMS("18620925694", "445678", new String[]{"8286", "5"});
 
         System.out.println("SDKTestGetSubAccounts result=" + result);
-        if("000000".equals(result.get("statusCode"))){
+        if ("000000".equals(result.get("statusCode"))) {
             //正常返回输出data包体信息（map）
-            HashMap<String,Object> data = (HashMap<String, Object>) result.get("data");
+            HashMap<String, Object> data = (HashMap<String, Object>) result.get("data");
             Set<String> keySet = data.keySet();
-            for(String key:keySet){
+            for (String key : keySet) {
                 Object object = data.get(key);
-                System.out.println(key +" = "+object);
+                System.out.println(key + " = " + object);
             }
-        }else{
+        } else {
             //异常返回输出错误码和错误信息
-            System.out.println("错误码=" + result.get("statusCode") +" 错误信息= "+result.get("statusMsg"));
+            System.out.println("错误码=" + result.get("statusCode") + " 错误信息= " + result.get("statusMsg"));
         }
     }
 
 
     @Test
-    public void test(){
+    public void test() {
         String str = "陆帅宇";
         Integer sexN = 0;
         Integer sexF = 1;
@@ -119,23 +115,22 @@ public class RlzyApplicationTests extends BaseTest {
         String str1 = "沈尚琳";
 
         if (no.equals(0)) {
-            if (sexN.equals(0)){
+            if (sexN.equals(0)) {
                 String s = str.substring(0, 1) + "先生";
                 System.out.println(s.toString());
             }
-            if (sexF.equals(1)){
+            if (sexF.equals(1)) {
                 String s = str1.substring(0, 1) + "女士";
                 System.out.println(s.toString());
             }
         }
 
 
-
     }
 
 
     @Test
-    public void tezt6(){
+    public void tezt6() {
         HrRebaterecord hrRebaterecord = new HrRebaterecord();
         hrRebaterecord.setRebateOne(BigDecimal.valueOf(4));
         BigDecimal rebateOne = hrRebaterecord.getRebateOne();
@@ -143,7 +138,7 @@ public class RlzyApplicationTests extends BaseTest {
     }
 
     @Test
-    public void test7(){
+    public void test7() {
 
         Collect collect = new Collect();
         collect.setCreateTime(new Date());
@@ -152,26 +147,19 @@ public class RlzyApplicationTests extends BaseTest {
     }
 
     @Test
-    public void test8(){
+    public void test8() {
         String a = null;
-        Assert.isFalse(StringUtils.isBlank(a), RlzyConstant.NULL_PARAM);
+        AssertUtil.isTrue(StringUtils.isBlank(a), RlzyConstant.NULL_PARAM);
 
     }
-
 
 
     @Test
-    public void contextLoad(){
-        //redisTemplate.opsForValue().set("test", "hello word");
-        String test = (String) redisTemplate.opsForValue().get("phone::18620925694templateCode::457666");
+    public void contextLoad() {
+        redisTemplate.opsForValue().set("test", "hello word");
+        Object test = redisTemplate.opsForValue().get("test");
         System.out.println(test);
-        System.out.println(redisTemplate.hasKey("test"));
-
     }
-
-
-
-
 
 
 }

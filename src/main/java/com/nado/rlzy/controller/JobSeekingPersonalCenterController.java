@@ -61,7 +61,7 @@ public class JobSeekingPersonalCenterController {
         map.put("recruitmentBrochureCollectionRecruitment", vals);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(map);
         return resultJson;
     }
@@ -87,7 +87,7 @@ public class JobSeekingPersonalCenterController {
         List<HrSignUp> hrSignUps = service.selectSignUpTable(signId, userId);
         Result<HrSignUp> result = new Result<>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(hrSignUps);
         return result;
 
@@ -110,7 +110,7 @@ public class JobSeekingPersonalCenterController {
         List<HrSignUp> list = service.selectSignUp(userId);
         Result<HrSignUp> result = new Result<>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(list);
         return result;
     }
@@ -132,7 +132,7 @@ public class JobSeekingPersonalCenterController {
             //投诉记录
             HashMap<Object, Object> map = personCenterService.searchComplaintRecord(userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else {
             //违规记录
@@ -140,13 +140,13 @@ public class JobSeekingPersonalCenterController {
                 //本人违规
                 List<HrUser> hrUsers = service.queryMyselfVillation(userId);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 result.setData(hrUsers);
             } else {
                 //推荐人违规
                 List<HrUser> users = service.queryReferrerVillation(userId);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 result.setData(users);
             }
         }
@@ -165,7 +165,7 @@ public class JobSeekingPersonalCenterController {
         Map<Object, Object> map = service.searchSignUpUserName(briefChapterId, userId, typeId);
         ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(map);
         return result;
 

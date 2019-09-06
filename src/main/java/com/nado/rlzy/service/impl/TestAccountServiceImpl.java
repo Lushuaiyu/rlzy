@@ -6,6 +6,8 @@ import com.nado.rlzy.service.TestAccountService;
 import lombok.var;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
@@ -71,11 +73,14 @@ public class TestAccountServiceImpl implements TestAccountService {
             if (j != i) {
                 arr[j] = temp;
             }
-
-
-
         }
         return arr;
+    }
+
+    @RequestMapping(value = "index")
+    @ResponseBody
+    public String index(){
+        return "index";
     }
 
 

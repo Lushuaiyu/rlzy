@@ -1,7 +1,6 @@
 package com.nado.rlzy.platform.exception;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.SafeHtml;
 
 /**
  * @ClassName图片异常
@@ -20,7 +19,7 @@ public class ImgException extends RuntimeException {
     /**
      * 异常对应的描述信息
      */
-    private String msgDes;
+    private String message;
 
     public ImgException() {
         super();
@@ -34,7 +33,7 @@ public class ImgException extends RuntimeException {
     public ImgException(String retCd, String msgDes){
         super();
         this.retCd = retCd;
-        this.msgDes = msgDes;
+        this.message = msgDes;
     }
 
 

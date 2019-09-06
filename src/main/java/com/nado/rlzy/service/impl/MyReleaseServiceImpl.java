@@ -1,6 +1,5 @@
 package com.nado.rlzy.service.impl;
 
-import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.EditBriefchapterQuery;
 import com.nado.rlzy.bean.query.RebateQuery;
@@ -9,6 +8,7 @@ import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.MyReleaseService;
+import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.CollectorsUtil;
 import com.nado.rlzy.utils.StringUtil;
 import com.nado.rlzy.utils.ValidationUtil;
@@ -453,7 +453,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             deliveryrecord.setBriefChapterId(briefChapterId);
                             signupDeliveryrecordMapper.reducedRebateAmount(deliveryrecord);
                         } else {
-                            Assert.isFalse((!sex.equals(0) || !sex.equals(1)), "面试返佣失败");
+                            AssertUtil.isTrue((!sex.equals(0) || !sex.equals(1)), "面试返佣失败");
                         }
                     }
                     return dto;
@@ -595,8 +595,9 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             deliveryrecord.setSignupId(signUpId);
                             deliveryrecord.setBriefChapterId(briefChapterId);
                             signupDeliveryrecordMapper.reducedRebateAmount(deliveryrecord);
+
                         } else {
-                            Assert.isFalse((!sex.equals(0) || !sex.equals(1)), "面试返佣失败");
+                            AssertUtil.isTrue((!sex.equals(0) || !sex.equals(1)), "面试返佣失败");
                         }
                     }
                     return dto;
@@ -685,9 +686,23 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                         detail.setBriefchapterid(query.getBriefchapterId());
                         //增加账户余额
                         acctDetailMapper.insertSelective(detail);
+                        //每返佣一笔 报名投递表待返佣金额 都减去对应的数目
+                        signupDeliveryrecordMapper.updateWaitingForCommission(rebateMoney, query.getBriefchapterId(), query.getSignUpId());
+
+                        //如果返佣都完成了就改变返佣状态为已完成
+                        List<Integer> count = rebaterecordMapper.selectNotStatusRebate(query.getUserId());
+                        if (count.size() <= 0) {
+                            count.stream()
+                                    .map(e -> {
+                                        signupDeliveryrecordMapper.updateReba(e);
+                                        return e;
+                                    }).collect(Collectors.toList());
+                        }
                     }
                     return dto;
                 }).collect(Collectors.toList());
+
+
         return 1;
     }
 
@@ -789,13 +804,13 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         //现在时间 < 面试时间
         int i = format.compareTo(date);
         if (i < 0) {
-            Assert.isFalse(acctMapper.directAdmission(userId, value) < 1, RlzyConstant.OPS_FAILED_MSG);
+            AssertUtil.isTrue(acctMapper.directAdmission(userId, value) < 1, RlzyConstant.OPS_FAILED_MSG);
             HrAcctDetail detail = new HrAcctDetail();
             detail.setAcctid(acctId);
             detail.setAmount(value);
             detail.setSignupid(signUpId);
             detail.setCreatetime(LocalDateTime.now());
-            Assert.isFalse(acctDetailMapper.accountDetailTableAddsReferrerRebate(detail) < 1, RlzyConstant.OPS_FAILED_MSG);
+            AssertUtil.isTrue(acctDetailMapper.accountDetailTableAddsReferrerRebate(detail) < 1, RlzyConstant.OPS_FAILED_MSG);
         }
         return 1;
     }
@@ -834,7 +849,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             }
             String rebateFemale = briefcharpterQuery.getRebateFemale();
             BigDecimal decimal1 = StringUtil.decimal(rebateFemale);
-            Assert.isFalse(null != decimal1, "女生返佣不能为空");
+            AssertUtil.isTrue(null != decimal1, "女生返佣不能为空");
             hrRebaterecord.setRebateFemale(decimal1);
             //返佣时间
             list.add(hrRebaterecord);
@@ -1058,7 +1073,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                                 //企业账户余额
                                 int money = acctMapper.selectAcct(query.getUserId());
                                 BigDecimal moneyOf = BigDecimal.valueOf(money);
-                                Assert.isFalse(moneyOf.compareTo(addAllRebate) < 0, "账户余额不够请去充值");
+                                AssertUtil.isTrue(moneyOf.compareTo(addAllRebate) < 0, "账户余额不够请去充值");
 
 
                                 //查询账户id, 账户余额
@@ -1154,7 +1169,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                         }).collect(Collectors.toList());
             }
         } else {
-            Assert.isFalse(query.getRebate() != 0 || query.getRebate() != 1, "未选择是否返佣, 请重新选择");
+            AssertUtil.isTrue(query.getRebate() != 0 || query.getRebate() != 1, "未选择是否返佣, 请重新选择");
         }
         //编辑完了 简章状态改成待审核
         mapper.updateStatus(query.getBriefchapter());
@@ -1367,7 +1382,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                                 //企业账户余额
                                 int money = acctMapper.selectAcct(query.getUserId());
                                 BigDecimal moneyOf = BigDecimal.valueOf(money);
-                                Assert.isFalse(moneyOf.compareTo(addAllRebate) < 0, "账户余额不够请去充值");
+                                AssertUtil.isTrue(moneyOf.compareTo(addAllRebate) < 0, "账户余额不够请去充值");
 
 
                                 //查询账户id, 账户余额
@@ -1463,7 +1478,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                         }).collect(Collectors.toList());
             }
         } else {
-            Assert.isFalse(query.getRebate() != 0 || query.getRebate() != 1, "未选择是否返佣, 请重新选择");
+            AssertUtil.isTrue(query.getRebate() != 0 || query.getRebate() != 1, "未选择是否返佣, 请重新选择");
         }
         //编辑完了 简章状态改成待审核
         mapper.updateStatus(query.getBriefchapter());
@@ -1603,7 +1618,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             System.out.println(RlzyConstant.OPS_FAILED_MSG);
         }
 
-        Assert.isFalse(mapper.save(dto) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(mapper.save(dto) < 1, RlzyConstant.OPS_FAILED_MSG);
         return dto.getId();
     }
 
@@ -1694,6 +1709,6 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             System.out.println(RlzyConstant.OPS_FAILED_MSG);
         }
 
-        Assert.isFalse(mapper.save(dto) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(mapper.save(dto) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 }

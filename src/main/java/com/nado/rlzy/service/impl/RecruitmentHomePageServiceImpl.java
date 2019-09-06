@@ -1,6 +1,5 @@
 package com.nado.rlzy.service.impl;
 
-import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.bean.dto.JobListDto;
 import com.nado.rlzy.bean.frontEnd.JobListtFront;
 import com.nado.rlzy.bean.query.JobListQuery;
@@ -11,6 +10,7 @@ import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.RecruitmentHomePageService;
+import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.CheckParametersUtil;
 import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -154,7 +154,7 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
         collect.setUserId(collect.getUserId());
         collect.setSignUpId(collect.getSignUpId());
 
-        Assert.isFalse(collectMapper.insertSelective(collect) <= 0, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(collectMapper.insertSelective(collect) <= 0, RlzyConstant.OPS_FAILED_MSG);
         return collect.getId();
     }
 
@@ -163,7 +163,7 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     @Transactional(rollbackFor = Exception.class)
     public int updateSignUpCollectStatus(Collect collect) {
         collect.setDeleteFlag(1);
-        Assert.isFalse(collectMapper.updateByPrimaryKeySelecti(collect) <= 0, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(collectMapper.updateByPrimaryKeySelecti(collect) <= 0, RlzyConstant.OPS_FAILED_MSG);
         return 1;
     }
 

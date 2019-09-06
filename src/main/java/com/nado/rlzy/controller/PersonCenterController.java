@@ -80,7 +80,7 @@ public class PersonCenterController extends BaseController {
         Map<String, Object> map = service.queryPersonCo(userId, type);
         ResultJson result = new ResultJson();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(map);
 
         return result;
@@ -119,7 +119,7 @@ public class PersonCenterController extends BaseController {
         Map<String, Object> co = service.addCo(query);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(co);
         return resultJson;
 
@@ -176,14 +176,14 @@ public class PersonCenterController extends BaseController {
         if (type.equals(1)) {
             List<HrUser> ups = service.personalInformation(userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(ups);
             return result;
         }
         if (type.equals(2)) {
             List<HrUser> signUps = service.personalInformationReferrer(userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(signUps);
             return result;
         }
@@ -264,7 +264,7 @@ public class PersonCenterController extends BaseController {
             //投诉详情
             HashMap<String, Object> complaint = service.complaint(complaintId, type);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(complaint);
         } else {
             //撤销投诉
@@ -272,7 +272,7 @@ public class PersonCenterController extends BaseController {
             query.setId(id);
             int i = jobSearchHomePageService.complaintWithdrawn(query);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(i);
 
         }
@@ -290,7 +290,7 @@ public class PersonCenterController extends BaseController {
         var list = service.selectReferrerInfo(userId, typeId);
         var result = new Result<HrUser>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(list);
         return result;
 
@@ -303,7 +303,7 @@ public class PersonCenterController extends BaseController {
         var list = service.feedback();
         var result = new Result<Feedback>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(list);
         return result;
 
@@ -350,13 +350,13 @@ public class PersonCenterController extends BaseController {
             List<HrUser> hrUsers = service.collectReferrer(userId);
             map.put("collectReferrer", hrUsers);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         } else {
             List<HrSignUp> fronts = homePageService.selectCollectListOverview(userId);
             map.put("selectCollectListOverview", fronts);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
         }
         return result;
@@ -374,7 +374,7 @@ public class PersonCenterController extends BaseController {
         var list = jobSearchHomePageService.creditCenter(status, userId);
         var result = new Result<ComplaintDto>();
         result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         result.setData(list);
         return result;
     }
@@ -387,7 +387,7 @@ public class PersonCenterController extends BaseController {
         ResultJson resultJson = new ResultJson();
         List<HrComplaint> hrComplaints = jobSearchHomePageService.selectComplaint(coId);
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(hrComplaints);
         return resultJson;
     }
@@ -403,7 +403,7 @@ public class PersonCenterController extends BaseController {
         Map<String, List<PersonCoDto>> map = service.queryTheAuditFailed(userId);
         ResultJson resultJson = new ResultJson();
         resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
         resultJson.setData(map);
         return resultJson;
     }

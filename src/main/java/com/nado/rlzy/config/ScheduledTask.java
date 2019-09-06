@@ -11,7 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,6 +52,9 @@ public class ScheduledTask {
 
     @Resource
     private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
+
+    @Resource
+    private MessageMapper messageMapper;
 
 
     /**
@@ -206,12 +212,12 @@ public class ScheduledTask {
             BigDecimal rebateFemale = s.getRebateFemale();
             Integer brId = s.getBrId();
             Integer sex = s.getSex();
-            Integer hsdId = s.getHsdId();
+            Integer signupDeliveryrecordId = s.getSignupDeliveryrecordId();
             if (rebateHour.compareTo(72) > 0) {
                 if (sex.equals(0)) {
                     //女
                     //更改返佣状态
-                    rebaterecordMapper.rebateOne(id, hsdId);
+                    rebaterecordMapper.rebateOne(id, signupDeliveryrecordId);
                     //返佣金额
                     BigDecimal rebateMoney = rebateFemale != null ? rebateFemale : BigDecimal.ZERO;
                     //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
@@ -240,7 +246,7 @@ public class ScheduledTask {
                 } else if (sex.equals(1)) {
                     //男
                     //更改返佣状态
-                    rebaterecordMapper.rebateOne(id, hsdId);
+                    rebaterecordMapper.rebateOne(id, signupDeliveryrecordId);
                     //返佣金额
                     BigDecimal rebateMoney = rebateMale != null ? rebateMale : BigDecimal.ZERO;
                     //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
@@ -433,9 +439,133 @@ public class ScheduledTask {
     }
 
 
+    /**
+     * 查询身份是本人求职 简章是代招单位下的单位  的面试时间 > 现在时间
+     *
+     * @return void
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:39 2019/9/5
+     * @Param []
+     **/
     @Scheduled(cron = "0 0 20 * * ? ")
     @Transactional(rollbackFor = Exception.class)
-    public void task12(){
+    public void task12() {
+        List<HrBriefchapter> list = briefchapterMapper.interviewAllPerson();
+        list.stream()
+                .map(dto -> {
+                    Integer id = dto.getId();
+                    Integer signUpId = dto.getSignUpId();
+                    Integer userId = dto.getUserId();
+                    LocalDateTime interviewTime = dto.getInterviewTime();
+                    //获得面试那天0点的时间
+                    LocalDateTime zeroPoint = LocalDateTime.of(LocalDate.from(interviewTime), LocalTime.MIN);
+                    String format = zeroPoint.plusHours(-4).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    LocalDateTime now = LocalDateTime.now();
+                    String nowTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    if (nowTime.compareTo(format) == 0) {
+                        Message message = new Message();
+                        message.setUserId(userId);
+                        message.setSignUpId(signUpId);
+                        message.setBriefchapterId(id);
+                        message.setCreateTime(LocalDateTime.now());
+                        message.setType(1);
+                        List<Message> messages = new ArrayList<>();
+                        messages.add(message);
+                        messageMapper.insertList(messages);
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * 查询身份是本人求职 简章是招聘单位的简章 的面试时间 > 现在时间
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:31 2019/9/6
+     * @Param []
+     * @return void
+     **/
+    @Scheduled(cron = "0 0 20 * * ? ")
+    @Transactional(rollbackFor = Exception.class)
+    public void task13(){
+
+        List<HrBriefchapter> list = briefchapterMapper.interviewAllPersonRecruitment();
+        list.stream()
+                .map(dto -> {
+                    Integer id = dto.getId();
+                    Integer signUpId = dto.getSignUpId();
+                    Integer userId = dto.getUserId();
+                    LocalDateTime interviewTime = dto.getInterviewTime();
+                    //获得面试那天0点的时间
+                    LocalDateTime zeroPoint = LocalDateTime.of(LocalDate.from(interviewTime), LocalTime.MIN);
+                    String format = zeroPoint.plusHours(-4).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    LocalDateTime now = LocalDateTime.now();
+                    String nowTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    if (nowTime.compareTo(format) == 0) {
+                        Message message = new Message();
+                        message.setUserId(userId);
+                        message.setSignUpId(signUpId);
+                        message.setBriefchapterId(id);
+                        message.setCreateTime(LocalDateTime.now());
+                        message.setType(1);
+                        List<Message> messages = new ArrayList<>();
+                        messages.add(message);
+                        messageMapper.insertList(messages);
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * 查询身份是推荐人给被推荐人报名 简章是代招单位下的单位 的面试时间 > 现在时间 登陆身份是推荐人
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:33 2019/9/6
+     * @Param []
+     * @return void
+     **/
+    public void task14(){
+
+    }
+
+    /**
+     * 查询身份是本人求职 简章是招聘单位的简章 的面试时间 > 现在时间 登陆身份是本人
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:34 2019/9/6
+     * @Param []
+     * @return void
+     **/
+    public void task15(){
+        List<HrBriefchapter> list = briefchapterMapper.intervieweAllPersonReferrer();
+        list.stream()
+                .map(dto -> {
+                    Integer id = dto.getId();
+                    Integer signUpId = dto.getSignUpId();
+                    Integer userId = dto.getUserId();
+                    LocalDateTime interviewTime = dto.getInterviewTime();
+                    String userName = dto.getUserName();
+                    //获得面试那天0点的时间
+                    LocalDateTime zeroPoint = LocalDateTime.of(LocalDate.from(interviewTime), LocalTime.MIN);
+                    String format = zeroPoint.plusHours(-4).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    LocalDateTime now = LocalDateTime.now();
+                    String nowTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    if (nowTime.compareTo(format) == 0) {
+                        Message message = new Message();
+                        message.setUserId(userId);
+                        message.setSignUpId(signUpId);
+                        message.setBriefchapterId(id);
+                        message.setCreateTime(LocalDateTime.now());
+                        message.setType(1);
+                        message.setSignUpName(userName);
+                        List<Message> messages = new ArrayList<>();
+                        messages.add(message);
+                        messageMapper.insertList(messages);
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+
 
     }
 

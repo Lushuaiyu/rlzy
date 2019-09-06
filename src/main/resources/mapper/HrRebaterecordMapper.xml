@@ -176,7 +176,8 @@
        si.sex,
        re.RebateMale,
        re.RebateFemale,
-       br.Id as brId
+       br.Id as brId,
+       re.signup_deliveryrecord_id
         from hr_rebaterecord re,
              hr_signup_deliveryrecord hsd,
              hr_signup si,
@@ -232,7 +233,7 @@
     <update id="rebateOne">
         update hr_rebaterecord
         <set>
-            status = 1,
+            status = 14,
             <if test="null != signupDeliveryrecordId">
                 signup_deliveryrecord_id = #{signupDeliveryrecordId}
             </if>
@@ -271,9 +272,23 @@
       and re.DeleteFlag = 0
       and re.RebateType = 2
       and u.status = 0
-      and hsd.status = 2
+      and hsd.status = 5
 
     </select>
-
+    <select id="selectNotStatusRebate" resultType="int">
+        select re.signup_deliveryrecord_id
+        from hr_rebaterecord re
+        left join hr_signup_deliveryrecord hsd on re.signup_deliveryrecord_id = hsd.id
+        and hsd.delete_flag = 0
+        left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
+        left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0
+        <where>
+            re.DeleteFlag = 0
+            <if test="null != userId">
+                and si.user_id = #{userId}
+            </if>
+            and re.status &lt;> 1;
+        </where>
+    </select>
 
 </mapper>

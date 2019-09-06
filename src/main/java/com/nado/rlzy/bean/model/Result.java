@@ -14,19 +14,19 @@ import java.util.List;
  */
 @Data
 public class Result<T> {
-    private String msg;
+    private String message;
     private Integer code;
     private List<T> data;
 
 
     public Result(Integer code, String msg) {
         this.code = code;
-        this.msg = msg;
+        this.message = msg;
     }
 
     public Result(Integer code, String msg, Integer count, List<T> data) {
         this.code = code;
-        this.msg = msg;
+        this.message = msg;
         //this.count = count;
         this.data = data;
     }
@@ -41,7 +41,7 @@ public class Result<T> {
     }
 
     public Result(String msg) {
-        this.msg = msg;
+        this.message = msg;
     }
 
     public Result(Integer code, List<T> data) {
@@ -51,7 +51,7 @@ public class Result<T> {
 
     public Result(String msg, List<T> data) {
         this.data = data;
-        this.msg = msg;
+        this.message = msg;
     }
 
     public Result(List<T> data) {

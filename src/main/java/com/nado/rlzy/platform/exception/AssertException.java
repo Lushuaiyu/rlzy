@@ -10,12 +10,12 @@ import lombok.Data;
 @Data
 public class AssertException extends RuntimeException {
     private Integer code = RlzyConstant.OPS_FAILED_CODE;
-    private String msg;
+    private String message;
 
     public AssertException(Integer code, String msg) {
         super(msg);
         this.code = code;
-        this.msg = msg;
+        this.message = msg;
     }
 
     public AssertException(Integer code) {
@@ -24,8 +24,9 @@ public class AssertException extends RuntimeException {
 
     public AssertException(String msg) {
         super(msg);
-        this.msg = msg;
+        this.message = msg;
     }
 
-
+    public AssertException() {
+    }
 }

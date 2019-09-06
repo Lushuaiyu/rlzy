@@ -1,11 +1,11 @@
 package com.nado.rlzy.service.impl;
 
-import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.bean.query.AttentionQuery;
 import com.nado.rlzy.db.mapper.AttentionMapper;
 import com.nado.rlzy.db.pojo.Attention;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.ChatService;
+import com.nado.rlzy.utils.AssertUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +47,7 @@ public class ChatServiceImpl implements ChatService {
         } else if (query.getType().equals(0)) {
             attention.setType(0);
         } else {
-            Assert.isFalse(query.getType() != 0 || query.getType() != 1, RlzyConstant.OPS_FAILED_MSG);
+            AssertUtil.isTrue(query.getType() != 0 || query.getType() != 1, RlzyConstant.OPS_FAILED_MSG);
         }
         attention.setCreatetime(LocalDateTime.now());
         return attentionMapper.insertSelective(attention);

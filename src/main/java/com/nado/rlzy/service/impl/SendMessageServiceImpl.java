@@ -1,9 +1,10 @@
 package com.nado.rlzy.service.impl;
 
-import cn.hutool.core.lang.Assert;
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.MessageService;
+import com.nado.rlzy.utils.AssertUtil;
+import com.nado.rlzy.utils.PhoneUtil;
 import com.nado.rlzy.utils.RandomCodesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,6 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 /**
  * @ClassName 发送短信 service 实现类
@@ -80,13 +80,13 @@ public class SendMessageServiceImpl implements MessageService {
     }
 
     private void checkParams(String phone, Integer type) {
-        Assert.isFalse(StringUtils.isBlank(phone), RlzyConstant.PHONE_NULL);
-        Assert.isFalse(!(Pattern.matches("^[1](([3][0-9])|([4][5,7,9])|([5][^4,6,9])|([6][6])|([7][3,5,6,7,8])|([8][0-9])|([9][8,9]))[0-9]{8}$", phone)), RlzyConstant.PHONE_NOT_LEGITIMATE);
-        Assert.isFalse(null == type, RlzyConstant.SMS_MESSAGE_NULL);
+        AssertUtil.isTrue(StringUtils.isBlank(phone), RlzyConstant.PHONE_NULL);
+        PhoneUtil.phone(phone);
+        AssertUtil.isTrue(null == type, RlzyConstant.SMS_MESSAGE_NULL);
         boolean operatingType = RlzyConstant.SMS_WITHDRAW_TYPE.equals(type) ||
                 RlzyConstant.SMS_REGISTER_TYPE.equals(type) ||
                 RlzyConstant.SMS_CHANGE_PASSWORD.equals(type) || RlzyConstant.SMS_FORGET_PASSWORD.equals(type);
-        Assert.isFalse(!(operatingType), RlzyConstant.SMS_MESSAGE_ILLEGALITY);
+        AssertUtil.isTrue(!(operatingType), RlzyConstant.SMS_MESSAGE_ILLEGALITY);
     }
 
     private void sendMessage(String accountSid, String accountToken, String appId, String templateId, String phone, String code) {

@@ -1,17 +1,16 @@
 package com.nado.rlzy.controller;
 
-import cn.hutool.core.lang.Assert;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
-import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.utils.AssertUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @ClassName 模拟转账controller
@@ -34,21 +33,26 @@ public class TestAccountController {
 
     @RequestMapping(value = "aa")
     @ResponseBody
-    public String aa(){
-        String a = "";
-        Assert.isFalse(StringUtils.isBlank(a), "asfdafdfdaf");
+    public String aa(String a) {
+
+        AssertUtil.isTrue(StringUtils.isBlank(a), "asfdafdfdaf");
+
         return a;
 
     }
 
-    @RequestMapping(value = "in")
+    @PostMapping(value = "aaa")
     @ResponseBody
-    public ResultJson in(Integer userId){
-        List<HrSignUp> hrSignUps = signUpMapper.queryAll(userId);
+    public ResultJson in(String str) {
         ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMsg(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(hrSignUps);
+        if (str != null) {
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+        } else {
+            AssertUtil.isTrue(null == str, "字符串不能为空");
+        }
         return resultJson;
     }
+
+
 }

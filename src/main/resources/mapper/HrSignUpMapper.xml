@@ -485,9 +485,9 @@
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
         left join hr_user u on c.user_id = u.Id and u.status = 0
         left join hr_briefchapter b on c.briefchapter_id = b.Id and b.briefChapterStatus = 0
-        where c.delete_flag = 0
+        where
         <if test="null != userId">
-            and u.Id = #{userId}
+             u.Id = #{userId}
         </if>
         and c.sign_up_id is not null order by c.create_time desc
     </select>

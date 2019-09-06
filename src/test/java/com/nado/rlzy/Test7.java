@@ -2,14 +2,19 @@ package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
 import com.nado.rlzy.db.mapper.*;
-import com.nado.rlzy.db.pojo.*;
+import com.nado.rlzy.db.pojo.EntryResignation;
+import com.nado.rlzy.db.pojo.HrBriefchapter;
+import com.nado.rlzy.db.pojo.HrRebaterecord;
+import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.utils.StringUtil;
 import org.junit.Test;
-import org.springframework.web.bind.annotation.ResponseBody;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +42,9 @@ public class Test7 extends BaseTest {
 
     @Resource
     private HrUserMapper userMapper;
+
+    @Resource
+    private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
 
 
     @Test
@@ -163,10 +171,51 @@ public class Test7 extends BaseTest {
         hrUser.setRecommendInfo("afdsff");
         hrUser.setId(String.valueOf(6));
         userMapper.updateByPrimaryKey(hrUser);
-
-
-
-
     }
+
+    @Test
+    public void test9() {
+        //rebaterecordMapper.rebateOne(7, 4);
+
+      /*  List<HrBriefchapter> hrBriefchapters = mapper.interviewAllPerson();
+        System.out.println(hrBriefchapters);*/
+        List<HrBriefchapter> list = mapper.interviewAllPerson();
+        list.stream()
+                .map(dto -> {
+                    Integer brId = dto.getBrId();
+                    Integer signUpId = dto.getSignUpId();
+                    Integer dtoUserId = dto.getUserId();
+                    LocalDateTime interviewTime = dto.getInterviewTime();
+                    LocalDateTime today_start = LocalDateTime.of(LocalDate.from(interviewTime), LocalTime.MIN);
+                    String td_st_str = today_start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH : mm : ss"));
+                    System.out.println(td_st_str);
+                    String format = today_start.plusHours(-4).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH : mm : ss"));
+                    System.out.println(format);
+
+
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    @Test
+    public void test10(){
+        List<HrBriefchapter> hrBriefchapters = mapper.intervieweAllPersonReferrer();
+        hrBriefchapters.stream().map(dto -> {
+            Integer id = dto.getId();
+            Integer signUpId = dto.getSignUpId();
+            Integer userId = dto.getUserId();
+            System.out.println(id + "===" + signUpId + "===" + userId);
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Test
+    public void test11(){
+        HrUser hrUser = new HrUser();
+        hrUser.setType(54);
+        hrUser.setId(String.valueOf(4));
+        userMapper.updateByPrimaryKey(hrUser);
+    }
+
 
 }
