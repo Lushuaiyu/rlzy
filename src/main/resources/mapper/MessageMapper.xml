@@ -1,16 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nado.rlzy.db.mapper.MessageMapper">
-  <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.Message">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="briefchapter_id" jdbcType="INTEGER" property="briefchapterId" />
-    <result column="sign_up_id" jdbcType="INTEGER" property="signUpId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="sign_up_name" jdbcType="VARCHAR" property="signUpName" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.Message">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="briefchapter_id" jdbcType="INTEGER" property="briefchapterId"/>
+        <result column="sign_up_id" jdbcType="INTEGER" property="signUpId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="sign_up_name" jdbcType="VARCHAR" property="signUpName"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="GroupName" jdbcType="VARCHAR" property="GroupName"/>
+        <result column="interviewTime" jdbcType="TIMESTAMP" property="interviewTime"/>
+        <result column="registerTime" jdbcType="TIMESTAMP" property="registerTime"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+    </resultMap>
+    <select id="noticeMyselfRepresentativeUnit" resultMap="BaseResultMap">
+        select grr.GroupName, m.type, br.interviewTime, si.user_name, si.id as sign_up_id, m.create_time,
+        br.registerTime
+        from message m
+        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        left join hr_signup si on si.id = m.sign_up_id and si.delete_flag = 0
+        left join hr_user u on si.user_id = u.Id and u.status = 0
+        where grr.Pid = gr.Id
+        <if test="null != userId">
+            and si.user_id = #{userId}
+        </if>
+
+    </select>
+    <select id="noticeMyselfRecruitmentUnit" resultMap="BaseResultMap">
+        select grr.GroupName, m.type, br.interviewTime, si.user_name, si.id as sign_up_id, m.create_time,
+        br.registerTime
+        from message m
+        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
+        left join hr_signup si on si.id = m.sign_up_id and si.delete_flag = 0
+        left join hr_user u on si.user_id = u.Id and u.status = 0
+        where grr.type = 1
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+    </select>
+    <select id="noticeReferrerRepresentativeUnit" resultMap="BaseResultMap">
+        select grr.GroupName, m.type, br.interviewTime, si.user_name, si.id as sign_up_id, m.create_time,
+        br.registerTime
+        from message m
+        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        left join hr_signup si on si.user_name = m.sign_up_name and si.delete_flag = 0
+        left join hr_user u on si.user_id = u.Id and u.status = 0
+        where grr.Pid = gr.Id
+        <if test="null != userId">
+            and si.user_id = #{userId}
+        </if>
+
+    </select>
+    <select id="noticeReferrerRecruitmentUnit" resultMap="BaseResultMap">
+        select grr.GroupName, m.type, br.interviewTime, si.user_name, si.id as sign_up_id, m.create_time,
+        br.registerTime
+        from message m
+        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0
+        left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
+        left join hr_signup si on si.user_name = m.sign_up_name and si.delete_flag = 0
+        left join hr_user u on si.user_id = u.Id and u.status = 0
+        where grr.type = 1
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+    </select>
+    <select id="selectAllList" resultMap="BaseResultMap">
+    select * from message where sign_up_name is not null
+    </select>
 </mapper>

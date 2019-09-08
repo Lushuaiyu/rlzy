@@ -3,12 +3,15 @@ package com.nado.rlzy.controller;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.db.mapper.HrSignUpMapper;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.utils.AssertUtil;
+import com.nado.rlzy.utils.Base64Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -26,6 +29,9 @@ public class TestAccountController {
     @Resource
     private HrSignUpMapper signUpMapper;
 
+    @Resource
+    private PersonCenterService centerService;
+
     @RequestMapping(value = "index")
     public String index() {
         return "index";
@@ -41,7 +47,7 @@ public class TestAccountController {
 
     }
 
-    @PostMapping(value = "aaa")
+    @RequestMapping(value = "aaa")
     @ResponseBody
     public ResultJson in(String str) {
         ResultJson resultJson = new ResultJson();
@@ -51,6 +57,20 @@ public class TestAccountController {
         } else {
             AssertUtil.isTrue(null == str, "字符串不能为空");
         }
+        return resultJson;
+    }
+
+
+    @RequestMapping(value = "image")
+    @ResponseBody
+    public ResultJson test() {
+        String image = "";
+        MultipartFile multipartFile = Base64Util.base64ToMultipart(image);
+        String head = centerService.updateHead(multipartFile);
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(head);
         return resultJson;
     }
 

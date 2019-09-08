@@ -18,6 +18,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/data/wwwroot/app.tongzhexinxi.com/log/rlzy.%d{yyyy-MM-dd}.log</fileNamePattern>
 <!--            <fileNamePattern>C:\work\Log/rlzy.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--            <fileNamePattern>/Users/lushuaiyu/log/rlzy/rlzy.%d{yyyy-MM-dd}.log</fileNamePattern>-->
             <!--keep 30 days' worth of history-->
             <maxHistory>30</maxHistory>
         </rollingPolicy>

@@ -300,6 +300,17 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
     List<HrUser> queryJobStatus(@Param("userId") Integer userId, @Param("briefChapterId") Integer briefChapterId);
 
 
+    /**
+     * 查询拉黑的用户
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 19:51 2019-09-07
+     * @Param [userId]
+     * @return int
+     */
+    @Select(value = "select count(*) from hr_user u, hr_enterpriseblacklist e where u.IdCard = e.idCard\n" +
+            "and u.status = 0 and u.id = #{userId}")
+    int selectEnterPriseBlacakList(@Param("userId") Integer userId);
 
 
 

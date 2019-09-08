@@ -299,7 +299,7 @@ public interface JobSearchHomePageService {
      * @Param [signUp]
      * @return void
      **/
-    void addSignUpTable(HrSignUp  query);
+    int addSignUpTable(HrSignUp  query);
 
     /**
      * 添加自定义分组

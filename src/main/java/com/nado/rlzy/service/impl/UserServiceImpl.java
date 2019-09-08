@@ -13,17 +13,16 @@ import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrSignupDeliveryrecord;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.service.UserService;
-import com.nado.rlzy.utils.AssertUtil;
-import com.nado.rlzy.utils.MD5;
-import com.nado.rlzy.utils.PhoneUtil;
-import com.nado.rlzy.utils.StringUtil;
+import com.nado.rlzy.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -56,6 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
+
+    @Resource
+    private PersonCenterService centerService;
 
 
     @Override
@@ -92,16 +94,16 @@ public class UserServiceImpl implements UserService {
                 query.getRegistrationPlace());
 
         //初始化主表信息, 返回主键
-        initUser(query.getId(), query.getImageHead(), query.getUserName(), query.getIdCard(), query.getUnitType());
+        int userId = initUser(query.getId(), query.getImageHead(), query.getUserName(), query.getIdCard(), query.getUnitType());
 
         if (query.getUnitType().equals(5)) {
             //初始化 企业信息 招聘单位
-            initGroup(query.getUnitType(), query.getGroupName(), query.getGroupAddress(), query.getGroupInfo(),
+            initGroup(userId, query.getGroupName(), query.getGroupAddress(), query.getGroupInfo(),
                     query.getBusinessLicense(), query.getEnterpriseLicense(), query.getRegistrantCertificate(),
                     query.getSocialCreditCode(), query.getLegalPerson(), query.getRegistrationPlace(), query.getUnitType());
         } else {
             //代招单位
-            initGroup(query.getUnitType(), query.getGroupName(), query.getGroupAddress(), query.getGroupInfo(),
+            initGroup(userId, query.getGroupName(), query.getGroupAddress(), query.getGroupInfo(),
                     query.getBusinessLicense(), query.getEnterpriseLicense(), query.getRegistrantCertificate(),
                     query.getSocialCreditCode(), query.getLegalPerson(), query.getRegistrationPlace(), query.getUnitType());
         }
@@ -116,12 +118,18 @@ public class UserServiceImpl implements UserService {
         group.setGroupname(groupName);
         group.setGroupaddress(groupAddress);
         group.setGroupinfo(groupInfo);
-        group.setBusinesslicense(businessLicense);
-        group.setEnterpriseLicense(enterpriseLicense);
+        MultipartFile multipartFile = Base64Util.base64ToMultipart(businessLicense);
+        String head = centerService.updateHead(multipartFile);
+        group.setBusinesslicense(head);
+        MultipartFile multipartFile1 = Base64Util.base64ToMultipart(enterpriseLicense);
+        String headEnterpriseLicense = centerService.updateHead(multipartFile1);
+        group.setEnterpriseLicense(headEnterpriseLicense);
         group.setRegistrantCertificate(registrantCertificate);
         group.setSocialcreditcode(socialCreditCode);
         group.setLegalperson(legalPerson);
-        group.setRegistrationplace(registrationPlace);
+        MultipartFile multipartFile2 = Base64Util.base64ToMultipart(registrationPlace);
+        String headRegistrationPlace = centerService.updateHead(multipartFile2);
+        group.setRegistrationplace(headRegistrationPlace);
         group.setCertifierid(userId);
         group.setStatus(1);
         group.setCreatetime(LocalDateTime.now());
@@ -135,12 +143,14 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void initUser(String id, String imageHead, String userName, String idCard, Integer unitType) {
+    private int initUser(String id, String imageHead, String userName, String idCard, Integer unitType) {
         HrUser user = new HrUser();
         user.setId(id);
         user.setUserName(userName);
         user.setType(unitType);
-        user.setHeadImage(imageHead);
+        MultipartFile multipartFile = Base64Util.base64ToMultipart(imageHead);
+        String head = centerService.updateHead(multipartFile);
+        user.setHeadImage(head);
         // 身份证应该正则匹配
         user.setIdCard(idCard);
         //TODO
@@ -148,6 +158,7 @@ public class UserServiceImpl implements UserService {
         user.setStatus(0);
         user.setRegisterTime(LocalDateTime.now());
         AssertUtil.isTrue(userMapper.updateByPrimaryKey(user) < 1, RlzyConstant.OPS_FAILED_MSG);
+        return Integer.parseInt(user.getId());
     }
 
     private void check(Integer unitType, String imageHead,
@@ -195,6 +206,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int selectEnterPriseBlacakList(Integer userId) {
+        return userMapper.selectEnterPriseBlacakList(userId);
+    }
+
+    @Override
     public HrUser queryUser(String phone, String password) {
         String md5 = MD5.getMD5(password + RlzyConstant.PASSWORD_SALT);
         return userMapper.queryUser(phone, md5);
@@ -219,6 +235,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public int registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
         if (query.getUnitType().equals(1)) {
+
             //本人
             initUserJobHunt(query.getId(),
                     query.getImageHead(), query.getUserName(), query.getIdCard(), query.getUnitType(),
@@ -364,7 +381,9 @@ public class UserServiceImpl implements UserService {
                                  String expectedSalaryUpper, String expectedSalaryLower) {
         HrUser user = new HrUser();
         user.setId(id);
-        user.setHeadImage("affadf");
+        MultipartFile multipartFile = Base64Util.base64ToMultipart(imageHead);
+        String head = centerService.updateHead(multipartFile);
+        user.setHeadImage(head);
         user.setUserName(userName);
         boolean b = IdcardUtil.isvalidCard18(idCard);
         AssertUtil.isTrue(b == false, "身份证输入有误, 请重新输入");

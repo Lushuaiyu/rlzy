@@ -2,12 +2,10 @@ package com.nado.rlzy.controller;
 
 import com.nado.rlzy.base.BaseController;
 import com.nado.rlzy.bean.model.*;
-import com.nado.rlzy.bean.query.BriefcharpterQuery;
-import com.nado.rlzy.bean.query.EditBriefchapterQuery;
-import com.nado.rlzy.bean.query.RebateQuery;
-import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
+import com.nado.rlzy.bean.query.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.MyReleaseService;
 import com.nado.rlzy.service.PersonCenterService;
@@ -57,13 +55,22 @@ public class MyReleaseController extends BaseController {
 
     })
     public ResultJson myRelease(Integer userId, Integer status, Integer type) {
-
-        Map<String, Object> map = service.myRelease(userId, status);
-
         ResultJson result = new ResultJson();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(map);
+        try {
+            Map<String, Object> map = service.myRelease(userId, status);
+
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
     }
 
@@ -81,10 +88,21 @@ public class MyReleaseController extends BaseController {
     @ApiOperation(notes = "求职端 查询省市区", value = "查询省市区", httpMethod = "POST")
     public ResultJson getPCA(@ModelAttribute("resJson") ResponseJson<String, Object> resJson) {
         ResultJson result = new ResultJson();
-        List<Province> provinces = service.getPCA();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(provinces);
+
+        try {
+            List<Province> provinces = service.getPCA();
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(provinces);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
     }
 
@@ -121,14 +139,26 @@ public class MyReleaseController extends BaseController {
                     @ApiImplicitParam(name = "type", value = "身份, 代招单位还是招聘单位", dataType = "Integer", required = true)
             }
     )
-    public ResultInfo save(@RequestBody ReleaseBriefcharpterQuery query, Integer type) {
-        //图片上传
-        String head = centerService.updateHead(query.getDescriptionJobPhotoFile());
-        query.setDescriptionJobPhotoUrl(head);
-        String updateHead = centerService.updateHead(query.getEmployerCertificatePhotoFile());
-        query.setEmployerCertificatePhotoUrl(updateHead);
-        service.saveUser(query, type);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+    public ResultJson save(@RequestBody ReleaseBriefcharpterQuery query, Integer type) {
+        ResultJson result = new ResultJson();
+        try {
+            //图片上传
+            String head = centerService.updateHead(query.getDescriptionJobPhotoFile());
+            query.setDescriptionJobPhotoUrl(head);
+            String updateHead = centerService.updateHead(query.getEmployerCertificatePhotoFile());
+            query.setEmployerCertificatePhotoUrl(updateHead);
+            service.saveUser(query, type);
+
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return result;
 
 
     }
@@ -138,13 +168,22 @@ public class MyReleaseController extends BaseController {
     @ApiOperation(value = "招聘详情 概览 待返佣部分 0:面试 1:报到 2:入职 0就是第一笔返佣 1是第二笔 2 入职 按照时间从早到晚排", notes = "招聘详情 概览 待返佣部分 0:面试 1:报到 2:入职 0就是第一笔返佣 1是第二笔 2 入职 按照时间从早到晚排", httpMethod = "POST")
     @ApiImplicitParam(value = "jobStatus", name = "报名状态", dataType = "integer []", required = true)
     public Result<HrSignUp> recruitmentDetailsOverview(Integer[] jobStatus) {
-        List<HrSignUp> list = service.recruitmentDetailsOverview(jobStatus);
         Result<HrSignUp> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
+        try {
+            List<HrSignUp> list = service.recruitmentDetailsOverview(jobStatus);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(list);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
-
     }
 
     @ResponseBody
@@ -152,11 +191,21 @@ public class MyReleaseController extends BaseController {
     @ApiOperation(notes = " 招聘端 查看求职表 判断报名人数是否满了, recruitingNo = 0 就说明满了", value = "招聘端 查看求职表 判断报名人数是否满了, recruitingNo = 0 就说明满了", httpMethod = "POST")
     @ApiImplicitParam(value = "briefchapter", name = "简章id", dataType = "Integer", required = true)
     public Result<HrBriefchapter> numberOfRecruitsFull(Integer briefchapter) {
-        List<HrBriefchapter> signUpNumberDtos = service.numberOfRecruitsFull(briefchapter);
         Result<HrBriefchapter> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(signUpNumberDtos);
+        try {
+            List<HrBriefchapter> signUpNumberDtos = service.numberOfRecruitsFull(briefchapter);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(signUpNumberDtos);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
     }
 
@@ -170,18 +219,29 @@ public class MyReleaseController extends BaseController {
     })
     public ResultJson notSuitable(Integer signUpId, Integer type) {
         ResultJson resultJson = new ResultJson();
-        if (type.equals(1)) {
-            //不合适
-            int notSuitable = service.notSuitable(signUpId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(notSuitable);
-        } else {
-            //邀请面试
-            int interview = service.invitationInterview(signUpId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(interview);
+        try {
+            if (type.equals(1)) {
+                //不合适
+                int notSuitable = service.notSuitable(signUpId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(notSuitable);
+            } else {
+                //邀请面试
+                int interview = service.invitationInterview(signUpId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(interview);
+            }
+
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return resultJson;
     }
@@ -198,19 +258,30 @@ public class MyReleaseController extends BaseController {
     })
     public ResultJson invitationToRegister(Integer signUpId, Integer userId, Integer sex, Integer type, Integer briefchapter) {
         ResultJson resultJson = new ResultJson();
-        if (type.equals(1)) {
-            //邀请报名
-            int invitationToRegister = service.invitationToRegister(signUpId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(invitationToRegister);
-        } else {
-            //直接录取
-            int admission = service.directAdmission(signUpId, userId, sex, briefchapter);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(admission);
+        try {
+            if (type.equals(1)) {
+                //邀请报名
+                int invitationToRegister = service.invitationToRegister(signUpId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(invitationToRegister);
+            } else {
+                //直接录取
+                int admission = service.directAdmission(signUpId, userId, sex, briefchapter);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(admission);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return resultJson;
     }
 
@@ -224,26 +295,38 @@ public class MyReleaseController extends BaseController {
     })
     public ResultJson reportNotSuitable(Integer signUpId, Integer type, Integer briefChapterId) {
         ResultJson resultJson = new ResultJson();
-        if (type.equals(1)) {
-            //招聘详情 已报名 不合适
-            int count = service.reportNotSuitable(signUpId, briefChapterId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
-        } else if (type.equals(2)) {
-            //招聘详情 已报名 邀请面试
-            int count = service.recruitmentDetailsInvitationInterview(signUpId, briefChapterId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
-        } else if (type.equals(3)) {
-            //招聘详情 已报名 直接录取
-            int count = service.recruitmentDetailsDirectAdmission(signUpId, briefChapterId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
 
+        try {
+            if (type.equals(1)) {
+                //招聘详情 已报名 不合适
+                int count = service.reportNotSuitable(signUpId, briefChapterId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+            } else if (type.equals(2)) {
+                //招聘详情 已报名 邀请面试
+                int count = service.recruitmentDetailsInvitationInterview(signUpId, briefChapterId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+            } else if (type.equals(3)) {
+                //招聘详情 已报名 直接录取
+                int count = service.recruitmentDetailsDirectAdmission(signUpId, briefChapterId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return resultJson;
     }
 
@@ -266,31 +349,42 @@ public class MyReleaseController extends BaseController {
     public ResultJson recruitmentInterviewd(Integer signUpId, Integer type, Integer userId, Integer briefChapterId,
                                             Integer sex, Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId) {
         ResultJson resultJson = new ResultJson();
-        if (type.equals(1)) {
-            // 招聘详情 待面试 已面试
-            int count = service.recruitmentInterviewd(signUpId, briefChapterId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
-        } else if (type.equals(2)) {
-            //招聘详情 待面试 未面试
-            Map<String, Object> map = service.recruitmentNoInterviewd(signUpId, userId, briefChapterId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(map);
-        } else if (type.equals(3)) {
-            //招聘详情 待面试 已面试 面试未通过
-            int count = service.recruitmentInterviewFailed(signUpId, briefChapterId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
-        } else if (type.equals(4)) {
-            //招聘详情 待面试 已面试 面试已通过
-            int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, sex, signUpUserId, busInessUserId, signupDeliveryrecordId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
+        try {
+            if (type.equals(1)) {
+                // 招聘详情 待面试 已面试
+                int count = service.recruitmentInterviewd(signUpId, briefChapterId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+            } else if (type.equals(2)) {
+                //招聘详情 待面试 未面试
+                Map<String, Object> map = service.recruitmentNoInterviewd(signUpId, userId, briefChapterId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(map);
+            } else if (type.equals(3)) {
+                //招聘详情 待面试 已面试 面试未通过
+                int count = service.recruitmentInterviewFailed(signUpId, briefChapterId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+            } else if (type.equals(4)) {
+                //招聘详情 待面试 已面试 面试已通过
+                int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, sex, signUpUserId, busInessUserId, signupDeliveryrecordId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return resultJson;
     }
 
@@ -311,23 +405,34 @@ public class MyReleaseController extends BaseController {
     public ResultJson notReported(Integer signUpId, Integer typp, Integer reason, Integer briefChapterId,
                                   Integer userId, Integer sex, Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId) {
         ResultJson resultJson = new ResultJson();
-        if (typp.equals(1)) {
-            Map<String, Object> map = service.notReported(signUpId, briefChapterId, userId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(map);
-        } else if (typp.equals(2)) {
-            int count = service.reported(signUpId, briefChapterId, sex, signUpUserId, busInessUserId, signupDeliveryrecordId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
+        try {
+            if (typp.equals(1)) {
+                Map<String, Object> map = service.notReported(signUpId, briefChapterId, userId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(map);
+            } else if (typp.equals(2)) {
+                int count = service.reported(signUpId, briefChapterId, sex, signUpUserId, busInessUserId, signupDeliveryrecordId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
 
-        } else if (typp.equals(3)) {
-            int count = service.noReportedReason(reason, signUpId, briefChapterId);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
+            } else if (typp.equals(3)) {
+                int count = service.noReportedReason(reason, signUpId, briefChapterId);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return resultJson;
     }
 
@@ -349,18 +454,28 @@ public class MyReleaseController extends BaseController {
     })
     public ResultJson rebate(RebateQuery query) {
         ResultJson resultJson = new ResultJson();
-
-        if (query.getType().equals(1)) {
-            List<HrRebaterecord> list = service.rebatee(query.getSignUpId(), query.getBriefchapterId(), query.getSex());
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(list);
-        } else if (query.getType().equals(2)) {
-            int count = service.rebate(query);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
+        try {
+            if (query.getType().equals(1)) {
+                List<HrRebaterecord> list = service.rebatee(query.getSignUpId(), query.getBriefchapterId(), query.getSex());
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(list);
+            } else if (query.getType().equals(2)) {
+                int count = service.rebate(query);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return resultJson;
     }
 
@@ -373,9 +488,23 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "currentState", name = "当前状态", dataType = "integer", required = true),
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integer", required = true),
     })
-    public CommonResult changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId) {
-        int jobStatus = service.changeJobStatus(signUpId, status, currentState, briefChapterId);
-        return CommonResult.success(jobStatus, RlzyConstant.OPS_SUCCESS_MSG);
+    public ResultJson changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            int jobStatus = service.changeJobStatus(signUpId, status, currentState, briefChapterId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(jobStatus);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
     }
 
     /**
@@ -390,13 +519,23 @@ public class MyReleaseController extends BaseController {
     @RequestMapping(value = "selectContentByType")
     @ResponseBody
     @ApiOperation(notes = "根据类型查询前端选项内容", value = "根据类型查询前端选项内容", httpMethod = "POST")
-    @ApiImplicitParam(value = "type", name = "配置表类型", dataType = "Integer", required = true)
-    public Result<HrDictionaryItem> selectContentByType(String type) {
-        List<HrDictionaryItem> options = service.selectContentByType(type);
-        Result<HrDictionaryItem> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(options);
+    @ApiImplicitParam(value = "query", name = "配置表参数", dataType = "Integer", required = true)
+    public ResultJson selectContentByType(DictionaryQuery query) {
+        ResultJson result = new ResultJson();
+        try {
+            Map<String, Object> stringObjectMap = service.selectContentByType(query);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(stringObjectMap);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
 
     }
@@ -412,9 +551,9 @@ public class MyReleaseController extends BaseController {
     public ResultJson editBriefchapterMyRelease(@RequestBody EditBriefchapterQuery query, Integer type) {
         HashMap<String, Object> map = new HashMap<>();
         ResultJson resultJson = new ResultJson();
-
+        try {
             if (query.getTypp().equals(1)) {
-                //正在招 代招单位
+                //正在招 | 未通过 代招单位
                 //图片上传
                 String descriptionJobPhoto = centerService.updateHead(query.getDescriptionJobPhotoUrl2());
                 String employerCertificatePhoto = centerService.updateHead(query.getEmployerCertificatePhotoUrl2());
@@ -437,6 +576,17 @@ public class MyReleaseController extends BaseController {
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 map.put("editBriefchapterMyReleaseRecruitment", count);
             }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+
+
         return resultJson;
     }
 
@@ -445,13 +595,24 @@ public class MyReleaseController extends BaseController {
     @ApiOperation(value = "编辑简章时查询招聘简章", notes = "编辑简章时查询招聘简章", httpMethod = "POST")
     public ResultJson selectEditBriefchapter(Integer briefchapterId) {
         ResultJson resultJson = new ResultJson();
-        BriefcharpterQuery query = new BriefcharpterQuery();
-        query.setBriefcharpterId(briefchapterId);
-        //查询简章详情
-        Map<String, Object> map = jobSearchHomePageService.queryBriefcharpterListDetileByParams(query);
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(map);
+        try {
+            BriefcharpterQuery query = new BriefcharpterQuery();
+            query.setBriefcharpterId(briefchapterId);
+            //查询简章详情
+            Map<String, Object> map = jobSearchHomePageService.queryBriefcharpterListDetileByParams(query);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+
         return resultJson;
     }
 
@@ -464,11 +625,21 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "status", name = "1 被招聘企业 2 招聘企业", dataType = "int", required = true)
     })
     public ResultJson selectGroupName(Integer type, Integer userId, Integer status) {
-        var list = service.selectGroupName(type, userId, status);
-        var result = new ResultJson();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
+        ResultJson result = new ResultJson();
+        try {
+            Map<String, Object> list = service.selectGroupName(type, userId, status);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(list);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
     }
 }

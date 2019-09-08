@@ -1,11 +1,11 @@
 package com.nado.rlzy.db.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
@@ -22,6 +22,12 @@ public class Message {
      * 0 平台处理结果通知 1 面试提醒 2 报道提醒 3 返佣提醒 72小时内返佣未充值 4 给付中断
      */
     private Integer type;
+
+    /**
+     * 返回给前台
+     */
+    @Transient
+    private String stringType;
 
     /**
      * 用户id
@@ -45,6 +51,8 @@ public class Message {
      * 创建时间
      */
     @Column(name = "create_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     /**
@@ -53,4 +61,25 @@ public class Message {
     @Column(name = "sign_up_name")
     private String signUpName;
 
+    /**
+     * 内容
+     */
+    @Column(name = "content")
+    private String content;
+
+    @Transient
+    private String GroupName;
+
+    @Transient
+    private String userName;
+
+    @Transient
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime interviewTime;
+
+    @Transient
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime registerTime;
 }

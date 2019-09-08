@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @ClassName 消息controller
@@ -70,5 +71,52 @@ public class ChatController {
             }
         }
         return resultJson;
+    }
+
+    @RequestMapping(value = "queryMessageMyself")
+    @ResponseBody
+    @ApiOperation(value = "本人通知", notes = "本人通知", httpMethod = "POST")
+    @ApiImplicitParam(value = "userId", name = "用户 id", required = true)
+    public ResultJson queryMessageMyself(Integer userId){
+        ResultJson resultJson = new ResultJson();
+        try {
+            Map<String, Object> stringObjectMap = service.queryMessageMyself(userId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(stringObjectMap);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
+    }
+
+    @RequestMapping(value = "queryMessageReferrer")
+    @ResponseBody
+    @ApiOperation(value = "推荐人通知", notes = "推荐人通知", httpMethod = "POST")
+    @ApiImplicitParam(value = "userId", name = "用户 id", required = true)
+    public ResultJson queryMessageReferrer(Integer userId) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            Map<String, Object> stringObjectMap = service.queryMessageReferrer(userId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(stringObjectMap);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
+
     }
 }

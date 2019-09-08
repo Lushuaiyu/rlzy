@@ -1,8 +1,6 @@
 package com.nado.rlzy.service;
 
-import com.nado.rlzy.bean.query.EditBriefchapterQuery;
-import com.nado.rlzy.bean.query.RebateQuery;
-import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
+import com.nado.rlzy.bean.query.*;
 import com.nado.rlzy.db.pojo.*;
 
 import java.util.List;
@@ -288,8 +286,9 @@ public interface MyReleaseService {
      * @Description //TODO
      * @Date 17:15 2019/7/8
      * @Param [type]
-     **/
-    List<HrDictionaryItem> selectContentByType(String type);
+     *
+     * @return*/
+    Map<String, Object> selectContentByType(DictionaryQuery query);
 
     /**
      * 招聘端 我的发布  正在招 编辑简章 代招单位

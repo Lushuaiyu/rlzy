@@ -20,6 +20,7 @@
         <result column="brId" property="brId" jdbcType="INTEGER"/>
         <result column="registerTime" property="registerTime" jdbcType="DATE"/>
         <result column="hsdId" property="hsdId" jdbcType="INTEGER"/>
+        <result column="signUpId" property="signUpId" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
         Id, BriefChapterId, RebateType, RebateTime, RebateMale, RebateFemale, status, DeleteFlag,
@@ -272,7 +273,7 @@
       and re.DeleteFlag = 0
       and re.RebateType = 2
       and u.status = 0
-      and hsd.status = 5
+      and hsd.status = 2
 
     </select>
     <select id="selectNotStatusRebate" resultType="int">
@@ -289,6 +290,88 @@
             </if>
             and re.status &lt;> 1;
         </where>
+    </select>
+    <select id="selectRebateInterruptMyself" resultMap="BaseResultMap">
+            select br.Id as BriefChapterId,
+           si.id as signUpId,
+           u.id  as userId,
+           re.status,
+           re.rebatetime
+    from hr_briefchapter br
+             left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
+             left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+             left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
+             left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
+             left join hr_rebaterecord re on hsd.id = re.signup_deliveryrecord_id and re.DeleteFlag = 0
+             left join hr_user u on u.id = si.user_id and u.status = 0
+    where br.briefChapterStatus = 0
+      and grr.Pid = gr.Id
+      and u.type = 1
+      and re.RebateType = 2
+    </select>
+    <select id="selectRebateInterruptMyselfRepresentative" resultMap="BaseResultMap">
+            select br.Id as BriefChapterId,
+           si.id as signUpId,
+           u.id  as userId,
+           re.status,
+           re.rebatetime
+    from hr_briefchapter br
+             left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+             left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
+             left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
+             left join hr_rebaterecord re on hsd.id = re.signup_deliveryrecord_id and re.DeleteFlag = 0
+             left join hr_user u on u.id = si.user_id and u.status = 0
+    where br.briefChapterStatus = 0
+      and gr.type = 1
+      and u.type = 1
+      and re.RebateType = 2
+    </select>
+    <select id="selectRebateReferrer" resultMap="BaseResultMap">
+            select br.Id as BriefChapterId,
+           si.id as signUpId,
+           u.id  as userId,
+           re.status,
+           re.rebatetime
+    from hr_briefchapter br
+             left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
+             left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+             left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
+             left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
+             left join hr_rebaterecord re on hsd.id = re.signup_deliveryrecord_id and re.DeleteFlag = 0
+             left join hr_user u on u.id = si.user_id and u.status = 0
+    where br.briefChapterStatus = 0
+      and grr.Pid = gr.Id
+      and u.type = 2
+    and re.RebateType = 2
+    </select>
+
+    <select id="selectRebateReferrerRepresentative" resultMap="BaseResultMap">
+    select br.Id as BriefChapterId,
+           si.id as signUpId,
+           u.id  as userId,
+           re.status,
+           re.rebatetime
+    from hr_briefchapter br
+             left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+             left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
+             left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
+             left join hr_rebaterecord re on hsd.id = re.signup_deliveryrecord_id and re.DeleteFlag = 0
+             left join hr_user u on u.id = si.user_id and u.status = 0
+    where br.briefChapterStatus = 0
+      and gr.type = 1
+      and u.type = 2
+    </select>
+    <select id="selectAllReportInformation" resultMap="BaseResultMap">
+        select re.BriefChapterId, re.signup_deliveryrecord_id, re.RebateType
+            from hr_rebaterecord re
+            where re.DeleteFlag = 0
+              and re.RebateType = 1
+    </select>
+    <select id="selectAllEntryInformation" resultMap="BaseResultMap">
+        select re.BriefChapterId, re.signup_deliveryrecord_id, re.RebateType, re.status
+            from hr_rebaterecord re
+            where re.DeleteFlag = 0
+              and re.RebateType = 2
     </select>
 
 </mapper>

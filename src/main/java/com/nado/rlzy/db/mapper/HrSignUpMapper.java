@@ -61,16 +61,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     List<HrSignUp> selectCollectListOverview(@Param("userId") Integer userId);
 
 
-    /**
-     * 添加收藏 废弃
-     *
-     * @return java.util.List<com.nado.rlzy.bean.dto.JobListDto>
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 18:26 2019/7/2
-     * @Param []
-     **/
-    List<JobListDto> selectCollectList();
+
 
 
     /**

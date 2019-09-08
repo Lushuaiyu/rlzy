@@ -106,17 +106,23 @@ public class HrRebaterecord {
     /**
      * 简章表id
      */
+    @Transient
     private Integer brId;
 
     /**
      * 报道时间
      */
+    @Transient
     private Date registerTime;
 
     /**
      * 报名投递表id
      */
+    @Transient
     private Integer hsdId;
+
+    @Transient
+    private Integer signUpId;
 
 
 }

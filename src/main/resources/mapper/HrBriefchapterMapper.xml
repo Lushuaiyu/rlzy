@@ -2403,7 +2403,7 @@
     <select id="interviewAllPerson" resultMap="BaseResultMap">
             select br.Id,
            si.id as signUpId,
-           u.id as userId, br.interviewTime
+           u.id as userId, br.interviewTime, br.registerTime
     from hr_briefchapter br
              left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
              left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
@@ -2417,7 +2417,7 @@
     <select id="interviewAllPersonRecruitment" resultMap="BaseResultMap">
             select br.Id,
            si.id as signUpId,
-           u.id as userId, br.interviewTime
+           u.id as userId, br.interviewTime, br.registerTime
     from hr_briefchapter br
              left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
              left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
@@ -2432,7 +2432,7 @@
            si.id as signUpId,
            u.id as userId,
             si.user_name,
-            br.interviewTime
+            br.interviewTime, br.registerTime
     from hr_briefchapter br
              left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
              left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
@@ -2442,6 +2442,19 @@
     where br.briefChapterStatus = 0
       and grr.Pid = gr.Id
       and u.type = 2 and br.interviewTime > now()
+    </select>
+    <select id="interviewAllPersonReferrerRecruitment" resultMap="BaseResultMap">
+        select br.Id,
+           si.id as signUpId,
+           u.id as userId, br.interviewTime, si.user_name, br.registerTime
+    from hr_briefchapter br
+             left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+             left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
+             left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
+             left join hr_user u on u.id = si.user_id and u.status = 0
+    where br.briefChapterStatus = 0
+      and gr.type = 1
+      and u.type = 2
     </select>
 
 

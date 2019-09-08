@@ -6,6 +6,7 @@ import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
 import com.nado.rlzy.service.PersonCenterService;
 import io.swagger.annotations.Api;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName 求职端 个人中心 Controller
@@ -54,15 +56,28 @@ public class JobSeekingPersonalCenterController {
             @ApiImplicitParam(value = "type", name = "用户身份 1 是本人 2是推荐人", dataType = "Integer", required = true)
     })
     public ResultJson recruitmentBrochureCollection(Integer userId, Integer type) {
-        List<HrBriefchapter> list = service.recruitmentBrochureCollection(userId, type);
-        List<HrBriefchapter> vals = service.recruitmentBrochureCollectionRecruitment(userId, type);
-        HashMap<Object, Object> map = new HashMap<>();
-        map.put("recruitmentBrochureCollection", list);
-        map.put("recruitmentBrochureCollectionRecruitment", vals);
         ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(map);
+
+        try {
+
+            List<HrBriefchapter> list = service.recruitmentBrochureCollection(userId, type);
+            List<HrBriefchapter> vals = service.recruitmentBrochureCollectionRecruitment(userId, type);
+            HashMap<Object, Object> map = new HashMap<>();
+            map.put("recruitmentBrochureCollection", list);
+            map.put("recruitmentBrochureCollectionRecruitment", vals);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return resultJson;
     }
 
@@ -84,11 +99,22 @@ public class JobSeekingPersonalCenterController {
 
     })
     public Result<HrSignUp> selectSignUpTable(Integer signId, Integer userId) {
-        List<HrSignUp> hrSignUps = service.selectSignUpTable(signId, userId);
         Result<HrSignUp> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(hrSignUps);
+        try {
+            List<HrSignUp> hrSignUps = service.selectSignUpTable(signId, userId);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(hrSignUps);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
 
     }
@@ -107,11 +133,21 @@ public class JobSeekingPersonalCenterController {
     @ApiOperation(notes = "求职端个人中心 查询我的报名表概览", value = "求职端个人中心 查询我的报名表概览", httpMethod = "POST")
     @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
     public Result<HrSignUp> selectSignUp(Integer userId) {
-        List<HrSignUp> list = service.selectSignUp(userId);
         Result<HrSignUp> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(list);
+        try {
+            List<HrSignUp> list = service.selectSignUp(userId);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(list);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
     }
 
@@ -127,29 +163,41 @@ public class JobSeekingPersonalCenterController {
     public ResultJson queryMyselfVillation(Integer userId, Integer type, Integer typ) {
 
         ResultJson result = new ResultJson();
-
-        if (typ.equals(1)) {
-            //投诉记录
-            HashMap<Object, Object> map = personCenterService.searchComplaintRecord(userId);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
-        } else {
-            //违规记录
-            if (type.equals(1)) {
-                //本人违规
-                List<HrUser> hrUsers = service.queryMyselfVillation(userId);
+        try {
+            if (typ.equals(1)) {
+                //投诉记录
+                HashMap<Object, Object> map = personCenterService.searchComplaintRecord(userId);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                result.setData(hrUsers);
+                result.setData(map);
             } else {
-                //推荐人违规
-                List<HrUser> users = service.queryReferrerVillation(userId);
-                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                result.setData(users);
+                //违规记录
+                if (type.equals(1)) {
+                    //本人违规
+                    List<HrUser> hrUsers = service.queryMyselfVillation(userId);
+                    result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                    result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                    result.setData(hrUsers);
+                } else {
+                    //推荐人违规
+                    List<HrUser> users = service.queryReferrerVillation(userId);
+                    result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                    result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                    result.setData(users);
+                }
             }
+
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return result;
     }
 

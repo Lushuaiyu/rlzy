@@ -1612,7 +1612,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void addSignUpTable(HrSignUp query) {
+    public int addSignUpTable(HrSignUp query) {
         HrSignUp up = new HrSignUp();
 
         //校验参数
@@ -1632,8 +1632,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
         //初始化我的求职表和报名表的中间表参数
         initMySignUpTable(query.getMySignUpTableId(), userId);
-
-
+        return 1;
     }
 
     private void initMySignUpTable(Integer mySignUpTableId, Integer userId) {

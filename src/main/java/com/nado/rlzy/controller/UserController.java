@@ -57,10 +57,20 @@ public class UserController extends BaseController {
             @ApiImplicitParam(value = "type", name = "身份类型", dataType = "integer", required = true)
     })
     public ResultJson sendMessage(String phone, Integer type) {
-        messageService.sendMessage(phone, type);
         ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+        try {
+            messageService.sendMessage(phone, type);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return resultJson;
     }
 
@@ -77,7 +87,7 @@ public class UserController extends BaseController {
 
         ResultJson resultJson = new ResultJson();
         try {
-            //图片上传
+
             int i = service.changePasswoed(phone, code, passWord, userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -120,29 +130,47 @@ public class UserController extends BaseController {
     })
     public ResultJson login(String phone, String password) {
         ResultJson resultJson = new ResultJson();
-        HrUser phone1 = service.findByPhone(phone);
+        try {
+            HrUser phone1 = service.findByPhone(phone);
+            HrUser hrUser = service.queryUser(phone, password);
+            AssertUtil.isTrue(null != hrUser, "用户已禁用");
 
-        HrUser hrUser = service.queryUser(phone, password);
-        AssertUtil.isTrue(null != hrUser, "用户已禁用");
-        if (null == phone1) {
-            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
-            resultJson.setMessage("登录失败,用户不存在");
-            return resultJson;
-        } else {
-
-            if (!(phone1.getPassword().equals(MD5.getMD5(password + RlzyConstant.PASSWORD_SALT)))) {
+            if (null == phone1) {
                 resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
-                resultJson.setMessage("登录失败,密码错误");
+                resultJson.setMessage("登录失败,用户不存在");
                 return resultJson;
             } else {
-                //可以登录
-                HrUser login = service.login(phone, password);
-                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                resultJson.setData(login);
-                return resultJson;
+
+                if (!(phone1.getPassword().equals(MD5.getMD5(password + RlzyConstant.PASSWORD_SALT)))) {
+                    resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                    resultJson.setMessage("登录失败,密码错误");
+                    return resultJson;
+                } else {
+                    //可以登录
+                    HrUser login = service.login(phone, password);
+                    String id = login.getId();
+                    Integer i = service.selectEnterPriseBlacakList(Integer.valueOf(id));
+                    if (i != 0) {
+                        AssertUtil.isTrue(i != null, "您已被拉黑, 请联系平台处理");
+                        resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                        resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+                    }
+                    resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                    resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                    resultJson.setData(login);
+                    return resultJson;
+                }
             }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+        return resultJson;
     }
 
     @RequestMapping(value = "registerUser")
@@ -152,9 +180,7 @@ public class UserController extends BaseController {
     public ResultJson registerUser(RecruitmentSideRegisterQuery query) {
         ResultJson resultJson = new ResultJson();
         try {
-            //图片上传
-            String head = centerService.updateHead(query.getFile());
-            query.setImageHead(head);
+
             int registerUser = service.registerUser(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -179,9 +205,7 @@ public class UserController extends BaseController {
     public ResultJson registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
         ResultJson resultJson = new ResultJson();
         try {
-            //图片上传
-            //String head = centerService.updateHead(query.getFile());
-            //query.setImageHead("head");
+
             int registerJobHunting = service.registerJobHunting(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);

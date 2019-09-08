@@ -5,9 +5,11 @@ import com.nado.rlzy.bean.frontEnd.JobListtFront;
 import com.nado.rlzy.bean.model.Result;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.JobListQuery;
+import com.nado.rlzy.db.pojo.HrComplaint;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.RecruitmentHomePageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -64,19 +66,30 @@ public class RecruitmentHomePageController extends BaseController {
     public ResultJson selectJobListOverview(JobListQuery query) {
         Map<String, Object> map = new HashMap<>();
         ResultJson resultJson = new ResultJson();
-        if (query.getType().equals(1)) {
-            //求职列表
-            List<HrSignUp> list = service.selectJobListOverview(query);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            map.put("selectJobListOverview", list);
-            resultJson.setData(map);
-        } else {
-            List<HrUser> users = service.referrer(query);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            map.put("referrer", users);
-            resultJson.setData(map);
+        try {
+            if (query.getType().equals(1)) {
+                //求职列表
+                List<HrSignUp> list = service.selectJobListOverview(query);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                map.put("selectJobListOverview", list);
+                resultJson.setData(map);
+            } else {
+                List<HrUser> users = service.referrer(query);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                map.put("referrer", users);
+                resultJson.setData(map);
+            }
+
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return resultJson;
     }
@@ -95,12 +108,24 @@ public class RecruitmentHomePageController extends BaseController {
     @RequestMapping(value = "selectJobList")
     @ResponseBody
     public Result<JobListtFront> selectJobList(JobListQuery query) {
-        List<JobListtFront> fronts = service.selectJobList(query);
         Result<JobListtFront> result = new Result<>();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        try {
+            List<JobListtFront> fronts = service.selectJobList(query);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
 
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(fronts);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(fronts);
+
+
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
 
     }
@@ -112,11 +137,22 @@ public class RecruitmentHomePageController extends BaseController {
             @ApiImplicitParam(name = "userId", value = "推荐人id", required = true)
     })
     public ResultJson referrerDetails(Integer userId) {
-        List<HrUser> hrUsers = service.referrerDetails(userId);
         ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(hrUsers);
+        try {
+            List<HrUser> hrUsers = service.referrerDetails(userId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(hrUsers);
+
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return resultJson;
 
     }
@@ -145,10 +181,20 @@ public class RecruitmentHomePageController extends BaseController {
     })
     public ResultJson recruitmentBriefchapter(Integer userId, Integer type) {
         ResultJson resultJson = new ResultJson();
-        Map<String, Object> map = service.recruitmentBriefchapter(userId, type);
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(map);
+        try {
+            Map<String, Object> map = service.recruitmentBriefchapter(userId, type);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return resultJson;
     }
 
@@ -163,21 +209,32 @@ public class RecruitmentHomePageController extends BaseController {
     })
     public ResultJson addOrCancelCollect(Integer userId, Integer signUpId, Integer id, Integer type) {
         ResultJson resultJson = new ResultJson();
-        HashMap<String, Object> map = new HashMap<>();
-        if (type.equals(1)) {
-            //add collect
-            int sign = service.collectSignUPTable(userId, signUpId);
-            map.put("collectSignUPTable", sign);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(map);
-        } else {
-            //cancel collect
-            int cancel = service.collectCancel(id);
-            map.put("collectCancel", cancel);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(map);
+        try {
+            HashMap<String, Object> map = new HashMap<>();
+            if (type.equals(1)) {
+                //add collect
+                int sign = service.collectSignUPTable(userId, signUpId);
+                map.put("collectSignUPTable", sign);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(map);
+            } else {
+                //cancel collect
+                int cancel = service.collectCancel(id);
+                map.put("collectCancel", cancel);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(map);
+            }
+            return resultJson;
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return resultJson;
     }
@@ -192,19 +249,29 @@ public class RecruitmentHomePageController extends BaseController {
     })
     public ResultJson addOrCancelCollectReferrer(Integer userId, Integer id, Integer type) {
         ResultJson resultJson = new ResultJson();
-        HashMap<String, Object> map = new HashMap<>();
-        if (type.equals(1)) {
-            int referrer = service.collectReferrer(userId);
-            map.put("collectReferrer", referrer);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(map);
-        } else {
-            int cancel = service.collectCancel(id);
-            map.put("collectCancel", cancel);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(map);
+        try {
+            HashMap<String, Object> map = new HashMap<>();
+            if (type.equals(1)) {
+                int referrer = service.collectReferrer(userId);
+                map.put("collectReferrer", referrer);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(map);
+            } else {
+                int cancel = service.collectCancel(id);
+                map.put("collectCancel", cancel);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(map);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return resultJson;
     }

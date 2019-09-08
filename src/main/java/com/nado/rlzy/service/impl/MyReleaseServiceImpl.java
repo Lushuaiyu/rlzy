@@ -1,9 +1,6 @@
 package com.nado.rlzy.service.impl;
 
-import com.nado.rlzy.bean.query.BriefcharpterQuery;
-import com.nado.rlzy.bean.query.EditBriefchapterQuery;
-import com.nado.rlzy.bean.query.RebateQuery;
-import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
+import com.nado.rlzy.bean.query.*;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
@@ -14,7 +11,6 @@ import com.nado.rlzy.utils.StringUtil;
 import com.nado.rlzy.utils.ValidationUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -69,6 +65,9 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Resource
     private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
+
+    @Resource
+    private MessageMapper messageMapper;
 
     @Override
     public Map<String, Object> myRelease(Integer userId, Integer status) {
@@ -656,6 +655,13 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     if (query.getRebateType().equals(0)) {
                         //不返佣
                         rebaterecordMapper.noRebate(query.getId());
+                        Message message = new Message();
+                        message.setUserId(query.getUserId());
+                        message.setSignUpId(query.getSignUpId());
+                        message.setBriefchapterId(query.getBriefchapterId());
+                        message.setCreateTime(LocalDateTime.now());
+                        message.setType(4);
+                        messageMapper.insertSelective(message);
                     } else {
                         //更改返佣状态
                         rebaterecordMapper.rebateOne(query.getRebateId(), dto.getHsdId());
@@ -816,18 +822,31 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     }
 
     @Override
-    public List<HrDictionaryItem> selectContentByType(String type) {
-
-        // 创建Example
-        Example example = new Example(HrDictionaryItem.class);
-        // 创建Criteria
-        Example.Criteria criteria = example.createCriteria();
-        // 添加条件
-        criteria.andLike("pid", type);
-        List<HrDictionaryItem> items = dictionaryItemMapper.selectByExample(example);
-        List<HrDictionaryItem> collect = items.stream().collect(Collectors.toList());
-        System.out.println(collect);
-        return collect;
+    public Map<String, Object> selectContentByType(DictionaryQuery query) {
+        Map<String, Object> map = new HashMap<>();
+        List<HrDictionaryItem> contractWayDetail = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> clothingRequirement = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> education = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> experience = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> hobby = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> overTime = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> post = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> profession = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> welfare = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> workTime = dictionaryItemMapper.selectFrontEndOption(query);
+        List<HrDictionaryItem> workWay = dictionaryItemMapper.selectFrontEndOption(query);
+        map.put("contractWayDetail", contractWayDetail);
+        map.put("clothingRequirement", clothingRequirement);
+        map.put("education", education);
+        map.put("experience", experience);
+        map.put("hobby", hobby);
+        map.put("overTime", overTime);
+        map.put("post", post);
+        map.put("profession", profession );
+        map.put("welfare", welfare);
+        map.put("workTime", workTime);
+        map.put("workWay", workWay);
+        return map;
     }
 
 /*

@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -54,7 +56,7 @@ public class DateUtil {
      * 拼接获取商品主订单号
      *
      * @param date
-     * @param lineNumber
+     * @param
      * @return
      */
     public static String getOMOrde_Id(String date, int memberId, int briefChapterId) {
@@ -189,24 +191,6 @@ public class DateUtil {
         return fourRandom;
     }
 
-    /**
-     * 校验电话号码是否正确 true正确，false错误
-     *
-     * @param cellphone
-     * @return
-     */
-    public static boolean judgePhone(String cellphone) {
-        if (cellphone == null) {
-            return false;
-        }
-        Pattern p = null;
-        Matcher m = null;
-        boolean b = false;
-        p = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$"); // 验证手机号
-        m = p.matcher(cellphone);
-        b = m.matches();
-        return b;
-    }
 
     /**
      * 是否可以签到
@@ -315,6 +299,20 @@ public class DateUtil {
             return count;
         }
         return 0;
+    }
+
+    /**
+     * date to localDateTime
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 09:20 2019-09-07
+     * @Param [dateToConvert]
+     * @return java.time.LocalDateTime
+     */
+    public static LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert){
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     public static void main(String[] args) {

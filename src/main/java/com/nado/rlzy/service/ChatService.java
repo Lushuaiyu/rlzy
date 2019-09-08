@@ -2,8 +2,10 @@ package com.nado.rlzy.service;
 
 import com.nado.rlzy.bean.query.AttentionQuery;
 
+import java.util.Map;
+
 /**
- * @ClassName 关注 service
+ * @ClassName 消息 service
  * @Description TODO
  * @Author lushuaiyu
  * @Data 2019/7/31 10:37
@@ -29,4 +31,24 @@ public interface ChatService {
      * @return int
      **/
     int updateAttention(AttentionQuery query);
+
+    /**
+     * 本人通知 代招单位 && 招聘单位
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 14:20 2019-09-07
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.Message>
+     */
+    Map<String, Object> queryMessageMyself(Integer userId);
+
+    /**
+     * 推荐人通知 代招单位 && 招聘单位
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 15:44 2019-09-07
+     * @Param [userId]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
+    Map<String, Object> queryMessageReferrer(Integer userId);
 }

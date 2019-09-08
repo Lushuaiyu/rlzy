@@ -1,8 +1,11 @@
 package com.nado.rlzy.db.mapper;
 
 import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
+import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
+import com.nado.rlzy.utils.telMessage.VaildateType;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.math.BigDecimal;
@@ -179,6 +182,67 @@ public interface HrRebaterecordMapper {
      * @return int
      **/
     List<Integer> selectNotStatusRebate(@Param("userId") Integer userId);
+
+    /**
+     * 个人 代招单位 返佣中断
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 10:23 2019-09-07
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrRebaterecord>
+     */
+    List<HrRebaterecord> selectRebateInterruptMyself();
+
+    /**
+     * 个人 招聘单位返佣中断
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 12:33 2019-09-07
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrRebaterecord>
+     */
+    List<HrRebaterecord> selectRebateInterruptMyselfRepresentative();
+
+    /**
+     * 推荐人 代招单位 返佣中断
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 12:56 2019-09-07
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     */
+    List<HrRebaterecord> selectRebateReferrer();
+
+    /**
+     * 推荐人 招聘单位 返佣中断
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 12:58 2019-09-07
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     */
+    List<HrRebaterecord> selectRebateReferrerRepresentative();
+
+
+    /**
+     * 查询所有的报道返佣
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 11:27 2019-09-08
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrRebaterecord>
+     */
+    List<HrRebaterecord> selectAllReportInformation();
+
+    /**
+     * 查询所有的入职返佣
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 11:27 2019-09-08
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrRebaterecord>
+     */
+    List<HrRebaterecord> selectAllEntryInformation();
 
 
 }

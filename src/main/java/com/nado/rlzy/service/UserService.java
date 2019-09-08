@@ -3,6 +3,7 @@ package com.nado.rlzy.service;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterHobHuntingQuery;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterQuery;
 import com.nado.rlzy.db.pojo.HrUser;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @ClassName 招聘端和求职端 登陆注册 service
@@ -100,6 +101,18 @@ public interface UserService {
      * @return com.nado.rlzy.db.pojo.HrUser
      **/
     HrUser queryUser(String phone, String password);
+
+    /**
+     * 查询拉黑的用户
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 19:52 2019-09-07
+     * @Param [userId]
+     * @return int
+     */
+    int selectEnterPriseBlacakList( Integer userId);
+
+
 
 
 

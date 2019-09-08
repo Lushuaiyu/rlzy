@@ -198,7 +198,7 @@
         left join hr_group gr on b.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_user u on s.user_id = u.Id and u.status = 0
         where
-         grr.Pid = gr.Id
+        grr.Pid = gr.Id
         <if test="null != userId">
             and u.id = #{userId}
         </if>
@@ -224,7 +224,7 @@
         left join hr_group gr on b.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_user u on s.user_id = u.id and u.status = 0
         <where>
-             grr.Pid = gr.Id
+            grr.Pid = gr.Id
             <if test="null != complaintId">
                 and c.id = #{complaintId}
             </if>
@@ -247,7 +247,7 @@
         left join hr_user u on s.user_id = u.id and u.status = 0
         where
         <if test="null != userId">
-             u.id = #{userId}
+            u.id = #{userId}
         </if>
         <if test="null != typeId">
             and u.type = #{typeId}
@@ -298,8 +298,7 @@
         left join hr_briefchapter br on c.brief_chapter_id = br.id and br.briefChapterStatus = 0
 
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
-        where c.delete_flag = 0
-        and gr.type = 1
+        where gr.type = 1
         <if test="null != userId">
             and u.Id = #{userId}
         </if>
@@ -323,8 +322,7 @@
         left join hr_briefchapter b on c.brief_chapter_id = b.id and b.briefChapterStatus = 0
         left join hr_group gr on b.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_user u on s.user_id = u.id and u.status = 0
-        where c.delete_flag = 0
-        and gr.type = 1
+        where gr.type = 1
         <if test="null != complaintId">
             and c.id = #{complaintId}
         </if>

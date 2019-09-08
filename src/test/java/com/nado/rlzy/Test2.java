@@ -5,9 +5,9 @@ import com.nado.rlzy.base.BaseTest;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
-import com.nado.rlzy.utils.Base64Utils;
 import lombok.var;
 import org.junit.Test;
+import org.springframework.util.Base64Utils;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -162,14 +162,7 @@ public class Test2 extends BaseTest {
 
     }
 
-    @Test
-    public void test13() {
-        String s = Base64Utils.imageToBase64ByOnline("https://lushuaiyu.oss-cn-shanghai.aliyuncs.com/blog/2018-12-31-145741.jpg");
-        //System.out.println(s);
 
-        String decode = Base64.encodeUrlSafe(s);
-        System.out.println(decode);
-    }
 
     @Test
     public void test14() {

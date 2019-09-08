@@ -306,15 +306,6 @@ public class Test extends BaseTest {
 
     }
 
-    @org.junit.Test
-    public void test20() {
-
-        String s = Base64Utils.imageToBase64ByOnline("https://lushuaiyu.oss-cn-shanghai.aliyuncs.com/blog/2018-12-31-145741.jpg");
-        //System.out.println(s);
-
-        String decode = Base64.encodeUrlSafe(s);
-        System.out.println(decode);
-    }
 
     @org.junit.Test
     public void test21(){

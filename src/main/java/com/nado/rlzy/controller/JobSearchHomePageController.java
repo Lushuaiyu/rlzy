@@ -7,6 +7,7 @@ import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.ComplaintQuery;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
+import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
 import com.nado.rlzy.service.PersonCenterService;
@@ -64,16 +65,25 @@ public class JobSearchHomePageController extends BaseController {
 
     })
     public ResultJson queryBriefcharpterDtoByParams(BriefcharpterQuery query) {
-
-        Map<String, Object> map1 = service.queryBriefcharpterDtoByParams(query);
-        Map<String, Object> map2 = service.queryBriefcharpterByParams(query);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("queryBriefcharpterDtoByParams", map1);
-        map.put("queryBriefcharpterByParams", map2);
         ResultJson result = new ResultJson();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(map);
+        try {
+            Map<String, Object> map1 = service.queryBriefcharpterDtoByParams(query);
+            Map<String, Object> map2 = service.queryBriefcharpterByParams(query);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("queryBriefcharpterDtoByParams", map1);
+            map.put("queryBriefcharpterByParams", map2);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
 
     }
@@ -98,35 +108,46 @@ public class JobSearchHomePageController extends BaseController {
     })
     public ResultJson queryBriefcharpterDetileByParams(BriefcharpterQuery query) {
         ResultJson json = new ResultJson();
-        HashMap<String, Object> map = new HashMap<>();
-        if (query.getType1().equals(0)) {
-            List<HrBriefchapter> list = service.queryBriefcharpterDetileByParams(query);
-            List<HrBriefchapter> list1 = service.queryBriefcharpterDetileRecruitment(query);
-            //推荐单位 代招单位
-            List<HrBriefchapter> hrBriefchapters = service.recommendAPosition(query.getRecruitedCompany());
-            //推荐单位 招聘单位
-            List<HrBriefchapter> hrBriefchapters1 = service.recommendAPositionRecruitment(query.getRecruitedCompany());
+        try {
+            HashMap<String, Object> map = new HashMap<>();
+            if (query.getType1().equals(0)) {
+                List<HrBriefchapter> list = service.queryBriefcharpterDetileByParams(query);
+                List<HrBriefchapter> list1 = service.queryBriefcharpterDetileRecruitment(query);
+                //推荐单位 代招单位
+                List<HrBriefchapter> hrBriefchapters = service.recommendAPosition(query.getRecruitedCompany());
+                //推荐单位 招聘单位
+                List<HrBriefchapter> hrBriefchapters1 = service.recommendAPositionRecruitment(query.getRecruitedCompany());
 
-            //招聘单位
-            map.put("queryBriefcharpterDetileRecruitment", list1);
-            map.put("recommendAPositionRecruitment", hrBriefchapters1);
-            //代招单位
-            map.put("queryBriefcharpterDetileByParams", list);
-            map.put("recommendAPosition", hrBriefchapters);
-            json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            json.setData(map);
+                //招聘单位
+                map.put("queryBriefcharpterDetileRecruitment", list1);
+                map.put("recommendAPositionRecruitment", hrBriefchapters1);
+                //代招单位
+                map.put("queryBriefcharpterDetileByParams", list);
+                map.put("recommendAPosition", hrBriefchapters);
+                json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                json.setData(map);
 
-            json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            json.setData(map);
-        } else if (query.getType1().equals(1)) {
-            // 除了求职端首页简章列表以外的简章详情
-            Map<String, Object> detile = service.queryBriefcharpterListDetileByParams(query);
-            json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            json.setData(detile);
+                json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                json.setData(map);
+            } else if (query.getType1().equals(1)) {
+                // 除了求职端首页简章列表以外的简章详情
+                Map<String, Object> detile = service.queryBriefcharpterListDetileByParams(query);
+                json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                json.setData(detile);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            json.setMessage(e.getMessage());
+            json.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            json.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            json.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return json;
     }
 
@@ -155,71 +176,82 @@ public class JobSearchHomePageController extends BaseController {
     })
     public ResultJson queryBriefcharpterByLongLive(BriefcharpterQuery query) {
         ResultJson result = new ResultJson();
-        HashMap<String, Object> map = new HashMap<>();
-        if (query.getType1().equals(0)) {
-            // 长白班按返费高低排
-            List<HrBriefchapter> list = service.queryBriefcharpterByLongLive(query);
-            List<HrBriefchapter> vals = service.queryBriefcharpterByLongLiveRecruitment(query);
-            map.put("queryBriefcharpterByLongLive", list);
-            map.put("queryBriefcharpterByLongLiveRecruitment", vals);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
-        } else if (query.getType1().equals(1)) {
-            // 有吃住按返费高低排
-            List<HrBriefchapter> list = service.queryBriefcharpterByLongEat(query);
-            List<HrBriefchapter> vals = service.queryBriefcharpterByLongEatRecruitment(query);
-            map.put("queryBriefcharpterByLongEat", list);
-            map.put("queryBriefcharpterByLongEatRecruitment", vals);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
-        } else if (query.getType1().equals(2)) {
-            // 推荐费top10
-            List<HrBriefchapter> list = service.recommendedFeeTop10(query);
-            List<HrBriefchapter> vals = service.recommendedFeeTop10Recruitment(query);
-            map.put("recommendedFeeTop10", list);
-            map.put("recommendedFeeTop10Recruitment", vals);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
-        } else if (query.getType1().equals(3)) {
-            // 学生专区
-            List<HrBriefchapter> list = service.studentDivision(query);
-            List<HrBriefchapter> vals = service.studentDivisionRecruitment(query);
-            map.put("studentDivision", list);
-            map.put("studentDivisionRecruitment", vals);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
-        } else if (query.getType1().equals(4)) {
-            // 工资排行榜
-            List<HrBriefchapter> list = service.salaryLeaderboard(query);
-            List<HrBriefchapter> vals = service.salaryLeaderboardRecruitment(query);
-            map.put("salaryLeaderboard", list);
-            map.put("salaryLeaderboardRecruitment", vals);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
-        } else if (query.getType1().equals(5)) {
-            // 企业直招
-            List<HrBriefchapter> list = service.directBusiness(query);
-            List<HrBriefchapter> vals = service.directBusinessRecruitment(query);
-            map.put("directBusiness", list);
-            map.put("directBusinessRecruitment", vals);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
-        } else if (query.getType1().equals(6)) {
-            // 直接录取
-            List<HrBriefchapter> list = service.directAdmission(query);
-            List<HrBriefchapter> vals = service.directAdmissionRecruitment(query);
-            map.put("directAdmission", list);
-            map.put("directAdmissionRecruitment", vals);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
+        try {
+            HashMap<String, Object> map = new HashMap<>();
+            if (query.getType1().equals(0)) {
+                // 长白班按返费高低排
+                List<HrBriefchapter> list = service.queryBriefcharpterByLongLive(query);
+                List<HrBriefchapter> vals = service.queryBriefcharpterByLongLiveRecruitment(query);
+                map.put("queryBriefcharpterByLongLive", list);
+                map.put("queryBriefcharpterByLongLiveRecruitment", vals);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            } else if (query.getType1().equals(1)) {
+                // 有吃住按返费高低排
+                List<HrBriefchapter> list = service.queryBriefcharpterByLongEat(query);
+                List<HrBriefchapter> vals = service.queryBriefcharpterByLongEatRecruitment(query);
+                map.put("queryBriefcharpterByLongEat", list);
+                map.put("queryBriefcharpterByLongEatRecruitment", vals);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            } else if (query.getType1().equals(2)) {
+                // 推荐费top10
+                List<HrBriefchapter> list = service.recommendedFeeTop10(query);
+                List<HrBriefchapter> vals = service.recommendedFeeTop10Recruitment(query);
+                map.put("recommendedFeeTop10", list);
+                map.put("recommendedFeeTop10Recruitment", vals);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            } else if (query.getType1().equals(3)) {
+                // 学生专区
+                List<HrBriefchapter> list = service.studentDivision(query);
+                List<HrBriefchapter> vals = service.studentDivisionRecruitment(query);
+                map.put("studentDivision", list);
+                map.put("studentDivisionRecruitment", vals);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            } else if (query.getType1().equals(4)) {
+                // 工资排行榜
+                List<HrBriefchapter> list = service.salaryLeaderboard(query);
+                List<HrBriefchapter> vals = service.salaryLeaderboardRecruitment(query);
+                map.put("salaryLeaderboard", list);
+                map.put("salaryLeaderboardRecruitment", vals);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            } else if (query.getType1().equals(5)) {
+                // 企业直招
+                List<HrBriefchapter> list = service.directBusiness(query);
+                List<HrBriefchapter> vals = service.directBusinessRecruitment(query);
+                map.put("directBusiness", list);
+                map.put("directBusinessRecruitment", vals);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            } else if (query.getType1().equals(6)) {
+                // 直接录取
+                List<HrBriefchapter> list = service.directAdmission(query);
+                List<HrBriefchapter> vals = service.directAdmissionRecruitment(query);
+                map.put("directAdmission", list);
+                map.put("directAdmissionRecruitment", vals);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return result;
     }
 
@@ -233,36 +265,47 @@ public class JobSearchHomePageController extends BaseController {
     })
     public ResultJson coHomePage(Integer groupId, Integer type, Integer briefchapterId) {
         ResultJson result = new ResultJson();
-        Map<String, Object> map = new HashMap<>();
-        if (type.equals(1)) {
-            //求职端公司主页基本信息 代招单位 || 招聘单位
-            List<HrGroup> groups = service.coHomePage(groupId);
-            map.put("coHomePage", groups);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
-        } else if (type.equals(2)) {
-            // 求职端公司主页在招职位 代招单位
-            List<HrBriefchapter> list = service.atThePosition(groupId);
-            map.put("atThePosition", list);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(list);
-        } else {
-            //历史记录
-            //违规记录
-            List<HrComplaint> list = service.violationRecord(groupId);
-            //简章 代招单位
-            List<HrBriefchapter> hrBriefchapters = service.companyHomeHistory(groupId);
-            //人数
-            Map<String, Object> entry = service.interviewReportEntry(briefchapterId);
-            map.put("violationRecord", list);
-            map.put("companyHomeHistory", hrBriefchapters);
-            map.put("interviewReportEntry", entry);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
+        try {
+            Map<String, Object> map = new HashMap<>();
+            if (type.equals(1)) {
+                //求职端公司主页基本信息 代招单位 || 招聘单位
+                List<HrGroup> groups = service.coHomePage(groupId);
+                map.put("coHomePage", groups);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            } else if (type.equals(2)) {
+                // 求职端公司主页在招职位 代招单位
+                List<HrBriefchapter> list = service.atThePosition(groupId);
+                map.put("atThePosition", list);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(list);
+            } else {
+                //历史记录
+                //违规记录
+                List<HrComplaint> list = service.violationRecord(groupId);
+                //简章 代招单位
+                List<HrBriefchapter> hrBriefchapters = service.companyHomeHistory(groupId);
+                //人数
+                Map<String, Object> entry = service.interviewReportEntry(briefchapterId);
+                map.put("violationRecord", list);
+                map.put("companyHomeHistory", hrBriefchapters);
+                map.put("interviewReportEntry", entry);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return result;
     }
 
@@ -274,37 +317,48 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(value = "type", name = "类型 1 基本信息 2 在招职位 3 历史记录", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "briefchapterId", name = "简章id", dataType = "Integer", required = true)
     })
-    public ResultJson coHomePageRecruitment(Integer groupId, Integer type, Integer briefchapterId){
+    public ResultJson coHomePageRecruitment(Integer groupId, Integer type, Integer briefchapterId) {
         ResultJson result = new ResultJson();
-        Map<String, Object> map = new HashMap<>();
-        if (type.equals(1)) {
-            //求职端公司主页基本信息 代招单位 || 招聘单位
-            List<HrGroup> groups = service.coHomePage(groupId);
-            map.put("coHomePage", groups);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
-        } else if (type.equals(2)) {
-            // 求职端公司主页在招职位 招聘单位
-            List<HrBriefchapter> list = service.atThePositionRecruitment(groupId);
-            map.put("atThePosition", list);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(list);
-        } else {
-            //历史记录
-            //违规记录
-            List<HrComplaint> list = service.violationRecord(groupId);
-            //简章 招聘单位
-            List<HrBriefchapter> hrBriefchapters = service.compayHomeHistoryRecruitment(groupId);
-            Map<String, Object> entry = service.interviewReportEntry(briefchapterId);
-            map.put("violationRecord", list);
-            map.put("companyHomeHistory", hrBriefchapters);
-            map.put("interviewReportEntry", entry);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
+        try {
+            Map<String, Object> map = new HashMap<>();
+            if (type.equals(1)) {
+                //求职端公司主页基本信息 代招单位 || 招聘单位
+                List<HrGroup> groups = service.coHomePage(groupId);
+                map.put("coHomePage", groups);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            } else if (type.equals(2)) {
+                // 求职端公司主页在招职位 招聘单位
+                List<HrBriefchapter> list = service.atThePositionRecruitment(groupId);
+                map.put("atThePosition", list);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(list);
+            } else {
+                //历史记录
+                //违规记录
+                List<HrComplaint> list = service.violationRecord(groupId);
+                //简章 招聘单位
+                List<HrBriefchapter> hrBriefchapters = service.compayHomeHistoryRecruitment(groupId);
+                Map<String, Object> entry = service.interviewReportEntry(briefchapterId);
+                map.put("violationRecord", list);
+                map.put("companyHomeHistory", hrBriefchapters);
+                map.put("interviewReportEntry", entry);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return result;
 
 
@@ -328,12 +382,23 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "jobStatus", name = "求职状态", dataType = "int", required = true)
     })
-    public ResultJson queryBriefchapterBySignUpStatus(Integer type, Integer userId, Integer [] jobStatus) {
-        Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(type, userId, jobStatus);
+    public ResultJson queryBriefchapterBySignUpStatus(Integer type, Integer userId, Integer[] jobStatus) {
         ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(map);
+
+        try {
+            Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(type, userId, jobStatus);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return resultJson;
     }
 
@@ -350,27 +415,39 @@ public class JobSearchHomePageController extends BaseController {
 
     public ResultJson IWantToSignUp(HrSignupDeliveryrecord deliveryrecord) {
         ResultJson resultJson = new ResultJson();
-        if (deliveryrecord.getType().equals(1)) {
-            //我要报名 本人
-            int count = service.IWantToSignUp(deliveryrecord);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
-            return resultJson;
+        try {
+            if (deliveryrecord.getType().equals(1)) {
+                //我要报名 本人
+                int count = service.IWantToSignUp(deliveryrecord);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+                return resultJson;
+            }
+            if (deliveryrecord.getType().equals(2)) {
+                //推荐人给被推荐人报名
+                int count = service.referrerToSIgnUp(deliveryrecord);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(count);
+                return resultJson;
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
-        if (deliveryrecord.getType().equals(2)) {
-            //推荐人给被推荐人报名
-            int count = service.referrerToSIgnUp(deliveryrecord);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(count);
-            return resultJson;
-        }
+
         return null;
     }
 
     /**
      * 求职端 添加和取消收藏
+     *
      * @return com.nado.rlzy.bean.model.ResultInfo
      * @Author lushuaiyu
      * @Description //TODO
@@ -389,19 +466,30 @@ public class JobSearchHomePageController extends BaseController {
     public ResultJson addCancelBriefchapter(Collect collect) {
         Map<String, Object> map = new HashMap<>();
         ResultJson resultJson = new ResultJson();
-        if (collect.getType().equals(0)) {
-            int i = service.addCancelBriefchapter(collect);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            map.put("addCancelBriefchapter", i);
-            resultJson.setData(map);
-        } else {
-            int ii = service.updateCollect(collect);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            map.put("updateCollect", ii);
-            resultJson.setData(map);
+        try {
+            if (collect.getType().equals(0)) {
+                int i = service.addCancelBriefchapter(collect);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                map.put("addCancelBriefchapter", i);
+                resultJson.setData(map);
+            } else {
+                int ii = service.updateCollect(collect);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                map.put("updateCollect", ii);
+                resultJson.setData(map);
+            }
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+
         return resultJson;
     }
 
@@ -434,9 +522,24 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(name = "mySignUpTableId", value = "我的报名表id", dataType = "integer", required = true)
 
     })
-    public ResultInfo addSignUp(HrSignUp signUp) {
-        service.addSignUpTable(signUp);
-        return success(RlzyConstant.OPS_SUCCESS_CODE, RlzyConstant.OPS_SUCCESS_MSG);
+    public ResultJson addSignUp(HrSignUp signUp) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            int i = service.addSignUpTable(signUp);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(i);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+
+        return resultJson;
     }
 
     /**
@@ -456,11 +559,21 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(value = "userId", name = "推荐人id", dataType = "string", required = true),
     })
     public ResultJson insertSelective(MySignUpTable record) {
-        int i = service.insertSelective(record);
         ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(i);
+        try {
+            int i = service.insertSelective(record);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(i);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return resultJson;
     }
 
@@ -485,12 +598,24 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
     })
     public ResultJson addComplaint(ComplaintQuery query) {
-        String head = centerService.updateHead(query.getFile());
-        int complaint = service.addComplaint(query, head);
         ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(complaint);
+
+        try {
+            String head = centerService.updateHead(query.getFile());
+            int complaint = service.addComplaint(query, head);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(complaint);
+
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return resultJson;
     }
 
@@ -504,12 +629,23 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(value = "dictionary", name = "投诉类型id  dictionary = 24 ", dataType = "integer", required = true)
     })
     public ResultJson complaintPage(Integer typeId, Integer userId, Integer brieId, Integer dictionary) {
-        Map<String, Object> map = service.complaintPage(typeId, userId, brieId, dictionary);
-        ResultJson json = new ResultJson();
-        json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        json.setData(map);
-        return json;
+        ResultJson resultJson = new ResultJson();
+
+        try {
+            Map<String, Object> map = service.complaintPage(typeId, userId, brieId, dictionary);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
     }
 
 
@@ -518,11 +654,22 @@ public class JobSearchHomePageController extends BaseController {
     @ApiOperation(notes = "查询我的求职表分组 推荐人身份才能添加分组", value = "查询我的求职表分组 推荐人身份才能添加分组", httpMethod = "POST")
     @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true)
     public ResultJson searchGroupingInformation(Integer userId) {
-        Map<String, Object> tables = service.searchGroupingInformation(userId);
         ResultJson result = new ResultJson();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(tables);
+
+        try {
+            Map<String, Object> tables = service.searchGroupingInformation(userId);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(tables);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
     }
 
@@ -537,11 +684,21 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true)
     })
     public ResultJson grouper(String groupName, String signUpName, Integer type, Integer userId) {
-        Map<String, Object> grouper = service.grouper(groupName, signUpName, type, userId);
         ResultJson result = new ResultJson();
-        result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        result.setData(grouper);
+        try {
+            Map<String, Object> grouper = service.grouper(groupName, signUpName, type, userId);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(grouper);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
         return result;
     }
 
