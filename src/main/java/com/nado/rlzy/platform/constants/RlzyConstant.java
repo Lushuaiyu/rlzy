@@ -38,7 +38,7 @@ public class RlzyConstant {
 
     public static final String SMS_MESSAGE_FAILED = "验证码错误";
 
-    public static final String PASSWORD_SALT = "f4jll546jl";
+    public static final String PASSWORD_SALT = "nado_rlzy";
 
     public static final String PASSWORD_NULL = "密码不能为空";
 

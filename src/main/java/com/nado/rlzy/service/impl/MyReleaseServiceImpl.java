@@ -5,12 +5,11 @@ import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.MyReleaseService;
-import com.nado.rlzy.utils.AssertUtil;
-import com.nado.rlzy.utils.CollectorsUtil;
-import com.nado.rlzy.utils.StringUtil;
-import com.nado.rlzy.utils.ValidationUtil;
+import com.nado.rlzy.service.PersonCenterService;
+import com.nado.rlzy.utils.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -68,6 +67,10 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Resource
     private MessageMapper messageMapper;
+
+    @Resource
+    private PersonCenterService centerService;
+
 
     @Override
     public Map<String, Object> myRelease(Integer userId, Integer status) {
@@ -822,30 +825,68 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     }
 
     @Override
+    public List<HrDictionaryItem> selectFrontEnd(Integer type) {
+        return dictionaryItemMapper.dictionary1(type);
+    }
+
+    @Override
     public Map<String, Object> selectContentByType(DictionaryQuery query) {
         Map<String, Object> map = new HashMap<>();
-        List<HrDictionaryItem> contractWayDetail = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> clothingRequirement = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> education = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> experience = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> hobby = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> overTime = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> post = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> profession = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> welfare = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> workTime = dictionaryItemMapper.selectFrontEndOption(query);
-        List<HrDictionaryItem> workWay = dictionaryItemMapper.selectFrontEndOption(query);
-        map.put("contractWayDetail", contractWayDetail);
-        map.put("clothingRequirement", clothingRequirement);
-        map.put("education", education);
-        map.put("experience", experience);
-        map.put("hobby", hobby);
-        map.put("overTime", overTime);
-        map.put("post", post);
-        map.put("profession", profession );
-        map.put("welfare", welfare);
-        map.put("workTime", workTime);
-        map.put("workWay", workWay);
+        if (null != query.getContractWayDetailId() && query.getContractWayDetailId().compareTo(String.valueOf(13)) == 0){
+            List<HrDictionaryItem> contractWayDetail = dictionaryItemMapper.selectFrontEndOption(query);
+            map.put("contractWayDetail", contractWayDetail);
+        }
+        if (null != query.getPost() && query.getPost().compareTo(String.valueOf(1)) == 0) {
+            List<HrDictionaryItem> post = dictionaryItemMapper.selectFrontEndOption2(query);
+            map.put("post", post);
+        }
+        if (null != query.getClothingRequirement() && query.getClothingRequirement().compareTo(String.valueOf(14)) == 0) {
+            List<HrDictionaryItem> clothingRequirement = dictionaryItemMapper.selectFrontEndOption8(query);
+            map.put("clothingRequirement", clothingRequirement);
+        }
+        if (null != query.getEducation() && query.getEducation().compareTo(String.valueOf(2)) == 0) {
+            List<HrDictionaryItem> education = dictionaryItemMapper.selectFrontEndOption4(query);
+            map.put("education", education);
+        }
+        if (null != query.getExperience() && query.getExperience().compareTo(String.valueOf(12)) == 0) {
+            List<HrDictionaryItem> experience = dictionaryItemMapper.selectFrontEndOption5(query);
+            map.put("experience", experience);
+        }
+        if (null != query.getHobby() && query.getHobby().compareTo(String.valueOf(15)) == 0) {
+            List<HrDictionaryItem> hobby = dictionaryItemMapper.selectFrontEndOption9(query);
+            map.put("hobby", hobby);
+        }
+        if (null != query.getOvertimeTimes() && query.getOvertimeTimes().compareTo(String.valueOf(18)) == 0) {
+            List<HrDictionaryItem> overTime = dictionaryItemMapper.selectFrontEndOption10(query);
+            map.put("overTime", overTime);
+        }
+        if (null != query.getProfession() && query.getProfession().compareTo(String.valueOf(3)) == 0) {
+            List<HrDictionaryItem> profession = dictionaryItemMapper.selectFrontEndOption3(query);
+            map.put("profession", profession );
+        }
+
+        if (null != query.getWelfare() && query.getWelfare().compareTo(String.valueOf(10)) == 0) {
+            List<HrDictionaryItem> welfare = dictionaryItemMapper.selectFrontEndOption11(query);
+            map.put("welfare", welfare);
+        }
+        if (null != query.getWorkTime() && query.getWorkTime().compareTo(String.valueOf(17)) == 0  ) {
+            List<HrDictionaryItem> workTime = dictionaryItemMapper.selectFrontEndOption7(query);
+            map.put("workTime", workTime);
+        }
+        if ( null != query.getWorkWay() && query.getWorkWay().compareTo(String.valueOf(16)) == 0) {
+            List<HrDictionaryItem> workWay = dictionaryItemMapper.selectFrontEndOption6(query);
+            map.put("workWay", workWay);
+        }
+
+        if (null != query.getWorkWay() && query.getWorkWay().compareTo(String.valueOf(5)) == 0){
+            List<HrDictionaryItem> manAge = dictionaryItemMapper.selectFrontEndOption12(query);
+            map.put("manAge", manAge);
+        }
+
+        if (null != query.getFemaleAge() && query.getFemaleAge().compareTo(String.valueOf(9)) == 0){
+            List<HrDictionaryItem> femaleAge = dictionaryItemMapper.selectFrontEndOption13(query);
+            map.put("femaleAge", femaleAge);
+        }
         return map;
     }
 
@@ -1563,11 +1604,13 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         dto.setOvertimeTimeId(query.getOvertimeTimeId());
         dto.setWelfareId(query.getWelfareId());
         //用人单位证明
-        dto.setEmployerCertificatePhotoUrl(query.getEmployerCertificatePhotoUrl());
-
+        String certificatePhoto = OssUtilOne.picUpload(query.getEmployerCertificatePhotoUrl(), "0");
+        dto.setEmployerCertificatePhotoUrl(certificatePhoto);
         //是否返佣 有返佣
         dto.setRebate(1);
-        dto.setDescriptionJobPhotoUrl(query.getDescriptionJobPhotoUrl());
+        //职位描述
+        String jobPhotoUrl = OssUtilOne.picUpload(query.getDescriptionJobPhotoUrl(), "0");
+        dto.setDescriptionJobPhotoUrl(jobPhotoUrl);
 
         //用人单位面试地址
         dto.setInterviewAddress(query.getInterviewAddress());
@@ -1681,12 +1724,25 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         dto.setWelfareId(query.getWelfareId());
 
         //用人单位证明
-        dto.setEmployerCertificatePhotoUrl(query.getEmployerCertificatePhotoUrl());
+        MultipartFile multipartFile = Base64Util.base64ToMultipart(query.getEmployerCertificatePhotoUrl());
+        String head = centerService.updateHead(multipartFile);
+        dto.setEmployerCertificatePhotoUrl(head);
 
         //是否返佣 没返佣
         dto.setRebate(0);
 
-        dto.setDescriptionJobPhotoUrl(query.getDescriptionJobPhotoUrl());
+        //职位描述
+        List<String> collect = Stream.of(query.getDescriptionJobPhotoUrl()).collect(Collectors.toList());
+        List<String> strings = new ArrayList<>();
+        collect.stream()
+                .map( x -> {
+                    MultipartFile multipartFile1 = Base64Util.base64ToMultipart(x);
+                    String head1 = centerService.updateHead(multipartFile1);
+                    strings.add(head1);
+                    return x;
+                }).collect(Collectors.toList());
+        String collect1 = strings.stream().collect(Collectors.joining(","));
+        dto.setDescriptionJobPhotoUrl(collect1);
 
         //用人单位面试地址
         dto.setInterviewAddress(query.getInterviewAddress());

@@ -259,7 +259,7 @@ public class JobSearchHomePageController extends BaseController {
     @ResponseBody
     @ApiOperation(notes = "求职端 首页 公司主页 代招单位", value = "求职端 首页 公司主页", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "groupId", name = "代招单位id || 招聘单位id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "groupId", name = "代招单位id", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "type", name = "类型 1 基本信息 2 在招职位 3 历史记录", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "briefchapterId", name = "简章id", dataType = "Integer", required = true)
     })
@@ -375,21 +375,30 @@ public class JobSearchHomePageController extends BaseController {
      **/
     @RequestMapping(value = "queryBriefchapterBySignUpStatus")
     @ResponseBody
-    @ApiOperation(value = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 10已面试 是进入到待面试阶段",
+    @ApiOperation(value = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 | 取消操作 ps  jobStatus : 1待面试 10已面试 是进入到待面试阶段",
             notes = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 10已面试 是进入到待面试阶段", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "type", name = "登录者身份 1 本人  2  推荐人", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "jobStatus", name = "求职状态", dataType = "int", required = true)
+            @ApiImplicitParam(value = "jobStatus", name = "求职状态", dataType = "int", required = true),
+            @ApiImplicitParam(value = "typp", name = "0 查询 1 取消面试 取消报道 取消报名 放弃", dataType = "int", required = true),
+            @ApiImplicitParam(value = "id", name = "报名投递表 id", dataType = "int", required = true)
     })
-    public ResultJson queryBriefchapterBySignUpStatus(Integer type, Integer userId, Integer[] jobStatus) {
+    public ResultJson queryBriefchapterBySignUpStatus(Integer type, Integer userId, String jobStatus, Integer typp, Integer id) {
         ResultJson resultJson = new ResultJson();
 
         try {
-            Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(type, userId, jobStatus);
-            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(map);
+            if (typp.compareTo(0) == 0) {
+                Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(type, userId, jobStatus);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(map);
+            } else {
+                int i = service.cancelRegistration(id);
+                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                resultJson.setData(i);
+            }
         } catch (AssertException e) {
             e.printStackTrace();
             resultJson.setMessage(e.getMessage());
@@ -601,8 +610,8 @@ public class JobSearchHomePageController extends BaseController {
         ResultJson resultJson = new ResultJson();
 
         try {
-            String head = centerService.updateHead(query.getFile());
-            int complaint = service.addComplaint(query, head);
+
+            int complaint = service.addComplaint(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(complaint);

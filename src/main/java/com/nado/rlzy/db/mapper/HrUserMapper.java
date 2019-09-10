@@ -111,7 +111,7 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      * @Param [userId]
      * @return int
      **/
-    int changePassword(@Param("userId") Integer userId, @Param("password") String password);
+    int changePassword(@Param("userId") Integer userId, @Param("password") String password, @Param("phone") String phone);
 
     /**
      *  切换身份
@@ -311,6 +311,16 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
     @Select(value = "select count(*) from hr_user u, hr_enterpriseblacklist e where u.IdCard = e.idCard\n" +
             "and u.status = 0 and u.id = #{userId}")
     int selectEnterPriseBlacakList(@Param("userId") Integer userId);
+
+    /**
+     * 根据 userId 更新网易云信的token
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 14:03 2019-09-09
+     * @Param [userId]
+     * @return int
+     */
+    int updateNetEaseTokenByserId(@Param("userId") Integer userId, @Param("netEaseToekn") String netEaseToekn);
 
 
 

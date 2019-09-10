@@ -323,5 +323,12 @@ public class HrBriefchapter {
      */
     private String userName;
 
+    /**
+     * 报名投递表 id
+     */
+    private Integer hsdId;
+
+
+
 
 }

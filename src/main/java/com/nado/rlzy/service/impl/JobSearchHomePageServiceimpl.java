@@ -10,8 +10,7 @@ import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.JobSearchHomePageService;
-import com.nado.rlzy.utils.AssertUtil;
-import com.nado.rlzy.utils.StringUtil;
+import com.nado.rlzy.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1241,6 +1240,11 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
+    public int cancelRegistration(Integer id) {
+        return signupDeliveryrecordMapper.cancelRegistration(id);
+    }
+
+    @Override
     public List<HrBriefchapter> directAdmissionRecruitment(BriefcharpterQuery query) {
         List<HrBriefchapter> list = mapper.directAdmissionRecruitment(query);
         return list.stream().map(dto -> {
@@ -1317,7 +1321,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
 
     @Override
-    public Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId, Integer[] jobStatus) {
+    public Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId, String jobStatus) {
 
         //查求职者名字
         List<HrSignUp> hrSignUps = signUpMapper.querySignUpUserName(type, userId);
@@ -1328,7 +1332,8 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         List<HrBriefchapter> collect = null;
         List<HrBriefchapter> list1 = null;
         //求职状态 已结束转态的可能有多个 求职状态是前台传过来的
-        List<Integer> list2 = Stream.of(jobStatus).collect(Collectors.toList());
+        String[] split = jobStatus.split(",");
+        List<String> list2 = Stream.of(split).collect(Collectors.toList());
 
         for (HrSignUp hrSignUp : hrSignUps) {
             userName = hrSignUp.getSignUpName();
@@ -1717,7 +1722,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int addComplaint(ComplaintQuery query, String head) {
+    public int addComplaint(ComplaintQuery query) {
         checkNoNull(query.getName(),
                 query.getBriefChapterId(),
                 query.getComplaintTypeId(),
@@ -1728,7 +1733,9 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         complaint.setBriefChapterId(query.getBriefChapterId());
         complaint.setComplaintTypeId(query.getComplaintTypeId());
         complaint.setDescription(query.getDescription());
-        complaint.setEvidence(head);
+        //凭证上传
+        String s = OssUtilOne.picUpload(query.getEvidence(), String.valueOf(4));
+        complaint.setEvidence(s);
         complaint.setUserId(query.getUserId());
         //complaint.setSignUpId(query.getSignUpId());
         complaint.setCreateTime(LocalDateTime.now());
@@ -1922,7 +1929,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         AssertUtil.isTrue(null == briefChapterId, "简章不能为空");
         AssertUtil.isTrue(StringUtils.isBlank(complaintTypeId), "投诉类型不能为空");
         AssertUtil.isTrue(StringUtils.isBlank(description), "问题描述不能为空");
-        AssertUtil.isTrue(StringUtils.isBlank(evidence), "凭证不能为空");
+        AssertUtil.isTrue(null != evidence, "凭证不能为空");
     }
 
     @Override

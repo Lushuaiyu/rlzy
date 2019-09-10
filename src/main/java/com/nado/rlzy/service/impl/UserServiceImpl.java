@@ -1,6 +1,7 @@
 package com.nado.rlzy.service.impl;
 
 import cn.hutool.core.util.IdcardUtil;
+import com.aliyun.oss.OSS;
 import com.nado.rlzy.RlzyApplication;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterHobHuntingQuery;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterQuery;
@@ -71,7 +72,7 @@ public class UserServiceImpl implements UserService {
         AssertUtil.isTrue(!(redisTemplate.hasKey(key)), RlzyConstant.SMS_CODE_STALEDATED);
         AssertUtil.isTrue(!(redisTemplate.opsForValue().get(key).toString().equals(code)), RlzyConstant.SMS_MESSAGE_FAILED);
         passWord = MD5.getMD5(passWord + RlzyConstant.PASSWORD_SALT);
-        return userMapper.changePassword(userId, passWord);
+        return userMapper.changePassword(userId, passWord, phone);
 
     }
 
@@ -118,20 +119,17 @@ public class UserServiceImpl implements UserService {
         group.setGroupname(groupName);
         group.setGroupaddress(groupAddress);
         group.setGroupinfo(groupInfo);
-        MultipartFile multipartFile = Base64Util.base64ToMultipart(businessLicense);
-        String head = centerService.updateHead(multipartFile);
+        String head = OssUtilOne.picUpload(businessLicense, "0");
         group.setBusinesslicense(head);
-        MultipartFile multipartFile1 = Base64Util.base64ToMultipart(enterpriseLicense);
-        String headEnterpriseLicense = centerService.updateHead(multipartFile1);
+        String headEnterpriseLicense = OssUtilOne.picUpload(enterpriseLicense, "0");
         group.setEnterpriseLicense(headEnterpriseLicense);
-        group.setRegistrantCertificate(registrantCertificate);
+        String s = OssUtilOne.picUpload(registrantCertificate, "0");
+        group.setRegistrantCertificate(s);
         group.setSocialcreditcode(socialCreditCode);
         group.setLegalperson(legalPerson);
-        MultipartFile multipartFile2 = Base64Util.base64ToMultipart(registrationPlace);
-        String headRegistrationPlace = centerService.updateHead(multipartFile2);
-        group.setRegistrationplace(headRegistrationPlace);
         group.setCertifierid(userId);
         group.setStatus(1);
+        group.setRegistrationplace(registrationPlace);
         group.setCreatetime(LocalDateTime.now());
         if (unitType.equals(5)) {
             group.setType(1);
@@ -148,10 +146,9 @@ public class UserServiceImpl implements UserService {
         user.setId(id);
         user.setUserName(userName);
         user.setType(unitType);
-        MultipartFile multipartFile = Base64Util.base64ToMultipart(imageHead);
-        String head = centerService.updateHead(multipartFile);
+        String head = OssUtilOne.picUpload(imageHead, "0");
         user.setHeadImage(head);
-        // 身份证应该正则匹配
+        // 身份证应该正则匹配 测试时不校验
         user.setIdCard(idCard);
         //TODO
         // 身份证 实名认证
@@ -221,12 +218,8 @@ public class UserServiceImpl implements UserService {
         String md5 = MD5.getMD5(password + RlzyConstant.PASSWORD_SALT);
 
         HrUser login = userMapper.login(phone, md5);
-        HrUser user = new HrUser();
-        user.setUserId(Integer.valueOf(login.getId()));
-        user.setId(null);
-        user.setImproveInformation(login.getImproveInformation());
-        user.setViolationFlag(login.getViolationFlag());
-        user.setViolationTime(login.getViolationTime());
+        login.setUserId(Integer.valueOf(login.getId()));
+        login.setId("");
         return login;
     }
 
@@ -235,7 +228,6 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public int registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
         if (query.getUnitType().equals(1)) {
-
             //本人
             initUserJobHunt(query.getId(),
                     query.getImageHead(), query.getUserName(), query.getIdCard(), query.getUnitType(),
@@ -243,7 +235,8 @@ public class UserServiceImpl implements UserService {
                     query.getExpectedSalaryUpper(), query.getExpectedSalaryLower());
 
             //报名表
-           /* Integer signUpId =*/ initSignUp(query.getId(), query.getSex(), query.getUserName(), query.getIdCard(),
+            /* Integer signUpId =*/
+            initSignUp(query.getId(), query.getSex(), query.getUserName(), query.getIdCard(),
                     query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(),
                     query.getProfession(), query.getArrivalTime(),
                     query.getExpectedSalaryUpper(), query.getExpectedSalaryLower(), query.getItIsPublic(), query.getAgreePlatformHelp());
@@ -274,26 +267,18 @@ public class UserServiceImpl implements UserService {
         user.setMobile(query.getPhone());
         HrUser one = userMapper.selectOne(user);
         AssertUtil.isTrue(null != one, "用户已存在, 不要重复注册");
-        //if (query.getUnitType().equals(1)) {
-        //本人
+
         Integer userId = initregisterUser(query.getPhone(), MD5.getMD5(query.getPassword() + RlzyConstant.PASSWORD_SALT));
+
+
+        String s = null;
+        try {
+            s = NetEaseSendUtil.create(String.valueOf(userId), null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        userMapper.updateNetEaseTokenByserId(userId, s);
         return userId;
-        //} else {
-            /*//推荐人
-            Integer userId = initRegisterReferrer(query.getPhone(), MD5.getMD5(query.getPassword() + RlzyConstant.PASSWORD_SALT));*/
-        //return userId;
-        //}
-    }
-
-    private Integer initRegisterReferrer(String phone, String md5) {
-        HrUser user = new HrUser();
-        user.setMobile(phone);
-        user.setPassword(md5);
-        user.setRegisterTime(LocalDateTime.now());
-        user.setImproveInformation(1);
-        userMapper.insertSelective(user);
-        return Integer.valueOf(user.getId());
-
     }
 
     private Integer initregisterUser(String phone, String md5) {
@@ -330,7 +315,9 @@ public class UserServiceImpl implements UserService {
                                   String recommendInfo, Integer itIsPublic, Integer agreePlatformHelp, Integer unitType) {
         HrUser user = new HrUser();
         user.setId(id);
-        user.setHeadImage("afdsafaf");
+        // String image = OssUtil.ossImage(imageHead);
+        String s = OssUtilOne.picUpload(imageHead, "0");
+        user.setHeadImage(s);
         user.setUserName(userName);
         user.setIdCard(idCard);
         user.setPostIdStr(postIdStr);
@@ -349,8 +336,8 @@ public class UserServiceImpl implements UserService {
         HrSignUp signUp = new HrSignUp();
         signUp.setSex(sex);
         signUp.setUserName(userName);
-        boolean b = IdcardUtil.isvalidCard18(idCard);
-        AssertUtil.isTrue(b == false, "身份证输入有误, 请重新输入");
+        /*boolean b = IdcardUtil.isvalidCard18(idCard);
+        AssertUtil.isTrue(b == false, "身份证输入有误, 请重新输入");*/
         signUp.setIdCard(idCard);
         int ageByIdCard = IdcardUtil.getAgeByIdCard(idCard);
         signUp.setAge(ageByIdCard);
@@ -381,12 +368,11 @@ public class UserServiceImpl implements UserService {
                                  String expectedSalaryUpper, String expectedSalaryLower) {
         HrUser user = new HrUser();
         user.setId(id);
-        MultipartFile multipartFile = Base64Util.base64ToMultipart(imageHead);
-        String head = centerService.updateHead(multipartFile);
-        user.setHeadImage(head);
+        String blog = OssUtilOne.picUpload(imageHead, String.valueOf(4));
+        user.setHeadImage(blog);
         user.setUserName(userName);
-        boolean b = IdcardUtil.isvalidCard18(idCard);
-        AssertUtil.isTrue(b == false, "身份证输入有误, 请重新输入");
+        // boolean b = IdcardUtil.isvalidCard18(idCard);
+        // AssertUtil.isTrue(b == false, "身份证输入有误, 请重新输入");
         user.setIdCard(idCard);
         user.setType(unitType);
         user.setSex(sex);

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Value;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -52,6 +53,12 @@ public class HrUser {
     @Column(name = "Password")
     @ApiModelProperty(value = "密码")
     private String password;
+
+    /**
+     * 网易云信的 token
+     */
+    @Column(name = "net_ease_token")
+    private String netEaseToken;
 
     @Column(name = "HeadImage")
     @ApiModelProperty(value = "头像")

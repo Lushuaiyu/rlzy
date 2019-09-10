@@ -290,6 +290,16 @@ public interface MyReleaseService {
      * @return*/
     Map<String, Object> selectContentByType(DictionaryQuery query);
 
+     /**
+      * 前台选择页面 通用模板
+      * @Author chengpunan
+      * @Description  lushuaiyu
+      * @Date 09:47 2019-09-09
+      * @Param [type]
+      * @return java.util.List<com.nado.rlzy.db.pojo.HrDictionaryItem>
+      */
+     List<HrDictionaryItem> selectFrontEnd(Integer type);
+
     /**
      * 招聘端 我的发布  正在招 编辑简章 代招单位
      *

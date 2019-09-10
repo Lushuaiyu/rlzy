@@ -13,6 +13,7 @@ import com.nado.rlzy.service.TokenService;
 import com.nado.rlzy.service.UserService;
 import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.MD5;
+import com.nado.rlzy.utils.OssUtilOne;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -148,8 +149,9 @@ public class UserController extends BaseController {
                 } else {
                     //可以登录
                     HrUser login = service.login(phone, password);
-                    String id = login.getId();
-                    Integer i = service.selectEnterPriseBlacakList(Integer.valueOf(id));
+                    Integer userId = login.getUserId();
+                    //查询拉黑的用户
+                    Integer i = service.selectEnterPriseBlacakList(userId);
                     if (i != 0) {
                         AssertUtil.isTrue(i != null, "您已被拉黑, 请联系平台处理");
                         resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
@@ -246,6 +248,19 @@ public class UserController extends BaseController {
             resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
             resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
+        return resultJson;
+    }
+
+    @RequestMapping(value = "test3")
+    @ResponseBody
+    public ResultJson test3(String image) throws Exception {
+
+
+        String s = OssUtilOne.picUpload(image, "0");
+        ResultJson resultJson = new ResultJson();
+        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+        resultJson.setData(s);
         return resultJson;
     }
 

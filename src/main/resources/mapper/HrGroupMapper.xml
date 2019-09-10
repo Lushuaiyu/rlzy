@@ -29,6 +29,7 @@
         <result column="co_policy" property="coPolicy" jdbcType="VARCHAR"/>
         <result column="UserName" property="userName" jdbcType="VARCHAR"/>
         <result column="violation_flag" property="violationFlag" jdbcType="VARCHAR"/>
+        <result column="corporate_cover" property="corporateCover" jdbcType="VARCHAR"/>
         <!--        <collection property="hriefchapter" resultMap="rebaterecord" ofType="com.nado.rlzy.db.pojo.HrRebaterecord"/>-->
         <collection property="deliveryrecords" resultMap="deliveryrecordsMap"
                     ofType="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord"/>
@@ -49,7 +50,8 @@
         grr.person_num,
         grr.GroupAddress,
         grr.GroupInfo,
-        grr.Id
+        grr.Id,
+        grr.corporate_cover
         from hr_group grr
         <where>
             grr.groupStatus = 0

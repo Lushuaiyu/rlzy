@@ -21,8 +21,8 @@ public class Base64Util {
             String[] baseStr = base64.split(",");
 
             BASE64Decoder decoder = new BASE64Decoder();
-            byte[] b = new byte[0];
-            b = decoder.decodeBuffer(baseStr[1]);
+            byte[] b = new byte[1];
+            b = decoder.decodeBuffer(baseStr[0]);
 
             for(int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {

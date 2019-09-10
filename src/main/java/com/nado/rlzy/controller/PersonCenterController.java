@@ -100,7 +100,7 @@ public class PersonCenterController extends BaseController {
 
     /**
      * 添加企业 招聘端 代招单位添加企业
-     * headers = "content-type=multipart/form-date") 可能没用
+     * headers = "content-type=multipart/form-date")
      *
      * @return com.nado.rlzy.bean.model.ResultInfo
      * @Author lushuaiyu
@@ -124,11 +124,6 @@ public class PersonCenterController extends BaseController {
         ResultJson resultJson = new ResultJson();
 
         try {
-            if (query.type.equals(1)) {
-                MultipartFile file = query.getFile();
-                String url = service.updateHead(file);
-                query.setBusLicense(url);
-            }
             Map<String, Object> co = service.addCo(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);

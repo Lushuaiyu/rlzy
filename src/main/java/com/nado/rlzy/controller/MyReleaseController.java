@@ -13,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import lombok.var;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -122,7 +121,7 @@ public class MyReleaseController extends BaseController {
     }*/
 
     /**
-     * 编辑 发布简章 招聘端
+     * 编辑 re.signup_deliveryrecord_id 招聘端
      *
      * @return com.nado.rlzy.bean.model.ResultInfo
      * @Author lushuaiyu
@@ -142,11 +141,7 @@ public class MyReleaseController extends BaseController {
     public ResultJson save(@RequestBody ReleaseBriefcharpterQuery query, Integer type) {
         ResultJson result = new ResultJson();
         try {
-            //图片上传
-            String head = centerService.updateHead(query.getDescriptionJobPhotoFile());
-            query.setDescriptionJobPhotoUrl(head);
-            String updateHead = centerService.updateHead(query.getEmployerCertificatePhotoFile());
-            query.setEmployerCertificatePhotoUrl(updateHead);
+
             service.saveUser(query, type);
 
         } catch (AssertException e) {
@@ -537,6 +532,39 @@ public class MyReleaseController extends BaseController {
             result.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return result;
+
+    }
+
+    /**
+     * 前台选择页面 通用模板
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 09:48 2019-09-09
+     * @Param [type]
+     * @return com.nado.rlzy.bean.model.ResultJson
+     */
+    @RequestMapping(value = "selectFrontEnd")
+    @ResponseBody
+    @ApiOperation(notes = "根据类型查询前端选项内容", value = "根据类型查询前端选项内容", httpMethod = "POST")
+    @ApiImplicitParam(value = "query", name = "配置表参数", dataType = "Integer", required = true)
+    public ResultJson selectFrontEnd(Integer type){
+        ResultJson result = new ResultJson();
+        try {
+            List<HrDictionaryItem> items = service.selectFrontEnd(type);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(items);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return result;
+
 
     }
 

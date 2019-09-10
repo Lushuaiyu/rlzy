@@ -81,4 +81,7 @@
             and u.Id = #{userId}
         </if>
     </select>
+    <update id="cancelRegistration">
+    update hr_signup_deliveryrecord set delete_flag = 1 where id = #{id}
+    </update>
 </mapper>

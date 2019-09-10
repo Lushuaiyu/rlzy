@@ -11,7 +11,12 @@ import java.util.List;
 public interface HrDictionaryItemMapper extends Mapper<HrDictionaryItem> {
     @Select(value = "select name as dictionaryName, value as dictionaryValue from hr_dictionary_item where pId = #{typeId}")
     <T>
-     List<T> dictionary(Integer typeId);
+     List<T> dictionary(@Param("typeId") Integer typeId);
+
+
+    List<HrDictionaryItem> dictionary1(@Param("type") Integer type);
+
+
 
 
     /**
@@ -33,6 +38,9 @@ public interface HrDictionaryItemMapper extends Mapper<HrDictionaryItem> {
     List<HrDictionaryItem> selectFrontEndOption9(DictionaryQuery query);
     List<HrDictionaryItem> selectFrontEndOption10(DictionaryQuery query);
     List<HrDictionaryItem> selectFrontEndOption11(DictionaryQuery query);
+
+    List<HrDictionaryItem> selectFrontEndOption12(DictionaryQuery query);
+    List<HrDictionaryItem> selectFrontEndOption13(DictionaryQuery query);
 
 
 }

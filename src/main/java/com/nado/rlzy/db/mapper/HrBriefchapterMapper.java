@@ -335,7 +335,7 @@ public interface HrBriefchapterMapper {
      * @Description //TODO
      * @Date 15:39 2019/7/11
      **/
-    List<HrBriefchapter> queryBriefchapterBySignUpStatus(@Param("signUpStatus") List<Integer> signUpStatus, @Param("id") Integer id);
+    List<HrBriefchapter> queryBriefchapterBySignUpStatus(@Param("signUpStatus") List<String> signUpStatus, @Param("id") Integer id);
 
     /**
      * 根据求职状态和求职者id查询简章 招聘单位
@@ -347,7 +347,7 @@ public interface HrBriefchapterMapper {
      * @Date 20:33 2019/8/2
      * @Param [signUpStatus]
      **/
-    List<HrBriefchapter> queryBriefchapterBySignUpstatusRecruitment(@Param("signUpStatus") List<Integer> signUpStatus, @Param("id") Integer id);
+    List<HrBriefchapter> queryBriefchapterBySignUpstatusRecruitment(@Param("signUpStatus") List<String> signUpStatus, @Param("id") Integer id);
 
     /**
      * 招聘端 我的发布 代招单位
@@ -665,6 +665,8 @@ public interface HrBriefchapterMapper {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      */
     List<HrBriefchapter> interviewAllPersonReferrerRecruitment();
+
+
 
 
 

@@ -162,6 +162,16 @@ public interface JobSearchHomePageService {
      **/
     List<HrBriefchapter> directAdmissionRecruitment(BriefcharpterQuery query);
 
+    /**
+     * 求职端我的工作 取消报名 | 取消报道 | 取消面试 | 放弃
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 21:41 2019-09-10
+     * @Param [hsdId]
+     * @return int
+     */
+    int cancelRegistration(Integer id);
+
 
     /**
      * 有吃住按返费高低排 代招单位
@@ -256,7 +266,7 @@ public interface JobSearchHomePageService {
      * @Description //TODO
      * @Date 15:40 2019/7/11
      **/
-    Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId, Integer [] jobStatus);
+    Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId, String jobStatus);
 
 
 
@@ -319,7 +329,7 @@ public interface JobSearchHomePageService {
      * @Param [query, head]
      * @return void
      **/
-    int addComplaint(ComplaintQuery query, String head);
+    int addComplaint(ComplaintQuery query);
 
     /**
      * 求职端 公司主页在招职位查询 代招单位

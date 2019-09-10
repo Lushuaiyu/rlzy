@@ -224,8 +224,9 @@ public class Test5 extends BaseTest {
 
     @Test
     public void test10() {
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(3);
+        ArrayList<String> list = new ArrayList<>();
+        list.add("3" +
+                "");
         System.out.println(mapper.queryBriefchapterBySignUpstatusRecruitment(list, 1));
     }
 

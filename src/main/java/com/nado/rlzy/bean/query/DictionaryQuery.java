@@ -66,4 +66,14 @@ public class DictionaryQuery {
      */
     private String welfare;
 
+    /**
+     * 5
+     */
+    private String manAge;
+
+    /**
+     * 9
+     */
+    private String femaleAge;
+
 }

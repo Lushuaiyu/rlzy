@@ -95,6 +95,12 @@ public class HrGroup {
     @Transient
     private Integer violationFlag;
 
+    /**
+     * 企业封面
+     */
+    @Column(name = "corporate_cover")
+    private String corporateCover;
+
     @Transient
     private String userName;
 

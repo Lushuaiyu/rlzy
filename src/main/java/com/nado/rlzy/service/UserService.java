@@ -53,7 +53,7 @@ public interface UserService {
     HrUser findByPhone(String phone);
 
     /**
-     * 招聘端注册
+     * 招聘端注册 完善信息
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:37 2019/7/26

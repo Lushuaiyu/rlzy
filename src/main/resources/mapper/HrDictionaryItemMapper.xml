@@ -66,4 +66,16 @@
             parameterType="com.nado.rlzy.bean.query.DictionaryQuery">
     select name, value  from hr_dictionary_item where pId = #{welfare}
   </select>
+    <select id="dictionary1" resultMap="BaseResultMap">
+    select name, value from hr_dictionary_item where pId = #{type}
+
+    </select>
+    <select id="selectFrontEndOption12" resultType="hrDictionaryItem"
+            parameterType="com.nado.rlzy.bean.query.DictionaryQuery">
+        select name, value from hr_dictionary_item where pId = #{manAge}
+    </select>
+    <select id="selectFrontEndOption13" resultType="hrDictionaryItem"
+            parameterType="com.nado.rlzy.bean.query.DictionaryQuery">
+        select name, value from  hr_dictionary_item where  pId = #{femaleAge}
+    </select>
 </mapper>

@@ -62,5 +62,17 @@ public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrec
     int updateWaitingForCommission(@Param("acceptRebateAmount") BigDecimal acceptRebateAmount, @Param("briefchpterId") Integer briefchpterId, @Param("signUpId") Integer signUpId);
 
 
+    /**
+     * 求职端我的工作 取消报名 | 取消报道 | 取消面试 | 放弃
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 21:30 2019-09-10
+     * @Param [hsdId]
+     * @return int
+     */
+    int cancelRegistration(@Param("id") Integer id);
+
+
+
 
 }

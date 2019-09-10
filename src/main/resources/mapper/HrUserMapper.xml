@@ -6,6 +6,7 @@
         <result column="UserName" property="userName" jdbcType="VARCHAR"/>
         <result column="RoleId" property="roleId" jdbcType="INTEGER"/>
         <result column="Password" property="password" jdbcType="VARCHAR"/>
+        <result column="net_ease_token" property="netEaseToken" jdbcType="VARCHAR"/>
         <result column="HeadImage" property="headImage" jdbcType="VARCHAR"/>
         <result column="PostIdStr" property="postIdStr" jdbcType="VARCHAR"/>
         <result column="postName" property="postName" jdbcType="VARCHAR"/>
@@ -99,14 +100,15 @@
             <if test="loginTime != null">
                 LoginTime = #{loginTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="deleteFlag != null">
-                DeleteFlag = #{deleteFlag,jdbcType=INTEGER},
-            </if>
+
             <if test="type != null">
                 type = #{type,jdbcType=INTEGER},
             </if>
             <if test="publicIs != null">
                 isPublic = #{publicIs,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status}
             </if>
         </set>
         <where>
@@ -124,7 +126,13 @@
         <set>
             Password = #{password}
         </set>
-        where Id = #{userId} and DeleteFlag = 0
+        where status = 0
+        <if test="null != userId">
+            and Id = #{userId}
+        </if>
+        <if test="null != phone">
+            and mobile = #{phone}
+        </if>
     </update>
     <update id="switchIdentity">
         update hr_user
@@ -146,11 +154,17 @@
             violation_flag = 1
         </set>
         <where>
-            DeleteFlag = 0
+            status = 0
             <if test="null != userId">
                 and Id = #{userId}
             </if>
         </where>
+    </update>
+    <update id="updateNetEaseTokenByserId">
+        update hr_user set net_ease_token = #{netEaseToekn} where status = 0
+        <if test="null != userId">
+            and id = #{userId}
+        </if>
     </update>
 
     <select id="getUserByMobile" resultMap="BaseResultMap" parameterType="map">
@@ -196,7 +210,7 @@
     <select id="queryUserByPhone" resultType="com.nado.rlzy.db.pojo.HrUser">
         select * from hr_user
         <where>
-            DeleteFlag = 0
+            status = 0
             <if test="null != phone">
                 and Mobile = #{phone}
             </if>
@@ -228,7 +242,7 @@
         </where>
     </select>
     <select id="finrdUserById" resultMap="BaseResultMap">
-        select * from hr_user where DeleteFlag = 0
+        select * from hr_user where status = 0
         <if test="null != userId">
             and Id = #{userId}
         </if>
@@ -335,7 +349,6 @@
         select count(si.user_name) as jobSeeker
         from hr_user u
         left join hr_signup si on u.id = si.user_id and si.delete_flag = 0
-        left join violation_record v on si.id = v.sign_up_id and v.delete_flag = 0
         where u.status = 0
         <if test="null != userId">
             and u.id = #{userId}
@@ -401,7 +414,7 @@
         left join hr_user uu on c.recruiter_id = uu.Id and uu.status = 0
         where
         <if test="null != userId">
-             c.user_id = #{userId}
+            c.user_id = #{userId}
         </if>
         and c.recruiter_id is not null
     </select>
@@ -446,7 +459,7 @@
         </if>
     </select>
     <select id="login" resultMap="BaseResultMap">
-        select Id, improve_information, violation_flag, violation_time from hr_user where status = 0
+        select Id, improve_information, violation_flag, violation_time, net_ease_token from hr_user where status = 0
         <if test="null != phone">
             and Mobile = #{phone}
         </if>
@@ -461,7 +474,7 @@
         </if>
     </select>
     <select id="queryUser" resultType="hrUser">
-        select * from hr_user where  status = 1
+        select * from hr_user where status = 1
         <if test="null != phone">
             and Mobile = #{phone}
         </if>

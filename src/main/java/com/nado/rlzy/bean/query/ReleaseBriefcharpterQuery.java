@@ -182,7 +182,7 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
     private String rebateMale;
 
     /**
-     * 职位描述图片url
+     * 职位描述图片url 多张图片 传数组
      */
     private String descriptionJobPhotoUrl;
 
