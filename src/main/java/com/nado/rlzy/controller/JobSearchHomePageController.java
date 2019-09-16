@@ -1,7 +1,7 @@
 package com.nado.rlzy.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.base.BaseController;
-import com.nado.rlzy.bean.model.ResultInfo;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.ComplaintQuery;
@@ -11,11 +11,9 @@ import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
 import com.nado.rlzy.service.PersonCenterService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -88,6 +86,28 @@ public class JobSearchHomePageController extends BaseController {
 
     }
 
+    @RequestMapping(value = "screeningPositions")
+    @ResponseBody
+    @ApiOperation(notes = "筛选简章", value = "筛选简章")
+    public ResultJson screeningPositions(BriefcharpterQuery query) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            Map<String, Object> map = service.screeningPositions(query);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
+    }
+
     /**
      * 求职端 首页 简章列表 查询招聘简章详情
      *
@@ -111,23 +131,21 @@ public class JobSearchHomePageController extends BaseController {
         try {
             HashMap<String, Object> map = new HashMap<>();
             if (query.getType1().equals(0)) {
-                List<HrBriefchapter> list = service.queryBriefcharpterDetileByParams(query);
-                List<HrBriefchapter> list1 = service.queryBriefcharpterDetileRecruitment(query);
-                //推荐单位 代招单位
+                Map<String, Object> map1 = service.queryBriefcharpterDetileByParams(query);
+                Map<String, Object> map2 = service.queryBriefcharpterDetileRecruitment(query);
+                /*//推荐单位 代招单位
                 List<HrBriefchapter> hrBriefchapters = service.recommendAPosition(query.getRecruitedCompany());
                 //推荐单位 招聘单位
-                List<HrBriefchapter> hrBriefchapters1 = service.recommendAPositionRecruitment(query.getRecruitedCompany());
+                List<HrBriefchapter> hrBriefchapters1 = service.recommendAPositionRecruitment(query.getCertifier());*/
 
                 //招聘单位
-                map.put("queryBriefcharpterDetileRecruitment", list1);
-                map.put("recommendAPositionRecruitment", hrBriefchapters1);
+                if (map1 != null) {
+                    map.put("queryBriefcharpterDetileByParams", map1);
+                }
+                if (map2 != null) {
+                    map.put("queryBriefcharpterDetileRecruitment", map2);
+                }
                 //代招单位
-                map.put("queryBriefcharpterDetileByParams", list);
-                map.put("recommendAPosition", hrBriefchapters);
-                json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                json.setData(map);
-
                 json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 json.setData(map);
@@ -260,7 +278,7 @@ public class JobSearchHomePageController extends BaseController {
     @ApiOperation(notes = "求职端 首页 公司主页 代招单位", value = "求职端 首页 公司主页", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "groupId", name = "代招单位id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "type", name = "类型 1 基本信息 2 在招职位 3 历史记录", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "类型 1 基本信息 2 在招职位 3 历史记录 4 求职端公司主页上面信息", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "briefchapterId", name = "简章id", dataType = "Integer", required = true)
     })
     public ResultJson coHomePage(Integer groupId, Integer type, Integer briefchapterId) {
@@ -281,7 +299,7 @@ public class JobSearchHomePageController extends BaseController {
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 result.setData(list);
-            } else {
+            } else if (type.equals(3)) {
                 //历史记录
                 //违规记录
                 List<HrComplaint> list = service.violationRecord(groupId);
@@ -292,6 +310,13 @@ public class JobSearchHomePageController extends BaseController {
                 map.put("violationRecord", list);
                 map.put("companyHomeHistory", hrBriefchapters);
                 map.put("interviewReportEntry", entry);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            } else {
+                //求职端公司主页上面信息 代招单位 || 招聘单位
+                List<HrGroup> hrGroups = service.coHomePageUpward(groupId);
+                map.put("coHomePageUpward", hrGroups);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 result.setData(map);
@@ -418,29 +443,17 @@ public class JobSearchHomePageController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "signupId", name = "报名id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "type", name = "1 我要报名 2 推荐人报名", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "number", name = "前台传数组到后台", dataType = "Integer", required = true)
     })
 
     public ResultJson IWantToSignUp(HrSignupDeliveryrecord deliveryrecord) {
         ResultJson resultJson = new ResultJson();
         try {
-            if (deliveryrecord.getType().equals(1)) {
-                //我要报名 本人
-                int count = service.IWantToSignUp(deliveryrecord);
-                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                resultJson.setData(count);
-                return resultJson;
-            }
-            if (deliveryrecord.getType().equals(2)) {
-                //推荐人给被推荐人报名
-                int count = service.referrerToSIgnUp(deliveryrecord);
-                resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                resultJson.setData(count);
-                return resultJson;
-            }
+            //我要报名 本人
+            int count = service.IWantToSignUp(deliveryrecord);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
         } catch (AssertException e) {
             e.printStackTrace();
             resultJson.setMessage(e.getMessage());
@@ -451,7 +464,33 @@ public class JobSearchHomePageController extends BaseController {
             resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
 
-        return null;
+        return resultJson;
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "referreregistration")
+    @ApiOperation(value = "推荐人给被推荐人报名", notes = "推荐人给被推荐人报名")
+    public ResultJson referreregistration(@RequestBody(required = false) JSONObject referreregistration, Integer briefChapterId, String number) {
+        ResultJson resultJson = new ResultJson();
+
+        try {
+
+            //推荐人给被推荐人报名
+            int count = service.referrerToSIgnUp(referreregistration, briefChapterId, number);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(count);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
     }
 
     /**
@@ -513,23 +552,20 @@ public class JobSearchHomePageController extends BaseController {
      **/
     @RequestMapping(value = "addSignUp")
     @ResponseBody
-    @ApiOperation(notes = "新增报名表", value = "新增报名表", httpMethod = "POST")
+    @ApiOperation(notes = "新增求职表", value = "新增报名表", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userName", name = "求职者姓名", dataType = "string", required = true),
             @ApiImplicitParam(value = "sex", name = "求职者性别", dataType = "integer", required = true),
             @ApiImplicitParam(value = "education", name = "学历", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "graduationTime", name = "毕业时间", dataType = "date", required = true),
+            @ApiImplicitParam(value = "graduationTime1", name = "毕业时间", dataType = "date", required = true),
             @ApiImplicitParam(value = "profession", name = "专业", dataType = "string", required = true),
             @ApiImplicitParam(value = "registrationPositionId", name = "意向岗位id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "arrivalTime", name = "到岗时间", dataType = "date", required = true),
+            @ApiImplicitParam(value = "arrivalTime1", name = "到岗时间", dataType = "date", required = true),
             @ApiImplicitParam(value = "expectedSalary", name = "期望工资", dataType = "string", required = true),
             @ApiImplicitParam(value = "relation", name = "年龄", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "itIsPublic", name = "是否公开", dataType = "integer", required = true),
             @ApiImplicitParam(value = "agreePlatformHelp", name = "是否获取平台帮助", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "typeId", name = "身份id", dataType = "integer", required = true),
-            @ApiImplicitParam(name = "mySignUpTableId", value = "我的报名表id", dataType = "integer", required = true)
-
+            @ApiImplicitParam(value = "userId", name = "推荐人 id", dataType = "integer", required = true)
     })
     public ResultJson addSignUp(HrSignUp signUp) {
         ResultJson resultJson = new ResultJson();
@@ -661,15 +697,28 @@ public class JobSearchHomePageController extends BaseController {
     @RequestMapping(value = "searchGroupingInformation")
     @ResponseBody
     @ApiOperation(notes = "查询我的求职表分组 推荐人身份才能添加分组", value = "查询我的求职表分组 推荐人身份才能添加分组", httpMethod = "POST")
-    @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true)
-    public ResultJson searchGroupingInformation(Integer userId) {
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true),
+                    @ApiImplicitParam(value = "type", name = "1 查询分组 2 删除自定义分组", dataType = "int", required = true),
+                    @ApiImplicitParam(value = "id", name = "分组 id", dataType = "int", required = true)
+            }
+    )
+    public ResultJson searchGroupingInformation(Integer userId, Integer type, Integer id) {
         ResultJson result = new ResultJson();
 
         try {
-            Map<String, Object> tables = service.searchGroupingInformation(userId);
-            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(tables);
+            if (type.equals(1)) {
+                Map<String, Object> tables = service.searchGroupingInformation(userId);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(tables);
+            } else {
+                int mySignUpTableId = service.deleteMySignUpTable(id);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(mySignUpTableId);
+            }
         } catch (AssertException e) {
             e.printStackTrace();
             result.setMessage(e.getMessage());
@@ -682,6 +731,7 @@ public class JobSearchHomePageController extends BaseController {
         return result;
     }
 
+
     @RequestMapping(value = "grouper")
     @ResponseBody
     @ApiOperation(notes = "查询 求职端 身份是推荐人 首页 我的求职表 分组下的 被推荐人的报名表 | 查询求职端身份是推荐人 首页 我的求职表下被推荐人的求职表",
@@ -689,16 +739,62 @@ public class JobSearchHomePageController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "groupName", name = "自定义分组名字", dataType = "int", required = true),
             @ApiImplicitParam(value = "signUpName", name = "被推荐人名字", dataType = "int", required = true),
-            @ApiImplicitParam(name = "type", value = "1 我的求职表下的被推荐人的报名表 2 自定义分组下的被推荐人的报名表", dataType = "int", required = true),
-            @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true)
+            @ApiImplicitParam(name = "type", value = "1 我的求职表下的被推荐人的报名表 2 自定义分组下的被推荐人的报名表", dataType = " int", required = true),
+            @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true),
     })
     public ResultJson grouper(String groupName, String signUpName, Integer type, Integer userId) {
         ResultJson result = new ResultJson();
         try {
+
             Map<String, Object> grouper = service.grouper(groupName, signUpName, type, userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(grouper);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return result;
+    }
+
+    @ApiOperation(notes = "求职端 个人中心添加求职表到分组", value = "求职端 个人中心添加求职表到分组", httpMethod = "POST")
+    @RequestMapping(value = "insertSignUpTable")
+    @ResponseBody
+    public ResultJson insertSignUpTable(@RequestBody(required = false) JSONObject tableSignUp) {
+        ResultJson result = new ResultJson();
+        try {
+            int i = service.insertSignUpTable(tableSignUp);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(i);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return result;
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "selectAllSignUpByRecommend")
+    @ApiOperation(value = "求职端 个人中心 我的报名表 查询推荐人名下的报名表", notes = "求职端 个人中心 我的报名表 查询推荐人名下的报名表", httpMethod = "POST")
+    public ResultJson selectAllSignUpByRecommend(Integer userId) {
+        ResultJson result = new ResultJson();
+        try {
+            List<HrSignUp> hrSignUps = service.selectAllSignUpByRecommend(userId);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(hrSignUps);
         } catch (AssertException e) {
             e.printStackTrace();
             result.setMessage(e.getMessage());

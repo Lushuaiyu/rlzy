@@ -72,6 +72,16 @@ public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrec
      */
     int cancelRegistration(@Param("id") Integer id);
 
+    /**
+     * 推荐人给被推荐人报名
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 10:54 2019-09-16
+     * @Param [list]
+     * @return int
+     */
+    int inserttListt(@Param("list") List<HrSignupDeliveryrecord> list);
+
 
 
 

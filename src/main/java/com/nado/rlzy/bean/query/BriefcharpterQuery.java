@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @ClassName 招聘简章query
@@ -29,7 +28,7 @@ public class BriefcharpterQuery extends BaseQuery {
     private String certifier;
 
     @ApiModelProperty(value = "职位")
-    private int[] postName;
+    private int[] postId;
 
     @ApiModelProperty(value = "用户id")
     private Integer userId;
@@ -39,9 +38,6 @@ public class BriefcharpterQuery extends BaseQuery {
 
     @ApiModelProperty(value = " 专业id")
     private String professionId;
-
-    @ApiModelProperty(value = "职位id")
-    private String postId;
 
 
     @ApiModelProperty(value = "男生年龄 id")
@@ -66,7 +62,7 @@ public class BriefcharpterQuery extends BaseQuery {
 
 
     @ApiModelProperty(value = "用工形式 学生专区")
-    private Integer [] contractWayDetailId1;
+    private Integer[] contractWayDetailId1;
 
     @ApiModelProperty(value = "代招单位面试地址")
     private String interviewAddress2;
@@ -182,13 +178,7 @@ public class BriefcharpterQuery extends BaseQuery {
     /**
      * 到岗时间
      */
-    private Date arrivalTime;
-
-    /**
-     * 毕业时间
-     */
-    private Date graduationTime;
-
+    private String arrivalTime;
 
 
     /**
@@ -199,53 +189,9 @@ public class BriefcharpterQuery extends BaseQuery {
     private BigDecimal expectedSalaryLower;
 
     /**
-     * 学历
-     */
-    private String education;
-
-    /**
-     * 意向岗位
-     */
-    private String registrationPositionId;
-
-    /**
      * 年龄
      */
     private Integer age;
 
-    /**
-     * 男生面试返佣
-     */
-    private BigDecimal rebateMaleInterview;
 
-    /**
-     * 女生面试返佣
-     */
-    private BigDecimal rebateFemaleInterview;
-
-    /**
-     * 男生报道返佣
-     */
-    private BigDecimal rebateMaleReport;
-
-    /**
-     * 女生报道返佣
-     */
-    private BigDecimal rebateFemaleReport;
-
-    /**
-     * 男生入职返佣
-     */
-    private BigDecimal rebateMaleEntry;
-    /**
-     * 女生入职返佣
-     */
-    private BigDecimal rebateFemaleEntry;
-
-
-
-    /**
-     * 返佣时间入职
-     */
-    private Date rebateTimeEntry;
 }

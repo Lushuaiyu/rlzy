@@ -5,10 +5,7 @@ import com.nado.rlzy.bean.dto.PersonCoDto;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
 import com.nado.rlzy.db.mapper.*;
-import com.nado.rlzy.db.pojo.Feedback;
-import com.nado.rlzy.db.pojo.HrGroup;
-import com.nado.rlzy.db.pojo.HrSignUp;
-import com.nado.rlzy.db.pojo.HrUser;
+import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.ImgException;
 import com.nado.rlzy.service.PersonCenterService;
@@ -21,11 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -170,7 +165,7 @@ public class PersonCenterServiceImpl implements PersonCenterService {
                     String format1 = StringUtil.decimalFormat2(v);
                     double v1 = dto.getExpectedSalaryLower().doubleValue();
                     String s1 = StringUtil.decimalFormat2(v1);
-                    String s = s1 + "k" + format1  + "k";
+                    String s = s1 + "k-" + format1 + "k";
                     dto.setExpectedSalaryy(s);
                     return dto;
                 }).collect(Collectors.toList());
@@ -192,10 +187,10 @@ public class PersonCenterServiceImpl implements PersonCenterService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void editPersonData(EditPersonDataQuery query, String url) {
+    public void editPersonData(EditPersonDataQuery query) {
 
         //编辑资料
-        editInformation(query, url);
+        editInformation(query);
 
 
     }
@@ -204,14 +199,16 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     @Transactional(rollbackFor = Exception.class)
     public void editPersonDataRecommend(EditPersonDataQuery query) {
         HrUser user = new HrUser();
-        user.setHeadImage(query.getUrl());
+        user.setId(String.valueOf(query.getUserId()));
+        String s = OssUtilOne.picUpload(query.getHeadImage(), "0");
+        user.setHeadImage(s);
         user.setRecommenderId(query.getUserId());
         user.setPostIdStr(query.getPostIdStr());
         user.setRecommendNo(query.getRecommendNo());
         user.setRecommendInfo(query.getRecommendInfo());
         user.setPublicIs(query.getItIsPublic());
         user.setAgreeHelp(query.getAgreePlatformHelp());
-        AssertUtil.isTrue(userMapper.editPersonData(user) < 1, RlzyConstant.OPS_FAILED_MSG);
+        AssertUtil.isTrue(userMapper.updateByPrimaryKeySelective(user) < 1, RlzyConstant.OPS_FAILED_MSG);
 
     }
 
@@ -291,24 +288,45 @@ public class PersonCenterServiceImpl implements PersonCenterService {
                 }).collect(Collectors.toList());
     }
 
-    private void editInformation(EditPersonDataQuery query, String url) {
+    private void editInformation(EditPersonDataQuery query) {
         HrUser hrUser = new HrUser();
-        hrUser.setHeadImage(url);
-        hrUser.setSex(query.getSex());
-        hrUser.setEducation(query.getEducation());
-        String graduationTime = query.getGraduationTime();
-        Date date = StringUtil.StrToDate(graduationTime);
-        hrUser.setGraduationTime(date);
-        hrUser.setProfession(query.getProfession());
-        hrUser.setPostIdStr(query.getPostIdStr());
-        String arrivalTime = query.getArrivalTime();
-        Date date1 = StringUtil.StrToDate(arrivalTime);
-        hrUser.setArrivalTime(date1);
-        hrUser.setExpectedSalaryUpper(query.getExpectedSalaryUpper());
-        hrUser.setExpectedSalaryLower(query.getExpectedSalaryLower());
-        hrUser.setPublicIs(query.getItIsPublic());
-        hrUser.setAgreeHelp(query.getAgreePlatformHelp());
-        AssertUtil.isTrue(userMapper.editPersonData(hrUser) < 1, RlzyConstant.ADD_FAILED);
+        HrUser user = userMapper.selectAllInformation(query.getUserId());
+        if (query.getHeadImage() != null && query.getHeadImage() != ""){
+            String s = OssUtilOne.picUpload(query.getHeadImage(), "0");
+            hrUser.setHeadImage(s);
+        }
+        if (query.getUserId() != null || query.getSex() != null || query.getEducation() != null ||
+        query.getGraduationTime() != null || query.getProfession() != null || query.getPostIdStr() != null ||
+        query.getArrivalTime() != null || query.getExpectedSalaryLower() != null || query.getExpectedSalaryUpper() != null ||
+        query.getItIsPublic() != null || query.getAgreePlatformHelp() != null) {
+            hrUser.setId(String.valueOf(query.getUserId()));
+            Integer sex = query.getSex() != null ? query.getSex() : user.getSex();
+            hrUser.setSex(sex);
+            String education = query.getEducation() != null ? query.getEducation() : user.getEducation();
+            hrUser.setEducation(education);
+
+            String graduationTime = StringUtil.DateToStr(user.getGraduationTime());
+            String s = query.getGraduationTime() != null ? query.getGraduationTime() : graduationTime;
+            Date date = StringUtil.StrToDate(s);
+            hrUser.setGraduationTime(date);
+            String s1 = query.getProfession() != null ? query.getProfession() : user.getProfession();
+            hrUser.setProfession(s1);
+            String s2 = query.getPostIdStr() != null ? query.getPostIdStr() : user.getPostIdStr();
+            hrUser.setPostIdStr(s2);
+            String s3 = StringUtil.DateToStr(user.getArrivalTime());
+            String arrivalTime = query.getArrivalTime() != null ? query.getArrivalTime() : s3;
+            Date date1 = StringUtil.StrToDate(arrivalTime);
+            hrUser.setArrivalTime(date1);
+            BigDecimal bigDecimal = query.getExpectedSalaryUpper() != null ? query.getExpectedSalaryUpper() : user.getExpectedSalaryLower();
+            hrUser.setExpectedSalaryUpper(bigDecimal);
+            BigDecimal bigDecimal1 = query.getExpectedSalaryUpper() != null ? query.getExpectedSalaryUpper() : user.getExpectedSalaryUpper();
+            hrUser.setExpectedSalaryLower(bigDecimal1);
+            Integer integer = query.getItIsPublic() != null ? query.getItIsPublic() : user.getPublicIs();
+            hrUser.setPublicIs(integer);
+            Integer integer1 = query.getAgreePlatformHelp() != null ? query.getAgreePlatformHelp() : user.getAgreeHelp();
+            hrUser.setAgreeHelp(integer1);
+            AssertUtil.isTrue(userMapper.updateByPrimaryKeySelective(hrUser) < 1, RlzyConstant.ADD_FAILED);
+        }
     }
 
 

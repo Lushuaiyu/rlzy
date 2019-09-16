@@ -21,7 +21,7 @@
         <result column="commendName" property="commendName" jdbcType="VARCHAR"/>
         <result column="enter_time" property="enterTime" jdbcType="TIMESTAMP"/>
         <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
-        <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="no_pass_reason" property="noPassReason" jdbcType="INTEGER"/>
         <result column="delete_flag" property="deleteFlag" jdbcType="TINYINT"/>
         <result column="registration_position_id" property="registrationPositionId" jdbcType="VARCHAR"/>
@@ -487,7 +487,7 @@
         left join hr_briefchapter b on c.briefchapter_id = b.Id and b.briefChapterStatus = 0
         where
         <if test="null != userId">
-             u.Id = #{userId}
+            u.Id = #{userId}
         </if>
         and c.sign_up_id is not null order by c.create_time desc
     </select>
@@ -500,7 +500,10 @@
         s.id_card,
         s.education,
         s.graduation_time,
-        s.profession,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, s.profession)
+        and d.pId = 3) as profession,
         s.arrival_time,
         s.expected_salary_upper,
         s.expected_salary_lower,
@@ -521,7 +524,7 @@
         hr_user u,
         hr_briefchapter br
         where msut.id = msutsu.my_sign_up_table_id
-        and msutsu.delete_time = 0
+        and msutsu.delete_flag = 0
         and msutsu.sign_up_id = s.id
         and s.id = hsd.signup_id
         and hsd.delete_flag = 0
@@ -655,7 +658,8 @@
         r.CreateTime,
         s.sex,
         r.RebateType,
-        s.user_id
+        s.user_id,
+        sd.status
         from hr_signup s
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
         left join hr_user u on s.user_id = u.Id and u.status = 0
@@ -687,40 +691,48 @@
 
     <select id="grouper" resultMap="BaseResultMap">
         select si.user_name, si.id, mt.group_name
-        from hr_signup si
-        left join my_sign_up_table_sign_up msutsu on si.id = msutsu.sign_up_id and msutsu.delete_time = 0
-        left join my_sign_up_table mt on mt.id = msutsu.my_sign_up_table_id and mt.delete_flag = 0
-        left join hr_user u on si.user_id = u.Id and u.status = 0
-
+        from hr_signup si,
+        my_sign_up_table mt,
+        my_sign_up_table_sign_up msutsu,
+        hr_user u
         <where>
-            si.delete_flag = 0
-            <if test="null != groupName">
-                and mt.group_name = #{groupName}
-            </if>
+            si.id = msutsu.sign_up_id
+            and msutsu.delete_flag = 0
+            and mt.id = msutsu.my_sign_up_table_id
+            and mt.delete_flag = 0
+            and si.delete_flag = 0
             <if test="null != signUpName">
                 and si.user_name like concat('%', #{signUpName}, '%')
             </if>
             <if test="null != userId">
-                and u.id = #{userId}
+                and u.Id = #{userId}
             </if>
+            <if test="null != groupName">
+                and mt.group_name like concat('%', #{groupName}, '%')
+            </if>
+            and u.id = si.user_id and u.status = 0
         </where>
+
 
     </select>
     <select id="selectSignUpTableBySignUpName" resultMap="BaseResultMap">
         select si.user_name, si.id, mt.group_name
-        from my_sign_up_table_sign_up msutsu
-        left join my_sign_up_table mt on mt.id = msutsu.my_sign_up_table_id and mt.delete_flag = 0
-        left join hr_signup si on msutsu.sign_up_id = si.id and si.delete_flag = 0
-        left join hr_user u on si.user_id = u.Id and u.status = 0
-        <where>
-            msutsu.delete_time = 0
-            <if test="null != signUpName">
-                and si.user_name like concat('%', #{signUpName}, '%')
-            </if>
-            <if test="null != userId">
-                and u.id = #{userId}
-            </if>
-        </where>
+        from hr_signup si,
+        my_sign_up_table mt,
+        my_sign_up_table_sign_up msutsu,
+        hr_user u
+        where si.id = msutsu.sign_up_id
+        and msutsu.delete_flag = 0
+        and mt.id = msutsu.my_sign_up_table_id
+        and mt.delete_flag = 0
+        and si.delete_flag = 0
+        <if test="null != signUpName">
+            and si.user_name like concat('%', #{signUpName}, '%')
+        </if>
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+        and u.Id = si.user_id and u.status = 0
     </select>
     <select id="queryComplaintPerson" resultType="com.nado.rlzy.bean.dto.ComplaintPage">
         select si.user_name as signName,
@@ -844,5 +856,19 @@
         and sd.id = re.signup_deliveryrecord_id
         and sd.status = 12
         and re.RebateType = 2
+    </select>
+    <select id="aaa" resultMap="BaseResultMap">
+        select id from hr_signup where delete_flag = 0 and id in (#{id})
+    </select>
+    <select id="selectAllSignUpByRecommend" resultMap="BaseResultMap">
+        select si.user_name, si.id
+        from hr_user u
+        left join hr_signup si on u.id = si.user_id and si.delete_flag = 0
+        where u.status = 0
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+
+
     </select>
 </mapper>

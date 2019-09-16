@@ -7,6 +7,7 @@
 
         <result column="Name" property="postName" jdbcType="VARCHAR"/>
         <result column="PostId" property="postId" jdbcType="INTEGER"/>
+        <result column="postIdd" property="postIdd" jdbcType="VARCHAR"/>
         <result column="recruitingNo" property="recruitingNo" jdbcType="INTEGER"/>
         <result column="Rebate" property="rebate" jdbcType="INTEGER"/>
         <result column="avgSalary" property="avgSalary" jdbcType="INTEGER"/>
@@ -54,8 +55,8 @@
         <result column="womenNum" property="womenNum" jdbcType="INTEGER"/>
         <result column="manAgeId" property="manAgeId" jdbcType="INTEGER"/>
         <result column="Rebate" property="rebate" jdbcType="INTEGER"/>
-        <result column="womenAgeId" property="womenAgeId" jdbcType="INTEGER"/>
-        <result column="womenAgeId" property="womenAgeId" jdbcType="INTEGER"/>
+        <result column="man_age_id" property="manAgeId" jdbcType="INTEGER"/>
+        <result column="women_age_id" property="womenAgeId" jdbcType="INTEGER"/>
         <result column="womenAge" property="womenAge" jdbcType="VARCHAR"/>
         <result column="manAge" property="manAge" jdbcType="VARCHAR"/>
         <result column="manAge" property="manAge" jdbcType="VARCHAR"/>
@@ -88,6 +89,8 @@
         <result column="rebate_time_entry" property="rebateTimeEntry" jdbcType="DECIMAL"/>
         <result column="user_name" property="userName" jdbcType="DECIMAL"/>
         <result column="hsdId" property="hsdId" jdbcType="INTEGER"/>
+        <result column="brId" property="brId" jdbcType="INTEGER"/>
+        <result column="collectId" property="collectId" jdbcType="INTEGER"/>
 
 
         <!--
@@ -268,6 +271,9 @@
             <if test="null != rebateTimeEntry">
                 rebate_time_entry,
             </if>
+            <if test="null != createtime">
+                CreateTime,
+            </if>
 
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -400,6 +406,9 @@
             </if>
             <if test="null != rebateTimeEntry">
                 #{rebateTimeEntry},
+            </if>
+            <if test="null != createtime">
+                #{createtime},
             </if>
 
 
@@ -849,22 +858,21 @@
         from hr_briefchapter br
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
+        left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0
         and grr.pid = gr.Id
         <if test="null != recruitedCompany and '' != recruitedCompany">
             and grr.GroupName like concat('%', #{recruitedCompany}, '%')
         </if>
-        <if test="null != postName">
+        <if test="null != postId">
             and br.PostId in
-            <foreach collection="postName" item="item" separator="," open="(" close=")">
+            <foreach collection="postId" item="item" separator="," open="(" close=")">
                 #{item}
             </foreach>
         </if>
         <if test="null != sex">
             and si.sex = #{sex}
-        </if>
-        <if test="null != age">
-            and br.man_age_id = #{age}
         </if>
         <if test="null != manAgeId">
             and br.man_age_id = #{manAgeId}
@@ -906,7 +914,7 @@
         <if test="null != welfareId and '' != welfareId">
             and br.welfareId like concat('%', #{welfareId}, '%')
         </if>
-        <if test="null != interviewStartTime and null != queryBriefcharpterDetileByParamsinterviewEndTime">
+        <if test="null != interviewStartTime and null != interviewEndTime">
             and br.interviewTime between #{interviewStartTime} and #{interviewEndTime}
         </if>
         <if test="null != registerStartTime and null != registerEndTime">
@@ -915,17 +923,9 @@
         <if test="null != contractWay">
             and br.contractWay = #{contractWay}
         </if>
-        <if test="null != expectedSalaryUpper">
-            and si.expected_salary_upper = #{expectedSalaryUpper}
-        </if>
-        <if test="null != expectedSalaryLower">
-            and si.expected_salary_lower = #{expectedSalaryLower}
-        </if>
         <if test="null != educationId">
             and si.education = #{educationId}
         </if>
-
-        order by br.CreateTime desc
     </select>
     <select id="queryCountByparams" resultType="_int"
             parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
@@ -1327,7 +1327,7 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.PostId)
         and d.pId = 1) as postName,
-        br.id,
+        br.id as brId,
         grr.GroupName as certifier,
         gr.GroupName as recruitedCompany,
         br.RecruitingNo as recruitingNo,
@@ -1339,7 +1339,6 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
         and d.pId = 23) as detailSalaryWay,
-
         br.rebate_male_interview,
         br.rebate_male_report,
         br.rebate_male_entry,
@@ -1351,7 +1350,7 @@
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
         br.Rebate as rebateStatus,
-        u.Id
+        c.id as collectId
         from collect c
         left join hr_user u on c.user_id = u.id and u.status = 0
         left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0
@@ -1572,17 +1571,25 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        br.Rebate as rebateStatus
+        br.Rebate as rebateStatus,
+        br.man_age_id,
+        br.women_age_id,
+        br.experienceId as experience,
+        br.registerTime,
+        br.educationId as education,
+        br.PostId as postIdd
         from hr_briefchapter br
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
+        left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0
         and gr.type = 1
         <if test="null != certifier and '' != certifier">
             and gr.GroupName like concat('%', #{certifier}, '%')
         </if>
-        <if test="null != postName">
+        <if test="null != postId">
             and br.PostId in
-            <foreach collection="postName" item="item" separator="," open="(" close=")">
+            <foreach collection="postId" item="item" separator="," open="(" close=")">
                 #{item}
             </foreach>
         </if>
@@ -1641,17 +1648,10 @@
         <if test="null != contractWay">
             and br.contractWay = #{contractWay}
         </if>
-        <if test="null != expectedSalaryUpper">
-            and si.expected_salary_upper = #{expectedSalaryUpper}
-        </if>
-        <if test="null != expectedSalaryLower">
-            and si.expected_salary_lower = #{expectedSalaryLower}
-        </if>
-
         <if test="null != educationId">
             and si.education = #{educationId}
         </if>
-        order by br.CreateTime desc
+
     </select>
     <select id="queryBriefcharpterDetileRecruitment" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
@@ -1908,7 +1908,7 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.PostId)
         and d.pId = 1) as postName,
-        br.id,
+        br.id as brId,
         gr.GroupName as certifier,
         br.RecruitingNo as recruitingNo,
         gr.GroupAddress as groupAddress,
@@ -1942,7 +1942,7 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.PostId)
         and d.pId = 1) as postName,
-        br.id,
+        br.id as brId,
         gr.GroupName as certifier,
         br.RecruitingNo as recruitingNo,
         gr.GroupAddress as groupAddress,
@@ -1964,7 +1964,7 @@
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
         br.Rebate as rebateStatus,
-        u.Id
+        c.id as collectId
         from collect c
         left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0
         left join hr_user u on c.user_id = u.id and u.status = 0
@@ -2376,7 +2376,7 @@
     </select>
 
     <select id="interviewRebateOrReportRebate" resultMap="BaseResultMap">
-        select Rebate, rebate_female_interview, rebate_male_interview, rebate_male_report, rebate_female_report from
+        select Rebate, rebate_female_interview, rebate_male_interview, rebate_male_report, rebate_female_report, hireWay from
         hr_briefchapter
         <where>
             briefChapterStatus = 0

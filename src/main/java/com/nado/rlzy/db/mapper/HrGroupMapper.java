@@ -25,6 +25,16 @@ public interface HrGroupMapper extends Mapper<HrGroup> {
     List<HrGroup> coHomePage(@Param("groupId") Integer groupId);
 
     /**
+     * 求职端公司主页上面信息 代招单位 || 招聘单位
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 18:03 2019-09-15
+     * @Param [groupId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
+     */
+    List<HrGroup> coHomePageUpward(@Param("groupId") Integer groupId);
+
+    /**
      * 招聘端 发布简章 查询被招聘企业的名字
      *
      * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>

@@ -114,15 +114,14 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
     int changePassword(@Param("userId") Integer userId, @Param("password") String password, @Param("phone") String phone);
 
     /**
-     *  切换身份
+     *  切换身份时禁掉原来的身份  for example 原来是本人 切换到推荐人 则禁掉本人
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:58 2019/7/16
      * @param userId 用户 id
-     * @param type 用户身份
      * @return int
      **/
-    int switchIdentity(@Param("userId") Integer userId, @Param("type") Integer type);
+    int switchIdentity(@Param("userId") Integer userId);
 
 
     /**
@@ -322,7 +321,45 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      */
     int updateNetEaseTokenByserId(@Param("userId") Integer userId, @Param("netEaseToekn") String netEaseToekn);
 
+    /**
+     * 平台拉黑求职端
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 20:27 2019-09-11
+     * @param userId 用户 id
+     * @return int
+     */
+    int selectPlatformlack(@Param("userId") Integer userId);
 
+    /**
+     * 平台拉黑招聘端
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 20:58 2019-09-11
+     * @Param
+     * @return
+     */
+    int selectplatformBlackRecruitmentEnd(@Param("userId") Integer userId);
+
+    /**
+     * 推荐人意向岗位 求职端首页 简章列表
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 15:43 2019-09-13
+     * @Param [userId]
+     * @return java.lang.String
+     */
+    String selectReferrerIntentionalPost(@Param("userId") Integer userId);
+
+    /**
+     * 查询素有
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 17:27 2019-09-16
+     * @Param [userId]
+     * @return com.nado.rlzy.db.pojo.HrUser
+     */
+    HrUser selectAllInformation(@Param("userId") Integer userId);
 
 
 

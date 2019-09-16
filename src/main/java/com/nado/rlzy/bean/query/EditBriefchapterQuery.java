@@ -1,6 +1,5 @@
 package com.nado.rlzy.bean.query;
 
-import com.nado.rlzy.db.pojo.EntryResignation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassName 招聘端 我的发布 编辑简章
@@ -200,7 +198,7 @@ public class EditBriefchapterQuery {
     /**
      * 入职返佣 男 女
      */
-    private List<EntryResignation> resignations;
+    private String resignations;
 
     private BigDecimal rebateMoney;
 

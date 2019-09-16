@@ -1,18 +1,11 @@
 package com.nado.rlzy.bean.query;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nado.rlzy.base.BaseQuery;
-import com.nado.rlzy.db.pojo.EntryResignation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassName 招聘端 -- 发布简章query
@@ -39,13 +32,6 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
 
     private Integer recruitingNo;
 
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date checkedTime;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime createTime;
 
     /**
      * 阅读人数
@@ -172,12 +158,6 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
     @ApiModelProperty(value = "返佣类型")
     private Integer rebateType;
 
-
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(value = "返佣时间")
-    private Date rebateTime;
-
     @ApiModelProperty(value = "返佣男")
     private String rebateMale;
 
@@ -197,21 +177,9 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
     private Integer certifierId;
 
     /**
-     * 职位描述图片上传
-     */
-    private MultipartFile descriptionJobPhotoFile;
-
-    /**
      * 备注
      */
     private String remark;
-
-    /**
-     * 用人单位证明图片上传
-     */
-    private MultipartFile employerCertificatePhotoFile;
-
-
 
     /**
      * 0 已上架 1已下架
@@ -251,7 +219,8 @@ public class ReleaseBriefcharpterQuery extends BaseQuery {
     /**
      * 入职返佣
      */
-    private List<EntryResignation> rebateEntry;
+    //private JSONObject rebateEntry;
+    // private List<EntryResignation> rebateEntry;
 
     /**
      * 返佣类型 0 面试 报道 入职

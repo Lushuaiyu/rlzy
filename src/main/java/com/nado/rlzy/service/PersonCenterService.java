@@ -83,7 +83,7 @@ public interface PersonCenterService {
      * @Date 15:12 2019/7/9
      * @return void
      **/
-    void editPersonData(EditPersonDataQuery query, String url);
+    void editPersonData(EditPersonDataQuery query);
 
     /**
      * 编辑资料 推荐人

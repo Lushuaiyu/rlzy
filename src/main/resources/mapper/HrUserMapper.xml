@@ -137,15 +137,13 @@
     <update id="switchIdentity">
         update hr_user
         <set>
-            <if test="null != type">
-                type = #{type}
-                <where>
-                    <if test="null != userId">
-                        Id = #{userId}
-                    </if>
-                </where>
-            </if>
+            status = 1
         </set>
+        <where>
+            <if test="null != userId">
+                Id = #{userId}
+            </if>
+        </where>
 
     </update>
     <update id="updateViolationFlag" parameterType="hrUser">
@@ -292,7 +290,8 @@
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
         and d.pId = 1) as PostIdStr,
         u.arrivalTime,
-        u.expectedSalary,
+        u.expectedSalaryLower,
+        u.expectedSalaryUpper,
         u.isPublic,
         u.agreeHelp,
         u.PostIdStr
@@ -408,37 +407,46 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, uu.PostIdStr)
         and d.pId = 1) as postName,
-        uu.RecommendNo,
-        from collect c
-        left join hr_user u on c.user_id = u.id and u.status = 0
-        left join hr_user uu on c.recruiter_id = uu.Id and uu.status = 0
-        where
+        uu.RecommendNo
+        from collect c,
+        hr_user u,
+        hr_user uu
+        where c.user_id = u.id
+        and u.status = 0
+        and c.recruiter_id = uu.Id
+        and uu.status = 0
         <if test="null != userId">
-            c.user_id = #{userId}
+            and c.user_id = #{userId}
         </if>
-        and c.recruiter_id is not null
+        and c.recruiter_id is not null;
     </select>
     <select id="queryMyselfVillation" resultMap="BaseResultMap">
-        select hsd.status, u.UserName, gr.GroupName, u.violation_flag
-        from hr_signup si
+        select hsd.status, u.UserName, gr.GroupName, u.violation_flag, u.violation_time, u.Id, si.id, hsd.id, br.id, gr.Id
+        from hr_user u
+        left join hr_signup si  on si.user_id = u.id and si.delete_flag = 0
         left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
-        left join hr_user u on si.user_id = u.id and u.status = 0
         left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0
         left join hr_group gr on br.RecruitedCompanyId = gr.Id and gr.groupStatus = 0
-        where si.delete_flag = 0
+        where  u.status = 0
         <if test="null != userId">
             and u.Id = #{userId}
         </if>
     </select>
     <select id="queryReferrerVillation" resultMap="BaseResultMap">
-        select hsd.status, u.UserName, gr.GroupName, u.violation_flag, hsd.status, hsd.brief_chapter_id as briefId,
-        si.user_id as usId
-        from hr_signup si
+        select hsd.status,
+        u.UserName,
+        gr.GroupName,
+        u.violation_flag,
+        hsd.status,
+        hsd.brief_chapter_id as briefId,
+        si.user_id           as usId,
+        u.violation_time
+        from hr_user u
+        left join hr_signup si on si.user_id = u.id and si.delete_flag = 0
         left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
-        left join hr_user u on si.user_id = u.id and u.status = 0
         left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0
         left join hr_group gr on br.RecruitedCompanyId = gr.Id and gr.groupStatus = 0
-        where si.delete_flag = 0
+        where u.status = 0
         <if test="null != userId">
             and u.Id = #{userId}
         </if>
@@ -480,6 +488,39 @@
         </if>
         <if test="null != password">
             and Password = #{password}
+        </if>
+    </select>
+    <select id="selectPlatformlack" resultType="_int">
+        select count(u.IdCard)
+        from hr_user u,
+        hr_platformblacklist p
+        where u.IdCard = p.idCard
+        and u.status = 0
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+    </select>
+    <select id="selectplatformBlackRecruitmentEnd" resultType="_int">
+        select count(g.socialCreditCode)
+        from hr_user u,
+        hr_group g,
+        hr_platformblacklist p
+        where u.id = g.CertifierId
+        and g.socialCreditCode = p.socialCreditCode
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+    </select>
+    <select id="selectReferrerIntentionalPost" resultType="string">
+        select PostIdStr from hr_user where status = 0
+        <if test="null != userId">
+            and Id = #{userId}
+        </if>
+    </select>
+    <select id="selectAllInformation" resultMap="BaseResultMap">
+        select * from hr_user where status = 0
+        <if test="null != userId">
+            and id = #{userId}
         </if>
     </select>
 

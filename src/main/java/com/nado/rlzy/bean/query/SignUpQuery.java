@@ -1,10 +1,6 @@
 package com.nado.rlzy.bean.query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.nado.rlzy.db.pojo.HrBriefchapter;
-import com.nado.rlzy.db.pojo.HrRebaterecord;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,9 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Column;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassName 新增求职表
@@ -60,35 +54,12 @@ public class SignUpQuery {
     @Column(name = "education")
     private String education;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "毕业时间")
-    @Column(name = "graduation_time")
-    private LocalDateTime graduationTime;
+
 
     @ApiModelProperty(value = "专业")
     @Column(name = "profession")
     private String profession;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "到岗时间")
-    @Column(name = "arrival_time")
-    private LocalDateTime arrivalTime;
-
-
-
-    @ApiModelProperty(value = "期望薪资")
-    @Column(name = "expected_salary_upper")
-    private BigDecimal expectedSalaryUpper;
-
-    @Column(name = "expected_salary_lower")
-    private BigDecimal expectedSalaryLower;
-
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Transient
-    private LocalDateTime enterTime;
 
     @ApiModelProperty(value = "求职状态 0已报名 1待面试 7已面试 2待报到 3待返佣 4不合适 5被邀请 6已完成")
     @Transient
@@ -102,10 +73,6 @@ public class SignUpQuery {
     @ApiModelProperty(value = "0不合适 1未面试 2未报道 3面试未通过")
     @Transient
     private Integer noPassReason;
-
-    @ApiModelProperty(value = "0:未删除  1:已删除")
-    @Column(name = "delete_flag")
-    private Byte deleteFlag;
 
     @ApiModelProperty(value = "报名岗位id")
     @Column(name = "registration_position_id")
@@ -165,9 +132,7 @@ public class SignUpQuery {
     @ApiModelProperty(value = "面试时间")
     private Date interviewTime;
 
-    @ApiModelProperty(value = "返佣金额")
-    @Transient
-    private List<HrRebaterecord> rebat;
+
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -187,15 +152,8 @@ public class SignUpQuery {
     @Transient
     private Integer noReportReason;
 
-    @ApiModelProperty(value = "报名时间")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
 
-    @ApiModelProperty(value = "简章")
-    @Transient
-    private List<HrBriefchapter> chapter;
+
 
 
 }

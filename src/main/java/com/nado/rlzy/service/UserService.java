@@ -3,7 +3,6 @@ package com.nado.rlzy.service;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterHobHuntingQuery;
 import com.nado.rlzy.bean.query.RecruitmentSideRegisterQuery;
 import com.nado.rlzy.db.pojo.HrUser;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @ClassName 招聘端和求职端 登陆注册 service
@@ -26,11 +25,9 @@ public interface UserService {
 
     /**
      *  用户切换身份
-     * @param userId 用户id
-     * @param type 用户 身份
      * @return
      */
-    int switchIdentity(Integer userId, Integer type);
+    int switchIdentity(RecruitmentSideRegisterHobHuntingQuery query);
 
     /**
      * 根据用户名查询用户信息
@@ -111,6 +108,28 @@ public interface UserService {
      * @return int
      */
     int selectEnterPriseBlacakList( Integer userId);
+
+    /**
+     * 平台拉黑求职端
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 21:06 2019-09-11
+     * @Param [userId]
+     * @return int
+     */
+    int selectPlatformlack(Integer userId);
+
+    /**
+     * 平台拉黑招聘端
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 21:06 2019-09-11
+     * @Param [userId]
+     * @return int
+     */
+    int selectplatformBlackRecruitmentEnd(Integer userId);
+
+
 
 
 

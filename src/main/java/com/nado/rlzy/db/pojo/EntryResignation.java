@@ -1,5 +1,6 @@
 package com.nado.rlzy.db.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "entry_resignation")
 public class EntryResignation {
     /**

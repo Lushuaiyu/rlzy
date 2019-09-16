@@ -1,5 +1,6 @@
 package com.nado.rlzy.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.bean.query.*;
 import com.nado.rlzy.db.pojo.*;
 
@@ -46,7 +47,7 @@ public interface MyReleaseService {
      * @Date 15:24 2019-06-29
      * @Param [query]
      */
-    void saveUser(ReleaseBriefcharpterQuery query, Integer type);
+    void saveUser(ReleaseBriefcharpterQuery query, Integer type, JSONObject rebateEntry);
 
     /**
      * 招聘详情 概览
@@ -57,7 +58,7 @@ public interface MyReleaseService {
      * @Date 14:15 2019/7/18
      * @Param [list]
      **/
-    List<HrSignUp> recruitmentDetailsOverview(Integer[] jobStatus);
+    List<HrSignUp> recruitmentDetailsOverview(String jobStatus);
 
 
     /**

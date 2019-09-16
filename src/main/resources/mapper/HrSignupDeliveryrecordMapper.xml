@@ -28,6 +28,13 @@
             #{item.acceptRebateAmount})
         </foreach>
     </insert>
+    <insert id="inserttListt">
+        insert into hr_signup_deliveryrecord (signup_id, brief_chapter_id, create_time, accept_rebate_amount)
+        values
+        <foreach collection="list" item="item" separator=",">
+           (#{item.signupId}, #{item.briefChapterId}, #{item.createTime}, #{item.acceptRebateAmount})
+        </foreach>
+    </insert>
 
     <update id="reducedRebateAmount" parameterType="hrSignupDeliveryrecord">
         update hr_signup_deliveryrecord set accept_rebate_amount = accept_rebate_amount - #{acceptRebateAmount},

@@ -1,11 +1,7 @@
 package com.nado.rlzy.db.mapper;
 
-import com.nado.rlzy.bean.query.ReleaseBriefcharpterQuery;
-import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.db.pojo.HrRebaterecord;
-import com.nado.rlzy.utils.telMessage.VaildateType;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.math.BigDecimal;
@@ -14,16 +10,7 @@ import java.util.List;
 public interface HrRebaterecordMapper {
 
 
-    /**
-     * 发布简章 返佣金额 添加
-     *
-     * @return int
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 15:45 2019/7/23
-     * @Param [query]
-     **/
-    int insertSelective(@Param("list") List<ReleaseBriefcharpterQuery> list);
+
 
 
     HrRebaterecord selectByPrimaryK(Integer id);

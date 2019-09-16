@@ -109,16 +109,25 @@ public class UserController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "switchIdentity")
-    @ApiOperation(value = "用户切换身份", notes = "用户切换身份", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "type", name = "身份类型", dataType = "Integer", required = true)
-    })
-    public ResultJson switchIdentity(Integer userId, Integer type) {
-        service.switchIdentity(userId, type);
+    @ApiOperation(value = "求职端用户切换身份", notes = "求职端用户切换身份", httpMethod = "POST")
+
+    public ResultJson switchIdentity(RecruitmentSideRegisterHobHuntingQuery query) {
         ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+        try {
+            int userId = service.switchIdentity(query);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(userId);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+
         return resultJson;
     }
 
@@ -151,12 +160,25 @@ public class UserController extends BaseController {
                     HrUser login = service.login(phone, password);
                     Integer userId = login.getUserId();
                     //查询拉黑的用户
-                    Integer i = service.selectEnterPriseBlacakList(userId);
-                    if (i != 0) {
-                        AssertUtil.isTrue(i != null, "您已被拉黑, 请联系平台处理");
+                    int i = service.selectEnterPriseBlacakList(userId);
+                    int i1 = service.selectPlatformlack(userId);
+                    int i2 = service.selectplatformBlackRecruitmentEnd(userId);
+                    if (i1 != 0) {
+                        AssertUtil.isTrue(i1 != 0, "您已被平台拉黑, 请联系平台处理");
                         resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
                         resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
                     }
+                    if (i != 0) {
+                        AssertUtil.isTrue(i != 0, "您已被企业拉黑, 请联系企业处理");
+                        resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                        resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+                    }
+                    if (i2 != 0) {
+                        AssertUtil.isTrue(i2 != 0, "您的企业已被拉黑, 无法登陆, 请联系平台处理");
+                        resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                        resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+                    }
+
                     resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                     resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                     resultJson.setData(login);

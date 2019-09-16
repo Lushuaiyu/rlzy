@@ -32,7 +32,6 @@ public class HrSignUp {
     private Integer type;
 
 
-
     /**
      * 推荐人数
      */
@@ -81,6 +80,9 @@ public class HrSignUp {
     @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
     private Date graduationTime;
 
+    @Transient
+    private String graduationTime1;
+
     @ApiModelProperty(value = "专业")
     @Column(name = "profession")
     private String profession;
@@ -90,6 +92,8 @@ public class HrSignUp {
     @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
     private Date arrivalTime;
 
+    @Transient
+    private String arrivalTime1;
 
 
     @ApiModelProperty(value = "期望薪资下限")
@@ -112,7 +116,6 @@ public class HrSignUp {
      * 前端需要的
      */
     private Integer status;
-
 
 
     @ApiModelProperty(value = "身份类型id")
@@ -227,8 +230,6 @@ public class HrSignUp {
     private Integer noSingUp;
 
 
-
-
     @ApiModelProperty(value = "报到时间标识")
     @Transient
     private Integer reportTimeFlag;
@@ -248,7 +249,6 @@ public class HrSignUp {
 
     @Transient
     private List<HrSignupDeliveryrecord> deliveryrecord;
-
 
 
 }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.nado.rlzy.base.BaseQuery;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @ClassName 求职端登录注册入参
@@ -19,6 +18,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
 
     private String id;
+
+    private Integer userId;
+
+    private Integer type;
+
+    private String phone;
+
+    private String password;
+
+
 
     @ApiModelProperty(value = "性别")
     private Integer sex;

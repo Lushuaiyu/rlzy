@@ -174,7 +174,7 @@ public class Test7 extends BaseTest {
         HrUser hrUser = new HrUser();
         hrUser.setRecommendInfo("afdsff");
         hrUser.setId(String.valueOf(6));
-        userMapper.updateByPrimaryKey(hrUser);
+        userMapper.updateByPrimaryKeySelective(hrUser);
     }
 
     @Test
@@ -218,7 +218,7 @@ public class Test7 extends BaseTest {
         HrUser hrUser = new HrUser();
         hrUser.setType(54);
         hrUser.setId(String.valueOf(4));
-        userMapper.updateByPrimaryKey(hrUser);
+        userMapper.updateByPrimaryKeySelective(hrUser);
     }
 
     @Test

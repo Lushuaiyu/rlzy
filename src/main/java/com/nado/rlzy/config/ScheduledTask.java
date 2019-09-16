@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.atomic.LongAccumulator;
 import java.util.stream.Collectors;
 
 /**
@@ -423,15 +422,18 @@ public class ScheduledTask {
         list.stream()
                 .map(d -> {
                     List<EntryResignation> map = resignationMapper.selectEntryStatusOver(d);
-                    map.stream().map(dto -> {
-                        Date rebateTimeStart = dto.getRebateTimeStart();
-                        Date rebateTimeEnd = dto.getRebateTimeEnd();
-                        Date date = new Date();
-                        if (date.compareTo(rebateTimeStart) > 0 && date.compareTo(rebateTimeEnd) < 0) {
-                            briefchapterMapper.rebating(d);
-                        }
-                        return dto;
-                    }).collect(Collectors.toList());
+                    if (map.size() > 0) {
+                        map.stream().map(dto -> {
+                            Date rebateTimeStart = dto.getRebateTimeStart();
+                            Date rebateTimeEnd = dto.getRebateTimeEnd();
+                            Date date = new Date();
+                            if (date.compareTo(rebateTimeStart) > 0 && date.compareTo(rebateTimeEnd) < 0) {
+                                briefchapterMapper.rebating(d);
+                            }
+                            return dto;
+                        }).collect(Collectors.toList());
+                    }
+
                     return d;
                 }).collect(Collectors.toList());
     }

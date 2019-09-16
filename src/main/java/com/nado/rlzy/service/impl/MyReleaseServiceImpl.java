@@ -1,5 +1,7 @@
 package com.nado.rlzy.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.bean.query.*;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
@@ -9,7 +11,6 @@ import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.utils.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -140,17 +141,17 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveUser(ReleaseBriefcharpterQuery query, Integer type) {
+    public void saveUser(ReleaseBriefcharpterQuery query, Integer type, JSONObject rebateEntry) {
         //招聘单位
         if (type.equals(5)) {
             //有返佣
-            if (query.getRebateStatus().equals(1)) {
+            if (query.getRebate().compareTo("1") == 0) {
                 //简章表
-                int brId = initBriefcharpterRebate(query);
+                int brId = initBriefcharpterRebate(query, rebateEntry);
                 //入职返佣表
-                initEntryResignation(query, brId);
+                initEntryResignation(query, brId, rebateEntry);
                 //返佣记录表
-                initRebate(query, brId);
+                initRebate(query, brId, rebateEntry);
 
             } else {
                 //不返佣
@@ -160,14 +161,14 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             //代招单位
         } else if (type.equals(6)) {
 
-            if (query.getRebateStatus().equals(1)) {
+            if (query.getRebate().equals(1)) {
                 //返佣
                 //简章表初始化
-                int brId = initBriefcharpterRebate(query);
+                int brId = initBriefcharpterRebate(query, rebateEntry);
                 //入职返佣表
-                initEntryResignation(query, brId);
+                initEntryResignation(query, brId, rebateEntry);
                 //入职返佣表
-                initRebate(query, brId);
+                initRebate(query, brId, rebateEntry);
 
             } else {
                 //不返佣
@@ -178,30 +179,42 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     }
 
-    private void initRebate(ReleaseBriefcharpterQuery query, int brId) {
-        HrRebaterecord rebaterecord = new HrRebaterecord();
-        List<EntryResignation> entry = query.getRebateEntry();
-        entry.stream()
-                .map(dto -> {
-                    rebaterecord.setBriefchapterId(brId);
-                    rebaterecord.setCreateTime(new Date());
-                    rebaterecord.setRebateTime(dto.getRebateTime());
-                    rebaterecord.setRebateMale(dto.getRebateMaleEntry());
-                    rebaterecord.setRebateFemale(dto.getRebateFemaleEntry());
-                    return dto;
-                }).collect(Collectors.toList());
-        ArrayList<HrRebaterecord> rebaterecords = new ArrayList<>();
-        rebaterecords.add(rebaterecord);
-        //批量添加入职返佣
-        rebaterecordMapper.insertListt(rebaterecords);
+    private void initRebate(ReleaseBriefcharpterQuery query, int brId, JSONObject rebateEntry) {
+        String jsonString = rebateEntry.toJSONString();
+        //解析 json 数据
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        String dataString = jsonObject.getString("rebateEntry");
+        List<EntryResignation> entry = JSON.parseArray(dataString, EntryResignation.class);
+        if (entry != null) {
+            HrRebaterecord rebaterecord = new HrRebaterecord();
+            ArrayList<HrRebaterecord> rebaterecords = new ArrayList<>();
+            entry.stream()
+                    .map(dto -> {
+                        rebaterecord.setBriefchapterId(brId);
+                        rebaterecord.setCreateTime(new Date());
+                        rebaterecord.setRebateTime(dto.getRebateTime());
+                        rebaterecord.setRebateMale(dto.getRebateMaleEntry());
+                        rebaterecord.setRebateFemale(dto.getRebateFemaleEntry());
+                        rebaterecord.setRebateType(2);
+                        rebaterecords.add(rebaterecord);
+                        return dto;
+                    }).collect(Collectors.toList());
+            //批量添加入职返佣
+            rebaterecordMapper.insertListt(rebaterecords);
+        }
     }
 
-    private void initEntryResignation(ReleaseBriefcharpterQuery query, int brId) {
-        if (query.getRebateEntry() != null) {
+    private void initEntryResignation(ReleaseBriefcharpterQuery query, int brId, JSONObject rebateEntry) {
+        if (rebateEntry != null) {
             //如果 入职返佣不为空 添加记录
-            List<EntryResignation> rebateEntry = query.getRebateEntry();
-            if (rebateEntry.size() > 0 && query.getRebType().equals(2)) {
-                rebateEntry.stream()
+            String jsonString = rebateEntry.toJSONString();
+            JSONObject jsonObject = JSON.parseObject(jsonString);
+            String dataString = jsonObject.getString("rebateEntry");
+            List<EntryResignation> entry = JSON.parseArray(dataString, EntryResignation.class);
+            // List<EntryResignation> list = query.getRebateEntry();
+            //List<EntryResignation> list = JSON.parseArray(entry, EntryResignation.class);
+            if (entry.size() > 0) {
+                entry.stream()
                         .map(dto -> {
                             dto.setBriefChapterId(brId);
                             dto.setRebateTime(new Date());
@@ -209,12 +222,13 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             dto.setType(2);
                             return dto;
                         }).collect(Collectors.toList());
-                resignationMapper.insertList(rebateEntry);
+                resignationMapper.insertList(entry);
             }
         }
         //简章返佣表添加面试返佣
 
-        if (query.getRebType().equals(0)) {
+        if (rebateEntry != null) {
+
             //面试
             EntryResignation resignation = new EntryResignation();
             resignation.setRebateMaleEntry(query.getRebateMaleInterview());
@@ -222,30 +236,29 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             resignation.setType(0);
             resignation.setBriefChapterId(brId);
             resignationMapper.insertSelective(resignation);
-        } else if (query.getRebType().equals(1)) {
+
             //报道
             EntryResignation resignation1 = new EntryResignation();
-            resignation1.setRebateMaleEntry(query.getRebateMaleInterview());
             resignation1.setRebateMaleEntry(query.getRebateMaleReport());
             resignation1.setRebateFemaleEntry(query.getRebateFemaleReport());
             resignation1.setType(1);
             resignation1.setBriefChapterId(brId);
             resignationMapper.insertSelective(resignation1);
 
-
         }
-
     }
 
     @Override
-    public List<HrSignUp> recruitmentDetailsOverview(Integer[] jobStatus) {
+    public List<HrSignUp> recruitmentDetailsOverview(String jobStatus) {
+        int[] ints = Arrays.stream(jobStatus.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
+        List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
         //把数组转换成list
-        List<Integer> list = Stream.of(jobStatus).collect(Collectors.toList());
         List<HrSignUp> signUps = signUpMapper.recruitmentDetailsOverview(list);
         //用stream 处理list 集合
-        List<HrSignUp> collect = signUps.stream().map(dto -> {
+        /*List<HrSignUp> collect = signUps.stream().map(dto -> {
             //如果状态是待面试 进入这个
             signUps.stream().filter(s -> s.equals(1)).map(inteview -> {
+
                 //待面试
                 Date time = inteview.getInterviewTime();
 
@@ -274,12 +287,9 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                 }
                 return report;
             }).collect(Collectors.toList());
-
-            //待返佣
-
             return dto;
-        }).collect(Collectors.toList());
-        return collect;
+        }).collect(Collectors.toList());*/
+        return signUps;
     }
 
     @Override
@@ -366,7 +376,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     Integer rebate = dto.getRebate();
 
                     //有返佣才进来
-                    if (rebate.equals(1)) {
+                    if (rebate.equals(1) && (!dto.getHireWay().equals(0) || !dto.getHireWay().equals(1))) {
                         if (sex.equals(0)) {
                             //女
                             HrRebaterecord rebaterecord = new HrRebaterecord();
@@ -832,7 +842,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     @Override
     public Map<String, Object> selectContentByType(DictionaryQuery query) {
         Map<String, Object> map = new HashMap<>();
-        if (null != query.getContractWayDetailId() && query.getContractWayDetailId().compareTo(String.valueOf(13)) == 0){
+        if (null != query.getContractWayDetailId() && query.getContractWayDetailId().compareTo(String.valueOf(13)) == 0) {
             List<HrDictionaryItem> contractWayDetail = dictionaryItemMapper.selectFrontEndOption(query);
             map.put("contractWayDetail", contractWayDetail);
         }
@@ -862,28 +872,28 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         }
         if (null != query.getProfession() && query.getProfession().compareTo(String.valueOf(3)) == 0) {
             List<HrDictionaryItem> profession = dictionaryItemMapper.selectFrontEndOption3(query);
-            map.put("profession", profession );
+            map.put("profession", profession);
         }
 
         if (null != query.getWelfare() && query.getWelfare().compareTo(String.valueOf(10)) == 0) {
             List<HrDictionaryItem> welfare = dictionaryItemMapper.selectFrontEndOption11(query);
             map.put("welfare", welfare);
         }
-        if (null != query.getWorkTime() && query.getWorkTime().compareTo(String.valueOf(17)) == 0  ) {
+        if (null != query.getWorkTime() && query.getWorkTime().compareTo(String.valueOf(17)) == 0) {
             List<HrDictionaryItem> workTime = dictionaryItemMapper.selectFrontEndOption7(query);
             map.put("workTime", workTime);
         }
-        if ( null != query.getWorkWay() && query.getWorkWay().compareTo(String.valueOf(16)) == 0) {
+        if (null != query.getWorkWay() && query.getWorkWay().compareTo(String.valueOf(16)) == 0) {
             List<HrDictionaryItem> workWay = dictionaryItemMapper.selectFrontEndOption6(query);
             map.put("workWay", workWay);
         }
 
-        if (null != query.getWorkWay() && query.getWorkWay().compareTo(String.valueOf(5)) == 0){
+        if (null != query.getManAge() && query.getManAge().compareTo(String.valueOf(5)) == 0) {
             List<HrDictionaryItem> manAge = dictionaryItemMapper.selectFrontEndOption12(query);
             map.put("manAge", manAge);
         }
 
-        if (null != query.getFemaleAge() && query.getFemaleAge().compareTo(String.valueOf(9)) == 0){
+        if (null != query.getFemaleAge() && query.getFemaleAge().compareTo(String.valueOf(9)) == 0) {
             List<HrDictionaryItem> femaleAge = dictionaryItemMapper.selectFrontEndOption13(query);
             map.put("femaleAge", femaleAge);
         }
@@ -1002,9 +1012,16 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             query.setRebateFemaleInterview(BigDecimal.valueOf(0));
                             query.setRebateFemaleReport(BigDecimal.valueOf(0));
                             query.setRebateFemaleEntry(BigDecimal.valueOf(0));
+                            String s = OssUtilOne.picUpload(query.getDescriptionJobPhotoUrl(), "0");
+                            query.setDescriptionJobPhotoUrl(s);
+                            String s1 = OssUtilOne.picUpload(query.getEmployerCertificatePhotoUrl(), "0");
+                            query.setEmployerCertificatePhotoUrl(s1);
                             mapper.update2(query);
                             //把 发布简章的入职返佣的钱清0
-                            query.getResignations().stream()
+                            //Get the json string from the front end
+                            String resignations = query.getResignations();
+                            List<EntryResignation> entryResignations = JSON.parseArray(resignations, EntryResignation.class);
+                            entryResignations.stream()
                                     .map(m -> {
                                         m.setRebateMaleEntry(BigDecimal.ZERO);
                                         m.setRebateFemaleEntry(BigDecimal.ZERO);
@@ -1080,12 +1097,16 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
 
                             //入职返佣金额男 简章对应的多笔返佣金额 编辑简章时前台传过来
-                            Map<Integer, BigDecimal> queryRebateMaleEntry = query.getResignations()
+                            //Get the json string from the front end
+                            String resignations = query.getResignations();
+                            List<EntryResignation> entryResignations = JSON.parseArray(resignations, EntryResignation.class);
+                            Map<Integer, BigDecimal> queryRebateMaleEntry = entryResignations
                                     .stream()
                                     .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
                                             CollectorsUtil.summingBigDecimal(EntryResignation::getRebateMaleEntry)));
                             //入职返佣金额女 简章对应的多笔返佣金额 编辑简章时前台传过来
-                            Map<Integer, BigDecimal> queryRebateFemaleEntry = query.getResignations().stream()
+                            Map<Integer, BigDecimal> queryRebateFemaleEntry = entryResignations.
+                                    stream()
                                     .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
                                             CollectorsUtil.summingBigDecimal(EntryResignation::getRebateFemaleEntry)));
 
@@ -1161,8 +1182,9 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                                 query.setRebateFemaleEntry(queryFemaleEntry[0]);
                                 mapper.update2(query);
                                 //入职返佣表修改
-                                List<EntryResignation> resignations = query.getResignations();
-                                resignations.stream()
+                                String resignations1 = query.getResignations();
+                                List<EntryResignation> array = JSON.parseArray(resignations1, EntryResignation.class);
+                                array.stream()
                                         .map(z -> {
                                             resignationMapper.updateRebate(z);
                                             return z;
@@ -1212,8 +1234,9 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                                 query.setRebateFemaleEntry(queryFemaleEntry[0]);
                                 mapper.update2(query);
                                 //入职返佣表修改
-                                List<EntryResignation> resignations = query.getResignations();
-                                resignations.stream()
+                                String queryResignations = query.getResignations();
+                                List<EntryResignation> entryResignationss = JSON.parseArray(queryResignations, EntryResignation.class);
+                                entryResignationss.stream()
                                         .map(z -> {
                                             resignationMapper.updateRebate(z);
                                             return z;
@@ -1311,9 +1334,15 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             query.setRebateFemaleInterview(BigDecimal.valueOf(0));
                             query.setRebateFemaleReport(BigDecimal.valueOf(0));
                             query.setRebateFemaleEntry(BigDecimal.valueOf(0));
+                            String s = OssUtilOne.picUpload(query.getDescriptionJobPhotoUrl(), "0");
+                            query.setDescriptionJobPhotoUrl(s);
+                            String s1 = OssUtilOne.picUpload(query.getEmployerCertificatePhotoUrl(), "0");
+                            query.setEmployerCertificatePhotoUrl(s1);
                             mapper.update2(query);
                             //把 发布简章的入职返佣的钱清0
-                            query.getResignations().stream()
+                            String s2 = query.getResignations();
+                            List<EntryResignation> list1 = JSON.parseArray(s2, EntryResignation.class);
+                            list1.stream()
                                     .map(m -> {
                                         m.setRebateMaleEntry(BigDecimal.ZERO);
                                         m.setRebateFemaleEntry(BigDecimal.ZERO);
@@ -1389,12 +1418,15 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
 
                             //入职返佣金额男 简章对应的多笔返佣金额 编辑简章时前台传过来
-                            Map<Integer, BigDecimal> queryRebateMaleEntry = query.getResignations()
+                            String resignations1 = query.getResignations();
+                            List<EntryResignation> resignationList = JSON.parseArray(resignations1, EntryResignation.class);
+
+                            Map<Integer, BigDecimal> queryRebateMaleEntry = resignationList
                                     .stream()
                                     .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
                                             CollectorsUtil.summingBigDecimal(EntryResignation::getRebateMaleEntry)));
                             //入职返佣金额女 简章对应的多笔返佣金额 编辑简章时前台传过来
-                            Map<Integer, BigDecimal> queryRebateFemaleEntry = query.getResignations().stream()
+                            Map<Integer, BigDecimal> queryRebateFemaleEntry = resignationList.stream()
                                     .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
                                             CollectorsUtil.summingBigDecimal(EntryResignation::getRebateFemaleEntry)));
 
@@ -1470,8 +1502,9 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                                 query.setRebateFemaleEntry(queryFemaleEntry[0]);
                                 mapper.update2(query);
                                 //入职返佣表修改
-                                List<EntryResignation> resignations = query.getResignations();
-                                resignations.stream()
+                                String s = query.getResignations();
+                                List<EntryResignation> list1 = JSON.parseArray(s, EntryResignation.class);
+                                list1.stream()
                                         .map(z -> {
                                             resignationMapper.updateRebate(z);
                                             return z;
@@ -1521,8 +1554,9 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                                 query.setRebateFemaleEntry(queryFemaleEntry[0]);
                                 mapper.update2(query);
                                 //入职返佣表修改
-                                List<EntryResignation> resignations = query.getResignations();
-                                resignations.stream()
+                                String resignations2 = query.getResignations();
+                                List<EntryResignation> list1 = JSON.parseArray(resignations2, EntryResignation.class);
+                                list1.stream()
                                         .map(z -> {
                                             resignationMapper.updateRebate(z);
                                             return z;
@@ -1576,7 +1610,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
      * @Date 9:57 2019/8/24
      * @Param [query]
      **/
-    private int initBriefcharpterRebate(ReleaseBriefcharpterQuery query) {
+    private int initBriefcharpterRebate(ReleaseBriefcharpterQuery query, JSONObject rebateEntry) {
         HrBriefchapter dto = new HrBriefchapter();
         dto.setPostId(query.getPostId());
         //被招聘企业id
@@ -1587,7 +1621,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         BigDecimal decimal = StringUtil.decimal(s);
         dto.setAvgSalary(decimal);
         //招聘人数
-        int num = query.getManNum() + query.getWomenAgeId();
+        int num = query.getManNum() + query.getWomenNum();
         dto.setRecruitingNo(num);
         String salary = query.getDetailSalary();
         BigDecimal decimal1 = StringUtil.decimal(salary);
@@ -1636,6 +1670,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         dto.setManNum(query.getManNum());
         dto.setWomenNum(query.getWomenNum());
         dto.setUserId(query.getUserId());
+        dto.setCreatetime(LocalDateTime.now());
         //面试返佣男
         dto.setRebateMaleInterview(query.getRebateMaleInterview());
         // 报道...
@@ -1646,23 +1681,27 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         //报道...
         dto.setRebateFemaleReport(query.getRebateFemaleReport());
         //入职返佣男女的金钱 时间
-        List<EntryResignation> rebateEntry = query.getRebateEntry();
+        String jsonString = rebateEntry.toJSONString();
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        String dataString = jsonObject.getString("rebateEntry");
+        List<EntryResignation> entry = JSON.parseArray(dataString, EntryResignation.class);        // List<EntryResignation> list = query.getRebateEntry();
+        //List<EntryResignation> list = JSON.parseArray(entry, EntryResignation.class);
         //发布简章时 入职返佣不为空
-        if (null != rebateEntry) {
+        if (null != entry) {
             //入职返佣男
-            Map<Integer, BigDecimal> rebateMaleEntry = rebateEntry.stream()
-                    .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
-                            CollectorsUtil.summingBigDecimal(EntryResignation::getRebateMaleEntry)));
+            BigDecimal rebateMaleEntry = entry.stream()
+                    .map(EntryResignation::getRebateMaleEntry)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
             //入职返佣女
-            Map<Integer, BigDecimal> rebateFemaleEntry = rebateEntry.stream()
-                    .collect(Collectors.groupingBy(EntryResignation::getBriefChapterId,
-                            CollectorsUtil.summingBigDecimal(EntryResignation::getRebateFemaleEntry)));
-            //添加入职返佣的钱 男
-            rebateMaleEntry.forEach((k, v) -> dto.setRebateMaleEntry(v));
-            //添加入职返佣的钱 女
-            rebateFemaleEntry.forEach((k, v) -> dto.setRebateFemaleEntry(v));
-        }
+            BigDecimal rebateFemaleEntry = entry.stream()
+                    .map(EntryResignation::getRebateFemaleEntry)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+            //添加入职返佣的钱 男
+            dto.setRebateMaleEntry(rebateMaleEntry);
+            //添加入职返佣的钱 女
+            dto.setRebateFemaleEntry(rebateFemaleEntry);
+        }
 
         if (query.getContractWay() == 0) {
             //招聘单位
@@ -1724,26 +1763,13 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         dto.setWelfareId(query.getWelfareId());
 
         //用人单位证明
-        MultipartFile multipartFile = Base64Util.base64ToMultipart(query.getEmployerCertificatePhotoUrl());
-        String head = centerService.updateHead(multipartFile);
-        dto.setEmployerCertificatePhotoUrl(head);
-
+        String s2 = OssUtilOne.picUpload(query.getEmployerCertificatePhotoUrl(), "0");
+        dto.setEmployerCertificatePhotoUrl(s2);
         //是否返佣 没返佣
         dto.setRebate(0);
-
         //职位描述
-        List<String> collect = Stream.of(query.getDescriptionJobPhotoUrl()).collect(Collectors.toList());
-        List<String> strings = new ArrayList<>();
-        collect.stream()
-                .map( x -> {
-                    MultipartFile multipartFile1 = Base64Util.base64ToMultipart(x);
-                    String head1 = centerService.updateHead(multipartFile1);
-                    strings.add(head1);
-                    return x;
-                }).collect(Collectors.toList());
-        String collect1 = strings.stream().collect(Collectors.joining(","));
-        dto.setDescriptionJobPhotoUrl(collect1);
-
+        String s1 = OssUtilOne.picUpload(query.getDescriptionJobPhotoUrl(), "0");
+        dto.setDescriptionJobPhotoUrl(s1);
         //用人单位面试地址
         dto.setInterviewAddress(query.getInterviewAddress());
 
@@ -1762,8 +1788,6 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         dto.setContractTime(localDateTime1);
         dto.setHireWay(query.getHireWay());
         dto.setAcceptRecommendedResume(query.getAcceptRecommendedResume());
-
-
         dto.setContractWay(query.getContractWay());
         dto.setManNum(query.getManNum());
         dto.setWomenNum(query.getWomenNum());

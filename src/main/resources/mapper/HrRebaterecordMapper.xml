@@ -57,15 +57,6 @@
     </select>
 
 
-    <insert id="insertSelective">
-        insert into hr_rebaterecord (BriefChapterId, RebateType, RebateMale, RebateFemale, RebateTime, CreateTime)
-        VALUES
-        <foreach collection="list" item="item" separator=",">
-            (#{item.briefcharpterId},#{item.rebateType}, #{item.rebateMale}, #{item.rebateFemale}, #{item.rebateTime},
-            #{item.createTime})
-        </foreach>
-
-    </insert>
     <update id="updateByPrimaryKeySelecti" parameterType="com.nado.rlzy.db.pojo.HrRebaterecord">
         update hr_rebaterecord
         <set>
@@ -199,11 +190,11 @@
 
     <insert id="insertListt">
         insert into hr_rebaterecord (BriefChapterId, RebateType, RebateMale, RebateFemale, RebateTime, CreateTime,
-        sign_up_id)
+        signup_deliveryrecord_id)
         VALUES
         <foreach collection="list" item="item" separator=",">
             (#{item.briefchapterId},#{item.rebateType}, #{item.rebateMale}, #{item.rebateFemale}, #{item.rebateTime},
-            #{item.createTime}, #{item.signUpId})
+            #{item.createTime}, #{item.signupDeliveryrecordId})
         </foreach>
     </insert>
 

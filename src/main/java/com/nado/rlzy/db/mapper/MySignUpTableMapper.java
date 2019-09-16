@@ -53,6 +53,16 @@ public interface MySignUpTableMapper {
      **/
     int updateMySignUpTableSignId(@Param("signUpId") Integer signUpId);
 
+    /**
+     * 删除我的自定义报名表分组
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 19:09 2019-09-15
+     * @Param [id]
+     * @return int
+     */
+    int deleteMySignUpTable(@Param("id") Integer id);
+
 
 
 

@@ -1,7 +1,10 @@
 package com.nado.rlzy.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.base.BaseController;
-import com.nado.rlzy.bean.model.*;
+import com.nado.rlzy.bean.model.ResponseJson;
+import com.nado.rlzy.bean.model.Result;
+import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
@@ -9,15 +12,9 @@ import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.MyReleaseService;
 import com.nado.rlzy.service.PersonCenterService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -132,17 +129,14 @@ public class MyReleaseController extends BaseController {
     @RequestMapping(value = "save")
     @ResponseBody
     @ApiOperation(notes = "发布简章", value = "发布简章", httpMethod = "POST")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "type", value = "身份, 5 代招单位 6 招聘单位", dataType = "Integer", required = true),
-                    @ApiImplicitParam(name = "type", value = "身份, 代招单位还是招聘单位", dataType = "Integer", required = true)
-            }
-    )
-    public ResultJson save(@RequestBody ReleaseBriefcharpterQuery query, Integer type) {
+    @ApiImplicitParam(name = "type", value = "身份, 5 代招单位 6 招聘单位", dataType = "Integer", required = true)
+    public ResultJson save(ReleaseBriefcharpterQuery query, Integer type, @RequestBody(required = false) JSONObject rebateEntry) {
         ResultJson result = new ResultJson();
         try {
 
-            service.saveUser(query, type);
+            service.saveUser(query, type, rebateEntry);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
 
         } catch (AssertException e) {
             e.printStackTrace();
@@ -161,8 +155,8 @@ public class MyReleaseController extends BaseController {
     @RequestMapping(value = "recruitmentDetailsOverview")
     @ResponseBody
     @ApiOperation(value = "招聘详情 概览 待返佣部分 0:面试 1:报到 2:入职 0就是第一笔返佣 1是第二笔 2 入职 按照时间从早到晚排", notes = "招聘详情 概览 待返佣部分 0:面试 1:报到 2:入职 0就是第一笔返佣 1是第二笔 2 入职 按照时间从早到晚排", httpMethod = "POST")
-    @ApiImplicitParam(value = "jobStatus", name = "报名状态", dataType = "integer []", required = true)
-    public Result<HrSignUp> recruitmentDetailsOverview(Integer[] jobStatus) {
+    @ApiImplicitParam(value = "jobStatus", name = "报名状态", required = true)
+    public Result<HrSignUp> recruitmentDetailsOverview(String jobStatus) {
         Result<HrSignUp> result = new Result<>();
         try {
             List<HrSignUp> list = service.recruitmentDetailsOverview(jobStatus);
@@ -537,17 +531,18 @@ public class MyReleaseController extends BaseController {
 
     /**
      * 前台选择页面 通用模板
+     *
+     * @return com.nado.rlzy.bean.model.ResultJson
      * @Author chengpunan
-     * @Description  lushuaiyu
+     * @Description lushuaiyu
      * @Date 09:48 2019-09-09
      * @Param [type]
-     * @return com.nado.rlzy.bean.model.ResultJson
      */
     @RequestMapping(value = "selectFrontEnd")
     @ResponseBody
     @ApiOperation(notes = "根据类型查询前端选项内容", value = "根据类型查询前端选项内容", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "配置表参数", dataType = "Integer", required = true)
-    public ResultJson selectFrontEnd(Integer type){
+    public ResultJson selectFrontEnd(Integer type) {
         ResultJson result = new ResultJson();
         try {
             List<HrDictionaryItem> items = service.selectFrontEnd(type);
@@ -576,29 +571,19 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "query1", name = "编辑简章 入参 详见 ReleaseBriefcharpterQuery", dataType = "EditBriefchapter", required = true),
             @ApiImplicitParam(value = "typp", name = "1 正在招和未通过是一个接口 正在招 前台禁止用户填就可以 2 待审核 3 已结束", dataType = "EditBriefchapter", required = true)
     })
-    public ResultJson editBriefchapterMyRelease(@RequestBody EditBriefchapterQuery query, Integer type) {
+    public ResultJson editBriefchapterMyRelease(EditBriefchapterQuery query, Integer type) {
         HashMap<String, Object> map = new HashMap<>();
         ResultJson resultJson = new ResultJson();
         try {
             if (query.getTypp().equals(1)) {
                 //正在招 | 未通过 代招单位
-                //图片上传
-                String descriptionJobPhoto = centerService.updateHead(query.getDescriptionJobPhotoUrl2());
-                String employerCertificatePhoto = centerService.updateHead(query.getEmployerCertificatePhotoUrl2());
-                query.setDescriptionJobPhotoUrl(descriptionJobPhoto);
-                query.setEmployerCertificatePhotoUrl(employerCertificatePhoto);
                 Integer count = service.editBriefchapterMyRelease(query);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 map.put("editBriefchapterMyRelease", count);
                 resultJson.setData(map);
             } else {
-                //招聘单位
-                //图片上传
-                String descriptionJobPhoto = centerService.updateHead(query.getDescriptionJobPhotoUrl2());
-                String employerCertificatePhoto = centerService.updateHead(query.getEmployerCertificatePhotoUrl2());
-                query.setDescriptionJobPhotoUrl(descriptionJobPhoto);
-                query.setEmployerCertificatePhotoUrl(employerCertificatePhoto);
+                //正在招 | 未通过 招聘单位
                 Integer count = service.editBriefchapterMyReleaseRecruitment(query);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);

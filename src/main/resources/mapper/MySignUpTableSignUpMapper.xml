@@ -8,7 +8,13 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="my_sign_up_table_id" jdbcType="INTEGER" property="mySignUpTableId" />
     <result column="sign_up_id" jdbcType="INTEGER" property="signUpId" />
-    <result column="delete_time" jdbcType="INTEGER" property="deleteTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+    <insert id="insertLiist">
+      insert into my_sign_up_table_sign_up (my_sign_up_table_id, sign_up_id) values
+      <foreach collection="up" item="item"  separator=",">
+      (#{item.mySignUpTableId}, #{item.signUpId})
+      </foreach>
+    </insert>
 </mapper>

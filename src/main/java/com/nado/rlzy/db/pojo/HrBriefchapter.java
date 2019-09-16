@@ -28,11 +28,14 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "简章id")
     private Integer brId;
 
+    private Integer collectId;
+
     @ApiModelProperty(value = "被招聘企业ID")
     private Integer recruitedcompanyId;
 
     @ApiModelProperty(value = "招聘岗位ID")
     private Integer postId;
+    private String postIdd;
 
     @ApiModelProperty(value = "岗位名称")
     private String postName;
@@ -103,8 +106,8 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "代招单位面试地址")
     private String interviewAddress2;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy年MM月dd日")
     @ApiModelProperty(value = "报道时间")
     private Date registerTime;
 

@@ -1,5 +1,6 @@
 package com.nado.rlzy.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.bean.dto.ComplaintDto;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.bean.query.ComplaintQuery;
@@ -28,6 +29,26 @@ public interface JobSearchHomePageService {
     List<HrGroup> coHomePage(Integer groupId);
 
     /**
+     * 求职端公司主页上面信息 代招单位 || 招聘单位
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 18:12 2019-09-15
+     * @Param [groupId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
+     */
+    List<HrGroup> coHomePageUpward(Integer groupId);
+
+    /**
+     * 删除自定义分组
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 19:37 2019-09-15
+     * @Param [id, userId]
+     * @return int
+     */
+    int deleteMySignUpTable(Integer id);
+
+    /**
      * 招聘简章查询接口 代招单位  全部职位
      *
      * @return java.util.List<com.nado.rlzy.bean.frontEnd.BriefcharpterFront>
@@ -38,6 +59,15 @@ public interface JobSearchHomePageService {
      **/
     Map<String, Object> queryBriefcharpterDtoByParams(BriefcharpterQuery query);
 
+    /**
+     * 筛选简章
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 19:56 2019-09-14
+     * @Param [query]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
+    Map<String, Object> screeningPositions(BriefcharpterQuery query);
 
     /**
      * 招聘简章查询接口 招聘单位 全部职位
@@ -57,7 +87,7 @@ public interface JobSearchHomePageService {
      * @Param [query]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query) ;
+    Map<String, Object> queryBriefcharpterDetileByParams(BriefcharpterQuery query) ;
 
     /**
      * 求职端 首页 简章列表 查询招聘简章详情 招聘单位
@@ -67,7 +97,7 @@ public interface JobSearchHomePageService {
      * @Param [query]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query);
+    Map<String, Object> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query);
 
     /**
      * 推荐职位 代招单位
@@ -287,7 +317,7 @@ public interface JobSearchHomePageService {
      * @param
      * @return int
      **/
-    int referrerToSIgnUp(HrSignupDeliveryrecord deliveryrecord);
+    int referrerToSIgnUp(JSONObject referreregistration, Integer briefChapterId, String number);
 
     /**
      *  添加收藏 和取消收藏
@@ -426,14 +456,24 @@ public interface JobSearchHomePageService {
 
 
      /**
-      * 求职端 求职表 我的求职表 确认报名 废弃
+      * 求职端 个人中心添加求职表到分组
       * @Author lushuaiyu
       * @Description //TODO
       * @Date 19:46 2019/7/22
       * @Param [briefChapterId, id]
       * @return int
       **/
-    int confirmRegistration(Integer briefChapterId, Integer [] id);
+    int insertSignUpTable(JSONObject tableSignUp);
+
+    /**
+     * 求职端 个人中心 我的报名表 查询推荐人名下的报名表
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 23:14 2019-09-15
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.MySignUpTableSignUp>
+     */
+    List<HrSignUp> selectAllSignUpByRecommend(Integer userId);
 
     /**
      * 招聘端 信用中心 投诉待处理 已撤销

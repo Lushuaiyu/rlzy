@@ -9,10 +9,7 @@ import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
 import com.nado.rlzy.service.PersonCenterService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName 求职端 个人中心 Controller
@@ -79,6 +75,16 @@ public class JobSeekingPersonalCenterController {
             resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return resultJson;
+    }
+
+    @RequestMapping(value = "deleteCOllect")
+    @ResponseBody
+    @ApiOperation(value = "", notes = "求职端删除简章收藏")
+    public ResultJson deleteCOllect(){
+        ResultJson resultJson = new ResultJson();
+
+        return resultJson;
+
     }
 
     /**

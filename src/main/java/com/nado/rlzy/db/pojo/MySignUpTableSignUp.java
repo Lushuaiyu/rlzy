@@ -33,8 +33,8 @@ public class MySignUpTableSignUp {
     /**
      * 0 未删除 1 已删除
      */
-    @Column(name = "delete_time")
-    private Integer deleteTime;
+    @Column(name = "delete_flag")
+    private Integer deleteFlag;
 
     /**
      * 创建时间

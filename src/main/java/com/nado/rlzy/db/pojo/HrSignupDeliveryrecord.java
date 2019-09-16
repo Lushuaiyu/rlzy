@@ -79,7 +79,7 @@ public class HrSignupDeliveryrecord {
      * 报名简章的数量
      */
     @Transient
-    private Integer[] number;
+    private String number;
 
     @Transient
     private List<HrSignupDeliveryrecord> deliveryrecordList;

@@ -154,6 +154,20 @@
             and u.id = #{userId}
         </if>
     </select>
+    <select id="coHomePageUpward" resultMap="BaseResultMap">
+        select grr.GroupName,
+        grr.co_policy,
+        grr.person_num,
+        grr.Id,
+        grr.corporate_cover
+        from hr_group grr
+        <where>
+            grr.groupStatus = 0
+            <if test="null != groupId">
+                and grr.Id = #{groupId}
+            </if>
+        </where>
+    </select>
 
 
 </mapper>

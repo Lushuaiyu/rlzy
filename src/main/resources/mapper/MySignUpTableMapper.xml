@@ -72,6 +72,12 @@
     <update id="updateMySignUpTableSignId">
 
     </update>
+    <update id="deleteMySignUpTable">
+update my_sign_up_table
+set delete_flag = 1 where delete_flag = 0
+and  id = #{id}
+</update>
+
     <select id="searchGroupingInformation" resultMap="BaseResultMap">
 
         select m.id,

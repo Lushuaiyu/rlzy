@@ -14,7 +14,6 @@ import java.util.List;
 public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
-
     /**
      * 报名表查询所有
      *
@@ -59,9 +58,6 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param []
      **/
     List<HrSignUp> selectCollectListOverview(@Param("userId") Integer userId);
-
-
-
 
 
     /**
@@ -282,7 +278,6 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     List<HrSignUp> signUpId();
 
 
-
     /**
      * 定时任务 返佣表待返佣 变成已返佣
      *
@@ -296,11 +291,12 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
     /**
      * 定时任务 求职分发表 待返佣变成已返佣
+     *
+     * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:40 2019/8/26
      * @Param []
-     * @return int
      **/
     int waitingForCommissionToBecomeRebateSIgnUp();
 
@@ -454,10 +450,6 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     int noReportedReason(@Param("reason") Integer reason, @Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
 
-
-
-
-
     /**
      * 招聘单位 扣的返佣的钱
      *
@@ -539,6 +531,16 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Date 17:33 2019/7/22
      **/
     List<HrSignUp> selectSignUpTableBySignUpName(@Param("signUpName") String signUpName, @Param("userId") Integer userId);
+
+    /**
+     * 求职端 个人中心 我的报名表 查询推荐人名下的报名表
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 22:15 2019-09-15
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     */
+    List<HrSignUp> selectAllSignUpByRecommend(@Param("userId") Integer userId);
 
 
     /**
@@ -630,6 +632,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     int rebateEntry(@Param("briefchapterId") Integer briefchapterId);
 
 
+    List<HrSignUp> aaa(@Param("id") String id);
 
 
 }

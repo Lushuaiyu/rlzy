@@ -3,27 +3,18 @@ package com.nado.rlzy.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.base.BaseController;
 import com.nado.rlzy.bean.dto.ComplaintDto;
-import com.nado.rlzy.bean.model.CommonResult;
 import com.nado.rlzy.bean.model.Result;
-import com.nado.rlzy.bean.model.ResultInfo;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.ComplaintQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
-import com.nado.rlzy.db.pojo.Feedback;
-import com.nado.rlzy.db.pojo.HrComplaint;
-import com.nado.rlzy.db.pojo.HrSignUp;
-import com.nado.rlzy.db.pojo.HrUser;
+import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.service.RecruitmentHomePageService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import lombok.var;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -254,15 +245,13 @@ public class PersonCenterController extends BaseController {
         try {
             //本人
             if (query.getTypeId().equals(1)) {
-                String url = service.updateHead(query.getFile());
-                service.editPersonData(query, url);
+
+                service.editPersonData(query);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             }
             //推荐人
             if (query.getTypeId().equals(2)) {
-                String url = service.updateHead(query.getFile());
-                query.setUrl(url);
                 service.editPersonDataRecommend(query);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
