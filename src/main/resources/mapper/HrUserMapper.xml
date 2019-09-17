@@ -36,6 +36,8 @@
         <result column="usId" property="userId" jdbcType="INTEGER"/>
         <result column="briefId" property="briefChapterId" jdbcType="INTEGER"/>
         <result column="improve_information" property="improveInformation" jdbcType="INTEGER"/>
+        <result column="pId" property="pid" jdbcType="INTEGER"/>
+        <result column="groupId" property="groupId" jdbcType="INTEGER"/>
         <collection property="signUp" resultMap="resultMap" ofType="com.nado.rlzy.db.pojo.HrSignUp"/>
         <collection property="groups" resultMap="resultMap" ofType="com.nado.rlzy.db.pojo.HrSignUp"/>
         <collection property="deliveryrecords" resultMap="deliveryrecordsMap"
@@ -162,6 +164,18 @@
         update hr_user set net_ease_token = #{netEaseToekn} where status = 0
         <if test="null != userId">
             and id = #{userId}
+        </if>
+    </update>
+    <update id="forgetPassword">
+        update hr_user
+        <set>
+            <if test="null != password">
+                Password = #{password}
+            </if>
+        </set>
+        where status = 0
+        <if test="null != phone">
+            and Mobile = #{phone}
         </if>
     </update>
 
@@ -421,13 +435,14 @@
         and c.recruiter_id is not null;
     </select>
     <select id="queryMyselfVillation" resultMap="BaseResultMap">
-        select hsd.status, u.UserName, gr.GroupName, u.violation_flag, u.violation_time, u.Id, si.id, hsd.id, br.id, gr.Id
+        select hsd.status, u.UserName, gr.GroupName, u.violation_flag, u.violation_time, u.Id, si.id, hsd.id, br.id,
+        gr.Id
         from hr_user u
-        left join hr_signup si  on si.user_id = u.id and si.delete_flag = 0
+        left join hr_signup si on si.user_id = u.id and si.delete_flag = 0
         left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
         left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0
         left join hr_group gr on br.RecruitedCompanyId = gr.Id and gr.groupStatus = 0
-        where  u.status = 0
+        where u.status = 0
         <if test="null != userId">
             and u.Id = #{userId}
         </if>
@@ -439,7 +454,7 @@
         u.violation_flag,
         hsd.status,
         hsd.brief_chapter_id as briefId,
-        si.user_id           as usId,
+        si.user_id as usId,
         u.violation_time
         from hr_user u
         left join hr_signup si on si.user_id = u.id and si.delete_flag = 0
@@ -467,7 +482,8 @@
         </if>
     </select>
     <select id="login" resultMap="BaseResultMap">
-        select Id, improve_information, violation_flag, violation_time, net_ease_token from hr_user where status = 0
+        select Id, improve_information, violation_flag, violation_time, net_ease_token, pId from hr_user where status =
+        0
         <if test="null != phone">
             and Mobile = #{phone}
         </if>
@@ -523,5 +539,19 @@
             and id = #{userId}
         </if>
     </select>
-
+    <select id="loginSonAccountNumber" resultType="hrUser">
+        select (SELECT GROUP_CONCAT(i.id)
+        FROM hr_interface i
+        WHERE FIND_IN_SET(i.id, r.power)) as interfaceId,
+        u.Id,u.improve_information, u.violation_flag, u.violation_time, u.net_ease_token, u.pId
+        from hr_user u
+        left join hr_role r on u.RoleId = r.id
+        where u.status = 0
+        <if test="null != phone">
+            and u.Mobile = #{phone}
+        </if>
+        <if test="null != password">
+            and u.Password = #{password}
+        </if>
+    </select>
 </mapper>

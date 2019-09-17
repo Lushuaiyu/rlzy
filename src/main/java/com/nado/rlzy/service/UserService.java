@@ -14,7 +14,7 @@ import com.nado.rlzy.db.pojo.HrUser;
 public interface UserService {
 
     /**
-     * 修改密码 || 忘记密码
+     * 修改密码
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:06 2019/7/16
@@ -22,6 +22,16 @@ public interface UserService {
      * @return int
      **/
     int changePasswoed(String phone, String code, String passWord, Integer userId);
+
+    /**
+     * 忘记密码
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 13:46 2019-09-17
+     * @Param [phone, code, password]
+     * @return int
+     */
+    int forgetPassword(String phone, String code, String password);
 
     /**
      *  用户切换身份
@@ -88,6 +98,16 @@ public interface UserService {
      * @return com.nado.rlzy.db.pojo.HrUser
      **/
     HrUser login(String phone, String password);
+
+    /**
+     * 子账号登录
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 17:51 2019-09-17
+     * @Param [userId]
+     * @return com.nado.rlzy.db.pojo.HrUser
+     */
+    HrUser loginSonAccountNumber(String phone, String password);
 
     /**
      * 查询用户是否被禁用

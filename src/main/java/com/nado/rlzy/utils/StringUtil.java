@@ -163,7 +163,7 @@ public class StringUtil {
 
 
     /**
-     * 身份证打码
+     * 身份证打码工具
      *
      * @return java.lang.String
      * @Author lushuaiyu
@@ -179,6 +179,18 @@ public class StringUtil {
             }
         }
         return stringBuffer.toString();
+    }
+    /**
+     * 身份证打码 使用工具
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 16:15 2019-09-17
+     * @Param [name]
+     * @return java.lang.String
+     */
+    public static String realName(String name){
+        String realName = name.substring(0, 4) + StringUtil.replaceStr(name.substring(4, 14)) + name.substring(14, 18);
+        return realName;
     }
 
     public static boolean isEmpty(String input) {

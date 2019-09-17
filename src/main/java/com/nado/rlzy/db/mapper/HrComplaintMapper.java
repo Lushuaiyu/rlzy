@@ -56,15 +56,7 @@ public interface HrComplaintMapper extends BaseMapper<HrComplaint>, Mapper<HrCom
      **/
     List<ComplaintDto> complaintRecruitment(@Param("complaintId") Integer complaintId);
 
-    /**
-     * 求职端 首页 投诉 查询投诉 废弃
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 15:58 2019/7/10
-     * @Param []
-     * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
-     **/
-    List<ComplaintDto> complaintStart(@Param("userId") Integer userId, @Param("typeId") Integer typeId, @Param("briefchapterId") Integer briefchapterId);
+
 
     /**
      * 招聘端 信用中心 投诉待处理 已撤销

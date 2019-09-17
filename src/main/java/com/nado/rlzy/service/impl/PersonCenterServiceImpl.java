@@ -278,6 +278,32 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateHeadImage(String userId, String headImage, String userName, Integer type) {
+        HrUser user = new HrUser();
+        user.setId(userId);
+        String s = OssUtilOne.picUpload(headImage, userId);
+        if (type.equals(1)) {
+            //总账号
+            if (null != headImage && "" != headImage) {
+                user.setHeadImage(s);
+            }
+        } else {
+            //子账号
+            if (null != userName && "" != userName) {
+                user.setUserName(userName);
+            }
+            if (null != headImage && "" != headImage) {
+                user.setHeadImage(s);
+            }
+
+        }
+
+        userMapper.updateByPrimaryKeySelective(user);
+        return 1;
+    }
+
+    @Override
     public List<HrUser> collectReferrer(Integer userId) {
         List<HrUser> hrUsers = userMapper.collectReferrer(userId);
         return hrUsers.stream()
@@ -291,14 +317,14 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     private void editInformation(EditPersonDataQuery query) {
         HrUser hrUser = new HrUser();
         HrUser user = userMapper.selectAllInformation(query.getUserId());
-        if (query.getHeadImage() != null && query.getHeadImage() != ""){
+        if (query.getHeadImage() != null && query.getHeadImage() != "") {
             String s = OssUtilOne.picUpload(query.getHeadImage(), "0");
             hrUser.setHeadImage(s);
         }
         if (query.getUserId() != null || query.getSex() != null || query.getEducation() != null ||
-        query.getGraduationTime() != null || query.getProfession() != null || query.getPostIdStr() != null ||
-        query.getArrivalTime() != null || query.getExpectedSalaryLower() != null || query.getExpectedSalaryUpper() != null ||
-        query.getItIsPublic() != null || query.getAgreePlatformHelp() != null) {
+                query.getGraduationTime() != null || query.getProfession() != null || query.getPostIdStr() != null ||
+                query.getArrivalTime() != null || query.getExpectedSalaryLower() != null || query.getExpectedSalaryUpper() != null ||
+                query.getItIsPublic() != null || query.getAgreePlatformHelp() != null) {
             hrUser.setId(String.valueOf(query.getUserId()));
             Integer sex = query.getSex() != null ? query.getSex() : user.getSex();
             hrUser.setSex(sex);

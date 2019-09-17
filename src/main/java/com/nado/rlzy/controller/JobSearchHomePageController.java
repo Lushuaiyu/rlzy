@@ -339,7 +339,7 @@ public class JobSearchHomePageController extends BaseController {
     @ApiOperation(value = "求职端 首页 公司主页 招聘单位", notes = "求职端 首页 公司主页 代招单位 招聘单位")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "groupId", name = "代招单位id || 招聘单位id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "type", name = "类型 1 基本信息 2 在招职位 3 历史记录", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "type", name = "类型 1 基本信息 2 在招职位 3 历史记录 4 求职端公司主页上面信息", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "briefchapterId", name = "简章id", dataType = "Integer", required = true)
     })
     public ResultJson coHomePageRecruitment(Integer groupId, Integer type, Integer briefchapterId) {
@@ -360,7 +360,7 @@ public class JobSearchHomePageController extends BaseController {
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 result.setData(list);
-            } else {
+            } else  if (type.equals(3)){
                 //历史记录
                 //违规记录
                 List<HrComplaint> list = service.violationRecord(groupId);
@@ -370,6 +370,13 @@ public class JobSearchHomePageController extends BaseController {
                 map.put("violationRecord", list);
                 map.put("companyHomeHistory", hrBriefchapters);
                 map.put("interviewReportEntry", entry);
+                result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                result.setData(map);
+            }else {
+                //求职端公司主页上面信息 代招单位 || 招聘单位
+                List<HrGroup> hrGroups = service.coHomePageUpward(groupId);
+                map.put("coHomePageUpward", hrGroups);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 result.setData(map);

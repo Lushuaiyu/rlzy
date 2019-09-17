@@ -3,15 +3,11 @@ package com.nado.rlzy.service.impl;
 import com.nado.rlzy.db.mapper.TestAccountMapper;
 import com.nado.rlzy.db.pojo.test.TestAccount;
 import com.nado.rlzy.service.TestAccountService;
-import lombok.var;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -26,6 +22,9 @@ public class TestAccountServiceImpl implements TestAccountService {
 
     @Resource
     private TestAccountMapper mapper;
+
+
+
     @Override
     public TestAccount getAccount( ) {
         return mapper.selectById();
@@ -40,25 +39,6 @@ public class TestAccountServiceImpl implements TestAccountService {
 
     }
 
-    public static void main(String[] args) {
-        /*int [] a = {5,7,3,8,9,1,6};
-        System.out.println(Arrays.toString(sort(a)));*/
-
-
-        var a = "33";
-
-        var list = new ArrayList<String>();
-        list.add("aa");
-        list.add("bb");
-        list.add("cc");
-        list.add("dd");
-        list.add("ee");
-        list.add("ff");
-        System.out.println(Arrays.asList(list));
-
-        System.out.println(a);
-
-    }
 
     public static int [] sort (int [] source){
         int[] arr = Arrays.copyOf(source, source.length);
@@ -77,11 +57,15 @@ public class TestAccountServiceImpl implements TestAccountService {
         return arr;
     }
 
-    @RequestMapping(value = "index")
-    @ResponseBody
-    public String index(){
-        return "index";
+
+    public static void main(String[] args) {
+
+
+
+
     }
+
+
 
 
 }

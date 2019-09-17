@@ -5,16 +5,12 @@ import com.nado.rlzy.bean.frontEnd.JobListtFront;
 import com.nado.rlzy.bean.model.Result;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.JobListQuery;
-import com.nado.rlzy.db.pojo.HrComplaint;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.RecruitmentHomePageService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -104,7 +100,7 @@ public class RecruitmentHomePageController extends BaseController {
      * @Param [query]
      **/
     @ApiImplicitParam(name = "id", value = "求职表id", dataType = "integer", required = true)
-    @ApiOperation(value = "查询求职列表详情", notes = "查询求职列表详情", httpMethod = "POST")
+    @ApiOperation(value = "查询求职列表详情 就是报名表详情  ", notes = "查询求职列表详情", httpMethod = "POST")
     @RequestMapping(value = "selectJobList")
     @ResponseBody
     public Result<JobListtFront> selectJobList(JobListQuery query) {

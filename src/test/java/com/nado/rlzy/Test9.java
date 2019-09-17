@@ -20,22 +20,29 @@ public class Test9 extends BaseTest {
     @Resource
     private HrGroupMapper groupMapper;
 
+
     @Test
-    public void test1(){
+    public void test1() {
 
         List<HrGroup> hrGroups = groupMapper.coHomePageUpward(16);
         System.out.println(hrGroups);
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         Integer a = 1;
         Integer b = 4;
         Integer c = 3;
         Integer d = 6;
 
-        if (a.equals(1) && (!b.equals(2) || !c.equals(3))){
+        if (a.equals(1) && (!b.equals(2) || !c.equals(3))) {
             System.out.println("fgfg");
         }
     }
+
+    @Test
+    public void test3() {
+    }
+
+
 }

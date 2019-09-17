@@ -55,14 +55,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public int forgetPassword(String phone, String code, String password) {
+        checkParams(phone, code, password);
+        SmsUtils.checkSms(phone, code);
+        HrUser user = userMapper.selectPhoneByPhone(phone);
+        AssertUtil.isTrue(null == user, "用户没有注册, 请去注册");
+        password = MD5.getMD5(password + RlzyConstant.PASSWORD_SALT);
+        return userMapper.forgetPassword(phone, password);
+
+
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public int changePasswoed(String phone, String code, String passWord, Integer userId) {
         //校验参数
         checkParams(phone, code, passWord);
 
-        String key = "phone::" + phone + "templateCode::" + templateId;
+       /* String key = "phone::" + phone + "templateCode::" + templateId;
         //判断 key 过期时间
         AssertUtil.isTrue(!(redisTemplate.hasKey(key)), RlzyConstant.SMS_CODE_STALEDATED);
-        AssertUtil.isTrue(!(redisTemplate.opsForValue().get(key).toString().equals(code)), RlzyConstant.SMS_MESSAGE_FAILED);
+        AssertUtil.isTrue(!(redisTemplate.opsForValue().get(key).toString().equals(code)), RlzyConstant.SMS_MESSAGE_FAILED);*/
+        SmsUtils.checkSms(phone, code);
         passWord = MD5.getMD5(passWord + RlzyConstant.PASSWORD_SALT);
         return userMapper.changePassword(userId, passWord, phone);
 
@@ -217,12 +232,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public HrUser loginSonAccountNumber(String phone, String password) {
+        String md5 = MD5.getMD5(password + RlzyConstant.PASSWORD_SALT);
+        HrUser user = userMapper.loginSonAccountNumber(phone, md5);
+        user.setUserId(Integer.valueOf(user.getId()));
+        return user;
+    }
+
+    @Override
     public HrUser login(String phone, String password) {
         String md5 = MD5.getMD5(password + RlzyConstant.PASSWORD_SALT);
 
         HrUser login = userMapper.login(phone, md5);
         login.setUserId(Integer.valueOf(login.getId()));
-        login.setId("");
         return login;
     }
 
@@ -260,11 +282,12 @@ public class UserServiceImpl implements UserService {
         //校验参数
         checkregister(query.getPhone(), query.getCode(), query.getPassword(), query.getConfirmPassword());
         //查缓存 判断验证码
-        String key = "phone::" + query.getPhone() + "templateCode::" + templateId;
+        //String key = "phone::" + query.getPhone() + "templateCode::" + templateId;
         //判断 key 过期时间
-        AssertUtil.isTrue(!(redisTemplate.hasKey(key)), RlzyConstant.SMS_CODE_STALEDATED);
+        //AssertUtil.isTrue(!(redisTemplate.hasKey(key)), RlzyConstant.SMS_CODE_STALEDATED);
 
-        AssertUtil.isTrue(!(redisTemplate.opsForValue().get(key).toString().equals(query.getCode())), RlzyConstant.SMS_MESSAGE_FAILED);
+        //AssertUtil.isTrue(!(redisTemplate.opsForValue().get(key).toString().equals(query.getCode())), RlzyConstant.SMS_MESSAGE_FAILED);
+        SmsUtils.checkSms(query.getPhone(), query.getCode());
         //有没有注册过
         HrUser user = new HrUser();
         user.setMobile(query.getPhone());

@@ -155,6 +155,16 @@ public interface PersonCenterService {
      **/
     List<HrUser> collectReferrer(Integer userId);
 
+    /**
+     * 招聘端 个人中心 修改昵称和头像
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 15:55 2019-09-17
+     * @Param [userId, headImage, userName, type]
+     * @return int
+     */
+    int updateHeadImage(String userId, String headImage, String userName, Integer type);
+
 
 
 

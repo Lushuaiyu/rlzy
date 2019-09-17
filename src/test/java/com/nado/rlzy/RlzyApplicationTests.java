@@ -9,15 +9,13 @@ import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 
 public class RlzyApplicationTests extends BaseTest {
@@ -25,7 +23,7 @@ public class RlzyApplicationTests extends BaseTest {
     private HrBriefchapterMapper mapper;
 
     @Resource
-    private RedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
 
     @Test
@@ -156,9 +154,9 @@ public class RlzyApplicationTests extends BaseTest {
 
     @Test
     public void contextLoad() {
-        redisTemplate.opsForValue().set("test", "hello word");
-        Object test = redisTemplate.opsForValue().get("test");
-        System.out.println(test);
+            stringRedisTemplate.opsForValue().set("aaa", "111");
+            Assert.assertEquals("111", stringRedisTemplate.opsForValue().get("aaa"));
+
     }
 
 

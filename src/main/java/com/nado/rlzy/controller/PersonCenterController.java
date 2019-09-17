@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @ClassName 招聘端 求职端 个人中心controller
+ * @ClassName 招聘端个人中心controller
  * @Description TODO
  * @Author lushuaiyu
  * @Data 2019/7/1 15:06
@@ -270,7 +270,7 @@ public class PersonCenterController extends BaseController {
 
 
     /**
-     * 求职端 信用中心 查看投诉详情 & 撤销投诉
+     * 求职端 信用中心 查看投诉详情 || 撤销投诉
      *
      * @return com.nado.rlzy.bean.model.Result<com.nado.rlzy.bean.dto.ComplaintDto>
      * @Author lushuaiyu
@@ -369,7 +369,7 @@ public class PersonCenterController extends BaseController {
 
     @RequestMapping(value = "myFeedback")
     @ResponseBody
-    @ApiOperation(value = "招聘端 个人中心 我的反馈", notes = "我的反馈", httpMethod = "POST")
+    @ApiOperation(value = "招聘端 个人中心 我要反馈", notes = "我的反馈", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "content", name = "投诉内容", dataType = "string", required = true),
             @ApiImplicitParam(value = "userId", name = "投诉人id", dataType = "integer", required = true),
@@ -494,6 +494,31 @@ public class PersonCenterController extends BaseController {
         }
         return resultJson;
     }
+
+    @RequestMapping(value = "updateHeadImage")
+    @ResponseBody
+    @ApiOperation(value = "招聘端 个人中心 修改昵称和头像", notes = "招聘端 个人中心 修改昵称和头像")
+    public ResultJson updateHeadImage(String userId, String headImage, String userName, Integer type) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            int i = service.updateHeadImage(userId, headImage, userName, type);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(i);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
+
+
+    }
+
 
 
 

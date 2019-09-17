@@ -50,8 +50,9 @@ public class Title {
     }
 
     public boolean equals_2(Title t) {
-        if (this.getPhone().equals(t.getPhone()) && this.getType().equals(t.getType()))
+        if (this.getPhone().equals(t.getPhone()) && this.getType().equals(t.getType())) {
             return true;
+        }
         return false;
 
     }

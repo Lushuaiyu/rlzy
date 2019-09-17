@@ -7,17 +7,10 @@ import com.nado.rlzy.bean.query.RecruitmentSideRegisterQuery;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.AssertException;
-import com.nado.rlzy.service.MessageService;
-import com.nado.rlzy.service.PersonCenterService;
-import com.nado.rlzy.service.TokenService;
-import com.nado.rlzy.service.UserService;
+import com.nado.rlzy.service.*;
 import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.MD5;
-import com.nado.rlzy.utils.OssUtilOne;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -103,7 +96,33 @@ public class UserController extends BaseController {
             resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return resultJson;
+    }
 
+    @RequestMapping(value = "forgetPassword")
+    @ResponseBody
+    @ApiOperation(value = "忘记密码", notes = "修改密码", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "phone", name = "手机号码", dataType = "String", required = true),
+            @ApiImplicitParam(value = "code", name = "验证码", dataType = "String", required = true),
+            @ApiImplicitParam(value = "passWord", name = "密码", dataType = "String", required = true)
+    })
+    public ResultJson forgetPassword(String phone, String code, String passWord) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            int i = service.forgetPassword(phone, code, passWord);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(i);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
     }
 
 
@@ -156,33 +175,66 @@ public class UserController extends BaseController {
                     resultJson.setMessage("登录失败,密码错误");
                     return resultJson;
                 } else {
+
                     //可以登录
                     HrUser login = service.login(phone, password);
-                    Integer userId = login.getUserId();
-                    //查询拉黑的用户
-                    int i = service.selectEnterPriseBlacakList(userId);
-                    int i1 = service.selectPlatformlack(userId);
-                    int i2 = service.selectplatformBlackRecruitmentEnd(userId);
-                    if (i1 != 0) {
-                        AssertUtil.isTrue(i1 != 0, "您已被平台拉黑, 请联系平台处理");
-                        resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
-                        resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
-                    }
-                    if (i != 0) {
-                        AssertUtil.isTrue(i != 0, "您已被企业拉黑, 请联系企业处理");
-                        resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
-                        resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
-                    }
-                    if (i2 != 0) {
-                        AssertUtil.isTrue(i2 != 0, "您的企业已被拉黑, 无法登陆, 请联系平台处理");
-                        resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
-                        resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
-                    }
 
-                    resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                    resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                    resultJson.setData(login);
-                    return resultJson;
+                    if (null == login.getPid()) {
+                        //总账号 有所有权限
+                        HrUser login1 = service.login(phone, password);
+                        Integer userId = login1.getUserId();
+                        //查询拉黑的用户
+                        int i = service.selectEnterPriseBlacakList(userId);
+                        int i1 = service.selectPlatformlack(userId);
+                        int i2 = service.selectplatformBlackRecruitmentEnd(userId);
+                        if (i1 != 0) {
+                            AssertUtil.isTrue(i1 != 0, "您已被平台拉黑, 请联系平台处理");
+                            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+                        }
+                        if (i != 0) {
+                            AssertUtil.isTrue(i != 0, "您已被企业拉黑, 请联系企业处理");
+                            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+                        }
+                        if (i2 != 0) {
+                            AssertUtil.isTrue(i2 != 0, "您的企业已被拉黑, 无法登陆, 请联系平台处理");
+                            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+                        }
+                        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                        resultJson.setData(login1);
+                        return resultJson;
+                    } else {
+                        //子账号 权限后台配
+                        //子账号登录时要关联权限
+                        HrUser user = service.loginSonAccountNumber(phone, password);
+                        Integer userId = user.getUserId();
+                        //查询拉黑的用户
+                        int i = service.selectEnterPriseBlacakList(userId);
+                        int i1 = service.selectPlatformlack(userId);
+                        int i2 = service.selectplatformBlackRecruitmentEnd(userId);
+                        if (i1 != 0) {
+                            AssertUtil.isTrue(i1 != 0, "您已被平台拉黑, 请联系平台处理");
+                            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+                        }
+                        if (i != 0) {
+                            AssertUtil.isTrue(i != 0, "您已被企业拉黑, 请联系企业处理");
+                            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+                        }
+                        if (i2 != 0) {
+                            AssertUtil.isTrue(i2 != 0, "您的企业已被拉黑, 无法登陆, 请联系平台处理");
+                            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+                            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+                        }
+                        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+                        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+                        resultJson.setData(user);
+                        return resultJson;
+                    }
                 }
             }
         } catch (AssertException e) {
@@ -270,19 +322,6 @@ public class UserController extends BaseController {
             resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
             resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
-        return resultJson;
-    }
-
-    @RequestMapping(value = "test3")
-    @ResponseBody
-    public ResultJson test3(String image) throws Exception {
-
-
-        String s = OssUtilOne.picUpload(image, "0");
-        ResultJson resultJson = new ResultJson();
-        resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-        resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-        resultJson.setData(s);
         return resultJson;
     }
 

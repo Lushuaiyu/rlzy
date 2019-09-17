@@ -4,26 +4,19 @@ import com.nado.rlzy.bean.dto.JobListDto;
 import com.nado.rlzy.bean.frontEnd.JobListtFront;
 import com.nado.rlzy.bean.query.JobListQuery;
 import com.nado.rlzy.db.mapper.*;
-import com.nado.rlzy.db.pojo.Collect;
-import com.nado.rlzy.db.pojo.HrBriefchapter;
-import com.nado.rlzy.db.pojo.HrSignUp;
-import com.nado.rlzy.db.pojo.HrUser;
+import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.RecruitmentHomePageService;
 import com.nado.rlzy.utils.AssertUtil;
 import com.nado.rlzy.utils.CheckParametersUtil;
 import com.nado.rlzy.utils.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -121,8 +114,8 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
                     front.setSex(man);
                 }
                 String cardId = front.getCardId();
-                cardId = cardId.substring(0, 3) + replaceStr(cardId.substring(3, 6)) + cardId.substring(6, 14) + replaceStr(cardId.substring(14, 18));
-                front.setCardId(cardId);
+                String s8 = StringUtil.realName(cardId);
+                front.setCardId(s8);
             }
 
             return front;
@@ -335,12 +328,13 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
 
     public static void main(String[] args) {
         String realName = "320673199611152349";
-        realName = realName.substring(0, 3) + replaceStr(realName.substring(3, 6)) + realName.substring(6, 14) + replaceStr(realName.substring(14, 18));
+        /*realName = realName.substring(0, 4) + replaceStr(realName.substring(4, 14)) + realName.substring(14, 18);
         System.out.println(realName);
-        System.out.println("aaa");
+        System.out.println("aaa");*/
+        System.out.println(StringUtil.realName(realName));
     }
 
-    private static String replaceStr(String realName) {
+   /* private static String replaceStr(String realName) {
         StringBuffer stringBuffer = new StringBuffer();
         if (StringUtils.isNotBlank(realName)) {
             for (int i = 0; i < realName.length(); i++) {
@@ -352,7 +346,7 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
         return stringBuffer.toString();
 
 
-    }
+    }*/
 
 
 }

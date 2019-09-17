@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.Value;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -233,6 +232,12 @@ public class HrUser {
 
     @Column(name = "improve_information")
     private Integer improveInformation;
+
+    @Column(name = "pId")
+    private Integer pid;
+
+    @Column(name = "groupId")
+    private String groupId;
 
 
 }

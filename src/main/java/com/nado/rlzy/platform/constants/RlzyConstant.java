@@ -125,5 +125,10 @@ public class RlzyConstant {
 
     public static final String AGREE_PLATFORM_HELP = "是否获取平台帮助";
 
+    /**
+     * 短信验证码的 key
+     */
+    public static final String SMS_CODE = "sms_code";
+
 
 }
