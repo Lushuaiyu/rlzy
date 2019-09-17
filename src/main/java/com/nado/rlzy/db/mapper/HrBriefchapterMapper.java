@@ -388,7 +388,7 @@ public interface HrBriefchapterMapper {
 
 
     /**
-     * 招聘端 我的发布 编辑简章后 status 改为 待审核
+     * 招聘端 我的发布 编辑简章后 status 改为 未提交
      *
      * @return int
      * @Author lushuaiyu

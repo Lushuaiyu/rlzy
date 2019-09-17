@@ -571,7 +571,7 @@
     <update id="updateStatus">
         update hr_briefchapter
         <set>
-            Status = 0
+            Status = -1
         </set>
         <where>
             briefChapterStatus = 0

@@ -1254,7 +1254,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         } else {
             AssertUtil.isTrue(query.getRebate() != 0 || query.getRebate() != 1, "未选择是否返佣, 请重新选择");
         }
-        //编辑完了 简章状态改成待审核
+        //编辑完了 简章状态改成未提交
         mapper.updateStatus(query.getBriefchapter());
         return 1;
     }
