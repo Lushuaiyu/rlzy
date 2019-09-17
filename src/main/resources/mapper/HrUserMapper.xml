@@ -5,6 +5,7 @@
         <id column="Id" property="id" jdbcType="INTEGER"/>
         <result column="UserName" property="userName" jdbcType="VARCHAR"/>
         <result column="RoleId" property="roleId" jdbcType="INTEGER"/>
+        <result column="interfaceId" property="interfaceId" jdbcType="INTEGER"/>
         <result column="Password" property="password" jdbcType="VARCHAR"/>
         <result column="net_ease_token" property="netEaseToken" jdbcType="VARCHAR"/>
         <result column="HeadImage" property="headImage" jdbcType="VARCHAR"/>

@@ -49,6 +49,9 @@ public class HrUser {
     @ApiModelProperty(value = "角色id")
     private Integer roleId;
 
+    @Transient
+    private String interfaceId;
+
     @Column(name = "Password")
     @ApiModelProperty(value = "密码")
     private String password;
