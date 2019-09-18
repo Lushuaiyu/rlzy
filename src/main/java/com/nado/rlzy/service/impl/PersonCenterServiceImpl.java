@@ -1,7 +1,6 @@
 package com.nado.rlzy.service.impl;
 
 import com.nado.rlzy.bean.dto.ComplaintDto;
-import com.nado.rlzy.bean.dto.PersonCoDto;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
 import com.nado.rlzy.db.mapper.*;
@@ -77,20 +76,13 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
-    public Map<String, Object> queryPersonCo(Integer userId, Integer type) {
+    public List<HrGroup> queryPersonCo(Integer userId) {
         HashMap<String, Object> map = new HashMap<>(16);
-        if (type.equals(1)) {
-            //招聘单位
-            List<PersonCoDto> list = hrGroupMapper.queryPersonCORecruitment(userId);
-            List<PersonCoDto> dtos = list.stream().collect(Collectors.toList());
-            map.put("queryPersonCORecruitment", dtos);
-        } else {
-            //代招单位
-            List<PersonCoDto> coDtos = hrGroupMapper.queryPersonCo(userId);
-            List<PersonCoDto> collect = coDtos.stream().collect(Collectors.toList());
-            map.put("queryPersonCo", collect);
-        }
-        return map;
+        //代招单位 | 招聘单位
+        List<HrGroup> coDtos = hrGroupMapper.queryPersonCo(userId);
+        List<HrGroup> collect = coDtos.stream().collect(Collectors.toList());
+
+        return collect;
 
 
     }
@@ -116,8 +108,9 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     private int addCoParams(AddCoQuery query) {
-        List<HrGroup> hrGroups = hrGroupMapper.queryAgentEnterprisePid(query.getUserId());
-        Integer id = hrGroups.get(0).getId();
+        HrGroup group = hrGroupMapper.queryAgentEnterprisePid(query.getUserId());
+        //代招单位的id
+        Integer id = group.getId();
         //添加
         HrGroup hrGroup = new HrGroup();
         hrGroup.setGroupname(query.getCoName());
@@ -125,6 +118,8 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         hrGroup.setGroupinfo(query.getCompanyProfile());
         String busLicense = OssUtilOne.picUpload(query.getBusLicense(), "0");
         hrGroup.setBusinesslicense(busLicense);
+        String helpProve = OssUtilOne.picUpload(query.getHelpProve(), "0");
+        hrGroup.setHelpprove(helpProve);
         hrGroup.setPid(id);
         hrGroup.setCertifierid(query.getUserId());
         boolean b = hrGroupMapper.insertSelective(hrGroup) < 1;
@@ -301,6 +296,17 @@ public class PersonCenterServiceImpl implements PersonCenterService {
 
         userMapper.updateByPrimaryKeySelective(user);
         return 1;
+    }
+
+    @Override
+    public HrUser selectHeadUserNameIdCard(Integer userId) {
+        HrUser user = userMapper.selectHeadUserNameIdCard(userId);
+        if (null != user.getIdCard()) {
+            String idCard = user.getIdCard();
+            String realName = StringUtil.realName(idCard);
+            user.setIdCard(realName);
+        }
+        return user;
     }
 
     @Override

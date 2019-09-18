@@ -655,4 +655,48 @@ public class MyReleaseController extends BaseController {
         }
         return result;
     }
+
+    @RequestMapping(value = "editBriefchapterEcho")
+    @ResponseBody
+    @ApiOperation(value = "编辑简章时回显 代招单位", notes = "编辑简章时回显 代招单位")
+    public ResultJson editBriefchapterEcho(Integer briefchapter){
+        ResultJson result = new ResultJson();
+        try {
+            List<HrBriefchapter> list = service.editBriefchapterEcho(briefchapter);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(list);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return result;
+    }
+    @RequestMapping(value = "editBriefchapterEchoRecruitment")
+    @ResponseBody
+    @ApiOperation(value = "编辑简章时回显 代招单位", notes = "编辑简章时回显 代招单位")
+    public ResultJson editBriefchapterEchoRecruitment(Integer briefchapter){
+        ResultJson result = new ResultJson();
+        try {
+            List<HrBriefchapter> list = service.editBriefchapterEchoRecruitment(briefchapter);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(list);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return result;
+
+    }
 }

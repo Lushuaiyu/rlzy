@@ -94,13 +94,6 @@ public class HrGroup {
 
     @Transient
     private Integer violationFlag;
-
-    /**
-     * 企业封面
-     */
-    @Column(name = "corporate_cover")
-    private String corporateCover;
-
     @Transient
     private String userName;
 
@@ -127,5 +120,14 @@ public class HrGroup {
     @Transient
     private List<HrSignupDeliveryrecord> deliveryrecords;
 
+    @Transient
+    /**
+     * 企业标签
+     */
+    private List<HrLabel> labels;
 
+    /**
+     * 企业封面轮播图
+     */
+    private List<HrLunbo> carousels;
 }

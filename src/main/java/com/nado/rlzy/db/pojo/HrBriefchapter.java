@@ -54,6 +54,7 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "是否返佣 0:无返佣 1:有返佣")
     private Integer rebate;
+    private String rebateDetail;
 
     @ApiModelProperty(value = "招聘人数")
     private Integer recruitingNo;
@@ -72,13 +73,18 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "结算工资方式")
     private String detailSalaryWay;
 
+    private String detailSalaryWayId;
+
     @ApiModelProperty(value = "学历")
     private String educationId;
+    private String education;
 
     @ApiModelProperty(value = "经验")
     private String experienceId;
     @ApiModelProperty(value = "返回给前台 经验")
     private String experience;
+    private String experience1;
+
 
     @ApiModelProperty(value = "福利")
     private String welfareId;
@@ -88,6 +94,11 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "职位描述")
     private String postDetail;
+
+    /**
+     * 职位描述 图片
+     */
+    private String descriptionJobPhotoUrl;
 
     @ApiModelProperty(value = "面试时间")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -114,6 +125,11 @@ public class HrBriefchapter {
     @ApiModelProperty(value = "合同签订方")
     private Integer contractWay;
 
+    /**
+     * 合同签订方名字
+     */
+    private String contractWayDetail;
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "合同开始时间")
@@ -129,6 +145,7 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "录取方式")
     private Integer hireWay;
+    private String hireWayDetail;
 
     @ApiModelProperty(value = "返佣")
     private Integer rebateStatus;
@@ -179,6 +196,7 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "工作方式")
     private String workWayId;
+    private Integer workWay;
 
     /**
      * 工作地点
@@ -187,12 +205,15 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "工作时间安排")
     private String workTimeArrangeId;
+    private Integer workTimeArrange;
 
     @ApiModelProperty(value = "服装要求")
     private String clothingReguirementId;
+    private Integer clothingReguirement;
 
     @ApiModelProperty(value = "兴趣爱好")
     private String hobbyId;
+    private String hobby;
 
     @ApiModelProperty(value = "求职表id")
     private Integer signUpId;
@@ -201,12 +222,11 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "加班时长")
     private Integer overtimeTimeId;
+    private String overtimeTimeId2;
+    private String overtimeTime;
 
     @ApiModelProperty(value = "职位描述")
     private String descriptionJob;
-
-    @ApiModelProperty(value = "职位描述图片url")
-    private String descriptionJobPhotoUrl;
 
     @ApiModelProperty(value = "公司面试地址类型")
     private String interviewAddressType;
@@ -216,6 +236,7 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "是否接受平台推荐简历")
     private Integer acceptRecommendedResume;
+    private String acceptRecommendedResumeDetail;
 
     @ApiModelProperty(value = "用人单位证明图片url")
     private String employerCertificatePhotoUrl;
@@ -231,6 +252,7 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "专业id")
     private String professionId;
+    private String profession;
 
     @ApiModelProperty(value = "返佣金额")
     private List<HrRebaterecord> rebat;

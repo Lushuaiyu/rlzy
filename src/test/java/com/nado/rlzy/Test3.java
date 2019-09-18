@@ -1,7 +1,6 @@
 package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
-import com.nado.rlzy.bean.dto.PersonCoDto;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.Collect;
@@ -81,14 +80,6 @@ public class Test3 extends BaseTest {
         ).collect(Collectors.toList());
 
     }
-
-    @Test
-    public void test4() {
-        List<PersonCoDto> personCoDtos = groupMapper.queryPersonCo(8);
-        System.out.println(personCoDtos);
-
-    }
-
     @Test
     public void test5() {
         int interviewed = userMapper.interviewed(2);

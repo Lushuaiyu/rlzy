@@ -5,10 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @ClassName 招聘端 我的发布 编辑简章
@@ -79,11 +77,11 @@ public class EditBriefchapterQuery {
 
    private Integer overtimeTimeId;
 
-   private MultipartFile descriptionJobPhotoUrl2;
+
 
    private String descriptionJobPhotoUrl;
 
-   private MultipartFile employerCertificatePhotoUrl2;
+
 
    private String employerCertificatePhotoUrl;
 
@@ -126,24 +124,6 @@ public class EditBriefchapterQuery {
      * 有无返佣 0 无返佣 1 有返佣
      */
     private Integer rebate;
-
-   /* @ApiModelProperty(value = "面试返佣金额 男")
-    private BigDecimal addMoneyMan;
-    @ApiModelProperty(value = "面试返佣金额 女")
-    private BigDecimal addMoneyWomen;
-
-    @ApiModelProperty(value = "报道返佣男")
-    private BigDecimal reportMan;
-
-    @ApiModelProperty(value = "报道返佣 女")
-    private BigDecimal reportWomen;
-
-    @ApiModelProperty(value = "入职返佣 男")
-    private BigDecimal entryMan;
-
-    @ApiModelProperty(value = "入职返佣 女")
-    private BigDecimal entryWomen;*/
-
     /**
      * 男生面试返佣
      */
@@ -184,10 +164,6 @@ public class EditBriefchapterQuery {
      */
     private BigDecimal rebateFentry;
 
-    /**
-     * 返佣时间入职
-     */
-    private Date rebateTimeEntry;
 
     /**
      * 1 代招单位 2 招聘单位

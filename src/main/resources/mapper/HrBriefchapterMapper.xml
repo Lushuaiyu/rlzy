@@ -13,19 +13,25 @@
         <result column="avgSalary" property="avgSalary" jdbcType="INTEGER"/>
         <result column="detailSalary" property="detailSalary" jdbcType="VARCHAR"/>
         <result column="detailSalaryWay" property="detailSalaryWay" jdbcType="VARCHAR"/>
+        <result column="detailSalaryWayId" property="detailSalaryWayId" jdbcType="VARCHAR"/>
         <result column="hobby" property="hobbyId" jdbcType="VARCHAR"/>
-
+        <result column="hobby_id" property="hobby" jdbcType="VARCHAR"/>
         <result column="education" property="educationId" jdbcType="VARCHAR"/>
+        <result column="educationId" property="education" jdbcType="VARCHAR"/>
         <result column="profession" property="professionId" jdbcType="VARCHAR"/>
-
+        <result column="profession_id" property="profession" jdbcType="VARCHAR"/>
         <result column="experience" property="experienceId" jdbcType="VARCHAR"/>
+        <result column="experienceId" property="experience1" jdbcType="VARCHAR"/>
         <result column="welfareId" property="welfareId" jdbcType="VARCHAR"/>
+        <result column="welfare" property="welfare" jdbcType="VARCHAR"/>
         <result column="postDetail" property="postDetail" jdbcType="VARCHAR"/>
+        <result column="description_job_photo_url" property="descriptionJobPhotoUrl" jdbcType="VARCHAR"/>
         <result column="interviewTime" property="interviewTime" jdbcType="TIMESTAMP"/>
         <result column="interviewAddress" property="interviewAddress" jdbcType="VARCHAR"/>
         <result column="interviewAddressFlag" property="interviewAddressFlag" jdbcType="INTEGER"/>
         <result column="work_address" property="workAddress" jdbcType="VARCHAR"/>
         <result column="clothingReguiement" property="clothingReguirementId" jdbcType="VARCHAR"/>
+        <result column="clothing_requirement_id" property="clothingReguirement" jdbcType="INTEGER"/>
 
 
         <result column="registerTime" property="registerTime" jdbcType="TIMESTAMP"/>
@@ -42,10 +48,13 @@
         <result column="userId" property="userId" jdbcType="INTEGER"/>
         <result column="Status" property="status" jdbcType="INTEGER"/>
         <result column="remark" property="remark" jdbcType="VARCHAR"/>
-        <result column="workWay" property="workWayId" jdbcType="INTEGER"/>
+        <result column="workWay" property="workWayId" jdbcType="VARCHAR"/>
+        <result column="work_way_id" property="workWay" jdbcType="INTEGER"/>
         <result column="workTimeArrange" property="workTimeArrangeId" jdbcType="INTEGER"/>
+        <result column="work_time_arrange_id" property="workTimeArrange" jdbcType="INTEGER"/>
         <result column="overtimeTime" property="overtimeTimeId" jdbcType="INTEGER"/>
-        <result column="clothing_requirement_id" property="clothingReguirementId" jdbcType="VARCHAR"/>
+        <result column="overtimeTime1" property="overtimeTimeId2" jdbcType="INTEGER"/>
+        <result column="overtime_times_id" property="overtimeTime" jdbcType="INTEGER"/>
         <result column="noEmployerAddress" property="noEmployerAddress" jdbcType="VARCHAR"/>
 
 
@@ -87,6 +96,7 @@
         <result column="rebate_female_report" property="rebateFemaleReport" jdbcType="DECIMAL"/>
         <result column="rebate_female_entry" property="rebateFemaleEntry" jdbcType="DECIMAL"/>
         <result column="rebate_time_entry" property="rebateTimeEntry" jdbcType="DECIMAL"/>
+        <result column="accept_recommended_resume" property="acceptRecommendedResume" jdbcType="INTEGER"/>
         <result column="user_name" property="userName" jdbcType="DECIMAL"/>
         <result column="hsdId" property="hsdId" jdbcType="INTEGER"/>
         <result column="brId" property="brId" jdbcType="INTEGER"/>
@@ -825,6 +835,12 @@
         </if>
 
     </update>
+    <update id="browsePerson">
+        update hr_briefchapter set readNum = readNum + 1 where briefChapterStatus = 0
+        <if test="null != briefchapterId">
+            and id = #{briefchapterId}
+        </if>
+    </update>
 
     <select id="queryBriefcharpterDtoByParams" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.BriefcharpterQuery">
@@ -997,7 +1013,10 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.work_time_arrange_id)
         and d.pId = 17) as workTimeArrange,
-        br.overtime_times_id as overtimeTime,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.overtime_times_id)
+        and d.pId = 18) as overtimeTime,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.clothing_requirement_id)
@@ -1008,6 +1027,7 @@
         and d.pId = 15) as hobby,
         br.no_employer_address as noEmployerAddress,
         br.PostDetail as postDetail,
+        br.description_job_photo_url,
         br.work_address,
         br.registerTime as registerTime,
         br.interview_address as interviewAddress,
@@ -1024,12 +1044,10 @@
         er.rebate_male_entry as rebateMaleEntry,
         er.rebate_female_entry as rebateFemaleEntry,
         er.rebate_time,
-        er.id,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.contract_way_detail_id)
         and d.pId = 13) as contractWayDetail,
-        br.contract_start_time as contractStartTime,
         br.contractTime,
         br.readNum as readNum,
         (SELECT GROUP_CONCAT(d.name)
@@ -1701,7 +1719,10 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.work_time_arrange_id)
         and d.pId = 17) as workTimeArrange,
-        br.overtime_times_id as overtimeTime,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.overtime_times_id)
+        and d.pId = 18) as overtimeTime,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.clothing_requirement_id)
@@ -1712,6 +1733,7 @@
         and d.pId = 15) as hobby,
         br.no_employer_address as noEmployerAddress,
         br.PostDetail as postDetail,
+        br.description_job_photo_url,
         br.work_address,
         br.registerTime as registerTime,
         br.interview_address as interviewAddress,
@@ -1728,12 +1750,10 @@
         er.rebate_male_entry as rebateMaleEntry,
         er.rebate_female_entry as rebateFemaleEntry,
         er.rebate_time,
-        er.id,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.contract_way_detail_id)
         and d.pId = 13) as contractWayDetail,
-        br.contract_start_time as contractStartTime,
         br.contractTime,
         br.readNum as readNum,
         (SELECT GROUP_CONCAT(d.name)
@@ -2376,7 +2396,8 @@
     </select>
 
     <select id="interviewRebateOrReportRebate" resultMap="BaseResultMap">
-        select Rebate, rebate_female_interview, rebate_male_interview, rebate_male_report, rebate_female_report, hireWay from
+        select Rebate, rebate_female_interview, rebate_male_interview, rebate_male_report, rebate_female_report, hireWay
+        from
         hr_briefchapter
         <where>
             briefChapterStatus = 0
@@ -2460,6 +2481,235 @@
       and gr.type = 1
       and u.type = 2
     </select>
-
-
+    <select id="editBriefchapterEcho" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.PostId,
+        br.Id,
+        grr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        grr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.detailSalaryWay as detailSalaryWayId,
+        br.hireWay as hireWay,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.man_age_id)
+        and d.pId = 5) as manAge,
+        br.man_age_id,
+        br.Rebate,
+        gr.Id as groupId,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.women_age_id)
+        and d.pId = 9) as womenAge,
+        br.women_age_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.educationId)
+        and d.pId = 2) as education,
+        br.educationId,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.experienceId)
+        and d.pId = 12) as experience,
+        br.experienceId,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.profession_id)
+        and d.pId = 3) as profession,
+        br.profession_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.work_way_id)
+        and d.pId = 16) as workWay,
+        br.work_way_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.work_time_arrange_id)
+        and d.pId = 17) as workTimeArrange,
+        br.work_time_arrange_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.overtime_times_id)
+        and d.pId = 18) as overtimeTime1,
+        br.overtime_times_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.clothing_requirement_id)
+        and d.pId = 14) as clothingReguiement,
+        br.clothing_requirement_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.hobby_id)
+        and d.pId = 15) as hobby,
+        br.hobby_id,
+        br.no_employer_address as noEmployerAddress,
+        br.PostDetail as postDetail,
+        br.description_job_photo_url,
+        br.work_address,
+        br.registerTime as registerTime,
+        br.interview_address as interviewAddress,
+        br.interviewTime,
+        br.no_employer_address as noEmployerAddress,
+        br.registerTime as registerTime,
+        br.contractWay as contractWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_male_entry,
+        br.rebate_female_entry,
+        er.rebate_male_entry as rebateMaleEntry,
+        er.rebate_female_entry as rebateFemaleEntry,
+        er.rebate_time,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.contract_way_detail_id)
+        and d.pId = 13) as contractWayDetail,
+        br.contractTime,
+        br.readNum as readNum,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.welfareId as welfare,
+        br.man_num,
+        br.women_num,
+        er.brief_chapter_id,
+        er.rebate_time,
+        er.type,
+        br.accept_recommended_resume
+        from hr_briefchapter br
+        left join entry_resignation er on br.id = er.brief_chapter_id and er.delete_flag = 0 and er.type = 2
+        left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and grr.pid = gr.Id
+        <if test="null != briefchapter">
+            and br.Id = #{briefchapter}
+        </if>
+    </select>
+    <select id="editBriefchapterEchoRecruitment" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.PostId,
+        br.Id,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.detailSalaryWay as detailSalaryWayId,
+        br.hireWay as hireWay,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.man_age_id)
+        and d.pId = 5) as manAge,
+        br.man_age_id,
+        br.Rebate,
+        gr.Id as groupId,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.women_age_id)
+        and d.pId = 9) as womenAge,
+        br.women_age_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.educationId)
+        and d.pId = 2) as education,
+        br.educationId,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.experienceId)
+        and d.pId = 12) as experience,
+        br.experienceId,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.profession_id)
+        and d.pId = 3) as profession,
+        br.profession_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.work_way_id)
+        and d.pId = 16) as workWay,
+        br.work_way_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.work_time_arrange_id)
+        and d.pId = 17) as workTimeArrange,
+        br.work_time_arrange_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.overtime_times_id)
+        and d.pId = 18) as overtimeTime1,
+        br.overtime_times_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.clothing_requirement_id)
+        and d.pId = 14) as clothingReguiement,
+        br.clothing_requirement_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.hobby_id)
+        and d.pId = 15) as hobby,
+        br.hobby_id,
+        br.no_employer_address as noEmployerAddress,
+        br.PostDetail as postDetail,
+        br.description_job_photo_url,
+        br.work_address,
+        br.registerTime as registerTime,
+        br.interview_address as interviewAddress,
+        br.interviewTime,
+        br.no_employer_address as noEmployerAddress,
+        br.registerTime as registerTime,
+        br.contractWay as contractWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_male_entry,
+        br.rebate_female_entry,
+        er.rebate_male_entry as rebateMaleEntry,
+        er.rebate_female_entry as rebateFemaleEntry,
+        er.rebate_time,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.contract_way_detail_id)
+        and d.pId = 13) as contractWayDetail,
+        br.contractTime,
+        br.readNum as readNum,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.welfareId as welfare,
+        br.man_num,
+        br.women_num,
+        er.brief_chapter_id,
+        er.rebate_time,
+        er.type,
+        br.accept_recommended_resume
+        from hr_briefchapter br
+        left join entry_resignation er on br.id = er.brief_chapter_id and er.delete_flag = 0 and er.type = 2
+        left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        where br.briefChapterStatus = 0
+        and gr.type = 1
+        <if test="null != briefchapter">
+            and br.Id = #{briefchapter}
+        </if>
+    </select>
 </mapper>

@@ -104,7 +104,6 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      */
     HrUser loginSonAccountNumber(@Param("phone") String phone, @Param("password") String password);
 
-
     /**
      * 登陆
      *
@@ -411,6 +410,16 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      * @Param [userId]
      */
     HrUser selectAllInformation(@Param("userId") Integer userId);
+
+    /**
+     * 查询头像 昵称 身份证
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 9:31 2019/9/18
+     * @Param [userId]
+     * @return com.nado.rlzy.db.pojo.HrUser
+     **/
+    HrUser selectHeadUserNameIdCard(@Param("userId") Integer userId);
 
 
 }

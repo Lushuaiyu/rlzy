@@ -555,4 +555,7 @@
             and u.Password = #{password}
         </if>
     </select>
+    <select id="selectHeadUserNameIdCard" resultType="hrUser">
+        select UserName, HeadImage, IdCard from hr_user where status = 0 and id = #{userId}
+    </select>
 </mapper>

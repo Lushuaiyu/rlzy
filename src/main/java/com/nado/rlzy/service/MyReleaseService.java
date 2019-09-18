@@ -332,15 +332,7 @@ public interface MyReleaseService {
      **/
     List<EntryResignation> selectEntryRebate(Integer briefchapterId);
 
-   /* *//**
-     * 招聘端 我的发布 不通过 编辑简章 代招单位 和正在招一样
-     * @return int
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 14:18 2019/8/20
-     * @Param [query]
-     **//*
-    int editBriefchapterFail(ReleaseBriefcharpterQuery query);*/
+
 
 
     /**
@@ -353,4 +345,24 @@ public interface MyReleaseService {
      * @Param [type, userId]
      **/
     Map<String, Object> selectGroupName(Integer type, Integer userId, Integer status);
+
+    /**
+     *  编辑简章时回显 代招单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:22 2019/9/18
+     * @Param [briefchapter]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter>  editBriefchapterEcho(Integer briefchapter);
+
+    /**
+     * 编辑简章时回显 代招单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:04 2019/9/18
+     * @Param [briefchapter]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> editBriefchapterEchoRecruitment(Integer briefchapter);
 }

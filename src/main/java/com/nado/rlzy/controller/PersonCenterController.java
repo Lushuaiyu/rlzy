@@ -63,18 +63,17 @@ public class PersonCenterController extends BaseController {
      **/
     @RequestMapping(value = "queryPersonCo")
     @ResponseBody
-    @ApiOperation(value = "查询我的企业 ", notes = "查询我的企业", httpMethod = "POST")
+    @ApiOperation(value = "查询我的企业 招聘单位 | 代招单位", notes = "查询我的企业 招聘单位 | 代招单位", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "type", name = "1 招聘单位 2 代招单位", dataType = "integer", required = true)
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
     })
     public ResultJson queryPersonCo(Integer userId, Integer type) {
         ResultJson result = new ResultJson();
         try {
-            Map<String, Object> map = service.queryPersonCo(userId, type);
+            List<HrGroup> hrGroups = service.queryPersonCo(userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(map);
+            result.setData(hrGroups);
         } catch (AssertException e) {
             e.printStackTrace();
             result.setMessage(e.getMessage());
@@ -109,7 +108,8 @@ public class PersonCenterController extends BaseController {
             @ApiImplicitParam(value = "file", name = "上传图片", dataType = "MultipartFile", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true),
             @ApiImplicitParam(value = "type", name = "1 添加企业 | 2 身份认证失败说明", dataType = "int", required = true),
-            @ApiImplicitParam(value = "data", name = "返回给前台的企业的id", dataType = "int", required = true)
+            @ApiImplicitParam(value = "data", name = "返回给前台的企业的id", dataType = "int", required = true),
+            @ApiImplicitParam(value = "helpProve", name = "代招证明", required = true)
     })
     public ResultJson addCo(AddCoQuery query) {
         ResultJson resultJson = new ResultJson();
@@ -515,7 +515,37 @@ public class PersonCenterController extends BaseController {
             resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return resultJson;
+    }
 
+    /**
+     * 查询头像 昵称 身份证 if 子账号 不显示 idCard
+     *
+     * @return com.nado.rlzy.bean.model.ResultJson
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 9:43 2019/9/18
+     * @Param [userId]
+     **/
+    @RequestMapping(value = "selectHeadUserNameIdCard")
+    @ResponseBody
+    @ApiOperation(value = "查询头像 昵称 身份证 if 子账号 不显示 idCard", notes = "查询头像 昵称 身份证 if 子账号 不显示 idCard")
+    public ResultJson selectHeadUserNameIdCard(Integer userId) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            HrUser user = service.selectHeadUserNameIdCard(userId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(user);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
 
     }
 

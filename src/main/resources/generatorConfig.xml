@@ -94,6 +94,12 @@
         <!--<table tableName="hr_enterpriseblacklist">
            <generatedKey column="id" sqlStatement="JDBC"/>
        </table>-->
+      <!--  <table tableName="hr_label">
+           <generatedKey column="id" sqlStatement="JDBC"/>
+       </table>-->
+         <!-- <table tableName="hr_lunbo">
+        <generatedKey column="id" sqlStatement="JDBC"/>
+    </table>-->
 
 
     </context>

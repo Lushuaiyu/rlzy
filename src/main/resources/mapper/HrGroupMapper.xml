@@ -9,10 +9,7 @@
         <result column="socialCreditCode" property="socialcreditcode" jdbcType="VARCHAR"/>
         <result column="registrationPlace" property="registrationplace" jdbcType="VARCHAR"/>
         <result column="GroupAddress" property="groupaddress" jdbcType="VARCHAR"/>
-
-
         <result column="interview_address" property="interviewAddress" jdbcType="VARCHAR"/>
-
         <result column="IdentifyTime" property="identifytime" jdbcType="TIMESTAMP"/>
         <result column="CertificationUnitId" property="certificationunitid" jdbcType="INTEGER"/>
         <result column="BusinessLicense" property="businesslicense" jdbcType="VARCHAR"/>
@@ -29,13 +26,23 @@
         <result column="co_policy" property="coPolicy" jdbcType="VARCHAR"/>
         <result column="UserName" property="userName" jdbcType="VARCHAR"/>
         <result column="violation_flag" property="violationFlag" jdbcType="VARCHAR"/>
-        <result column="corporate_cover" property="corporateCover" jdbcType="VARCHAR"/>
         <!--        <collection property="hriefchapter" resultMap="rebaterecord" ofType="com.nado.rlzy.db.pojo.HrRebaterecord"/>-->
         <collection property="deliveryrecords" resultMap="deliveryrecordsMap"
                     ofType="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord"/>
+        <collection property="labels" resultMap="label" ofType="com.nado.rlzy.db.pojo.HrLabel"/>
+        <collection property="carousels" resultMap="carouselResultMap" ofType="com.nado.rlzy.db.pojo.HrLunbo"/>
+    </resultMap>
+    <resultMap id="carouselResultMap" type="com.nado.rlzy.db.pojo.HrLunbo">
+        <result column="groupId" property="groupid"/>
+        <result column="url" property="url"/>
     </resultMap>
     <resultMap id="deliveryrecordsMap" type="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord">
         <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="label" type="com.nado.rlzy.db.pojo.HrLabel">
+        <result column="groupId" property="groupid"/>
+        <result column="name" property="name"/>
     </resultMap>
 
 
@@ -46,12 +53,9 @@
         </resultMap>-->
     <select id="coHomePage" resultMap="BaseResultMap">
         select grr.GroupName as certifier,
-        grr.co_policy,
-        grr.person_num,
         grr.GroupAddress,
         grr.GroupInfo,
-        grr.Id,
-        grr.corporate_cover
+        grr.Id
         from hr_group grr
         <where>
             grr.groupStatus = 0
@@ -79,39 +83,32 @@
         select g.Id
         from hr_group g
         left join hr_user u on g.CertifierId = u.Id and u.status = 0
-        <where>
-            g.DeleteFlag = 0
-            <if test="null != userId">
-                and u.id = #{userId}
-            </if>
-            and g.type = 0
-        </where>
+        where g.groupStatus = 0
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+        and g.type = 0
     </select>
 
-    <select id="queryPersonCo" resultType="com.nado.rlzy.bean.dto.PersonCoDto">
-
-        select gr.GroupName as certifier,
-        gr.GroupAddress as certifierAddress,
-        gr.person_num as certifierNum,
-        gr.co_policy as certifierPolicy,
-        gr.Status as cerStatus,
-        gr.BusinessLicense as busLincenseCer,
-        u.type,
-        gr.Id
+    <select id="queryPersonCo" resultMap="BaseResultMap">
+        select gr.GroupName,
+        gr.GroupAddress,
+        gr.person_num,
+        gr.Status,
+        gr.BusinessLicense,
+        gr.Id,
+        la.name
         from hr_group gr,
-        hr_group grr,
-        hr_user u
-        <where>
-            gr.pid = grr.Id
-            and gr.CertifierId = u.id
-            and grr.CertifierId = u.id
-            and gr.groupStatus = 0
-            and grr.groupStatus = 0
-            and u.status = 0
-            <if test="null != userId">
-                and u.id = #{userId}
-            </if>
-        </where>
+        hr_user u,
+        hr_label la
+        where gr.CertifierId = u.Id
+        and gr.id = la.groupId
+        and la.status = 1
+        and u.status = 0
+        and gr.groupStatus = 0
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
 
     </select>
 
@@ -156,11 +153,11 @@
     </select>
     <select id="coHomePageUpward" resultMap="BaseResultMap">
         select grr.GroupName,
-        grr.co_policy,
-        grr.person_num,
         grr.Id,
-        grr.corporate_cover
+        hl.name, lu.url
         from hr_group grr
+        left join hr_label hl on grr.Id = hl.groupId and hl.status = 1
+        left join hr_lunbo lu on grr.Id = lu.groupId and lu.status = 1
         <where>
             grr.groupStatus = 0
             <if test="null != groupId">

@@ -1,7 +1,11 @@
 package com.nado.rlzy.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import sun.misc.BASE64Encoder;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -207,6 +211,29 @@ public class StringUtil {
         String format = formatter.format(localDateTime);
         return format;
     }
+
+
+    /**
+     * 图片转base64字符串
+     * @param imgFile 图片路径
+     * @return
+     */
+    public static String imageToBase64Str(String imgFile) {
+        InputStream inputStream = null;
+        byte[] data = null;
+        try {
+            inputStream = new FileInputStream(imgFile);
+            data = new byte[inputStream.available()];
+            inputStream.read(data);
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 加密
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(data);
+    }
+
 
 
 }

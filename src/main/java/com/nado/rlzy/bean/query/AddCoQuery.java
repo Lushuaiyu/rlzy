@@ -3,7 +3,6 @@ package com.nado.rlzy.bean.query;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @ClassName 添加企业
@@ -36,8 +35,12 @@ public class AddCoQuery {
     @ApiModelProperty(value = "公司营业执照")
     private String busLicense;
 
-    @ApiModelProperty(value = "文件上传")
-    public MultipartFile file;
+    /**
+     * 代招证明
+     */
+    private String helpProve;
+
+
 
     /**
      * 1 添加企业 | 2 身份认证失败说明

@@ -436,6 +436,8 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     @Override
     public Map<String, Object> queryBriefcharpterDetileByParams(BriefcharpterQuery query) {
         HashMap<String, Object> map = new HashMap<>();
+        //简章浏览次数 比较low的做法是 每次访接口的人数加1 就往数据库写一次 只是这样会有性能问题, 如果并发, 数据库可能会炸, 暂时先这么写 以后有时间再优化
+        mapper.browsePerson(query.getBriefcharpterId());
         //简章详情 代招单位
         List<HrBriefchapter> val = mapper.queryBriefcharpterDetileByParams(query);
         final String[] company = {""};

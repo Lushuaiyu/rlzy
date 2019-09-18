@@ -68,8 +68,6 @@ public class RecruitmentSideRegisterHobHuntingQuery extends BaseQuery {
     @ApiModelProperty(value = "推荐说明")
     private String recommendInfo;
 
-    @ApiModelProperty(value = "图片上传")
-    private String file;
 
     @ApiModelProperty(value = "求职状态")
     private Integer jobStatus;

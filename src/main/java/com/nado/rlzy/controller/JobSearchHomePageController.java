@@ -124,7 +124,6 @@ public class JobSearchHomePageController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "type1", name = "0 简章列表的详情 1 除了简章列表外的详情", dataType = "int", required = true),
             @ApiImplicitParam(value = "briefcharpterId", name = "简章id", dataType = "int", required = true),
-            @ApiImplicitParam(value = "recruitedCompany", name = "用人单位", dataType = "int", required = true),
     })
     public ResultJson queryBriefcharpterDetileByParams(BriefcharpterQuery query) {
         ResultJson json = new ResultJson();

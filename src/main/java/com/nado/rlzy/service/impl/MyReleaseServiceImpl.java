@@ -1016,6 +1016,11 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             query.setDescriptionJobPhotoUrl(s);
                             String s1 = OssUtilOne.picUpload(query.getEmployerCertificatePhotoUrl(), "0");
                             query.setEmployerCertificatePhotoUrl(s1);
+                            String employerCertificatePhotoUrl = query.getEmployerCertificatePhotoUrl();
+                            String s2 = OssUtilOne.picUpload(employerCertificatePhotoUrl, "0");
+                            query.setEmployerCertificatePhotoUrl(s2);
+                            String descriptionJobPhotoUrl = query.getDescriptionJobPhotoUrl();
+                            query.setDescriptionJobPhotoUrl(descriptionJobPhotoUrl);
                             mapper.update2(query);
                             //把 发布简章的入职返佣的钱清0
                             //Get the json string from the front end
@@ -1232,6 +1237,11 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                                 //简章表修改
                                 query.setRebateMaleEntry(queryMaleEntry[0]);
                                 query.setRebateFemaleEntry(queryFemaleEntry[0]);
+                                String employerCertificatePhotoUrl = query.getEmployerCertificatePhotoUrl();
+                                String s = OssUtilOne.picUpload(employerCertificatePhotoUrl, "0");
+                                query.setEmployerCertificatePhotoUrl(s);
+                                String descriptionJobPhotoUrl = query.getDescriptionJobPhotoUrl();
+                                query.setDescriptionJobPhotoUrl(descriptionJobPhotoUrl);
                                 mapper.update2(query);
                                 //入职返佣表修改
                                 String queryResignations = query.getResignations();
@@ -1338,10 +1348,15 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             query.setDescriptionJobPhotoUrl(s);
                             String s1 = OssUtilOne.picUpload(query.getEmployerCertificatePhotoUrl(), "0");
                             query.setEmployerCertificatePhotoUrl(s1);
+                            String employerCertificatePhotoUrl = query.getEmployerCertificatePhotoUrl();
+                            String s2 = OssUtilOne.picUpload(employerCertificatePhotoUrl, "0");
+                            query.setEmployerCertificatePhotoUrl(s2);
+                            String descriptionJobPhotoUrl = query.getDescriptionJobPhotoUrl();
+                            query.setDescriptionJobPhotoUrl(descriptionJobPhotoUrl);
                             mapper.update2(query);
                             //把 发布简章的入职返佣的钱清0
-                            String s2 = query.getResignations();
-                            List<EntryResignation> list1 = JSON.parseArray(s2, EntryResignation.class);
+                            String s3 = query.getResignations();
+                            List<EntryResignation> list1 = JSON.parseArray(s3, EntryResignation.class);
                             list1.stream()
                                     .map(m -> {
                                         m.setRebateMaleEntry(BigDecimal.ZERO);
@@ -1552,6 +1567,11 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                                 //简章表修改
                                 query.setRebateMaleEntry(queryMaleEntry[0]);
                                 query.setRebateFemaleEntry(queryFemaleEntry[0]);
+                                String employerCertificatePhotoUrl = query.getEmployerCertificatePhotoUrl();
+                                String s = OssUtilOne.picUpload(employerCertificatePhotoUrl, "0");
+                                query.setEmployerCertificatePhotoUrl(s);
+                                String descriptionJobPhotoUrl = query.getDescriptionJobPhotoUrl();
+                                query.setDescriptionJobPhotoUrl(descriptionJobPhotoUrl);
                                 mapper.update2(query);
                                 //入职返佣表修改
                                 String resignations2 = query.getResignations();
@@ -1579,6 +1599,85 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         return 1;
     }
 
+
+    @Override
+    public List<HrBriefchapter> editBriefchapterEchoRecruitment(Integer briefchapter) {
+        List<HrBriefchapter> list = mapper.editBriefchapterEchoRecruitment(briefchapter);
+        List<HrBriefchapter> collect = list.stream()
+                .map(dto -> {
+                    //合同签订方
+                    Integer contractWay = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getContractWay();
+                    //录取方式
+                    Integer hireWay = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getHireWay();
+                    //是否接受平台推荐简历
+                    Integer resume = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getAcceptRecommendedResume();
+                    //是否有返佣
+                    Integer rebate = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getRebate();
+                    if (contractWay.equals(0)) {
+                        dto.setContractWayDetail("招聘单位");
+                    } else if (contractWay.equals(1)) {
+                        dto.setContractWayDetail("用工单位");
+                    } else if (contractWay.equals(2)) {
+                        dto.setContractWayDetail("厂方指定劳务公司");
+                    }
+
+                    if (resume.equals(0)) {
+                        dto.setAcceptRecommendedResumeDetail("是");
+                    } else {
+                        dto.setAcceptRecommendedResumeDetail("否");
+                    }
+                    if (rebate.equals(0)) {
+                        dto.setRebateDetail("无返佣");
+                    } else {
+                        dto.setRebateDetail("有返佣");
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<HrBriefchapter> editBriefchapterEcho(Integer briefchapter) {
+        List<HrBriefchapter> list = mapper.editBriefchapterEcho(briefchapter);
+        List<HrBriefchapter> collect = list.stream()
+                .map(dto -> {
+                    //合同签订方
+                    Integer contractWay = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getContractWay();
+                    //录取方式
+                    Integer hireWay = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getHireWay();
+                    //是否接受平台推荐简历
+                    Integer resume = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getAcceptRecommendedResume();
+                    //是否有返佣
+                    Integer rebate = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getRebate();
+
+                    if (contractWay.equals(0)) {
+                        dto.setContractWayDetail("招聘单位");
+                    } else if (contractWay.equals(1)) {
+                        dto.setContractWayDetail("用工单位");
+                    } else if (contractWay.equals(2)) {
+                        dto.setContractWayDetail("厂方指定劳务公司");
+                    }
+                    if (hireWay.equals(0)) {
+                        dto.setHireWayDetail("完全直录");
+                    } else if (hireWay.equals(1)) {
+                        dto.setHireWayDetail("可以直录");
+                    } else {
+                        dto.setHireWayDetail("不可直录");
+                    }
+                    if (resume.equals(0)) {
+                        dto.setAcceptRecommendedResumeDetail("是");
+                    } else {
+                        dto.setAcceptRecommendedResumeDetail("否");
+                    }
+                    if (rebate.equals(0)) {
+                        dto.setRebateDetail("无返佣");
+                    } else {
+                        dto.setRebateDetail("有返佣");
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+        return collect;
+    }
 
     @Override
     public Map<String, Object> selectGroupName(Integer type, Integer userId, Integer status) {

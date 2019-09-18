@@ -46,6 +46,7 @@ public interface HrBriefchapterMapper {
      **/
     List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query);
 
+
     /**
      * 招聘简章祥情查询 招聘单位
      *
@@ -627,7 +628,9 @@ public interface HrBriefchapterMapper {
     @Update(value = "update hr_briefchapter set over_status = 4 where briefChapterStatus = 0 and Status = 4 and Id = #{briefchapterId}")
     int alreadyRebate(@Param("briefchapterId") Integer briefchapterId);
 
-    /** 查询身份是本人求职 简章是代招单位下的单位 的面试时间 | 报道时间 > 现在时间
+    /**
+     * 查询身份是本人求职 简章是代招单位下的单位 的面试时间 | 报道时间 > 现在时间
+     *
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
@@ -638,40 +641,68 @@ public interface HrBriefchapterMapper {
 
     /**
      * 查询身份是本人求职 简章是招聘单位的简章 的面试时间 | 报道时间 > 现在时间
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:50 2019/9/6
      * @Param []
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     List<HrBriefchapter> interviewAllPersonRecruitment();
 
     /**
      * 推荐人给被推荐人报名 简章是代招单位下的单位 的面试时间 | 报道时间 > 现在时间
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:44 2019/9/6
      * @Param []
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     List<HrBriefchapter> intervieweAllPersonReferrer();
 
     /**
      * 推荐人给被推荐人报名 简章是招聘单位下的单位 的面试时间 | 报道时间 > 现在时间
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author chengpunan
-     * @Description  lushuaiyu
+     * @Description lushuaiyu
      * @Date 21:05 2019-09-06
      * @Param []
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      */
     List<HrBriefchapter> interviewAllPersonReferrerRecruitment();
 
+    /**
+     * 浏览接口的人数 每浏览一次 加一
+     *
+     * @return int
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:11 2019/9/18
+     * @Param []
+     **/
+    int browsePerson(@Param("briefchapterId") Integer briefchapterId);
 
+    /**
+     * 编辑简章时回显 代招单位
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:02 2019/9/18
+     * @Param [briefchapter]
+     **/
+    List<HrBriefchapter> editBriefchapterEcho(@Param("briefchapter") Integer briefchapter);
 
-
-
-
-
+    /**
+     * 编辑简章时回显 招聘单位
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 17:05 2019/9/18
+     * @Param [briefchapter]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> editBriefchapterEchoRecruitment(@Param("briefchapter") Integer briefchapter);
 
 
 }
