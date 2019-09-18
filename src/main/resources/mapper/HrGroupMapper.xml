@@ -98,33 +98,9 @@
         gr.BusinessLicense,
         gr.Id,
         la.name
-        from hr_group gr,
-        hr_user u,
-        hr_label la
-        where gr.CertifierId = u.Id
-        and gr.id = la.groupId
-        and la.status = 1
-        and u.status = 0
-        and gr.groupStatus = 0
-        <if test="null != userId">
-            and u.id = #{userId}
-        </if>
-
-    </select>
-
-    <select id="queryPersonCORecruitment" resultType="com.nado.rlzy.bean.dto.PersonCoDto">
-        select gr.GroupName as certifier,
-        gr.GroupAddress as certifierAddress,
-        gr.person_num as certifierNum,
-        gr.co_policy as certifierPolicy,
-        gr.Status as cerStatus,
-        gr.BusinessLicense as busLincenseCer,
-        u.type,
-        gr.Id
-        from hr_group gr
-        left join hr_user u on gr.CertifierId = u.id and u.status = 0
+        from hr_group gr left join hr_user u on gr.CertifierId = u.Id and u.status = 0
+        left join hr_label la on gr.Id = la.groupId and la.status = 1
         where gr.groupStatus = 0
-        and gr.type = 1
         <if test="null != userId">
             and u.Id = #{userId}
         </if>
@@ -164,6 +140,21 @@
                 and grr.Id = #{groupId}
             </if>
         </where>
+    </select>
+    <select id="subAccountCompany" resultMap="BaseResultMap">
+        select gr.GroupName,
+        gr.GroupAddress,
+        gr.person_num,
+        gr.Status,
+        gr.BusinessLicense,
+        gr.Id,
+        la.name from hr_group gr left join hr_user u on gr.id = u.groupId and u.status = 0
+        left join hr_label la on gr.id = la.groupId and la.status = 1
+        where gr.groupStatus = 0
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
+
     </select>
 
 

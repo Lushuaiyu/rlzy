@@ -91,5 +91,15 @@ public interface HrGroupMapper extends Mapper<HrGroup> {
      **/
     List<HrGroup> queryTheAuditFailed(@Param("groupId") Integer groupId);
 
+    /**
+     * 子账号负责的企业
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 22:35 2019-09-18
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
+     */
+    List<HrGroup> subAccountCompany(@Param("userId") Integer userId);
+
 
 }

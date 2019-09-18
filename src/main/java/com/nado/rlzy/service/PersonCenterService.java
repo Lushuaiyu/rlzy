@@ -46,7 +46,7 @@ public interface PersonCenterService {
 
 
     /**
-     * 图片上传
+     * 图片上传 暂时用不到
      *
      * @return java.lang.String
      * @Author lushuaiyu
@@ -187,6 +187,16 @@ public interface PersonCenterService {
      * @return com.nado.rlzy.db.pojo.HrUser
      **/
     HrUser selectHeadUserNameIdCard(Integer userId);
+
+    /**
+     * 子账号负责的企业
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 22:50 2019-09-18
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
+     */
+    List<HrGroup> subAccountCompany(Integer userId);
 
 
 }

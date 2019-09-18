@@ -77,7 +77,6 @@ public class PersonCenterServiceImpl implements PersonCenterService {
 
     @Override
     public List<HrGroup> queryPersonCo(Integer userId) {
-        HashMap<String, Object> map = new HashMap<>(16);
         //代招单位 | 招聘单位
         List<HrGroup> coDtos = hrGroupMapper.queryPersonCo(userId);
         List<HrGroup> collect = coDtos.stream().collect(Collectors.toList());
@@ -296,6 +295,12 @@ public class PersonCenterServiceImpl implements PersonCenterService {
 
         userMapper.updateByPrimaryKeySelective(user);
         return 1;
+    }
+
+    @Override
+    public List<HrGroup> subAccountCompany(Integer userId) {
+        List<HrGroup> list = hrGroupMapper.subAccountCompany(userId);
+        return list;
     }
 
     @Override

@@ -67,7 +67,7 @@ public class PersonCenterController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true)
     })
-    public ResultJson queryPersonCo(Integer userId, Integer type) {
+    public ResultJson queryPersonCo(Integer userId) {
         ResultJson result = new ResultJson();
         try {
             List<HrGroup> hrGroups = service.queryPersonCo(userId);
@@ -84,8 +84,28 @@ public class PersonCenterController extends BaseController {
             result.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return result;
+    }
 
-
+    @RequestMapping(value = "subAccountCompany")
+    @ResponseBody
+    @ApiOperation(value = "子账号负责的企业", notes = "子账号负责的企业")
+    public ResultJson subAccountCompany(Integer userId) {
+        ResultJson result = new ResultJson();
+        try {
+            List<HrGroup> hrGroups = service.subAccountCompany(userId);
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(hrGroups);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return result;
     }
 
     /**
