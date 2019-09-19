@@ -22,7 +22,7 @@
         select grr.GroupName, m.type, br.interviewTime, si.user_name, si.id as sign_up_id, m.create_time,
         br.registerTime
         from message m
-        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0 and br.Status = 1
         left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_signup si on si.id = m.sign_up_id and si.delete_flag = 0
@@ -37,7 +37,7 @@
         select grr.GroupName, m.type, br.interviewTime, si.user_name, si.id as sign_up_id, m.create_time,
         br.registerTime
         from message m
-        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0 and br.Status = 1
         left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
         left join hr_signup si on si.id = m.sign_up_id and si.delete_flag = 0
         left join hr_user u on si.user_id = u.Id and u.status = 0
@@ -50,7 +50,7 @@
         select grr.GroupName, m.type, br.interviewTime, si.user_name, si.id as sign_up_id, m.create_time,
         br.registerTime
         from message m
-        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0 and br.Status = 1
         left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_signup si on si.user_name = m.sign_up_name and si.delete_flag = 0
@@ -65,7 +65,7 @@
         select grr.GroupName, m.type, br.interviewTime, si.user_name, si.id as sign_up_id, m.create_time,
         br.registerTime
         from message m
-        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on m.briefchapter_id = br.id and br.briefChapterStatus = 0 and br.Status = 1
         left join hr_group grr on br.RecruitedCompanyId = grr.id and grr.groupStatus = 0
         left join hr_signup si on si.user_name = m.sign_up_name and si.delete_flag = 0
         left join hr_user u on si.user_id = u.Id and u.status = 0

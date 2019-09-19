@@ -101,5 +101,16 @@ public interface HrGroupMapper extends Mapper<HrGroup> {
      */
     List<HrGroup> subAccountCompany(@Param("userId") Integer userId);
 
+    /**
+     * 查询企业认证状态
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:49 2019/9/19
+     * @param userId  user id
+     * @param type user type
+     * @return com.nado.rlzy.db.pojo.HrGroup
+     **/
+    HrGroup selectCoCertificationStatus(@Param("userId") Integer userId, @Param("type") Integer type);
+
 
 }

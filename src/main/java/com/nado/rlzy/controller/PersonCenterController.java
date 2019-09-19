@@ -3,6 +3,7 @@ package com.nado.rlzy.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.nado.rlzy.base.BaseController;
 import com.nado.rlzy.bean.dto.ComplaintDto;
+import com.nado.rlzy.bean.model.ResponseJson;
 import com.nado.rlzy.bean.model.Result;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.AddCoQuery;
@@ -14,7 +15,10 @@ import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.service.RecruitmentHomePageService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -195,24 +199,29 @@ public class PersonCenterController extends BaseController {
     @ResponseBody
     @ApiOperation(notes = "求职端 个人中心 个人资料", value = "求职端 个人中心 个人资料", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "type", name = "身份", dataType = "Integer", required = true)
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
     })
-    public Result<HrUser> personalInformation(Integer userId, Integer type) {
-        Result<HrUser> result = new Result<>();
+    public ResponseJson personalInformation(Integer userId) {
+        ResponseJson result = new ResponseJson();
         try {
+            //查询身份
+            Integer type = service.checkUserIdentity(userId);
             if (type.equals(1)) {
-                List<HrUser> ups = service.personalInformation(userId);
+                HrUser hrUser = service.personalInformation(userId);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                result.setData(ups);
+                HashMap<String, HrUser> map = new HashMap<>();
+                map.put("user", hrUser);
+                result.setData(map);
                 return result;
             }
             if (type.equals(2)) {
-                List<HrUser> signUps = service.personalInformationReferrer(userId);
+                HrUser hrUser = service.personalInformationReferrer(userId);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                result.setData(signUps);
+                Map<String,Object> map=new HashMap<String,Object>();
+                map.put("user",hrUser);
+                result.setData(map);
                 return result;
             }
         } catch (AssertException e) {

@@ -4,7 +4,10 @@ import com.nado.rlzy.bean.dto.ComplaintDto;
 import com.nado.rlzy.bean.query.AddCoQuery;
 import com.nado.rlzy.bean.query.EditPersonDataQuery;
 import com.nado.rlzy.db.mapper.*;
-import com.nado.rlzy.db.pojo.*;
+import com.nado.rlzy.db.pojo.Feedback;
+import com.nado.rlzy.db.pojo.HrGroup;
+import com.nado.rlzy.db.pojo.HrSignUp;
+import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.ImgException;
 import com.nado.rlzy.service.PersonCenterService;
@@ -151,32 +154,31 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
-    public List<HrUser> personalInformation(Integer userId) {
-        return userMapper.personalInformation(userId)
-                .stream()
-                .map(dto -> {
-                    double v = dto.getExpectedSalaryUpper().doubleValue();
-                    String format1 = StringUtil.decimalFormat2(v);
-                    double v1 = dto.getExpectedSalaryLower().doubleValue();
-                    String s1 = StringUtil.decimalFormat2(v1);
-                    String s = s1 + "k-" + format1 + "k";
-                    dto.setExpectedSalaryy(s);
-                    return dto;
-                }).collect(Collectors.toList());
+    public HrUser personalInformation(Integer userId) {
+        HrUser hrUser = userMapper.personalInformation(userId);
+
+
+        double v2 = hrUser.getExpectedSalaryUpper().doubleValue();
+        String format1 = StringUtil.decimalFormat2(v2);
+        double v1 = hrUser.getExpectedSalaryLower().doubleValue();
+        String s1 = StringUtil.decimalFormat2(v1);
+        String s = s1 + "k-" + format1 + "k";
+        hrUser.setExpectedSalaryy(s);
+
+
+        return hrUser;
 
     }
 
     @Override
-    public List<HrUser> personalInformationReferrer(Integer userId) {
-        List<HrUser> hrSignUps = userMapper.personalInformationReferrer(userId);
-        List<HrUser> collect = hrSignUps.stream().map(dto -> {
-
-            Integer noUpper = dto.getRecommendNo();
-            String number = noUpper + "人";
-            dto.setRecommendedNumber(number);
-            return dto;
-        }).collect(Collectors.toList());
-        return collect;
+    public HrUser personalInformationReferrer(Integer userId) {
+        HrUser user = userMapper.personalInformationReferrer(userId);
+        Integer noUpper = user.getRecommendNo();
+        String number = noUpper + "人";
+        user.setRecommendedNumber(number);
+        HashMap<String, HrUser> map = new HashMap<>();
+        map.put("data", user);
+        return user;
     }
 
     @Override
@@ -301,6 +303,13 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     public List<HrGroup> subAccountCompany(Integer userId) {
         List<HrGroup> list = hrGroupMapper.subAccountCompany(userId);
         return list;
+    }
+
+    @Override
+    public Integer checkUserIdentity(Integer userId) {
+        HrUser hrUser = userMapper.checkUserIdentity(userId);
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
+        return type;
     }
 
     @Override

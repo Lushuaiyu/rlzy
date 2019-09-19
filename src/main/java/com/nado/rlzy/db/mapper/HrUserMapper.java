@@ -94,7 +94,7 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
     HrUser login(@Param("phone") String phone, @Param("password") String password);
 
     /**
-     * 子账号登录
+     * 招聘端子账号登录
      *
      * @return com.nado.rlzy.db.pojo.HrUser
      * @Author chengpunan
@@ -184,18 +184,19 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      * @Date 10:27 2019/7/9
      * @Param [userId]
      **/
-    List<HrUser> personalInformation(@Param("userId") Integer userId);
+    HrUser personalInformation(@Param("userId") Integer userId);
 
     /**
      * 招聘端个人资料 推荐人
-     *
      * @param userId 用户id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 11:11 2019/7/9
      **/
-    List<HrUser> personalInformationReferrer(@Param("userId") Integer userId);
+    HrUser personalInformationReferrer(@Param("userId") Integer userId);
+
+
 
     /**
      * 招聘端 首页 查询推荐人概览
@@ -401,7 +402,7 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
     String selectReferrerIntentionalPost(@Param("userId") Integer userId);
 
     /**
-     * 查询素有
+     * 查询所有
      *
      * @return com.nado.rlzy.db.pojo.HrUser
      * @Author chengpunan
@@ -420,6 +421,26 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      * @return com.nado.rlzy.db.pojo.HrUser
      **/
     HrUser selectHeadUserNameIdCard(@Param("userId") Integer userId);
+
+    /**
+     * 查询身份
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:26 2019/9/19
+     * @Param [userId]
+     * @return int
+     **/
+    HrUser checkUserIdentity(@Param("userId") Integer userId);
+
+    /**
+     * 子账号权限查询
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 20:26 2019/9/19
+     * @Param []
+     * @return java.lang.String
+     **/
+    String subAccountPermission(@Param("userId") Integer userId);
 
 
 }

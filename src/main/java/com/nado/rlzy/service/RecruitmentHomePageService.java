@@ -6,6 +6,7 @@ import com.nado.rlzy.db.pojo.Collect;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +91,17 @@ public interface RecruitmentHomePageService {
      * @Param [userId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    Map<String, Object> recruitmentBriefchapter(Integer userId, Integer type);
+    Map<String, Object> recruitmentBriefchapter(Integer userId);
+
+    /**
+     * 招聘端首页简章 子账号
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 9:42 2019/9/19
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    HashMap<String, Object> representativeUnitSubAccount(Integer userId);
 
     /**
      * 招聘端首页 推荐人列表概览
@@ -141,6 +152,36 @@ public interface RecruitmentHomePageService {
      * @return int
      **/
     int collectReferrer(Integer userId);
+
+    /**
+     * 查询企业认证状态
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 11:00 2019/9/19
+     * @Param [userId]
+     * @return int
+     **/
+    Integer selectCoCertificationStatus(Integer userId);
+
+    /**
+     * 查询身份
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:39 2019/9/19
+     * @Param [userId]
+     * @return com.nado.rlzy.db.pojo.HrUser
+     **/
+    HrUser checkUserIdentity(Integer userId);
+
+    /**
+     * 子账号权限查询
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 20:49 2019/9/19
+     * @Param [userId]
+     * @return java.lang.String
+     **/
+    String subAccountPermission(Integer userId);
 
 
 }

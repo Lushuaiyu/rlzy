@@ -45,6 +45,9 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     @Resource
     private HrSignupDeliveryrecordMapper signupDeliveryrecordMapper;
 
+    @Resource
+    private HrGroupMapper groupMapper;
+
 
     @Override
     public List<HrSignUp> selectJobListOverview(JobListQuery query) {
@@ -162,18 +165,66 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
 
 
     @Override
-    public Map<String, Object> recruitmentBriefchapter(Integer userId, Integer type) {
+    public HashMap<String, Object> representativeUnitSubAccount(Integer userId) {
+        HrUser hrUser = userMapper.checkUserIdentity(userId);
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
         HashMap<String, Object> map = new HashMap<>();
-        if (type.equals(1)) {
+        if (type.equals(6)) {
             //代招企业
-            List<HrBriefchapter> list = briefchapterMapper.representativeUnit(userId);
+            List<HrBriefchapter> list = briefchapterMapper.representativeUnitSubAccount(userId);
             List<HrBriefchapter> collect = list.stream()
                     .map(dto -> {
-                        Integer no = dto.getRecruitingNo();
-                        if (!(dto.getRecruitingNo().equals(0))) {
+                        Integer no = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getRecruitingNo();
+                        if (!(no.equals(0))) {
                             //剩余招聘人数 不等于0 显示
                             dto.setNo(no + "人");
                         }
+                        dto.setManAgeId(1);
+                        dto.setWomenAgeId(0);
+                        //月综合
+                        double value = dto.getAvgSalary().doubleValue();
+                        String format = StringUtil.decimalFormat2(value);
+                        dto.setAvgSalary1(format + "元起");
+                        //计薪
+                        double value1 = dto.getDetailSalary().doubleValue();
+                        String s1 = StringUtil.decimalFormat2(value1);
+                        String detailSalaryWay = dto.getDetailSalaryWay();
+                        dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+                        BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
+                        BigDecimal rebateMaleReport = dto.getRebateMaleReport();
+                        BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
+                        BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
+                        BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
+                        BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
+                        if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
+                                null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
+                            //男生返佣的钱
+                            BigDecimal add = rebateMaleInterview.add(rebateMaleReport)
+                                    .add(rebateMaleEntry);
+
+                            BigDecimal add1 = rebateFemaleInterview.add(rebateFemaleReport)
+                                    .add(rebateFemaleEntry);
+                            //女生返佣的钱
+                            BigDecimal n = add.compareTo(add1) >= 0 ? add : add1;
+                            String rebateMoney = StringUtil.decimalToString(n);
+                            dto.setRebateRecord("返" + rebateMoney + "元");
+                        }
+
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+            map.put("representativeUnit", collect);
+        } else {
+            //招聘企业
+            List<HrBriefchapter> list = briefchapterMapper.recruitmentUnitSubAccount(userId).stream()
+                    .map(dto -> {
+                        Integer no = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getRecruitingNo();
+                        if (!(no.equals(0))) {
+                            //剩余招聘人数 不等于0 显示
+                            dto.setNo(no + "人");
+                        }
+                        dto.setManAgeId(1);
+                        dto.setWomenAgeId(0);
                         //月综合
                         double value = dto.getAvgSalary().doubleValue();
                         String format = StringUtil.decimalFormat2(value);
@@ -205,16 +256,72 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
                         return dto;
                     })
                     .collect(Collectors.toList());
+            map.put("recruitmentUnit", list);
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> recruitmentBriefchapter(Integer userId) {
+        HrUser hrUser = userMapper.checkUserIdentity(userId);
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
+        HashMap<String, Object> map = new HashMap<>();
+        if (type.equals(6)) {
+            //代招企业
+            List<HrBriefchapter> list = briefchapterMapper.representativeUnit(userId);
+            List<HrBriefchapter> collect = list.stream()
+                    .map(dto -> {
+                        Integer no = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getRecruitingNo();
+                        if (!(no.equals(0))) {
+                            //剩余招聘人数 不等于0 显示
+                            dto.setNo(no + "人");
+                        }
+                        dto.setManAgeId(1);
+                        dto.setWomenAgeId(0);
+                        //月综合
+                        double value = dto.getAvgSalary().doubleValue();
+                        String format = StringUtil.decimalFormat2(value);
+                        dto.setAvgSalary1(format + "元起");
+                        //计薪
+                        double value1 = dto.getDetailSalary().doubleValue();
+                        String s1 = StringUtil.decimalFormat2(value1);
+                        String detailSalaryWay = dto.getDetailSalaryWay();
+                        dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+                        BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
+                        BigDecimal rebateMaleReport = dto.getRebateMaleReport();
+                        BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
+                        BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
+                        BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
+                        BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
+                        if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
+                                null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
+                            //男生返佣的钱
+                            BigDecimal add = rebateMaleInterview.add(rebateMaleReport)
+                                    .add(rebateMaleEntry);
+
+                            BigDecimal add1 = rebateFemaleInterview.add(rebateFemaleReport)
+                                    .add(rebateFemaleEntry);
+                            //女生返佣的钱
+                            BigDecimal n = add.compareTo(add1) >= 0 ? add : add1;
+                            String rebateMoney = StringUtil.decimalToString(n);
+                            dto.setRebateRecord("返" + rebateMoney + "元");
+                        }
+
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
             map.put("representativeUnit", collect);
         } else {
             //招聘企业
             List<HrBriefchapter> list = briefchapterMapper.recruitmentUnit(userId).stream()
                     .map(dto -> {
-                        Integer no = dto.getRecruitingNo();
-                        if (!(dto.getRecruitingNo().equals(0))) {
+                        Integer no = Optional.ofNullable(dto).orElseGet(HrBriefchapter::new).getRecruitingNo();
+                        if (!(no.equals(0))) {
                             //剩余招聘人数 不等于0 显示
                             dto.setNo(no + "人");
                         }
+                        dto.setManAgeId(1);
+                        dto.setWomenAgeId(0);
                         //月综合
                         double value = dto.getAvgSalary().doubleValue();
                         String format = StringUtil.decimalFormat2(value);
@@ -315,6 +422,25 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     }
 
 
+    @Override
+    public String subAccountPermission(Integer userId) {
+        return userMapper.subAccountPermission(userId);
+    }
+
+    @Override
+    public HrUser checkUserIdentity(Integer userId) {
+        return userMapper.checkUserIdentity(userId);
+    }
+
+    @Override
+    public Integer selectCoCertificationStatus(Integer userId) {
+        HrUser hrUser = userMapper.checkUserIdentity(userId);
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
+        HrGroup group = groupMapper.selectCoCertificationStatus(userId, type);
+        Integer status = Optional.ofNullable(group).orElseGet(HrGroup::new).getStatus();
+        return status;
+
+    }
 
     @Override
     public int collectReferrer(Integer userId) {

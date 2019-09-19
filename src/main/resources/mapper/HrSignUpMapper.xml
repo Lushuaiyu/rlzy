@@ -397,7 +397,7 @@
         from hr_signup s
         left join hr_user u on s.user_id = u.Id and u.status = 0
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0
+        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0 and br.Status = 1
         <where>
             s.delete_flag = 0
             <if test="null != id">
@@ -457,7 +457,7 @@
         LEFT JOIN hr_signup_deliveryrecord sd
         ON s.id = sd.signup_id and sd.delete_flag = 0
         LEFT JOIN hr_briefchapter b
-        ON b.briefChapterStatus = 0
+        ON b.briefChapterStatus = 0 and br.Status = 1
         where s.delete_flag = 0
         <if test="null != id">
             and s.id = #{id}
@@ -484,7 +484,7 @@
         left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
         left join hr_user u on c.user_id = u.Id and u.status = 0
-        left join hr_briefchapter b on c.briefchapter_id = b.Id and b.briefChapterStatus = 0
+        left join hr_briefchapter b on c.briefchapter_id = b.Id and b.briefChapterStatus = 0 and br.Status = 1
         where
         <if test="null != userId">
             u.Id = #{userId}
@@ -533,6 +533,7 @@
         and u.status = 0
         and br.Id = hsd.brief_chapter_id
         and br.briefChapterStatus = 0
+        and br.Status = 1
         <if test="null != signId">
             and s.id = #{signId}
         </if>
@@ -561,7 +562,7 @@
         from hr_signup si
         left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
         left join hr_user u on si.user_id = u.Id and u.status = 0
-        left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.briefChapterStatus = 0 and br.Status = 1
         <where>
             si.delete_flag = 0
             <if test="null != briefChapterId">
@@ -608,7 +609,7 @@
         select hsd.brief_chapter_id, si.id
         from hr_signup_deliveryrecord hsd
         left join hr_signup si on hsd.signup_id = si.id and hsd.delete_flag = 0
-        left join hr_briefchapter br on hsd.brief_chapter_id = br.Id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on hsd.brief_chapter_id = br.Id and br.briefChapterStatus = 0 and br.Status = 1
         where hsd.delete_flag = 0
         <if test="null != briefchapter">
             and br.Id = #{briefchapter}
@@ -630,7 +631,7 @@
             and sd.brief_chapter_id = #{briefchapter}
         </if>
         left join hr_rebaterecord re on sd.brief_chapter_id = re.BriefChapterId and re.DeleteFlag = 0
-        left join hr_briefchapter br on sd.brief_chapter_id = br.Id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on sd.brief_chapter_id = br.Id and br.briefChapterStatus = 0 and br.Status = 1
         <where>
             si.delete_flag = 0
             <if test="null != signUpId">
@@ -663,7 +664,7 @@
         from hr_signup s
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
         left join hr_user u on s.user_id = u.Id and u.status = 0
-        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0
+        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0 and br.Status = 1
         left join hr_rebaterecord r on sd.brief_chapter_id = r.BriefChapterId and r.DeleteFlag = 0
         <where>
             s.delete_flag = 0
@@ -740,7 +741,7 @@
         from hr_signup si
         left join hr_signup_deliveryrecord sd on si.id = sd.signup_id and sd.delete_flag = 0
         left join hr_user u on si.user_id = u.Id and u.status = 0
-        left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on br.id = sd.brief_chapter_id and br.briefChapterStatus = 0 and br.Status = 1
         where si.delete_flag = 0
         <if test="null != brieId">
             and br.id = #{brieId}
@@ -787,6 +788,7 @@
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         <if test="null != briefchapterId">
             and br.id = #{briefchapterId}
         </if>
@@ -798,6 +800,7 @@
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         <if test="null != briefchapterId">
             and br.id = #{briefchapterId}
         </if>
@@ -810,6 +813,7 @@
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         <if test="null != briefchapterId">
             and br.id = #{briefchapterId}
         </if>
@@ -823,6 +827,7 @@
         on hsd.signup_id = si.id and si.delete_flag = 0
         left join hr_rebaterecord re on hsd.id = re.signup_deliveryrecord_id and re.DeleteFlag = 0 and re.RebateType = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and hsd.status = 12
         <if test="null != briefchapterId">
             and br.id = #{briefchapterId}
@@ -836,6 +841,7 @@
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         <if test="null != briefchapterId">
             and br.id = #{briefchapterId}
         </if>
@@ -850,6 +856,7 @@
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on si.id = sd.signup_id and sd.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         <if test="null != briefchapterId">
             and br.id = #{briefchapterId}
         </if>

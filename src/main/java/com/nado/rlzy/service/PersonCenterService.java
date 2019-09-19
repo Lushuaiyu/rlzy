@@ -66,7 +66,8 @@ public interface PersonCenterService {
      * @Date 10:32 2019/7/9
      * @Param [userId]
      **/
-    List<HrUser> personalInformation(Integer userId);
+    HrUser personalInformation(Integer userId);
+
 
     /**
      * 求职端 推荐人个人资料
@@ -77,7 +78,7 @@ public interface PersonCenterService {
      * @Date 11:13 2019/7/9
      * @Param [userId]
      **/
-    List<HrUser> personalInformationReferrer(Integer userId);
+    HrUser personalInformationReferrer(Integer userId);
 
 
     /**
@@ -197,6 +198,16 @@ public interface PersonCenterService {
      * @return java.util.List<com.nado.rlzy.db.pojo.HrGroup>
      */
     List<HrGroup> subAccountCompany(Integer userId);
+
+    /**
+     * 查询身份
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 10:28 2019/9/19
+     * @Param [userId]
+     * @return int
+     **/
+    Integer checkUserIdentity(Integer userId);
 
 
 }

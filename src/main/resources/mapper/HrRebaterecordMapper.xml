@@ -210,7 +210,7 @@
         hsd.id as hsdId
         from hr_rebaterecord re
         left join hr_signup_deliveryrecord hsd on re.signup_deliveryrecord_id = hsd.id and hsd.delete_flag = 0
-        left join hr_briefchapter br on re.BriefChapterId = hsd.brief_chapter_id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on re.BriefChapterId = hsd.brief_chapter_id and br.briefChapterStatus = 0 and br.Status = 1
         left join hr_signup si on si.id = hsd.signup_id and si.delete_flag = 0
         where re.DeleteFlag = 0
         <if test="null != signUpId">
@@ -260,6 +260,7 @@
       and si.delete_flag = 0
       and hsd.brief_chapter_id = br.Id
       and br.briefChapterStatus = 0
+      and br.Status = 1
       and si.user_id = u.Id
       and re.DeleteFlag = 0
       and re.RebateType = 2
@@ -273,7 +274,7 @@
         left join hr_signup_deliveryrecord hsd on re.signup_deliveryrecord_id = hsd.id
         and hsd.delete_flag = 0
         left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
-        left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on br.id = hsd.brief_chapter_id and br.briefChapterStatus = 0 and br.Status = 1
         <where>
             re.DeleteFlag = 0
             <if test="null != userId">
@@ -296,6 +297,7 @@
              left join hr_rebaterecord re on hsd.id = re.signup_deliveryrecord_id and re.DeleteFlag = 0
              left join hr_user u on u.id = si.user_id and u.status = 0
     where br.briefChapterStatus = 0
+    and br.Status = 1
       and grr.Pid = gr.Id
       and u.type = 1
       and re.RebateType = 2
@@ -313,6 +315,7 @@
              left join hr_rebaterecord re on hsd.id = re.signup_deliveryrecord_id and re.DeleteFlag = 0
              left join hr_user u on u.id = si.user_id and u.status = 0
     where br.briefChapterStatus = 0
+    and br.Status = 1
       and gr.type = 1
       and u.type = 1
       and re.RebateType = 2
@@ -331,6 +334,7 @@
              left join hr_rebaterecord re on hsd.id = re.signup_deliveryrecord_id and re.DeleteFlag = 0
              left join hr_user u on u.id = si.user_id and u.status = 0
     where br.briefChapterStatus = 0
+    and br.Status = 1
       and grr.Pid = gr.Id
       and u.type = 2
     and re.RebateType = 2
@@ -349,6 +353,7 @@
              left join hr_rebaterecord re on hsd.id = re.signup_deliveryrecord_id and re.DeleteFlag = 0
              left join hr_user u on u.id = si.user_id and u.status = 0
     where br.briefChapterStatus = 0
+    and br.Status = 1
       and gr.type = 1
       and u.type = 2
     </select>

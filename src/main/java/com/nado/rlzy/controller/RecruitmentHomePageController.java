@@ -71,6 +71,7 @@ public class RecruitmentHomePageController extends BaseController {
                 map.put("selectJobListOverview", list);
                 resultJson.setData(map);
             } else {
+                //推荐人列表
                 List<HrUser> users = service.referrer(query);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -172,13 +173,37 @@ public class RecruitmentHomePageController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "招聘端首页 简章概览", notes = "招聘端首页 简章概览", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true),
-            @ApiImplicitParam(name = "type", value = "1 代招企业 2 招聘企业", dataType = "int", required = true)
+            @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true)
     })
-    public ResultJson recruitmentBriefchapter(Integer userId, Integer type) {
+    public ResultJson recruitmentBriefchapter(Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
-            Map<String, Object> map = service.recruitmentBriefchapter(userId, type);
+            Map<String, Object> map = service.recruitmentBriefchapter(userId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
+    }
+
+    @RequestMapping(value = "representativeUnitSubAccount")
+    @ResponseBody
+    @ApiOperation(value = "招聘端首页 简章概览 子账号", notes = "招聘端首页 简章概览 子账号", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true)
+    })
+    public ResultJson representativeUnitSubAccount(Integer userId) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            Map<String, Object> map = service.representativeUnitSubAccount(userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(map);
@@ -270,5 +295,29 @@ public class RecruitmentHomePageController extends BaseController {
             resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
         }
         return resultJson;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "selectCoCertificationStatus")
+    @ApiOperation(value = "查询企业认证状态", notes = "查询企业认证状态")
+    public ResultJson selectCoCertificationStatus(Integer userId) {
+        ResultJson resultJson = new ResultJson();
+        try {
+            Integer status = service.selectCoCertificationStatus(userId);
+            resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            resultJson.setData(status);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            resultJson.setMessage(e.getMessage());
+            resultJson.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultJson.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            resultJson.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return resultJson;
+
+
     }
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 public class ResponseJson<String, T> {
 
     private int code;
-    private String info;
+    private String message;
     private Map<String, T> data;
 
 

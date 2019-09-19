@@ -26,6 +26,17 @@ public interface MyReleaseService {
      **/
     Map<String, Object> myRelease(Integer userId, Integer status);
 
+    /**
+     * 招聘端 我的发布 子账号
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 13:39 2019/7/22
+     * @Param [userId, typeId, status]
+     **/
+    Map<String, Object> myReleaseSubAccount(Integer userId, Integer status);
+
 
     /**
      * 得到省市区

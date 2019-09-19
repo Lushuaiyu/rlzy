@@ -877,6 +877,7 @@
         left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
         left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         <if test="null != recruitedCompany and '' != recruitedCompany">
             and grr.GroupName like concat('%', #{recruitedCompany}, '%')
@@ -953,6 +954,7 @@
         left join hr_dictionary_item dii on br.PostId = dii.value and dii.status = 1 and dii.pId = 1
         left join hr_rebaterecord re on br.Id = re.BriefChapterId
         where br.briefChapterStatus = 0
+        and br.Status = 1
         <if test="null != certifier and '' != certifier">
             and grr.GroupName = #{certifier}
         </if>
@@ -1064,6 +1066,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         <if test="null != briefcharpterId">
             and br.Id = #{briefcharpterId}
@@ -1103,6 +1106,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         and br.work_time_arrange_id = 1
 
@@ -1141,6 +1145,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id  and br.welfareId like concat('%', 1, '%')
 
     </select>
@@ -1177,6 +1182,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         order by br.CreateTime asc
         limit 0,10
@@ -1216,6 +1222,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         <if test="null!= contractWayDetailId1">
             and br.contract_way_detail_id in
@@ -1257,6 +1264,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         order by br.avgSalary desc
     </select>
@@ -1294,6 +1302,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         and br.contractWay = 1
 
@@ -1335,6 +1344,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
          and (br.hireWay = 1
         or br.hireWay = 0)
@@ -1371,7 +1381,7 @@
         c.id as collectId
         from collect c
         left join hr_user u on c.user_id = u.id and u.status = 0
-        left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0 and br.Status = 1
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
@@ -1418,6 +1428,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         <if test="null != groupId">
             and gr.id = #{groupId}
@@ -1456,6 +1467,7 @@
         from hr_briefchapter br
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         <if test="null != groupId">
             and gr.Id = #{groupId}
@@ -1508,6 +1520,7 @@
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         and gr.type = 0
 
@@ -1554,6 +1567,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         <if test="null != userId">
             and u.id = #{userId}
@@ -1601,6 +1615,7 @@
         left join hr_signup_deliveryrecord hsd on br.id = hsd.brief_chapter_id and hsd.delete_flag = 0
         left join hr_signup si on hsd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         <if test="null != certifier and '' != certifier">
             and gr.GroupName like concat('%', #{certifier}, '%')
@@ -1769,6 +1784,7 @@
         left join entry_resignation er on br.id = er.brief_chapter_id and er.delete_flag = 0 and er.type = 2
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         <if test="null != briefcharpterId ">
             and br.Id = #{briefcharpterId}
@@ -1806,6 +1822,7 @@
         from hr_briefchapter br
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         order by  br.CreateTime asc
         limit 0,10
@@ -1843,6 +1860,7 @@
         from hr_briefchapter br
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         <if test="null != contractWayDetailId1">
             and br.contract_way_detail_id in
@@ -1883,6 +1901,7 @@
         from hr_briefchapter br
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         order by br.avgSalary desc
     </select>
@@ -1917,6 +1936,7 @@
         from hr_briefchapter br
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         and br.contractWay = 1
 
@@ -1953,6 +1973,7 @@
         from hr_briefchapter br
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         and (br.hireWay = 1
         or br.hireWay = 0)
@@ -1986,7 +2007,7 @@
         br.Rebate as rebateStatus,
         c.id as collectId
         from collect c
-        left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on br.id = c.briefchapter_id and br.briefChapterStatus = 0 and br.Status = 1
         left join hr_user u on c.user_id = u.id and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
@@ -2031,6 +2052,7 @@
         from hr_briefchapter br
          left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1 and br.work_time_arrange_id = 1
 
     </select>
@@ -2065,6 +2087,7 @@
         from hr_briefchapter br
          left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1 and br.welfareId like concat('%', 1, '%')
 
     </select>
@@ -2111,6 +2134,7 @@
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         <if test="null != signUpStatus">
             and sd.status in
@@ -2158,6 +2182,7 @@
         left join hr_signup_deliveryrecord sd on br.Id = sd.brief_chapter_id and sd.delete_flag = 0
         left join hr_signup si on sd.signup_id = si.id and si.delete_flag = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         <if test="null != userId">
             and u.id = #{userId}
@@ -2201,6 +2226,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         <if test="null != recruitedCompany">
             and grr.GroupName like concat('%', #{recruitedCompany}, '%');
@@ -2236,6 +2262,7 @@
         from hr_briefchapter br
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         <if test="null != recruitedCompany">
             and gr.GroupName like concat('%', #{recruitedCompany}, '%')
@@ -2265,7 +2292,6 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
         and d.pId = 23) as detailSalaryWay,
-
         br.rebate_male_interview,
         br.rebate_male_report,
         br.rebate_male_entry,
@@ -2276,11 +2302,35 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        br.Rebate as rebateStatus
+        br.Rebate as rebateStatus,
+        br.registerTime,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.educationId)
+        and d.pId = 2) as educationId,
+        br.educationId as education,
+        br.profession_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.profession_id)
+        and d.pId = 3) as profession,
+        br.profession_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.man_age_id)
+        and d.pId = 5) as manAge,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.women_age_id)
+        and d.pId = 9) as womenAge,
+        br.man_age_id,
+        br.women_age_id
         from hr_briefchapter br
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
+        left join hr_user u on br.userId = u.Id and u.status = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         <if test="null != userId">
             and u.Id = #{userId}
@@ -2293,6 +2343,7 @@
         and d.pId = 1) as postName,
         br.id,
         gr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
         br.RecruitingNo as recruitingNo,
         gr.GroupAddress as groupAddress,
         br.avgSalary as avgSalary,
@@ -2312,11 +2363,34 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        br.Rebate as rebateStatus
+        br.Rebate as rebateStatus,
+        br.registerTime,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.educationId)
+        and d.pId = 2) as educationId,
+        br.educationId as education,
+        br.profession_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.profession_id)
+        and d.pId = 3) as profession,
+        br.profession_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.man_age_id)
+        and d.pId = 5) as manAge,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.women_age_id)
+        and d.pId = 9) as womenAge,
+        br.man_age_id,
+        br.women_age_id
         from hr_briefchapter br
         left join hr_user u on u.id = br.userId and u.status = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         <if test="null != userId">
             and u.id = #{userId}
@@ -2354,6 +2428,7 @@
         left join hr_group grr on br.RecruitedCompanyId = grr.Id and grr.groupStatus = 0
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and grr.pid = gr.Id
         <if test="null != groupId">
             and gr.Id = #{groupId}
@@ -2389,6 +2464,7 @@
         from hr_briefchapter br
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         where br.briefChapterStatus = 0
+        and br.Status = 1
         and gr.type = 1
         <if test="null != groupId">
             and gr.Id = #{groupId}
@@ -2710,6 +2786,185 @@
         and gr.type = 1
         <if test="null != briefchapter">
             and br.Id = #{briefchapter}
+        </if>
+    </select>
+    <select id="representativeUnitSubAccount" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_user u
+        left join hr_briefchapter br on br.briefChapterStatus = 0
+        left join hr_group grr on u.groupId = grr.Id and grr.groupStatus = 0 and grr.id = br.RecruitedCompanyId
+        left join hr_group gr on u.pId = gr.CertifierId and gr.groupStatus = 0
+        where u.status = 0
+        and grr.pid = gr.Id
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+
+    </select>
+    <select id="recruitmentUnitSubAccount" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        gr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus,
+        br.registerTime,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.educationId)
+        and d.pId = 2) as educationId,
+        br.educationId as education,
+        br.profession_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.profession_id)
+        and d.pId = 3) as profession,
+        br.profession_id,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.man_age_id)
+        and d.pId = 5) as manAge,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.women_age_id)
+        and d.pId = 9) as womenAge,
+        br.man_age_id,
+        br.women_age_id
+        from hr_user u
+        left join hr_group gr on u.pId = gr.CertifierId and gr.groupStatus = 0 and u.groupId = gr.id
+        left join hr_briefchapter br on br.briefChapterStatus = 0 and br.RecruitedCompanyId = gr.Id
+        where u.status = 0
+        and gr.type = 1
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+
+    </select>
+    <select id="myReleaseSubAccount" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        grr.GroupName as certifier,
+        gr.GroupName as recruitedCompany,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_user u
+        left join hr_briefchapter br on br.briefChapterStatus = 0
+        left join hr_group grr on u.groupId = grr.Id and grr.groupStatus = 0 and grr.id = br.RecruitedCompanyId
+        left join hr_group gr on u.pId = gr.CertifierId and gr.groupStatus = 0
+        where u.status = 0
+        and grr.pid = gr.Id
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+        <if test="null != status">
+            and br.Status = #{status}
+        </if>
+    </select>
+    <select id="myReleaseRecruitmentSubAccount" resultMap="BaseResultMap">
+        select (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.PostId)
+        and d.pId = 1) as postName,
+        br.id,
+        gr.GroupName as certifier,
+        br.RecruitingNo as recruitingNo,
+        gr.GroupAddress as groupAddress,
+        br.avgSalary as avgSalary,
+        br.Rebate,
+        br.detailSalary as detailSalary,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.detailSalaryWay)
+        and d.pId = 23) as detailSalaryWay,
+        br.rebate_male_interview,
+        br.rebate_male_report,
+        br.rebate_male_entry,
+        br.rebate_female_interview,
+        br.rebate_female_report,
+        br.rebate_female_entry,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, br.welfareId)
+        and d.pId = 10) as welfareId,
+        br.Rebate as rebateStatus
+        from hr_user u
+        left join hr_group gr on u.pId = gr.CertifierId and gr.groupStatus = 0 and u.groupId = gr.id
+        left join hr_briefchapter br on br.briefChapterStatus = 0 and br.RecruitedCompanyId = gr.Id
+        where u.status = 0
+        and gr.type = 1
+        <if test="null != userId">
+            and u.Id = #{userId}
+        </if>
+        <if test="null != status">
+            and br.Status = #{status}
         </if>
     </select>
 </mapper>

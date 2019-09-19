@@ -288,15 +288,13 @@ public interface JobSearchHomePageService {
 
     /**
      *  求职端 首页 我的工作 根据求职状态和求职者名字查询简章  代码有问题 关于简章概览的简章返佣 代码有问题
-     *
-     * @param type 登录用户的身份
      * @param userId 用户id
      * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:40 2019/7/11
      **/
-    Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId, String jobStatus);
+    Map<Object, Object> queryBriefchapterBySignUpStatus(Integer userId, String jobStatus);
 
 
 

@@ -9,6 +9,7 @@ import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
 import com.nado.rlzy.service.PersonCenterService;
+import com.nado.rlzy.service.RecruitmentHomePageService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @ClassName 求职端 个人中心 Controller
@@ -35,6 +37,10 @@ public class JobSeekingPersonalCenterController {
     @Resource
     private PersonCenterService personCenterService;
 
+    @Resource
+    private RecruitmentHomePageService homePageService;
+
+
     /**
      * 简章收藏
      *
@@ -48,12 +54,12 @@ public class JobSeekingPersonalCenterController {
     @ResponseBody
     @ApiOperation(notes = "简章收藏概览", value = "简章收藏概览", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "type", name = "用户身份 1 是本人 2是推荐人", dataType = "Integer", required = true)
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
     })
-    public ResultJson recruitmentBrochureCollection(Integer userId, Integer type) {
+    public ResultJson recruitmentBrochureCollection(Integer userId) {
         ResultJson resultJson = new ResultJson();
-
+        HrUser hrUser = homePageService.checkUserIdentity(userId);
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
         try {
 
             List<HrBriefchapter> list = service.recruitmentBrochureCollection(userId, type);
@@ -80,7 +86,7 @@ public class JobSeekingPersonalCenterController {
     @RequestMapping(value = "deleteCOllect")
     @ResponseBody
     @ApiOperation(value = "", notes = "求职端删除简章收藏")
-    public ResultJson deleteCOllect(){
+    public ResultJson deleteCOllect() {
         ResultJson resultJson = new ResultJson();
 
         return resultJson;

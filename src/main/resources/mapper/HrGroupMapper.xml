@@ -67,7 +67,7 @@
     <select id="selectGroupName" resultType="hrGroup">
         select grr.Id, grr.GroupName
         from hr_group grr
-        left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0 and br.Status = 1
         left join hr_group gr on br.userId = gr.CertifierId and gr.groupStatus = 0
         left join hr_user u on gr.CertifierId = u.Id and u.status = 0
         where grr.groupStatus = 0
@@ -116,7 +116,7 @@
     <select id="selectGroupNameRecruitment" resultType="hrGroup">
         select grr.GroupName, grr.Id
         from hr_group grr
-        left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0
+        left join hr_briefchapter br on br.RecruitedCompanyId = grr.Id and br.briefChapterStatus = 0 and br.Status = 1
         left join hr_user u on grr.CertifierId = u.Id and u.status = 0
         where grr.groupStatus = 0
         and grr.type = 1
@@ -155,6 +155,20 @@
             and u.id = #{userId}
         </if>
 
+    </select>
+    <select id="selectCoCertificationStatus" resultMap="BaseResultMap">
+        select gr.Status
+        from hr_user u
+        <if test="null != type and type == 6">
+        left join hr_group gr on u.id = gr.CertifierId and gr.groupStatus = 0 and gr.type = 0
+        </if>
+        <if test="null != type and type == 5">
+            left join hr_group gr on u.id = gr.CertifierId and gr.groupStatus = 0 and gr.type = 1
+        </if>
+        where u.status = 0
+        <if test="null != userId">
+            and u.id = #{userId}
+        </if>
     </select>
 
 

@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Controller()
 @RequestMapping(value = "test")
-public class TestAccountCOntroller {
+public class TestAccountController {
     @ResponseBody
     @RequestMapping(value = "demo", method = RequestMethod.POST)
     public ResultJson testDemo(@RequestBody(required = false) JSONObject obj) {

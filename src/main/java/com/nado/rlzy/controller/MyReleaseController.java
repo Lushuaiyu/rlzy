@@ -11,15 +11,23 @@ import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.MyReleaseService;
-import com.nado.rlzy.service.PersonCenterService;
-import io.swagger.annotations.*;
+import com.nado.rlzy.service.RecruitmentHomePageService;
+import com.nado.rlzy.utils.AssertUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName 招聘端 我的发布 controller
@@ -36,10 +44,10 @@ public class MyReleaseController extends BaseController {
     private MyReleaseService service;
 
     @Resource
-    private PersonCenterService centerService;
+    private JobSearchHomePageService jobSearchHomePageService;
 
     @Resource
-    private JobSearchHomePageService jobSearchHomePageService;
+    private RecruitmentHomePageService homePageService;
 
 
     @RequestMapping(value = "myRelease")
@@ -47,7 +55,7 @@ public class MyReleaseController extends BaseController {
     @ApiOperation(notes = "招聘端 我的发布 简章概览", value = "招聘端 我的发布 简章概览", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "status", name = "状态", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "status", name = "状态 0待审核 1通过(正在招)  2未通过 3已结束", dataType = "Integer", required = true),
 
     })
     public ResultJson myRelease(Integer userId, Integer status, Integer type) {
@@ -55,6 +63,32 @@ public class MyReleaseController extends BaseController {
         try {
             Map<String, Object> map = service.myRelease(userId, status);
 
+            result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            result.setData(map);
+        } catch (AssertException e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(e.getCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(RlzyConstant.OPS_FAILED_MSG);
+            result.setCode(RlzyConstant.OPS_FAILED_CODE);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "myReleaseSubAccount")
+    @ResponseBody
+    @ApiOperation(notes = "招聘端 我的发布 简章概览 子账号", value = "招聘端 我的发布 简章概览 子账号", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "status", name = "状态 0待审核 1通过(正在招)  2未通过 3已结束", dataType = "Integer", required = true),
+    })
+    public ResultJson myReleaseSubAccount(Integer userId, Integer status) {
+        ResultJson result = new ResultJson();
+        try {
+            Map<String, Object> map = service.myReleaseSubAccount(userId, status);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
@@ -129,9 +163,10 @@ public class MyReleaseController extends BaseController {
     @RequestMapping(value = "save")
     @ResponseBody
     @ApiOperation(notes = "发布简章", value = "发布简章", httpMethod = "POST")
-    @ApiImplicitParam(name = "type", value = "身份, 5 代招单位 6 招聘单位", dataType = "Integer", required = true)
-    public ResultJson save(ReleaseBriefcharpterQuery query, Integer type, @RequestBody(required = false) JSONObject rebateEntry) {
+    public ResultJson save(ReleaseBriefcharpterQuery query, @RequestBody(required = false) JSONObject rebateEntry) {
         ResultJson result = new ResultJson();
+        HrUser hrUser = homePageService.checkUserIdentity(query.getUserId());
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
         try {
 
             service.saveUser(query, type, rebateEntry);
@@ -477,9 +512,11 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "currentState", name = "当前状态", dataType = "integer", required = true),
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integer", required = true),
     })
-    public ResultJson changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId) {
+    public ResultJson changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId, Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = homePageService.subAccountPermission(userId);
+            AssertUtil.isTrue(!s.contains("35"), RlzyConstant.PERMISSION);
             int jobStatus = service.changeJobStatus(signUpId, status, currentState, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -571,13 +608,15 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "query1", name = "编辑简章 入参 详见 ReleaseBriefcharpterQuery", dataType = "EditBriefchapter", required = true),
             @ApiImplicitParam(value = "typp", name = "1 正在招和未通过是一个接口 正在招 前台禁止用户填就可以 2 待审核 3 已结束", dataType = "EditBriefchapter", required = true)
     })
-    public ResultJson editBriefchapterMyRelease(EditBriefchapterQuery query, Integer type) {
+    public ResultJson editBriefchapterMyRelease(EditBriefchapterQuery query, Integer userId) {
         HashMap<String, Object> map = new HashMap<>();
         ResultJson resultJson = new ResultJson();
         try {
             if (query.getTypp().equals(1)) {
                 //正在招 | 未通过 代招单位
                 Integer count = service.editBriefchapterMyRelease(query);
+                String s = homePageService.subAccountPermission(userId);
+                AssertUtil.isTrue(!s.contains("36"), RlzyConstant.PERMISSION);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 map.put("editBriefchapterMyRelease", count);
@@ -606,11 +645,16 @@ public class MyReleaseController extends BaseController {
     @RequestMapping(value = "selectEditBriefchapter")
     @ResponseBody
     @ApiOperation(value = "编辑简章时查询招聘简章", notes = "编辑简章时查询招聘简章", httpMethod = "POST")
-    public ResultJson selectEditBriefchapter(Integer briefchapterId) {
+    public ResultJson selectEditBriefchapter(Integer briefchapterId, Integer userId) {
         ResultJson resultJson = new ResultJson();
+
+
         try {
             BriefcharpterQuery query = new BriefcharpterQuery();
             query.setBriefcharpterId(briefchapterId);
+            //子账号拥有的权限
+            String permission = homePageService.subAccountPermission(userId);
+            AssertUtil.isTrue(!permission.contains("65"), RlzyConstant.PERMISSION);
             //查询简章详情
             Map<String, Object> map = jobSearchHomePageService.queryBriefcharpterListDetileByParams(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
@@ -633,12 +677,13 @@ public class MyReleaseController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "查询招聘企业名称", notes = "查询招聘企业名称", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "type", name = "企业类型 5 招聘企业, 6 代招企业", dataType = "integer", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "int", required = true),
             @ApiImplicitParam(value = "status", name = "1 被招聘企业 2 招聘企业", dataType = "int", required = true)
     })
-    public ResultJson selectGroupName(Integer type, Integer userId, Integer status) {
+    public ResultJson selectGroupName(Integer userId, Integer status) {
         ResultJson result = new ResultJson();
+        HrUser hrUser = homePageService.checkUserIdentity(userId);
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
         try {
             Map<String, Object> list = service.selectGroupName(type, userId, status);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
@@ -659,7 +704,7 @@ public class MyReleaseController extends BaseController {
     @RequestMapping(value = "editBriefchapterEcho")
     @ResponseBody
     @ApiOperation(value = "编辑简章时回显 代招单位", notes = "编辑简章时回显 代招单位")
-    public ResultJson editBriefchapterEcho(Integer briefchapter){
+    public ResultJson editBriefchapterEcho(Integer briefchapter) {
         ResultJson result = new ResultJson();
         try {
             List<HrBriefchapter> list = service.editBriefchapterEcho(briefchapter);
@@ -677,10 +722,11 @@ public class MyReleaseController extends BaseController {
         }
         return result;
     }
+
     @RequestMapping(value = "editBriefchapterEchoRecruitment")
     @ResponseBody
     @ApiOperation(value = "编辑简章时回显 代招单位", notes = "编辑简章时回显 代招单位")
-    public ResultJson editBriefchapterEchoRecruitment(Integer briefchapter){
+    public ResultJson editBriefchapterEchoRecruitment(Integer briefchapter) {
         ResultJson result = new ResultJson();
         try {
             List<HrBriefchapter> list = service.editBriefchapterEchoRecruitment(briefchapter);

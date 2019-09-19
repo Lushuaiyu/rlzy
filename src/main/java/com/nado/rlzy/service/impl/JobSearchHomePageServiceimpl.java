@@ -99,11 +99,13 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Override
     public Map<String, Object> queryBriefcharpterByParams(BriefcharpterQuery query) {
+        HrUser hrUser = userMapper.checkUserIdentity(query.getUserId());
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
         Map<String, Object> map = new HashMap<>();
         //身份是本人：首页显示的是与本人求职表内容完全匹配（性别
         //、年龄、毕业时间、到岗时间、薪资要求、学历、意向岗位）
         List<HrSignUp> hrSignUps = signUpMapper.queryAll(query.getUserId());
-        if (query.getType().equals(1)) {
+        if (type.equals(1)) {
             final String[] registrationPositionId = {""};
             //本人
             hrSignUps.stream()
@@ -279,12 +281,14 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Override
     public Map<String, Object> queryBriefcharpterDtoByParams(BriefcharpterQuery query) {
+        HrUser hrUser = userMapper.checkUserIdentity(query.getUserId());
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
         Map<String, Object> map = new HashMap<>();
         //身份是本人：首页显示的是与本人求职表内容完全匹配（性别
         //、年龄、毕业时间、到岗时间、薪资要求、学历、意向岗位）
         List<HrSignUp> hrSignUps = signUpMapper.queryAll(query.getUserId());
         if (hrSignUps.size() > 0) {
-            if (query.getType().equals(1)) {
+            if (type.equals(1)) {
                 final String[] registrationPositionId = {""};
                 //本人
                 hrSignUps.stream()
@@ -1454,7 +1458,9 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
 
     @Override
-    public Map<Object, Object> queryBriefchapterBySignUpStatus(Integer type, Integer userId, String jobStatus) {
+    public Map<Object, Object> queryBriefchapterBySignUpStatus( Integer userId, String jobStatus) {
+        HrUser hrUser = userMapper.checkUserIdentity(userId);
+        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
 
         //查求职者名字
         List<HrSignUp> hrSignUps = signUpMapper.querySignUpUserName(type, userId);

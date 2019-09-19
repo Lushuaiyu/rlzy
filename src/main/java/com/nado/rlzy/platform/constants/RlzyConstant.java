@@ -10,9 +10,9 @@ package com.nado.rlzy.platform.constants;
 public class RlzyConstant {
 
 
-
-
     public static final String ACCOUNT_BALANCE_IS_EMPTY = "账户余额不足请去充值";
+
+    public static final String PERMISSION = "您没有权限访问该接口";
     /**
      * 失败信息
      */

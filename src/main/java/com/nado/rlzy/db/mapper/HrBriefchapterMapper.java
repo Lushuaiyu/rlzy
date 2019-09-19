@@ -373,6 +373,26 @@ public interface HrBriefchapterMapper {
     List<HrBriefchapter> myReleaseRecruitment(@Param("userId") Integer userId, @Param("status") Integer status);
 
     /**
+     * 招聘端 我的发布 代招单位 子账号
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:01 2019/9/19
+     * @Param [userId, status]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> myReleaseSubAccount(@Param("userId") Integer userId, @Param("status") Integer status);
+
+    /**
+     * 招聘端 我的发布 招聘单位 子账号
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 16:03 2019/9/19
+     * @Param [userId, status]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> myReleaseRecruitmentSubAccount(@Param("userId") Integer userId, @Param("status") Integer status);
+
+    /**
      * 修改招聘人数
      *
      * @param status       状态
@@ -429,7 +449,6 @@ public interface HrBriefchapterMapper {
      * @Param []
      **/
     List<HrBriefchapter> representativeUnit(@Param("userId") Integer userId);
-
     /**
      * 招聘端首页简章 招聘单位
      *
@@ -440,6 +459,26 @@ public interface HrBriefchapterMapper {
      * @Param []
      **/
     List<HrBriefchapter> recruitmentUnit(@Param("userId") Integer userId);
+
+    /**
+     * 招聘端首页简章 代招单位 子账号
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 9:42 2019/9/19
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> representativeUnitSubAccount(@Param("userId") Integer userId);
+
+    /**
+     * 招聘端首页简章 招聘单位 子账号
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 9:43 2019/9/19
+     * @Param [userId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
+     **/
+    List<HrBriefchapter> recruitmentUnitSubAccount(@Param("userId") Integer userId);
 
     /**
      * 求职端 公司主页 历史记录 代招单位下的简章

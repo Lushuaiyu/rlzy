@@ -359,7 +359,7 @@ public class JobSearchHomePageController extends BaseController {
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 result.setData(list);
-            } else  if (type.equals(3)){
+            } else if (type.equals(3)) {
                 //历史记录
                 //违规记录
                 List<HrComplaint> list = service.violationRecord(groupId);
@@ -372,7 +372,7 @@ public class JobSearchHomePageController extends BaseController {
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 result.setData(map);
-            }else {
+            } else {
                 //求职端公司主页上面信息 代招单位 || 招聘单位
                 List<HrGroup> hrGroups = service.coHomePageUpward(groupId);
                 map.put("coHomePageUpward", hrGroups);
@@ -409,18 +409,17 @@ public class JobSearchHomePageController extends BaseController {
     @ApiOperation(value = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 | 取消操作 ps  jobStatus : 1待面试 10已面试 是进入到待面试阶段",
             notes = "求职端 我的工作 查询求职者名字 | 查询求职状态 | 查询简章 ps  jobStatus : 1待面试 10已面试 是进入到待面试阶段", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "type", name = "登录者身份 1 本人  2  推荐人", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "jobStatus", name = "求职状态", dataType = "int", required = true),
             @ApiImplicitParam(value = "typp", name = "0 查询 1 取消面试 取消报道 取消报名 放弃", dataType = "int", required = true),
             @ApiImplicitParam(value = "id", name = "报名投递表 id", dataType = "int", required = true)
     })
-    public ResultJson queryBriefchapterBySignUpStatus(Integer type, Integer userId, String jobStatus, Integer typp, Integer id) {
+    public ResultJson queryBriefchapterBySignUpStatus(Integer userId, String jobStatus, Integer typp, Integer id) {
         ResultJson resultJson = new ResultJson();
 
         try {
             if (typp.compareTo(0) == 0) {
-                Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(type, userId, jobStatus);
+                Map<Object, Object> map = service.queryBriefchapterBySignUpStatus(userId, jobStatus);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 resultJson.setData(map);
@@ -567,8 +566,9 @@ public class JobSearchHomePageController extends BaseController {
             @ApiImplicitParam(value = "profession", name = "专业", dataType = "string", required = true),
             @ApiImplicitParam(value = "registrationPositionId", name = "意向岗位id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "arrivalTime1", name = "到岗时间", dataType = "date", required = true),
-            @ApiImplicitParam(value = "expectedSalary", name = "期望工资", dataType = "string", required = true),
-            @ApiImplicitParam(value = "relation", name = "年龄", dataType = "Integer", required = true),
+            @ApiImplicitParam(value = "expectedSalaryLower", name = "期望工资lower", dataType = "string", required = true),
+            @ApiImplicitParam(value = "expectedSalaryUpper", name = "期望工资upper", dataType = "string", required = true),
+            @ApiImplicitParam(value = "relation", name = "与推荐人关系", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "itIsPublic", name = "是否公开", dataType = "integer", required = true),
             @ApiImplicitParam(value = "agreePlatformHelp", name = "是否获取平台帮助", dataType = "integer", required = true),
             @ApiImplicitParam(value = "userId", name = "推荐人 id", dataType = "integer", required = true)

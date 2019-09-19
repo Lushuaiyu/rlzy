@@ -74,6 +74,64 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
 
     @Override
+    public Map<String, Object> myReleaseSubAccount(Integer userId, Integer status) {
+        List<HrBriefchapter> list = mapper.myReleaseSubAccount(userId, status);
+        List<HrBriefchapter> hrBriefchapters = mapper.myReleaseRecruitmentSubAccount(userId, status);
+        List<HrBriefchapter> collect = list.stream().map(dto -> {
+            Map<Integer, BigDecimal> map = dto.getRebat().stream().collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+            System.out.println(map);
+
+            BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
+            BigDecimal rebateMaleReport = dto.getRebateMaleReport();
+            BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
+            BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
+            BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
+            BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
+            if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
+                    null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
+                dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
+                dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
+                dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
+                dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
+                //入职返佣的信息
+                dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
+            }
+            return dto;
+        }).collect(Collectors.toList());
+        List<HrBriefchapter> briefchapterList = hrBriefchapters.stream()
+                .map(dto -> {
+                    Map<Integer, BigDecimal> map = dto.getRebat().stream()
+                            .collect(Collectors.groupingBy(HrRebaterecord::getBriefchapterId,
+                                    CollectorsUtil.summingBigDecimal(HrRebaterecord::getRebateOne)));
+                    System.out.println(map);
+
+                    BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
+                    BigDecimal rebateMaleReport = dto.getRebateMaleReport();
+                    BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
+                    BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
+                    BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
+                    BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
+                    if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
+                            null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
+                        dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
+                        dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
+                        dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
+                        dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
+                        //入职返佣的信息
+                        dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
+                    }
+                    return dto;
+
+                })
+                .collect(Collectors.toList());
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("myReleaseSubAccount", collect);
+        map.put("myReleaseRecruitmentSubAccount", briefchapterList);
+        return map;
+    }
+
+    @Override
     public Map<String, Object> myRelease(Integer userId, Integer status) {
         List<HrBriefchapter> list = mapper.myRelease(userId, status);
         List<HrBriefchapter> hrBriefchapters = mapper.myReleaseRecruitment(userId, status);
