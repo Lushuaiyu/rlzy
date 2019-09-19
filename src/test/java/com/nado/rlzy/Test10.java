@@ -9,6 +9,7 @@ import com.nado.rlzy.db.pojo.HrUser;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
@@ -56,5 +57,18 @@ public class Test10 extends BaseTest {
         if (s.contains("16")) {
             System.out.println("asdf");
         }
+
+
     }
+
+    @Test
+    public void test5() {
+        ArrayList<Integer> list = new ArrayList<>(10000);
+        for (int i = 0; i < 10000; i++){
+            list.add(1);
+        }
+        System.out.println(list);
+    }
+
+
 }
