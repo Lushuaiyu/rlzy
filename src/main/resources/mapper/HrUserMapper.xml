@@ -575,7 +575,6 @@
         from hr_user u
         left join hr_role r on u.RoleId = r.id
         where u.status = 0
-        and pid is not null
         <if test="null != userId">
             and u.Id = #{userId}
         </if>

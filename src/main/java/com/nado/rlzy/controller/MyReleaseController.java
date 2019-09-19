@@ -17,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -116,11 +117,13 @@ public class MyReleaseController extends BaseController {
     @RequestMapping(value = "getPCA")
     @ResponseBody
     @ApiOperation(notes = "求职端 查询省市区", value = "查询省市区", httpMethod = "POST")
-    public ResultJson getPCA(@ModelAttribute("resJson") ResponseJson<String, Object> resJson) {
+    public ResultJson getPCA(@ModelAttribute("resJson") ResponseJson<String, Object> resJson, Integer userId) {
         ResultJson result = new ResultJson();
 
         try {
             List<Province> provinces = service.getPCA();
+            homePageService.subAccountPermission(userId);
+            AssertUtil.isTrue();
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(provinces);
@@ -516,7 +519,7 @@ public class MyReleaseController extends BaseController {
         ResultJson resultJson = new ResultJson();
         try {
             String s = homePageService.subAccountPermission(userId);
-            AssertUtil.isTrue(!s.contains("35"), RlzyConstant.PERMISSION);
+            AssertUtil.isTrue(StringUtils.isNotBlank(s) && !s.contains("35"), RlzyConstant.PERMISSION);
             int jobStatus = service.changeJobStatus(signUpId, status, currentState, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -616,7 +619,7 @@ public class MyReleaseController extends BaseController {
                 //正在招 | 未通过 代招单位
                 Integer count = service.editBriefchapterMyRelease(query);
                 String s = homePageService.subAccountPermission(userId);
-                AssertUtil.isTrue(!s.contains("36"), RlzyConstant.PERMISSION);
+                AssertUtil.isTrue(StringUtils.isNotBlank(s) && !s.contains("36"), RlzyConstant.PERMISSION);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 map.put("editBriefchapterMyRelease", count);
@@ -648,13 +651,12 @@ public class MyReleaseController extends BaseController {
     public ResultJson selectEditBriefchapter(Integer briefchapterId, Integer userId) {
         ResultJson resultJson = new ResultJson();
 
-
         try {
             BriefcharpterQuery query = new BriefcharpterQuery();
             query.setBriefcharpterId(briefchapterId);
             //子账号拥有的权限
             String permission = homePageService.subAccountPermission(userId);
-            AssertUtil.isTrue(!permission.contains("65"), RlzyConstant.PERMISSION);
+            AssertUtil.isTrue(StringUtils.isNotBlank(permission) && !permission.contains("65"), RlzyConstant.PERMISSION);
             //查询简章详情
             Map<String, Object> map = jobSearchHomePageService.queryBriefcharpterListDetileByParams(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);

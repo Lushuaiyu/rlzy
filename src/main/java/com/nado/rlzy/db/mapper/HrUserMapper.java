@@ -433,7 +433,7 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
     HrUser checkUserIdentity(@Param("userId") Integer userId);
 
     /**
-     * 子账号权限查询
+     * 子账号| 总账号权限查询
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 20:26 2019/9/19

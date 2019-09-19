@@ -174,7 +174,7 @@ public interface RecruitmentHomePageService {
     HrUser checkUserIdentity(Integer userId);
 
     /**
-     * 子账号权限查询
+     * 子账号| 总账号权限查询
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 20:49 2019/9/19
