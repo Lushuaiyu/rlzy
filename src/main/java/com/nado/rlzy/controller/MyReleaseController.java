@@ -122,8 +122,8 @@ public class MyReleaseController extends BaseController {
 
         try {
             List<Province> provinces = service.getPCA();
-            homePageService.subAccountPermission(userId);
-            AssertUtil.isTrue();
+            String s = homePageService.subAccountPermission(userId);
+            AssertUtil.isTrue(StringUtils.isNotBlank(s) && ! s.contains("37"), RlzyConstant.PERMISSION);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(provinces);
