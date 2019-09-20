@@ -1,7 +1,14 @@
 package com.nado.rlzy.db.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "hr_lunbo")
 public class HrLunbo {
     /**
@@ -17,94 +24,15 @@ public class HrLunbo {
     @Column(name = "groupId")
     private Integer groupid;
 
+    @Column(name = "title")
     private String title;
 
+    @Column(name = "url")
     private String url;
 
     /**
      * 状态（0禁用、1启用）
      */
+    @Column(name = "status")
     private Integer status;
-
-    /**
-     * 获取企业轮播图列表
-     *
-     * @return id - 企业轮播图列表
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * 设置企业轮播图列表
-     *
-     * @param id 企业轮播图列表
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     * 获取企业Id
-     *
-     * @return groupId - 企业Id
-     */
-    public Integer getGroupid() {
-        return groupid;
-    }
-
-    /**
-     * 设置企业Id
-     *
-     * @param groupid 企业Id
-     */
-    public void setGroupid(Integer groupid) {
-        this.groupid = groupid;
-    }
-
-    /**
-     * @return title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * @param title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * @return url
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     * @param url
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    /**
-     * 获取状态（0禁用、1启用）
-     *
-     * @return status - 状态（0禁用、1启用）
-     */
-    public Integer getStatus() {
-        return status;
-    }
-
-    /**
-     * 设置状态（0禁用、1启用）
-     *
-     * @param status 状态（0禁用、1启用）
-     */
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 }

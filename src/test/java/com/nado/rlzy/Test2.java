@@ -1,13 +1,14 @@
 package com.nado.rlzy;
 
-import cn.hutool.core.codec.Base64;
 import com.nado.rlzy.base.BaseTest;
 import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.db.mapper.*;
-import com.nado.rlzy.db.pojo.*;
+import com.nado.rlzy.db.pojo.Attention;
+import com.nado.rlzy.db.pojo.HrAcct;
+import com.nado.rlzy.db.pojo.HrDictionaryItem;
+import com.nado.rlzy.db.pojo.MySignUpTable;
 import lombok.var;
 import org.junit.Test;
-import org.springframework.util.Base64Utils;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -190,36 +191,6 @@ public class Test2 extends BaseTest {
         System.out.println(i);
     }
 
-    @Test
-    public void test16() {
-        BriefcharpterQuery query = new BriefcharpterQuery();
-        List<HrBriefchapter> val = briefchapterMapper.queryBriefcharpterDetileByParams(query);
-        val.stream().map(dto -> {
-            String experienceId = dto.getExperienceId();
-            String[] split = experienceId.split("-");
-            List<String> strings = Arrays.asList(split);
-
-            String s = "";
-            String s1 = "";
-            String ss = "5";
-            String xx = "1";
-
-            if (strings.size() == 2) {
-                s = strings.get(0);
-                s1 = strings.get(1);
-                if (ss.compareTo(s) > 0 && ss.compareTo(s1) <= 0) {
-                    System.out.println(experienceId);
-                }
-            }
-            if (strings.size() == 1) {
-                s = strings.get(0);
-                if (xx.compareTo(s) > 0 || xx.compareTo(s) <= 0) {
-                    System.out.println(s);
-                }
-            }
-            return dto;
-        }).collect(Collectors.toList());
-    }
 
 
 

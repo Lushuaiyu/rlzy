@@ -252,11 +252,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int registerJobHunting(RecruitmentSideRegisterHobHuntingQuery query) {
+
         if (query.getUnitType().equals(1)) {
             //本人
             initUserJobHunt(query.getId(),
                     query.getImageHead(), query.getUserName(), query.getIdCard(), query.getUnitType(),
-                    query.getSex(), query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(), query.getProfession(), query.getArrivalTime(),
+                    query.getSex(), query.getEducation(), query.getGraduationTime(), query.getPostIdStr(), query.getProfession(), query.getArrivalTime(),
                     query.getExpectedSalaryUpper(), query.getExpectedSalaryLower());
 
             //报名表
@@ -265,9 +266,6 @@ public class UserServiceImpl implements UserService {
                     query.getEducation(), query.getGraduationTime(), query.getRegistrationPositionId(),
                     query.getProfession(), query.getArrivalTime(),
                     query.getExpectedSalaryUpper(), query.getExpectedSalaryLower(), query.getItIsPublic(), query.getAgreePlatformHelp());
-            //报名表投递记录表
-            //initSignUpDeliveryrecord(signUpId);
-
         } else {
             //推荐人
             initUserReferrer(query.getId(), query.getImageHead(), query.getUserName(), query.getIdCard(), query.getPostIdStr(),
@@ -327,15 +325,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private void initSignUpDeliveryrecord(Integer signUpId) {
-        HrSignupDeliveryrecord deliveryrecord = new HrSignupDeliveryrecord();
-        deliveryrecord.setSignupId(signUpId);
-        deliveryrecord.setCreateTime(LocalDateTime.now());
-        deliveryrecord.setDeleteFlag(0);
-        signupDeliveryrecordMapper.insertSelective(deliveryrecord);
-        AssertUtil.isTrue(signupDeliveryrecordMapper.insertSelective(deliveryrecord) < 1, RlzyConstant.OPS_FAILED_MSG);
-    }
-
     private void initUserReferrer(String id, String imageHead, String userName, String idCard,
                                   String postIdStr, Integer recommendNo,
                                   String recommendInfo, Integer itIsPublic, Integer agreePlatformHelp, Integer unitType) {
@@ -357,7 +346,7 @@ public class UserServiceImpl implements UserService {
         AssertUtil.isTrue(userMapper.updateByPrimaryKeySelective(user) < 1, RlzyConstant.OPS_FAILED_MSG);
     }
 
-    private Integer initSignUp(String userId, Integer sex, String userName, String idCard, String education, String graduationTime,
+    private Integer initSignUp(String id, Integer sex, String userName, String idCard, String education, String graduationTime,
                                String registrationPositionId, String profession, String arrivalTime,
                                String expectedSalaryUpper, String expectedSalaryLower, Integer itIsPublic, Integer agreePlatformHelp) {
         HrSignUp signUp = new HrSignUp();
@@ -369,7 +358,7 @@ public class UserServiceImpl implements UserService {
         int ageByIdCard = IdcardUtil.getAgeByIdCard(idCard);
         signUp.setAge(ageByIdCard);
         signUp.setEducation(education);
-        signUp.setUserId(Integer.valueOf(userId));
+        signUp.setUserId(Integer.valueOf(id));
         String graduationTime1 = graduationTime;
         Date date1 = StringUtil.StrToDate(graduationTime1);
         signUp.setGraduationTime(date1);
@@ -391,7 +380,7 @@ public class UserServiceImpl implements UserService {
 
     private void initUserJobHunt(String id, String imageHead, String userName, String idCard, Integer unitType,
                                  Integer sex, String education, String graduationTime,
-                                 String registrationPositionId, String profession, String arrivalTime,
+                                 String postIdStr, String profession, String arrivalTime,
                                  String expectedSalaryUpper, String expectedSalaryLower) {
         HrUser user = new HrUser();
         user.setId(id);
@@ -408,7 +397,7 @@ public class UserServiceImpl implements UserService {
         String graduationTime1 = graduationTime;
         Date date = StringUtil.StrToDate(graduationTime1);
         user.setGraduationTime(date);
-        user.setPostIdStr(registrationPositionId);
+        user.setPostIdStr(postIdStr);
         user.setProfession(profession);
         String time = arrivalTime;
         Date date1 = StringUtil.StrToDate(time);
@@ -446,8 +435,6 @@ public class UserServiceImpl implements UserService {
         AssertUtil.isTrue(null == postIdStr, "意向岗位不能为空");
         AssertUtil.isTrue(null == recommendNo, "推荐人数上限");
         AssertUtil.isTrue(StringUtils.isBlank(recommendInfo), "推荐说明不能为空");
-
-
     }
 
     @Override

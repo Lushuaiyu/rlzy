@@ -1,16 +1,21 @@
 package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
+import com.nado.rlzy.bean.dto.TaskHireWayDto;
+import com.nado.rlzy.db.mapper.HrBriefchapterMapper;
 import com.nado.rlzy.db.mapper.HrGroupMapper;
+import com.nado.rlzy.db.mapper.HrSignUpMapper;
 import com.nado.rlzy.db.mapper.HrUserMapper;
 import com.nado.rlzy.db.pojo.HrGroup;
 import com.nado.rlzy.db.pojo.HrLabel;
+import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import org.junit.Test;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,6 +32,12 @@ public class Test10 extends BaseTest {
 
     @Resource
     private HrGroupMapper groupMapper;
+
+    @Resource
+    private HrSignUpMapper signUpMapper;
+
+    @Resource
+    private HrBriefchapterMapper mapper;
 
     @Test
     public void test1() {
@@ -62,6 +73,24 @@ public class Test10 extends BaseTest {
             list.add(1);
         }
         System.out.println(list);
+    }
+
+    @Test
+    public void test6(){
+        List<TaskHireWayDto> hrSignUps = signUpMapper.fullyDirectRecording();
+       /* List<HrSignUp> hrSignUpList = signUpMapper.notDirectlyRecorded();
+        List<HrSignUp> hrSignUps1 = signUpMapper.canRecordDirectly();*/
+        System.out.println(hrSignUps);
+        /*System.out.println(hrSignUpList);
+        System.out.println(hrSignUps1);*/
+        // 现在时间 > 面试时间 或者报道时间那天的0点 则视为求职者 未面试 或者拒绝报道
+    }
+
+    @Test
+    public void test7(){
+        HrSignUp hrSignUp = signUpMapper.selectSignUpTable(1);
+        System.out.println(hrSignUp);
+
     }
 
 

@@ -187,7 +187,7 @@ public interface PersonCenterService {
      * @param userId 用户id
      * @return com.nado.rlzy.db.pojo.HrUser
      **/
-    HrUser selectHeadUserNameIdCard(Integer userId);
+    Map<String, Object> selectHeadUserNameIdCard(Integer userId);
 
     /**
      * 子账号负责的企业

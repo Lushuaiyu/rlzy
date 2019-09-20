@@ -129,32 +129,26 @@ public class JobSearchHomePageController extends BaseController {
         ResultJson json = new ResultJson();
         try {
             HashMap<String, Object> map = new HashMap<>();
-            if (query.getType1().equals(0)) {
-                Map<String, Object> map1 = service.queryBriefcharpterDetileByParams(query);
-                Map<String, Object> map2 = service.queryBriefcharpterDetileRecruitment(query);
-                /*//推荐单位 代招单位
-                List<HrBriefchapter> hrBriefchapters = service.recommendAPosition(query.getRecruitedCompany());
-                //推荐单位 招聘单位
-                List<HrBriefchapter> hrBriefchapters1 = service.recommendAPositionRecruitment(query.getCertifier());*/
-
-                //招聘单位
-                if (map1 != null) {
-                    map.put("queryBriefcharpterDetileByParams", map1);
-                }
-                if (map2 != null) {
-                    map.put("queryBriefcharpterDetileRecruitment", map2);
-                }
-                //代招单位
-                json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
-                json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                json.setData(map);
-            } else if (query.getType1().equals(1)) {
+            Map<String, Object> map1 = service.queryBriefcharpterDetileByParams(query);
+            Map<String, Object> map2 = service.queryBriefcharpterDetileRecruitment(query);
+            //招聘单位
+            if (map1 != null) {
+                map.put("queryBriefcharpterDetileByParams", map1);
+            }
+            if (map2 != null) {
+                map.put("queryBriefcharpterDetileRecruitment", map2);
+            }
+            //代招单位
+            json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
+            json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
+            json.setData(map);
+             /*else if (query.getType1().equals(1)) {
                 // 除了求职端首页简章列表以外的简章详情
                 Map<String, Object> detile = service.queryBriefcharpterListDetileByParams(query);
                 json.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 json.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 json.setData(detile);
-            }
+            }*/
         } catch (AssertException e) {
             e.printStackTrace();
             json.setMessage(e.getMessage());

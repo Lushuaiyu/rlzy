@@ -80,7 +80,7 @@ public interface JobSearchHomePageService {
     Map<String, Object> queryBriefcharpterByParams(BriefcharpterQuery query);
 
     /**
-     * 求职端 首页 简章列表查询招聘简章详情 代招单位
+     * 求职端 首页 简章列表查询招聘简章详情 代招单位 其他地方的简章详情也用这个
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 15:20 2019/7/4
@@ -90,7 +90,7 @@ public interface JobSearchHomePageService {
     Map<String, Object> queryBriefcharpterDetileByParams(BriefcharpterQuery query) ;
 
     /**
-     * 求职端 首页 简章列表 查询招聘简章详情 招聘单位
+     * 求职端 首页 简章列表 查询招聘简章详情 招聘单位 其他地方的简章详情也用这个
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 14:44 2019/8/2

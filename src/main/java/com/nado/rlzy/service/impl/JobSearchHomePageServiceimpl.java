@@ -443,77 +443,89 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         //简章浏览次数 比较low的做法是 每次访接口的人数加1 就往数据库写一次 只是这样会有性能问题, 如果并发, 数据库可能会炸, 暂时先这么写 以后有时间再优化
         mapper.browsePerson(query.getBriefcharpterId());
         //简章详情 代招单位
-        List<HrBriefchapter> val = mapper.queryBriefcharpterDetileByParams(query);
-        final String[] company = {""};
-        List<HrBriefchapter> mapList = val.stream().map(dto -> {
-            Integer manNum1 = dto.getManNum();
-            dto.setManNum1(manNum1 + "人");
-            Integer womenNum1 = dto.getWomenNum();
-            dto.setWomenNum1(womenNum1 + "人");
-            String manAge2 = dto.getManAge();
-            String womenAge2 = dto.getWomenAge();
-            company[0] = dto.getRecruitedCompany();
-            String experienceId1 = dto.getExperienceId();
-            if (dto.getExperienceId().compareTo("1") == 0) {
-                dto.setExperience(experienceId1 + "年内");
-                dto.setExperienceId(null);
+        HrBriefchapter val = mapper.queryBriefcharpterDetileByParams(query);
+        String company = "";
+        if (null != val) {
+            Integer manNum1 = val.getManNum();
+            val.setManNum1(manNum1 + "人");
+            Integer womenNum1 = val.getWomenNum();
+            val.setWomenNum1(womenNum1 + "人");
+            String manAge2 = val.getManAge();
+            String womenAge2 = val.getWomenAge();
+            company = val.getRecruitedCompany();
+            String experienceId1 = val.getExperienceId();
+            if (val.getExperienceId().compareTo("1") == 0) {
+                val.setExperience(experienceId1 + "年内");
+                val.setExperienceId(null);
             } else if (experienceId1.compareTo("3-5") == 0 ||
                     experienceId1.compareTo("1-3") == 0 ||
                     experienceId1.compareTo("5-10") == 0) {
-                dto.setExperience(experienceId1 + "年");
-                dto.setExperienceId(null);
+                val.setExperience(experienceId1 + "年");
+                val.setExperienceId(null);
             } else if (experienceId1.compareTo("10") == 0) {
-                dto.setExperience(experienceId1 + "年以上");
-                dto.setExperienceId(null);
+                val.setExperience(experienceId1 + "年以上");
+                val.setExperienceId(null);
             } else {
                 System.out.println("============");
             }
+            //浏览人数
+            Integer readNum = val.getReadNum();
+            val.setReadNumString(readNum + "人");
+            val.setManAge1(manAge2 + "岁");
+            val.setWomenAge1(womenAge2 + "岁");
 
-            dto.setManAge1(manAge2 + "岁");
-            dto.setWomenAge1(womenAge2 + "岁");
-            Integer overtimeTime = dto.getOvertimeTimeId();
+            // 录取方式
+            Integer overtimeTime = val.getOvertimeTimeId();
             if (overtimeTime == 1) {
-                dto.setOvertimeTime1("较少");
+                val.setOvertimeTime1("较少");
             } else if (overtimeTime == 2) {
-                dto.setOvertimeTime1("多");
+                val.setOvertimeTime1("多");
             } else if (overtimeTime == 3) {
-                dto.setOvertimeTime1("较多");
+                val.setOvertimeTime1("较多");
             } else {
-                System.out.println("====");
+                val.setOvertimeTime1("无");
+            }
+
+            Integer hireWay = Optional.ofNullable(val).orElseGet(HrBriefchapter::new).getHireWay();
+            if (hireWay.equals(0)) {
+                val.setHireWayString("完全直录");
+
+            } else if (hireWay.equals(1)) {
+                val.setHireWayString("可以直录");
+            } else {
+                val.setHireWayString("不可直录");
             }
 
             //月综合
-            double value = dto.getAvgSalary().doubleValue();
+            double value = val.getAvgSalary().doubleValue();
             String format = StringUtil.decimalFormat2(value);
-            dto.setAvgSalary1(format + "元起");
+            val.setAvgSalary1(format + "元起");
             //计薪
-            double value1 = dto.getDetailSalary().doubleValue();
+            double value1 = val.getDetailSalary().doubleValue();
             String s1 = StringUtil.decimalFormat2(value1);
-            String detailSalaryWay = dto.getDetailSalaryWay();
-            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+            String detailSalaryWay = val.getDetailSalaryWay();
+            val.setDetailSalry1(s1 + "元/" + detailSalaryWay);
 
-            BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
-            BigDecimal rebateMaleReport = dto.getRebateMaleReport();
-            BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
-            BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
-            BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
-            BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
+            BigDecimal rebateMaleInterview = val.getRebateMaleInterview();
+            BigDecimal rebateMaleReport = val.getRebateMaleReport();
+            BigDecimal rebateMaleEntry = val.getRebateMaleEntry();
+            BigDecimal rebateFemaleInterview = val.getRebateFemaleInterview();
+            BigDecimal rebateFemaleReport = val.getRebateFemaleReport();
+            BigDecimal rebateFemaleEntry = val.getRebateFemaleEntry();
             if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
                     null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-                dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
-                dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
-                dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
-                dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
+                val.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
+                val.setRebateMaleReport1("返" + rebateMaleReport + "元");
+                val.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
+                val.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
                 //入职返佣的信息
-                dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
+                val.setRebateEntryResignation1(val.getRebateEntryResignation1());
             }
-
-            return dto;
-        }).collect(Collectors.toList());
+        }
 
         //推荐岗位 代招单位
-        if (company[0] != null && company[0] != "") {
-            List<HrBriefchapter> list = mapper.recommendAPosition(company[0]);
+        if (company != null && company != "") {
+            List<HrBriefchapter> list = mapper.recommendAPosition(company);
             List<HrBriefchapter> collect = list.stream()
                     .map(dto -> {
                         Integer no = dto.getRecruitingNo();
@@ -522,29 +534,29 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                             dto.setNo(no + "人");
                         }
                         //月综合
-                        double value = dto.getAvgSalary().doubleValue();
-                        String format = StringUtil.decimalFormat2(value);
-                        dto.setAvgSalary1(format + "元起");
+                        double value3 = dto.getAvgSalary().doubleValue();
+                        String format1 = StringUtil.decimalFormat2(value3);
+                        dto.setAvgSalary1(format1 + "元起");
                         //计薪
-                        double value1 = dto.getDetailSalary().doubleValue();
-                        String s1 = StringUtil.decimalFormat2(value1);
-                        String detailSalaryWay = dto.getDetailSalaryWay();
-                        dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+                        double value4 = dto.getDetailSalary().doubleValue();
+                        String s3 = StringUtil.decimalFormat2(value4);
+                        String detailSalaryWay3 = dto.getDetailSalaryWay();
+                        dto.setDetailSalry1(s3 + "元/" + detailSalaryWay3);
 
-                        BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
-                        BigDecimal rebateMaleReport = dto.getRebateMaleReport();
-                        BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
-                        BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
-                        BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
-                        BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
-                        if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
-                                null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
+                        BigDecimal rebateMaleInterview1 = dto.getRebateMaleInterview();
+                        BigDecimal rebateMaleReport1 = dto.getRebateMaleReport();
+                        BigDecimal rebateMaleEntry1 = dto.getRebateMaleEntry();
+                        BigDecimal rebateFemaleInterview1 = dto.getRebateFemaleInterview();
+                        BigDecimal rebateFemaleReport1 = dto.getRebateFemaleReport();
+                        BigDecimal rebateFemaleEntry1 = dto.getRebateFemaleEntry();
+                        if (null != rebateMaleInterview1 && null != rebateMaleReport1 && null != rebateMaleEntry1 &&
+                                null != rebateFemaleInterview1 && null != rebateFemaleReport1 && null != rebateFemaleEntry1) {
                             //男生返佣的钱
-                            BigDecimal add = rebateMaleInterview.add(rebateMaleReport)
-                                    .add(rebateMaleEntry);
+                            BigDecimal add = rebateMaleInterview1.add(rebateMaleReport1)
+                                    .add(rebateMaleEntry1);
                             //女生返佣的钱
-                            BigDecimal add1 = rebateFemaleInterview.add(rebateFemaleReport)
-                                    .add(rebateFemaleEntry);
+                            BigDecimal add1 = rebateFemaleInterview1.add(rebateFemaleReport1)
+                                    .add(rebateFemaleEntry1);
 
                             BigDecimal n = add.compareTo(add1) >= 0 ? add : add1;
                             String rebateMoney = StringUtil.decimalToString(n);
@@ -553,10 +565,12 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
                         return dto;
                     })
                     .collect(Collectors.toList());
+            //collect.stream().collect(Collectors.toMap("user",))
+
             map.put("recommendAPosition", collect);
         }
 
-        map.put("queryBriefcharpterDetileByParams", mapList);
+        map.put("queryBriefcharpterDetileByParams", val);
         return map;
 
 
@@ -565,131 +579,123 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     @Override
     public Map<String, Object> queryBriefcharpterListDetileByParams(BriefcharpterQuery query) {
         Map<String, Object> map = new HashMap<>();
-        List<HrBriefchapter> list = mapper.queryBriefcharpterDetileByParams(query);
-        List<HrBriefchapter> hrBriefchapters = mapper.queryBriefcharpterDetileRecruitment(query);
+        //代招
+        HrBriefchapter list = mapper.queryBriefcharpterDetileByParams(query);
+        //招聘
+        HrBriefchapter hrBriefchapters = mapper.queryBriefcharpterDetileRecruitment(query);
         //代招单位
-        List<HrBriefchapter> briefcharpterDetile = list.stream()
-                .map(dto -> {
-                    Integer manNum1 = dto.getManNum();
-                    dto.setManNum1(manNum1 + "人");
-                    Integer womenNum1 = dto.getWomenNum();
-                    dto.setWomenNum1(womenNum1 + "人");
-                    String manAge2 = dto.getManAge();
-                    String womenAge2 = dto.getWomenAge();
-                    dto.setManAge1(manAge2 + "岁");
-                    dto.setWomenAge1(womenAge2 + "岁");
-                    Integer overtimeTime = dto.getOvertimeTimeId();
-                    if (overtimeTime == 1) {
-                        dto.setOvertimeTime1("较少");
-                    } else if (overtimeTime == 2) {
-                        dto.setOvertimeTime1("多");
-                    } else if (overtimeTime == 3) {
-                        dto.setOvertimeTime1("较多");
-                    } else {
-                        System.out.println("====");
-                    }
 
-                    //月综合
-                    double value = dto.getAvgSalary().doubleValue();
-                    String format = StringUtil.decimalFormat2(value);
-                    dto.setAvgSalary1(format + "元起");
-                    //计薪
-                    double value1 = dto.getDetailSalary().doubleValue();
-                    String s1 = StringUtil.decimalFormat2(value1);
-                    String detailSalaryWay = dto.getDetailSalaryWay();
-                    dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+        Integer manNum1 = list.getManNum();
+        list.setManNum1(manNum1 + "人");
+        Integer womenNum1 = list.getWomenNum();
+        list.setWomenNum1(womenNum1 + "人");
+        String manAge2 = list.getManAge();
+        String womenAge2 = list.getWomenAge();
+        list.setManAge1(manAge2 + "岁");
+        list.setWomenAge1(womenAge2 + "岁");
+        Integer overtimeTime = list.getOvertimeTimeId();
+        if (overtimeTime == 1) {
+            list.setOvertimeTime1("较少");
+        } else if (overtimeTime == 2) {
+            list.setOvertimeTime1("多");
+        } else if (overtimeTime == 3) {
+            list.setOvertimeTime1("较多");
+        } else {
+            System.out.println("====");
+        }
 
-                    String experienceId1 = dto.getExperienceId();
-                    if (dto.getExperienceId().compareTo("1") == 0) {
-                        dto.setExperience(experienceId1 + "年内");
-                    } else if (experienceId1.compareTo("3-5") == 0 ||
-                            experienceId1.compareTo("1-3") == 0 ||
-                            experienceId1.compareTo("5-10") == 0) {
-                        dto.setExperience(experienceId1 + "年");
-                    } else if (experienceId1.compareTo("10") == 0) {
-                        dto.setExperience(experienceId1 + "年以上");
-                    } else {
-                        System.out.println("============");
-                    }
-                    BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
-                    BigDecimal rebateMaleReport = dto.getRebateMaleReport();
-                    BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
-                    BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
-                    BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
-                    BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
-                    if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
-                            null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-                        dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
-                        dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
-                        dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
-                        dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
-                        //入职返佣的信息 
-                        dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
-                    }
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        //月综合
+        double value = list.getAvgSalary().doubleValue();
+        String format = StringUtil.decimalFormat2(value);
+        list.setAvgSalary1(format + "元起");
+        //计薪
+        double value1 = list.getDetailSalary().doubleValue();
+        String s1 = StringUtil.decimalFormat2(value1);
+        String detailSalaryWay = list.getDetailSalaryWay();
+        list.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+
+        String experienceId1 = list.getExperienceId();
+        if (list.getExperienceId().compareTo("1") == 0) {
+            list.setExperience(experienceId1 + "年内");
+        } else if (experienceId1.compareTo("3-5") == 0 ||
+                experienceId1.compareTo("1-3") == 0 ||
+                experienceId1.compareTo("5-10") == 0) {
+            list.setExperience(experienceId1 + "年");
+        } else if (experienceId1.compareTo("10") == 0) {
+            list.setExperience(experienceId1 + "年以上");
+        } else {
+            System.out.println("============");
+        }
+        BigDecimal rebateMaleInterview = list.getRebateMaleInterview();
+        BigDecimal rebateMaleReport = list.getRebateMaleReport();
+        BigDecimal rebateMaleEntry = list.getRebateMaleEntry();
+        BigDecimal rebateFemaleInterview = list.getRebateFemaleInterview();
+        BigDecimal rebateFemaleReport = list.getRebateFemaleReport();
+        BigDecimal rebateFemaleEntry = list.getRebateFemaleEntry();
+        if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
+                null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
+            list.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
+            list.setRebateMaleReport1("返" + rebateMaleReport + "元");
+            list.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
+            list.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
+            //入职返佣的信息
+            list.setRebateEntryResignation1(list.getRebateEntryResignation1());
+        }
         //招聘单位
-        List<HrBriefchapter> collect = hrBriefchapters.stream()
-                .map(dto -> {
-                    Integer manNum1 = dto.getManNum();
-                    dto.setManNum1(manNum1 + "人");
-                    Integer womenNum1 = dto.getWomenNum();
-                    dto.setWomenNum1(womenNum1 + "人");
-                    String manAge2 = dto.getManAge();
-                    String womenAge2 = dto.getWomenAge();
-                    dto.setManAge1(manAge2 + "岁");
-                    dto.setWomenAge1(womenAge2 + "岁");
-                    Integer overtimeTime = dto.getOvertimeTimeId();
-                    if (overtimeTime == 1) {
-                        dto.setOvertimeTime1("较少");
-                    } else if (overtimeTime == 2) {
-                        dto.setOvertimeTime1("多");
-                    } else if (overtimeTime == 3) {
-                        dto.setOvertimeTime1("较多");
-                    } else {
-                        System.out.println("====");
-                    }
-                    String experienceId1 = dto.getExperienceId();
-                    if (dto.getExperienceId().compareTo("1") == 0) {
-                        dto.setExperience(experienceId1 + "年内");
-                        dto.setExperienceId(null);
-                    } else if (experienceId1.compareTo("3-5") == 0 ||
-                            experienceId1.compareTo("1-3") == 0 ||
-                            experienceId1.compareTo("5-10") == 0) {
-                        dto.setExperience(experienceId1 + "年");
-                        dto.setExperienceId(null);
-                    } else if (experienceId1.compareTo("10") == 0) {
-                        dto.setExperience(experienceId1 + "年以上");
-                        dto.setExperienceId(null);
-                    } else {
-                        System.out.println("============");
-                    }
+        Integer manNum2 = hrBriefchapters.getManNum();
+        hrBriefchapters.setManNum1(manNum2 + "人");
+        Integer womenNum2 = hrBriefchapters.getWomenNum();
+        hrBriefchapters.setWomenNum1(womenNum2 + "人");
+        String manAge3 = hrBriefchapters.getManAge();
+        String womenAge3 = hrBriefchapters.getWomenAge();
+        hrBriefchapters.setManAge1(manAge3 + "岁");
+        hrBriefchapters.setWomenAge1(womenAge3 + "岁");
+        Integer overtimeTime1 = hrBriefchapters.getOvertimeTimeId();
+        if (overtimeTime1 == 1) {
+            hrBriefchapters.setOvertimeTime1("较少");
+        } else if (overtimeTime1 == 2) {
+            hrBriefchapters.setOvertimeTime1("多");
+        } else if (overtimeTime1 == 3) {
+            hrBriefchapters.setOvertimeTime1("较多");
+        } else {
+            System.out.println("====");
+        }
+        String experienceId2 = hrBriefchapters.getExperienceId();
+        if (experienceId2.compareTo("1") == 0) {
+            hrBriefchapters.setExperience(experienceId2 + "年内");
+            hrBriefchapters.setExperienceId(null);
+        } else if (experienceId2.compareTo("3-5") == 0 ||
+                experienceId2.compareTo("1-3") == 0 ||
+                experienceId2.compareTo("5-10") == 0) {
+            hrBriefchapters.setExperience(experienceId2 + "年");
+            hrBriefchapters.setExperienceId(null);
+        } else if (experienceId2.compareTo("10") == 0) {
+            hrBriefchapters.setExperience(experienceId2 + "年以上");
+            hrBriefchapters.setExperienceId(null);
+        } else {
+            System.out.println("============");
+        }
 
-                    BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
-                    BigDecimal rebateMaleReport = dto.getRebateMaleReport();
-                    BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
-                    BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
-                    BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
-                    BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
-                    if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
-                            null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-                        dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
-                        dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
-                        dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
-                        dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
-                        //入职返佣的信息 
-                        dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
-                    }
-
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        BigDecimal rebateMaleInterview1 = hrBriefchapters.getRebateMaleInterview();
+        BigDecimal rebateMaleReport1 = hrBriefchapters.getRebateMaleReport();
+        BigDecimal rebateMaleEntry1 = hrBriefchapters.getRebateMaleEntry();
+        BigDecimal rebateFemaleInterview1 = hrBriefchapters.getRebateFemaleInterview();
+        BigDecimal rebateFemaleReport1 = hrBriefchapters.getRebateFemaleReport();
+        BigDecimal rebateFemaleEntry1 = hrBriefchapters.getRebateFemaleEntry();
+        if (null != rebateMaleInterview1 && null != rebateMaleReport1 && null != rebateMaleEntry1 &&
+                null != rebateFemaleInterview1 && null != rebateFemaleReport1 && null != rebateFemaleEntry1) {
+            hrBriefchapters.setRebateMaleInterview1("返" + rebateMaleInterview1 + "元");
+            hrBriefchapters.setRebateMaleReport1("返" + rebateMaleReport1 + "元");
+            hrBriefchapters.setRebateFemaleInterview1("返" + rebateMaleEntry1 + "元");
+            hrBriefchapters.setRebateFemaleReport1("返" + rebateFemaleReport1 + "元");
+            //入职返佣的信息
+            hrBriefchapters.setRebateEntryResignation1(hrBriefchapters.getRebateEntryResignation1());
+        }
 
         //代招单位
-        map.put("queryBriefcharpterDetileByParams", briefcharpterDetile);
+        map.put("queryBriefcharpterDetileByParams", list);
         //招聘单位
-        map.put("queryBriefcharpterDetileRecruitment", collect);
+        map.put("queryBriefcharpterDetileRecruitment", hrBriefchapters);
         return map;
     }
 
@@ -786,113 +792,131 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     public Map<String, Object> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query) {
         Map<String, Object> map = new HashMap<>();
         //简章详情 代招单位
-        List<HrBriefchapter> val = mapper.queryBriefcharpterDetileRecruitment(query);
-        final String[] certifier = {""};
-        List<HrBriefchapter> list = val.stream().map(dto -> {
-            Integer manNum1 = dto.getManNum();
-            dto.setManNum1(manNum1 + "人");
-            Integer womenNum1 = dto.getWomenNum();
-            dto.setWomenNum1(womenNum1 + "人");
-            certifier[0] = dto.getCertifier();
-            String manAge2 = dto.getManAge();
-            String womenAge2 = dto.getWomenAge();
-            dto.setManAge1(manAge2 + "岁");
-            dto.setWomenAge1(womenAge2 + "岁");
-            Integer overtimeTime = dto.getOvertimeTimeId();
+        HrBriefchapter val = mapper.queryBriefcharpterDetileRecruitment(query);
+        String certifier = "";
+        if (null != val) {
+            Integer manNum1 = Optional.ofNullable(val).orElseGet(HrBriefchapter::new).getManNum();
+            val.setManNum1(manNum1 + "人");
+            Integer womenNum1 = Optional.ofNullable(val).orElseGet(HrBriefchapter::new).getWomenNum();
+            val.setWomenNum1(womenNum1 + "人");
+            certifier = val.getCertifier();
+            String manAge2 = val.getManAge();
+            String womenAge2 = val.getWomenAge();
+            val.setManAge1(manAge2 + "岁");
+            val.setWomenAge1(womenAge2 + "岁");
+            Integer overtimeTime = val.getOvertimeTimeId();
             if (overtimeTime == 1) {
-                dto.setOvertimeTime1("较少");
+                val.setOvertimeTime1("较少");
             } else if (overtimeTime == 2) {
-                dto.setOvertimeTime1("多");
+                val.setOvertimeTime1("多");
             } else if (overtimeTime == 3) {
-                dto.setOvertimeTime1("较多");
+                val.setOvertimeTime1("较多");
             } else {
-                System.out.println("====");
+                val.setOvertimeTime1("无");
             }
-            String experienceId1 = dto.getExperienceId();
-            if (dto.getExperienceId().compareTo("1") == 0) {
-                dto.setExperience(experienceId1 + "年内");
-                dto.setExperienceId(null);
+
+            // 录取方式
+            String experienceId1 = val.getExperienceId();
+            if (val.getExperienceId().compareTo("1") == 0) {
+                val.setExperience(experienceId1 + "年内");
+                val.setExperienceId(null);
             } else if (experienceId1.compareTo("3-5") == 0 ||
                     experienceId1.compareTo("1-3") == 0 ||
                     experienceId1.compareTo("5-10") == 0) {
-                dto.setExperience(experienceId1 + "年");
-                dto.setExperienceId(null);
+                val.setExperience(experienceId1 + "年");
+                val.setExperienceId(null);
             } else if (experienceId1.compareTo("10") == 0) {
-                dto.setExperience(experienceId1 + "年以上");
-                dto.setExperienceId(null);
+                val.setExperience(experienceId1 + "年以上");
+                val.setExperienceId(null);
             } else {
-                System.out.println("============");
+                val.setOvertimeTime1("无");
+            }
+
+            //浏览人数
+            Integer readNum = val.getReadNum();
+            val.setReadNumString(readNum + "人");
+
+            Integer hireWay = Optional.ofNullable(val).orElseGet(HrBriefchapter::new).getHireWay();
+            if (hireWay.equals(0)) {
+                val.setHireWayString("完全直录");
+
+            } else if (hireWay.equals(1)) {
+                val.setHireWayString("可以直录");
+            } else {
+                val.setHireWayString("不可直录");
             }
             //月综合
-            double value = dto.getAvgSalary().doubleValue();
+            double value = val.getAvgSalary().doubleValue();
             String format = StringUtil.decimalFormat2(value);
-            dto.setAvgSalary1(format + "元起");
+            val.setAvgSalary1(format + "元起");
             //计薪
-            double value1 = dto.getDetailSalary().doubleValue();
+            double value1 = val.getDetailSalary().doubleValue();
             String s1 = StringUtil.decimalFormat2(value1);
-            String detailSalaryWay = dto.getDetailSalaryWay();
-            dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
-            BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
-            BigDecimal rebateMaleReport = dto.getRebateMaleReport();
-            BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
-            BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
-            BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
-            BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
+            String detailSalaryWay = val.getDetailSalaryWay();
+            val.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+            BigDecimal rebateMaleInterview = val.getRebateMaleInterview();
+            BigDecimal rebateMaleReport = val.getRebateMaleReport();
+            BigDecimal rebateMaleEntry = val.getRebateMaleEntry();
+            BigDecimal rebateFemaleInterview = val.getRebateFemaleInterview();
+            BigDecimal rebateFemaleReport = val.getRebateFemaleReport();
+            BigDecimal rebateFemaleEntry = val.getRebateFemaleEntry();
             if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
                     null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-                dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
-                dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
-                dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
-                dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
+                val.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
+                val.setRebateMaleReport1("返" + rebateMaleReport + "元");
+                val.setRebateFemaleInterview1("返" + rebateFemaleInterview + "元");
+                val.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
                 //入职返佣的信息
-                dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
+                val.setRebateEntryResignation1(val.getRebateEntryResignation1());
             }
 
-            return dto;
-        }).collect(Collectors.toList());
-        if (certifier[0] != null && certifier[0] != "") {
-            List<HrBriefchapter> list1 = mapper.recommendAPositionRecruitment(certifier[0]);
-            List<HrBriefchapter> collect = list1.stream()
-                    .map(dto -> {
-                        Integer no = dto.getRecruitingNo();
-                        if (!(dto.getRecruitingNo().equals(0))) {
-                            //剩余招聘人数 不等于0 显示
-                            dto.setNo(no + "人");
-                        }
-                        //月综合
-                        double value = dto.getAvgSalary().doubleValue();
-                        String format = StringUtil.decimalFormat2(value);
-                        dto.setAvgSalary1(format + "元起");
-                        //计薪
-                        double value1 = dto.getDetailSalary().doubleValue();
-                        String s1 = StringUtil.decimalFormat2(value1);
-                        String detailSalaryWay = dto.getDetailSalaryWay();
-                        dto.setDetailSalry1(s1 + "元/" + detailSalaryWay);
-                        BigDecimal rebateMaleInterview = dto.getRebateMaleInterview();
-                        BigDecimal rebateMaleReport = dto.getRebateMaleReport();
-                        BigDecimal rebateMaleEntry = dto.getRebateMaleEntry();
-                        BigDecimal rebateFemaleInterview = dto.getRebateFemaleInterview();
-                        BigDecimal rebateFemaleReport = dto.getRebateFemaleReport();
-                        BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
-                        if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
-                                null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-                            //男生返佣的钱
-                            BigDecimal add = rebateMaleInterview.add(rebateMaleReport)
-                                    .add(rebateMaleEntry);
-                            //女生返佣的钱
-                            BigDecimal add1 = rebateFemaleInterview.add(rebateFemaleReport)
-                                    .add(rebateFemaleEntry);
+        }
+        if (certifier != null && certifier != "") {
+            List<HrBriefchapter> list1 = mapper.recommendAPositionRecruitment(certifier);
+            List<HrBriefchapter> collect = null;
+            if (list1.size() > 0) {
+                collect = list1.stream()
+                        .map(dto -> {
+                            Integer no = dto.getRecruitingNo();
+                            if (!(dto.getRecruitingNo().equals(0))) {
+                                //剩余招聘人数 不等于0 显示
+                                dto.setNo(no + "人");
+                            }
+                            //月综合
+                            double value3 = dto.getAvgSalary().doubleValue();
+                            String format1 = StringUtil.decimalFormat2(value3);
+                            dto.setAvgSalary1(format1 + "元起");
+                            //计薪
+                            double value2 = dto.getDetailSalary().doubleValue();
+                            String s3 = StringUtil.decimalFormat2(value2);
+                            String detailSalaryWay2 = dto.getDetailSalaryWay();
+                            dto.setDetailSalry1(s3 + "元/" + detailSalaryWay2);
+                            BigDecimal rebateMaleInterview2 = dto.getRebateMaleInterview();
+                            BigDecimal rebateMaleReport2 = dto.getRebateMaleReport();
+                            BigDecimal rebateMaleEntry2 = dto.getRebateMaleEntry();
+                            BigDecimal rebateFemaleInterview2 = dto.getRebateFemaleInterview();
+                            BigDecimal rebateFemaleReport2 = dto.getRebateFemaleReport();
+                            BigDecimal rebateFemaleEntry2 = dto.getRebateFemaleEntry();
+                            if (null != rebateMaleInterview2 && null != rebateMaleReport2 && null != rebateMaleEntry2 &&
+                                    null != rebateFemaleInterview2 && null != rebateFemaleReport2 && null != rebateFemaleEntry2) {
+                                //男生返佣的钱
+                                BigDecimal add = rebateMaleInterview2.add(rebateMaleReport2)
+                                        .add(rebateMaleEntry2);
+                                //女生返佣的钱
+                                BigDecimal add1 = rebateFemaleInterview2.add(rebateFemaleReport2)
+                                        .add(rebateFemaleEntry2);
 
-                            BigDecimal n = add.compareTo(add1) >= 0 ? add : add1;
-                            String rebateMoney = StringUtil.decimalToString(n);
-                            dto.setRebateRecord("返" + rebateMoney + "元");
-                        }
-                        return dto;
-                    })
-                    .collect(Collectors.toList());
+                                BigDecimal n = add.compareTo(add1) >= 0 ? add : add1;
+                                String rebateMoney = StringUtil.decimalToString(n);
+                                dto.setRebateRecord("返" + rebateMoney + "元");
+                            }
+                            return dto;
+                        })
+                        .collect(Collectors.toList());
+            }
             map.put("recommendAPositionRecruitment", collect);
         }
-        map.put("queryBriefcharpterDetileRecruitment", list);
+        map.put("queryBriefcharpterDetileRecruitment", val);
         return map;
 
     }
@@ -1458,7 +1482,7 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
 
     @Override
-    public Map<Object, Object> queryBriefchapterBySignUpStatus( Integer userId, String jobStatus) {
+    public Map<Object, Object> queryBriefchapterBySignUpStatus(Integer userId, String jobStatus) {
         HrUser hrUser = userMapper.checkUserIdentity(userId);
         Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
 
@@ -2150,22 +2174,22 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
     @Override
     public List<HrSignUp> selectAllSignUpByRecommend(Integer userId) {
-            // 求职端 个人中心 我的报名表 查询推荐人名下的报名表
-            List<HrSignUp> hrSignUps = signUpMapper.selectAllSignUpByRecommend(userId);
-            return hrSignUps;
+        // 求职端 个人中心 我的报名表 查询推荐人名下的报名表
+        List<HrSignUp> hrSignUps = signUpMapper.selectAllSignUpByRecommend(userId);
+        return hrSignUps;
 
     }
 
     @Override
     public int insertSignUpTable(JSONObject tableSignUp) {
 
-            //添加到分组的报名表
-            String jsonString = tableSignUp.toJSONString();
-            JSONObject jsonObject = JSON.parseObject(jsonString);
-            String dataString = jsonObject.getString("tableSignUp");
-            List<MySignUpTableSignUp> ups = JSON.parseArray(dataString, MySignUpTableSignUp.class);
-            tableSignUpMapper.insertLiist(ups);
-            return 1;
+        //添加到分组的报名表
+        String jsonString = tableSignUp.toJSONString();
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        String dataString = jsonObject.getString("tableSignUp");
+        List<MySignUpTableSignUp> ups = JSON.parseArray(dataString, MySignUpTableSignUp.class);
+        tableSignUpMapper.insertLiist(ups);
+        return 1;
 
 
     }

@@ -2,6 +2,8 @@ package com.nado.rlzy.controller;
 
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.AttentionQuery;
+import com.nado.rlzy.db.mapper.HrUserMapper;
+import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.ChatService;
@@ -13,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName 消息controller
@@ -30,12 +34,15 @@ public class ChatController {
     @Resource
     private ChatService service;
 
+    @Resource
+    private HrUserMapper userMapper;
+
     @RequestMapping(value = "attention")
     @ResponseBody
     @ApiOperation(value = "求职端 关注|取消关注 简章表", notes = "求职端 关注|取消关注 简章表", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "入参", required = true)
     public ResultJson attention(AttentionQuery query) {
-            ResultJson resultJson = new ResultJson();
+        ResultJson resultJson = new ResultJson();
         //已关注
         if (query.getStatus().equals(1)) {
             try {
@@ -77,13 +84,24 @@ public class ChatController {
     @ResponseBody
     @ApiOperation(value = "本人通知", notes = "本人通知", httpMethod = "POST")
     @ApiImplicitParam(value = "userId", name = "用户 id", required = true)
-    public ResultJson queryMessageMyself(Integer userId){
+    public ResultJson queryMessageMyself(Integer userId) {
         ResultJson resultJson = new ResultJson();
+        Map<String, Object> map1 = new HashMap<>();
         try {
-            Map<String, Object> stringObjectMap = service.queryMessageMyself(userId);
+            Integer type = Optional.ofNullable(userMapper.checkUserIdentity(userId)).orElseGet(HrUser::new).getType();
+
+            if (type.equals(1)) {
+                //本人
+                Map<String, Object> stringObjectMap = service.queryMessageMyself(userId);
+                map1.put("queryMessageMyself", stringObjectMap);
+            } else {
+                //推荐人
+                Map<String, Object> map = service.queryMessageReferrer(userId);
+                map1.put("queryMessageReferrer", map);
+            }
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(stringObjectMap);
+            resultJson.setData(map1);
         } catch (AssertException e) {
             e.printStackTrace();
             resultJson.setMessage(e.getMessage());

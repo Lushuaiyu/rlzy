@@ -1,6 +1,8 @@
 package com.nado.rlzy.utils;
 
+import com.nado.rlzy.service.RecruitmentHomePageService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import sun.misc.BASE64Encoder;
 
 import java.io.FileInputStream;
@@ -22,6 +24,8 @@ import java.util.Date;
  * @Version 1.0
  */
 public class StringUtil {
+    @Autowired
+    private RecruitmentHomePageService homePageService;
 
     /**
      * double 转bigDecimal 保留两位小数
@@ -40,13 +44,14 @@ public class StringUtil {
 
     /**
      * decimal 转 string
+     *
+     * @return java.lang.String
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:40 2019/8/26
      * @Param [decimal]
-     * @return java.lang.String
      **/
-    public static String decimalToString(BigDecimal decimal){
+    public static String decimalToString(BigDecimal decimal) {
         DecimalFormat format = new DecimalFormat();
         return format.format(decimal);
 
@@ -184,15 +189,17 @@ public class StringUtil {
         }
         return stringBuffer.toString();
     }
+
     /**
      * 身份证打码 使用工具
+     *
+     * @return java.lang.String
      * @Author chengpunan
-     * @Description  lushuaiyu
+     * @Description lushuaiyu
      * @Date 16:15 2019-09-17
      * @Param [name]
-     * @return java.lang.String
      */
-    public static String realName(String name){
+    public static String realName(String name) {
         String realName = name.substring(0, 4) + StringUtil.replaceStr(name.substring(4, 14)) + name.substring(14, 18);
         return realName;
     }
@@ -201,12 +208,12 @@ public class StringUtil {
         return input == null || input.equals("") || input.matches("value is null");
     }
 
-    public static LocalDateTime strToLocalDateTime(String str){
+    public static LocalDateTime strToLocalDateTime(String str) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return LocalDateTime.parse(str, formatter);
     }
 
-    public static String localdatetimeToStr(LocalDateTime localDateTime){
+    public static String localdatetimeToStr(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String format = formatter.format(localDateTime);
         return format;
@@ -215,6 +222,7 @@ public class StringUtil {
 
     /**
      * 图片转base64字符串
+     *
      * @param imgFile 图片路径
      * @return
      */
@@ -233,7 +241,5 @@ public class StringUtil {
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data);
     }
-
-
 
 }

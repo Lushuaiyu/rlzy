@@ -145,6 +145,7 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "录取方式")
     private Integer hireWay;
+    private String hireWayString;
     private String hireWayDetail;
 
     @ApiModelProperty(value = "返佣")
@@ -166,9 +167,6 @@ public class HrBriefchapter {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "审核通过时间")
     private LocalDateTime checkedtime;
-
-    @ApiModelProperty(value = "浏览次数")
-    private Integer readnum;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -259,6 +257,8 @@ public class HrBriefchapter {
 
     @ApiModelProperty(value = "访问量")
     private Integer readNum;
+
+    private String readNumString;
 
     @ApiModelProperty(value = "公司")
     private List<HrGroup> group;

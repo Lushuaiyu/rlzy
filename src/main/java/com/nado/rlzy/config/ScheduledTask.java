@@ -1,8 +1,10 @@
 package com.nado.rlzy.config;
 
+import com.nado.rlzy.bean.dto.TaskHireWayDto;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.utils.DateUtil;
+import com.nado.rlzy.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -872,6 +874,99 @@ public class ScheduledTask {
                                 }
                                 return t;
                             }).collect(Collectors.toList());
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * 完全直录：报道当天00：00视为拒绝报道
+     *
+     * @return void
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:08 2019/9/20
+     * @Param []
+     **/
+    @Scheduled(cron = "0 0 * * * ? ")
+    @Transactional(rollbackFor = Exception.class)
+    public void task21() {
+        List<TaskHireWayDto> taskHireWayDtos = mapper.fullyDirectRecording();
+        taskHireWayDtos.stream()
+                .map(dto -> {
+                    //得到报道时间
+                    LocalDateTime time = dto.getRegisterTime();
+                    Integer id = dto.getHsdId();
+                    //获得报道那天0点的时间
+                    LocalDateTime zeroPoint = LocalDateTime.of(LocalDate.from(time), LocalTime.MIN);
+                    //格式化那个时间
+                    String format = zeroPoint.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    LocalDateTime now = LocalDateTime.now();
+                    String s = StringUtil.localdatetimeToStr(now);
+                    if (s.compareTo(format) > 0) {
+                        signupDeliveryrecordMapper.fullyDirectRecordingNoreport(id);
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * 不可直录：面试当天00：00视为拒绝报道
+     *
+     * @return void
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:08 2019/9/20
+     * @Param []
+     **/
+    @Scheduled(cron = "0 0 * * * ? ")
+    @Transactional(rollbackFor = Exception.class)
+    public void task22() {
+        List<TaskHireWayDto> taskHireWayDtos = mapper.notDirectlyRecorded();
+        taskHireWayDtos.stream()
+                .map(dto -> {
+                    //得到面试时间
+                    LocalDateTime time = dto.getInterviewTime();
+                    Integer id = dto.getHsdId();
+                    //获得面试那天0点的时间
+                    LocalDateTime zeroPoint = LocalDateTime.of(LocalDate.from(time), LocalTime.MIN);
+                    //格式化那个时间
+                    String format = zeroPoint.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    LocalDateTime now = LocalDateTime.now();
+                    String s = StringUtil.localdatetimeToStr(now);
+                    if (s.compareTo(format) > 0) {
+                        signupDeliveryrecordMapper.notDirectlyRecorded(id);
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * 可以直录：面试当天00：00视为拒绝报道
+     *
+     * @return void
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:08 2019/9/20
+     * @Param []
+     **/
+    @Scheduled(cron = "0 0 * * * ? ")
+    @Transactional(rollbackFor = Exception.class)
+    public void task23() {
+        List<TaskHireWayDto> taskHireWayDtos = mapper.canRecordDirectly();
+        taskHireWayDtos.stream()
+                .map(dto -> {
+                    //得到报道时间
+                    LocalDateTime time = dto.getInterviewTime();
+                    Integer id = dto.getHsdId();
+                    //获得报道那天0点的时间
+                    LocalDateTime zeroPoint = LocalDateTime.of(LocalDate.from(time), LocalTime.MIN);
+                    //格式化那个时间
+                    String format = zeroPoint.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    LocalDateTime now = LocalDateTime.now();
+                    String s = StringUtil.localdatetimeToStr(now);
+                    if (s.compareTo(format) > 0) {
+                        signupDeliveryrecordMapper.canRecordDirectly(id);
+                    }
                     return dto;
                 }).collect(Collectors.toList());
     }

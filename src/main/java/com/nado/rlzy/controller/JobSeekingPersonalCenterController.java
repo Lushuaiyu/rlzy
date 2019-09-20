@@ -10,7 +10,10 @@ import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSeekingPersonalCenterService;
 import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.service.RecruitmentHomePageService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -106,17 +110,17 @@ public class JobSeekingPersonalCenterController {
     @ResponseBody
     @ApiOperation(notes = "求职端个人中心 查询我的报名表详情", value = "求职端个人中心 查询我的报名表详情", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "signId", name = "求职id", dataType = "Integer", required = true),
-            @ApiImplicitParam(value = "userId", name = "用户id", dataType = "Integer", required = true)
-
+            @ApiImplicitParam(value = "signId", name = "求职id", dataType = "Integer", required = true)
     })
-    public Result<HrSignUp> selectSignUpTable(Integer signId, Integer userId) {
-        Result<HrSignUp> result = new Result<>();
+    public ResultJson selectSignUpTable(Integer signId) {
+        ResultJson result = new ResultJson();
         try {
-            List<HrSignUp> hrSignUps = service.selectSignUpTable(signId, userId);
+            HrSignUp hrSignUp = service.selectSignUpTable(signId);
+            Map<String, Object> map = new HashMap<>();
+            map.put("hrsign", hrSignUp);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(hrSignUps);
+            result.setData(map);
         } catch (AssertException e) {
             e.printStackTrace();
             result.setMessage(e.getMessage());

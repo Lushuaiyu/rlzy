@@ -1,12 +1,12 @@
 package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
-import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.EntryResignation;
 import com.nado.rlzy.db.pojo.HrBriefchapter;
 import com.nado.rlzy.utils.CollectorsUtil;
 import org.junit.Test;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -131,19 +131,7 @@ public class Test5 extends BaseTest {
         System.out.println(collect);
     }
 
-    @Test
-    public void test5() {
-        BriefcharpterQuery query = new BriefcharpterQuery();
-        query.setBriefcharpterId(1);
-        final List<EntryResignation>[] collect = new List[]{null};
-        List<HrBriefchapter> list = mapper.queryBriefcharpterDetileByParams(query);
-        list.stream()
-                .map(dto -> {
-                    collect[0] = dto.getRebateEntryResignation().stream().collect(Collectors.toList());
-                    return dto;
-                }).collect(Collectors.toList());
-        System.out.println(collect[0]);
-    }
+
 
     @Test
     public void test6() {

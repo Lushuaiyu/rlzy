@@ -15,6 +15,7 @@ import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.service.RecruitmentHomePageService;
+import com.nado.rlzy.utils.AssertUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName 招聘端个人中心controller
@@ -74,6 +76,8 @@ public class PersonCenterController extends BaseController {
     public ResultJson queryPersonCo(Integer userId) {
         ResultJson result = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("54"), RlzyConstant.PERMISSION);
             List<HrGroup> hrGroups = service.queryPersonCo(userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -96,6 +100,8 @@ public class PersonCenterController extends BaseController {
     public ResultJson subAccountCompany(Integer userId) {
         ResultJson result = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("69"), RlzyConstant.PERMISSION);
             List<HrGroup> hrGroups = service.subAccountCompany(userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -137,8 +143,9 @@ public class PersonCenterController extends BaseController {
     })
     public ResultJson addCo(AddCoQuery query) {
         ResultJson resultJson = new ResultJson();
-
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(query.getUserId())).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("51"), RlzyConstant.PERMISSION);
             Map<String, Object> co = service.addCo(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -219,8 +226,8 @@ public class PersonCenterController extends BaseController {
                 HrUser hrUser = service.personalInformationReferrer(userId);
                 result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-                Map<String,Object> map=new HashMap<String,Object>();
-                map.put("user",hrUser);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("user", hrUser);
                 result.setData(map);
                 return result;
             }
@@ -376,9 +383,11 @@ public class PersonCenterController extends BaseController {
     @RequestMapping(value = "feedback")
     @ResponseBody
     @ApiOperation(notes = "招聘端 帮助与反馈", value = "招聘端 帮助与反馈", httpMethod = "POST")
-    public Result<Feedback> feedback() {
+    public Result<Feedback> feedback(Integer userId) {
         Result<Feedback> result = new Result<Feedback>();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("52"), RlzyConstant.PERMISSION);
             List<Feedback> list = service.feedback();
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -408,6 +417,8 @@ public class PersonCenterController extends BaseController {
     public ResultJson myFeedback(String content, Integer userId, String name, String phone) {
         ResultJson result = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("53"), RlzyConstant.PERMISSION);
             int feedback = service.myFeedback(content, userId, name, phone);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -447,6 +458,8 @@ public class PersonCenterController extends BaseController {
         Map<String, Object> map = new HashMap<>();
         ResultJson result = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("55"), RlzyConstant.PERMISSION);
             if (type.equals(1)) {
                 List<HrUser> hrUsers = service.collectReferrer(userId);
                 map.put("collectReferrer", hrUsers);
@@ -484,6 +497,8 @@ public class PersonCenterController extends BaseController {
         Result<ComplaintDto> result = new Result<ComplaintDto>();
 
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("56"), RlzyConstant.PERMISSION);
             List<ComplaintDto> list = jobSearchHomePageService.creditCenter(status, userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -504,9 +519,11 @@ public class PersonCenterController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "招聘端 个人中心 信用中心 查看投诉", notes = "招聘端 个人中心 信用中心 查看投诉", httpMethod = "POST")
     @ApiImplicitParam(name = "coId", value = "简章id", required = true)
-    public ResultJson selectComplaint(Integer coId) {
+    public ResultJson selectComplaint(Integer coId, Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("57"), RlzyConstant.PERMISSION);
             List<HrComplaint> hrComplaints = jobSearchHomePageService.selectComplaint(coId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -530,6 +547,8 @@ public class PersonCenterController extends BaseController {
     public ResultJson updateHeadImage(String userId, String headImage, String userName, Integer type) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(Integer.valueOf(userId))).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("67"), RlzyConstant.PERMISSION);
             int i = service.updateHeadImage(userId, headImage, userName, type);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -561,10 +580,12 @@ public class PersonCenterController extends BaseController {
     public ResultJson selectHeadUserNameIdCard(Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
-            HrUser user = service.selectHeadUserNameIdCard(userId);
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("68"), RlzyConstant.PERMISSION);
+            Map<String, Object> map = service.selectHeadUserNameIdCard(userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            resultJson.setData(user);
+            resultJson.setData(map);
         } catch (AssertException e) {
             e.printStackTrace();
             resultJson.setMessage(e.getMessage());

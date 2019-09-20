@@ -66,6 +66,9 @@ public class HrSignUp {
     @Column(name = "sex")
     private Integer sex;
 
+    @Transient
+    private String sexString;
+
     @ApiModelProperty(value = "身份证")
     @Column(name = "id_card")
     private String idCard;
@@ -148,10 +151,15 @@ public class HrSignUp {
     @ApiModelProperty(value = "是否公开")
     @Column(name = "it_is_public")
     private Integer itIsPublic;
+    @Transient
+    private String itPublicString;
 
     @ApiModelProperty(value = "是否获取平台帮助")
     @Column(name = "agree_platform_help")
     private Integer agreePlatformHelp;
+
+    @Transient
+    private String agreePlatformHelpString;
 
     /**
      * 我的报名表属性

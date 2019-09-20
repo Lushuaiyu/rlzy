@@ -59,7 +59,7 @@
 
 
         <result column="CheckedTime" property="checkedtime" jdbcType="TIMESTAMP"/>
-        <result column="readNum" property="readnum" jdbcType="INTEGER"/>
+        <result column="readNum" property="readNum" jdbcType="INTEGER"/>
         <result column="manNum" property="manNum" jdbcType="INTEGER"/>
         <result column="womenNum" property="womenNum" jdbcType="INTEGER"/>
         <result column="manAgeId" property="manAgeId" jdbcType="INTEGER"/>
@@ -1015,10 +1015,7 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.work_time_arrange_id)
         and d.pId = 17) as workTimeArrange,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.overtime_times_id)
-        and d.pId = 18) as overtimeTime,
+        br.overtime_times_id as overtimeTime,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.clothing_requirement_id)
@@ -1056,8 +1053,8 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        br.man_num,
-        br.women_num,
+        br.man_num as manNum,
+        br.women_num as womenNum,
         er.brief_chapter_id,
         er.rebate_time,
         er.type
@@ -1734,10 +1731,7 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.work_time_arrange_id)
         and d.pId = 17) as workTimeArrange,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, br.overtime_times_id)
-        and d.pId = 18) as overtimeTime,
+        br.overtime_times_id as overtimeTime,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.clothing_requirement_id)
@@ -1775,8 +1769,8 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, br.welfareId)
         and d.pId = 10) as welfareId,
-        br.man_num,
-        br.women_num,
+        br.man_num as manNum,
+        br.women_num as womenNum,
         er.brief_chapter_id,
         er.rebate_time,
         er.type

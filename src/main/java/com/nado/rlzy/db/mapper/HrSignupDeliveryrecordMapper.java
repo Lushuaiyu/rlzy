@@ -82,6 +82,36 @@ public interface HrSignupDeliveryrecordMapper extends Mapper<HrSignupDeliveryrec
      */
     int inserttListt(@Param("list") List<HrSignupDeliveryrecord> list);
 
+    /**
+     * 完全直录 修改为未报到
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:18 2019/9/20
+     * @Param []
+     * @return int
+     **/
+    int fullyDirectRecordingNoreport(@Param("hsdId") Integer hsdId);
+
+    /**
+     * 不可直录 改为未面试
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:34 2019/9/20
+     * @Param [hsdId]
+     * @return int
+     **/
+    int notDirectlyRecorded(@Param("hsdId") Integer hsdId);
+
+    /**
+     * 可以直录 改为未面试
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 15:37 2019/9/20
+     * @Param [hsdId]
+     * @return int
+     **/
+    int canRecordDirectly(Integer hsdId);
+
 
 
 

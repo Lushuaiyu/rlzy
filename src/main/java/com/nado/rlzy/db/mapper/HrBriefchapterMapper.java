@@ -44,7 +44,7 @@ public interface HrBriefchapterMapper {
      * @Date 10:04 2019/7/4
      * @Param [query]
      **/
-    List<HrBriefchapter> queryBriefcharpterDetileByParams(BriefcharpterQuery query);
+    HrBriefchapter queryBriefcharpterDetileByParams(BriefcharpterQuery query);
 
 
     /**
@@ -56,7 +56,7 @@ public interface HrBriefchapterMapper {
      * @Date 13:53 2019/8/2
      * @Param [query]
      **/
-    List<HrBriefchapter> queryBriefcharpterDetileRecruitment(BriefcharpterQuery query);
+    HrBriefchapter queryBriefcharpterDetileRecruitment(BriefcharpterQuery query);
 
     /**
      * 推荐职位 代招单位

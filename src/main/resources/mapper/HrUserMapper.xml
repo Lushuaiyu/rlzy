@@ -3,6 +3,7 @@
 <mapper namespace="com.nado.rlzy.db.mapper.HrUserMapper">
     <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrUser">
         <id column="Id" property="id" jdbcType="INTEGER"/>
+        <id column="userId" property="userId" jdbcType="INTEGER"/>
         <result column="UserName" property="userName" jdbcType="VARCHAR"/>
         <result column="RoleId" property="roleId" jdbcType="INTEGER"/>
         <result column="interfaceId" property="interfaceId" jdbcType="INTEGER"/>
@@ -14,7 +15,9 @@
         <result column="Mobile" property="mobile" jdbcType="VARCHAR"/>
         <result column="IdCard" property="idCard" jdbcType="VARCHAR"/>
         <result column="education" property="education" jdbcType="VARCHAR"/>
+        <result column="educationId" property="educationId" jdbcType="INTEGER"/>
         <result column="profession" property="profession" jdbcType="VARCHAR"/>
+        <result column="professionId" property="professionId" jdbcType="INTEGER"/>
         <result column="graduationTime" property="graduationTime" jdbcType="VARCHAR"/>
         <result column="arrivalTime" property="arrivalTime" jdbcType="VARCHAR"/>
         <result column="RegisterTime" property="registerTime" jdbcType="TIMESTAMP"/>
@@ -22,6 +25,8 @@
         <result column="expectedSalaryLower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
         <result column="GroupName" property="groupName" jdbcType="VARCHAR"/>
         <result column="RecommendNo" property="recommendNo" jdbcType="INTEGER"/>
+        <result column="recommendNumber" property="recommendNumber" jdbcType="INTEGER"/>
+        <result column="recommendNoId" property="recommendNoId" jdbcType="INTEGER"/>
         <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
         <result column="sex" property="sex" jdbcType="INTEGER"/>
         <result column="LoginIp" property="loginIp" jdbcType="VARCHAR"/>
@@ -265,15 +270,20 @@
 
     <select id="personalInformationReferrer" resultMap="BaseResultMap">
         select u.HeadImage,
-        u.Id,
+        u.Id as userId,
         u.type,
         u.UserName,
         u.IdCard,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
-        and d.pId = 1) as PostIdStr,
-        u.RecommendNo,
+        and d.pId = 1) as postName,
+        u.PostIdStr,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, u.RecommendNo)
+        and d.pId = 30) as recommendNumber,
+        u.RecommendNo as recommendNoId,
         u.RecommendInfo,
         u.isPublic,
         u.agreeHelp
@@ -289,29 +299,36 @@
     </select>
 
     <select id="personalInformation" resultMap="BaseResultMap">
-        select u.UserName,
+        select u.Id as userId,
+        u.UserName,
         u.HeadImage,
         u.sex,
         u.IdCard,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, u.PostIdStr)
+        WHERE FIND_IN_SET(d.value, u.education)
         and d.pId = 2) as education,
+        u.education as educationId,
         u.graduationTime,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, u.PostIdStr)
+        WHERE FIND_IN_SET(d.value, u.profession)
         and d.pId = 3) as profession,
+        u.profession as professionId,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
-        and d.pId = 1) as PostIdStr,
+        and d.pId = 1) as postName,
+        u.PostIdStr,
         u.arrivalTime,
         u.expectedSalaryLower,
         u.expectedSalaryUpper,
         u.isPublic,
         u.agreeHelp,
-        u.PostIdStr
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, u.PostIdStr)
+        and d.pId = 1) as postId
         from hr_user u
         <where>
             u.status = 0

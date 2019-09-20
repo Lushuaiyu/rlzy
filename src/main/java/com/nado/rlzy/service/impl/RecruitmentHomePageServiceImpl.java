@@ -363,7 +363,7 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     public List<HrUser> referrer(JobListQuery query) {
         List<HrUser> hrUsers = userMapper.selectReferrer(query);
         List<HrUser> collect = hrUsers.stream().map(dto -> {
-            Integer recommendNo = dto.getRecommendNo();
+            String recommendNo = dto.getRecommendNumber();
             dto.setRecommend(recommendNo + "人");
             return dto;
         }).collect(Collectors.toList());
@@ -385,7 +385,7 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
         list.stream()
                 .map(dto -> {
 
-                    Integer recommendNo = dto.getRecommendNo();
+                    String recommendNo = dto.getRecommendNumber();
                     dto.setRecommend(recommendNo + "人");
                     dto.setInterviewed("参加面试" + interviewed + "人");
                     dto.setArReported("报道" + arReported + "人");

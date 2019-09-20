@@ -5,12 +5,17 @@ import com.nado.rlzy.bean.frontEnd.JobListtFront;
 import com.nado.rlzy.bean.model.Result;
 import com.nado.rlzy.bean.model.ResultJson;
 import com.nado.rlzy.bean.query.JobListQuery;
+import com.nado.rlzy.db.mapper.HrUserMapper;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import com.nado.rlzy.db.pojo.HrUser;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.platform.exception.AssertException;
 import com.nado.rlzy.service.RecruitmentHomePageService;
-import io.swagger.annotations.*;
+import com.nado.rlzy.utils.AssertUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +24,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName 招聘版首页controller
@@ -34,6 +40,9 @@ public class RecruitmentHomePageController extends BaseController {
 
     @Resource
     private RecruitmentHomePageService service;
+
+    @Resource
+    private HrUserMapper userMapper;
 
 
     /**
@@ -63,7 +72,11 @@ public class RecruitmentHomePageController extends BaseController {
         Map<String, Object> map = new HashMap<>();
         ResultJson resultJson = new ResultJson();
         try {
-            if (query.getType().equals(1)) {
+            String s = Optional.ofNullable(service.subAccountPermission(query.getUserId())).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("59"), RlzyConstant.PERMISSION);
+            Integer type = Optional.ofNullable(userMapper.checkUserIdentity(query.getUserId())).orElseGet(HrUser::new).getType();
+
+            if (type.equals(1)) {
                 //求职列表
                 List<HrSignUp> list = service.selectJobListOverview(query);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
@@ -136,6 +149,8 @@ public class RecruitmentHomePageController extends BaseController {
     public ResultJson referrerDetails(Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(service.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("62"), RlzyConstant.PERMISSION);
             List<HrUser> hrUsers = service.referrerDetails(userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -178,6 +193,8 @@ public class RecruitmentHomePageController extends BaseController {
     public ResultJson recruitmentBriefchapter(Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(service.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("58"), RlzyConstant.PERMISSION);
             Map<String, Object> map = service.recruitmentBriefchapter(userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -203,6 +220,8 @@ public class RecruitmentHomePageController extends BaseController {
     public ResultJson representativeUnitSubAccount(Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(service.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("71"), RlzyConstant.PERMISSION);
             Map<String, Object> map = service.representativeUnitSubAccount(userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -231,6 +250,8 @@ public class RecruitmentHomePageController extends BaseController {
     public ResultJson addOrCancelCollect(Integer userId, Integer signUpId, Integer id, Integer type) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(service.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("61"), RlzyConstant.PERMISSION);
             HashMap<String, Object> map = new HashMap<>();
             if (type.equals(1)) {
                 //add collect
@@ -271,6 +292,8 @@ public class RecruitmentHomePageController extends BaseController {
     public ResultJson addOrCancelCollectReferrer(Integer userId, Integer id, Integer type) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(service.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("62"), RlzyConstant.PERMISSION);
             HashMap<String, Object> map = new HashMap<>();
             if (type.equals(1)) {
                 int referrer = service.collectReferrer(userId);
@@ -303,6 +326,8 @@ public class RecruitmentHomePageController extends BaseController {
     public ResultJson selectCoCertificationStatus(Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(service.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("70"), RlzyConstant.PERMISSION);
             Integer status = service.selectCoCertificationStatus(userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);

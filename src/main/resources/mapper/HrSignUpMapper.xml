@@ -10,6 +10,7 @@
         <result column="user_name" property="signUpName" jdbcType="VARCHAR"/>
         <result column="userName" property="userName" jdbcType="VARCHAR"/>
         <result column="sex" property="sex" jdbcType="INTEGER"/>
+        <result column="sexString" property="sexString" jdbcType="VARCHAR"/>
         <result column="id_card" property="idCard" jdbcType="VARCHAR"/>
         <result column="education" property="education" jdbcType="VARCHAR"/>
         <result column="graduation_time" property="graduationTime" jdbcType="DATE"/>
@@ -26,17 +27,20 @@
         <result column="delete_flag" property="deleteFlag" jdbcType="TINYINT"/>
         <result column="registration_position_id" property="registrationPositionId" jdbcType="VARCHAR"/>
         <result column="age" property="age" jdbcType="INTEGER"/>
-        <result column="relation" property="relation" jdbcType="INTEGER"/>
+        <result column="relation" property="relation" jdbcType="VARCHAR"/>
         <result column="group_name" property="groupName" jdbcType="VARCHAR"/>
         <result column="Name" property="postName" jdbcType="VARCHAR"/>
         <result column="signId" property="signId" jdbcType="INTEGER"/>
         <result column="it_is_public" property="itIsPublic" jdbcType="INTEGER"/>
+        <result column="itPublicString" property="itPublicString" jdbcType="VARCHAR"/>
         <result column="agree_platform_help" property="agreePlatformHelp" jdbcType="INTEGER"/>
+        <result column="agreePlatformHelpString" property="agreePlatformHelpString" jdbcType="VARCHAR"/>
         <result column="HeadImage" property="headImage" jdbcType="VARCHAR"/>
         <result column="RecommendNo" property="recommendNo" jdbcType="VARCHAR"/>
         <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
         <result column="value" property="value" jdbcType="DECIMAL"/>
         <result column="postId" property="postId" jdbcType="VARCHAR"/>
+        <result column="postName" property="postName" jdbcType="VARCHAR"/>
         <result column="PostIdStr" property="postIdStr" jdbcType="VARCHAR"/>
         <result column="interviewTime" property="interviewTime" jdbcType="DATE"/>
         <result column="registerTime" property="registerTime" jdbcType="DATE"/>
@@ -46,6 +50,7 @@
         <collection property="deliveryrecord" resultMap="deliveryrecord"
                     ofType="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord"/>
     </resultMap>
+
     <resultMap id="deliveryrecord" type="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord">
         <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
         <result column="brief_chapter_id" property="briefChapterId" jdbcType="INTEGER"/>
@@ -192,7 +197,8 @@
     <update id="updateJobStatusReport">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.status = 9
+            sd.no_pass_reason = 2,
+            sd.status = 4
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -492,13 +498,13 @@
         and c.sign_up_id is not null order by c.create_time desc
     </select>
     <select id="selectSignUpTable" resultMap="BaseResultMap">
-        select msut.id,
-        hsd.brief_chapter_id,
-        hsd.id as hsdId,
-        s.user_name,
-        s.sex,
+        select s.user_name,
+        (case when s.sex = 0 then '女' when s.sex = 1 then '男' end) as sexString,
         s.id_card,
-        s.education,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, s.education)
+        and d.pId = 2) as education,
         s.graduation_time,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
@@ -507,41 +513,24 @@
         s.arrival_time,
         s.expected_salary_upper,
         s.expected_salary_lower,
-        s.relation,
-        s.it_is_public,
-        s.agree_platform_help,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, s.relation)
+        and d.pId = 4) as relation,
+        (case when s.it_is_public = 0 then '公开' when s.it_is_public = 1 then '不公开' end) as itPublicString,
+        (case
+        when s.agree_platform_help = 0 then '同意'
+        when s.agree_platform_help = 1
+        then '不同意' end) as agreePlatformHelpString,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, s.registration_position_id)
-        and d.pId = 1) as Name,
-        s.id as signId,
-        s.user_id,
-        hsd.brief_chapter_id
-        from my_sign_up_table msut,
-        my_sign_up_table_sign_up msutsu,
-        hr_signup s,
-        hr_signup_deliveryrecord hsd,
-        hr_user u,
-        hr_briefchapter br
-        where msut.id = msutsu.my_sign_up_table_id
-        and msutsu.delete_flag = 0
-        and msutsu.sign_up_id = s.id
-        and s.id = hsd.signup_id
-        and hsd.delete_flag = 0
-        and s.delete_flag = 0
-        and s.user_id = u.Id
-        and u.status = 0
-        and br.Id = hsd.brief_chapter_id
-        and br.briefChapterStatus = 0
-        and br.Status = 1
+        and d.pId = 1) as postName
+        from hr_signup s
+        where s.delete_flag = 0
         <if test="null != signId">
             and s.id = #{signId}
         </if>
-        <if test="null != userId">
-            and s.user_id = #{userId}
-
-        </if>
-
 
     </select>
     <select id="selectSignUp" resultMap="BaseResultMap">
@@ -877,5 +866,32 @@
         </if>
 
 
+    </select>
+    <select id="fullyDirectRecording" resultType="com.nado.rlzy.bean.dto.TaskHireWayDto">
+            select br.registerTime, hsd.id as hsdId
+    from hr_signup si
+             left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
+             left join hr_briefchapter br on hsd.brief_chapter_id = br.Id and br.briefChapterStatus = 0
+    where si.delete_flag = 0
+      and hsd.status = 0
+    and br.hireWay = 0
+    </select>
+    <select id="notDirectlyRecorded" resultType="com.nado.rlzy.bean.dto.TaskHireWayDto">
+            select br.registerTime, hsd.id as hsdId
+    from hr_signup si
+             left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
+             left join hr_briefchapter br on hsd.brief_chapter_id = br.Id and br.briefChapterStatus = 0
+    where si.delete_flag = 0
+      and hsd.status = 0
+    and br.hireWay = 2
+    </select>
+    <select id="canRecordDirectly" resultType="com.nado.rlzy.bean.dto.TaskHireWayDto">
+    select br.interviewTime ,hsd.id as hsdId
+    from hr_signup si
+             left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
+             left join hr_briefchapter br on hsd.brief_chapter_id = br.Id and br.briefChapterStatus = 0
+    where si.delete_flag = 0
+      and hsd.status = 0
+    and br.hireWay = 1
     </select>
 </mapper>

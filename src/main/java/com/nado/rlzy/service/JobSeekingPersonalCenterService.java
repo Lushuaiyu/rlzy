@@ -44,7 +44,7 @@ public interface JobSeekingPersonalCenterService {
      * @Param [signId, userId]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      **/
-    List<HrSignUp> selectSignUpTable(Integer signId, Integer userId);
+    HrSignUp selectSignUpTable(Integer signId);
 
 
     /**

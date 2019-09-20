@@ -13,12 +13,21 @@ import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.MyReleaseService;
 import com.nado.rlzy.service.RecruitmentHomePageService;
 import com.nado.rlzy.utils.AssertUtil;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName 招聘端 我的发布 controller
@@ -49,11 +58,12 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "status", name = "状态 0待审核 1通过(正在招)  2未通过 3已结束", dataType = "Integer", required = true),
 
     })
-    public ResultJson myRelease(Integer userId, Integer status, Integer type) {
+    public ResultJson myRelease(Integer userId, Integer status) {
         ResultJson result = new ResultJson();
         try {
             Map<String, Object> map = service.myRelease(userId, status);
-
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(s != null && !s.contains("38"), RlzyConstant.PERMISSION);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
@@ -80,6 +90,8 @@ public class MyReleaseController extends BaseController {
         ResultJson result = new ResultJson();
         try {
             Map<String, Object> map = service.myReleaseSubAccount(userId, status);
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(s != null && !s.contains("66"), RlzyConstant.PERMISSION);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
@@ -111,9 +123,9 @@ public class MyReleaseController extends BaseController {
         ResultJson result = new ResultJson();
 
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("37"), RlzyConstant.PERMISSION);
             List<Province> provinces = service.getPCA();
-            HrUser s = homePageService.subAccountPermission(userId);
-            AssertUtil.isTrue(null != s && ! s.getInterfaceId().contains("37"), RlzyConstant.PERMISSION);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(provinces);
@@ -158,10 +170,11 @@ public class MyReleaseController extends BaseController {
     @ApiOperation(notes = "发布简章", value = "发布简章", httpMethod = "POST")
     public ResultJson save(ReleaseBriefcharpterQuery query, @RequestBody(required = false) JSONObject rebateEntry) {
         ResultJson result = new ResultJson();
-        HrUser hrUser = homePageService.checkUserIdentity(query.getUserId());
-        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
         try {
-
+            String s = Optional.ofNullable(homePageService.subAccountPermission(query.getUserId())).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("46"), RlzyConstant.PERMISSION);
+            HrUser hrUser = homePageService.checkUserIdentity(query.getUserId());
+            Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
             service.saveUser(query, type, rebateEntry);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -184,9 +197,11 @@ public class MyReleaseController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "招聘详情 概览 待返佣部分 0:面试 1:报到 2:入职 0就是第一笔返佣 1是第二笔 2 入职 按照时间从早到晚排", notes = "招聘详情 概览 待返佣部分 0:面试 1:报到 2:入职 0就是第一笔返佣 1是第二笔 2 入职 按照时间从早到晚排", httpMethod = "POST")
     @ApiImplicitParam(value = "jobStatus", name = "报名状态", required = true)
-    public Result<HrSignUp> recruitmentDetailsOverview(String jobStatus) {
+    public Result<HrSignUp> recruitmentDetailsOverview(String jobStatus, Integer userId) {
         Result<HrSignUp> result = new Result<>();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(s != null && s.contains("39"), RlzyConstant.PERMISSION);
             List<HrSignUp> list = service.recruitmentDetailsOverview(jobStatus);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -207,9 +222,11 @@ public class MyReleaseController extends BaseController {
     @RequestMapping(value = "numberOfRecruitsFull")
     @ApiOperation(notes = " 招聘端 查看求职表 判断报名人数是否满了, recruitingNo = 0 就说明满了", value = "招聘端 查看求职表 判断报名人数是否满了, recruitingNo = 0 就说明满了", httpMethod = "POST")
     @ApiImplicitParam(value = "briefchapter", name = "简章id", dataType = "Integer", required = true)
-    public Result<HrBriefchapter> numberOfRecruitsFull(Integer briefchapter) {
+    public Result<HrBriefchapter> numberOfRecruitsFull(Integer briefchapter, Integer userId) {
         Result<HrBriefchapter> result = new Result<>();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("50"), RlzyConstant.PERMISSION);
             List<HrBriefchapter> signUpNumberDtos = service.numberOfRecruitsFull(briefchapter);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -234,9 +251,11 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integet", required = true),
             @ApiImplicitParam(value = "type", name = "1 不合适 2 邀请面试", dataType = "integet", required = true)
     })
-    public ResultJson notSuitable(Integer signUpId, Integer type) {
+    public ResultJson notSuitable(Integer signUpId, Integer type, Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("45"), RlzyConstant.PERMISSION);
             if (type.equals(1)) {
                 //不合适
                 int notSuitable = service.notSuitable(signUpId);
@@ -276,6 +295,8 @@ public class MyReleaseController extends BaseController {
     public ResultJson invitationToRegister(Integer signUpId, Integer userId, Integer sex, Integer type, Integer briefchapter) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("44"), RlzyConstant.PERMISSION);
             if (type.equals(1)) {
                 //邀请报名
                 int invitationToRegister = service.invitationToRegister(signUpId);
@@ -310,10 +331,12 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "type", name = "1 招聘详情 已报名 不合适 2 邀请面试 3 直接录取 ", dataType = "integet", required = true),
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integet", required = true)
     })
-    public ResultJson reportNotSuitable(Integer signUpId, Integer type, Integer briefChapterId) {
+    public ResultJson reportNotSuitable(Integer signUpId, Integer type, Integer briefChapterId, Integer userId) {
         ResultJson resultJson = new ResultJson();
 
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("40"), RlzyConstant.PERMISSION);
             if (type.equals(1)) {
                 //招聘详情 已报名 不合适
                 int count = service.reportNotSuitable(signUpId, briefChapterId);
@@ -367,6 +390,8 @@ public class MyReleaseController extends BaseController {
                                             Integer sex, Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("41"), RlzyConstant.PERMISSION);
             if (type.equals(1)) {
                 // 招聘详情 待面试 已面试
                 int count = service.recruitmentInterviewd(signUpId, briefChapterId);
@@ -423,6 +448,8 @@ public class MyReleaseController extends BaseController {
                                   Integer userId, Integer sex, Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("42"), RlzyConstant.PERMISSION);
             if (typp.equals(1)) {
                 Map<String, Object> map = service.notReported(signUpId, briefChapterId, userId);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
@@ -472,6 +499,8 @@ public class MyReleaseController extends BaseController {
     public ResultJson rebate(RebateQuery query) {
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(query.getUserId())).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != null && !s.contains("43"), RlzyConstant.PERMISSION);
             if (query.getType().equals(1)) {
                 List<HrRebaterecord> list = service.rebatee(query.getSignUpId(), query.getBriefchapterId(), query.getSex());
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
@@ -508,8 +537,8 @@ public class MyReleaseController extends BaseController {
     public ResultJson changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId, Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
-            HrUser s = homePageService.subAccountPermission(userId);
-            AssertUtil.isTrue(null != s && !s.getInterfaceId().contains("35"), RlzyConstant.PERMISSION);
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("35"), RlzyConstant.PERMISSION);
             int jobStatus = service.changeJobStatus(signUpId, status, currentState, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -542,6 +571,8 @@ public class MyReleaseController extends BaseController {
     public ResultJson selectContentByType(DictionaryQuery query) {
         ResultJson result = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(query.getUserId())).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("48"), RlzyConstant.PERMISSION);
             Map<String, Object> stringObjectMap = service.selectContentByType(query);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -572,9 +603,11 @@ public class MyReleaseController extends BaseController {
     @ResponseBody
     @ApiOperation(notes = "根据类型查询前端选项内容", value = "根据类型查询前端选项内容", httpMethod = "POST")
     @ApiImplicitParam(value = "query", name = "配置表参数", dataType = "Integer", required = true)
-    public ResultJson selectFrontEnd(Integer type) {
+    public ResultJson selectFrontEnd(Integer type, Integer userId) {
         ResultJson result = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("47"), RlzyConstant.PERMISSION);
             List<HrDictionaryItem> items = service.selectFrontEnd(type);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -605,11 +638,11 @@ public class MyReleaseController extends BaseController {
         HashMap<String, Object> map = new HashMap<>();
         ResultJson resultJson = new ResultJson();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && !s.contains("36"), RlzyConstant.PERMISSION);
             if (query.getTypp().equals(1)) {
                 //正在招 | 未通过 代招单位
                 Integer count = service.editBriefchapterMyRelease(query);
-                HrUser s = homePageService.subAccountPermission(userId);
-                AssertUtil.isTrue(null != s && !s.getInterfaceId().contains("36"), RlzyConstant.PERMISSION);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 map.put("editBriefchapterMyRelease", count);
@@ -645,8 +678,8 @@ public class MyReleaseController extends BaseController {
             BriefcharpterQuery query = new BriefcharpterQuery();
             query.setBriefcharpterId(briefchapterId);
             //子账号拥有的权限
-            HrUser permission = homePageService.subAccountPermission(userId);
-            AssertUtil.isTrue(null != permission && !permission.getInterfaceId().contains("65"), RlzyConstant.PERMISSION);
+            String permission = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != permission && !permission.contains("65"), RlzyConstant.PERMISSION);
             //查询简章详情
             Map<String, Object> map = jobSearchHomePageService.queryBriefcharpterListDetileByParams(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
@@ -674,9 +707,11 @@ public class MyReleaseController extends BaseController {
     })
     public ResultJson selectGroupName(Integer userId, Integer status) {
         ResultJson result = new ResultJson();
-        HrUser hrUser = homePageService.checkUserIdentity(userId);
-        Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
         try {
+            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            AssertUtil.isTrue(null != s && s.contains("49"), RlzyConstant.PERMISSION);
+            HrUser hrUser = homePageService.checkUserIdentity(userId);
+            Integer type = Optional.ofNullable(hrUser).orElseGet(HrUser::new).getType();
             Map<String, Object> list = service.selectGroupName(type, userId, status);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);

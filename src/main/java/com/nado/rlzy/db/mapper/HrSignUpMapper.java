@@ -2,6 +2,7 @@ package com.nado.rlzy.db.mapper;
 
 import com.nado.rlzy.bean.dto.ComplaintPage;
 import com.nado.rlzy.bean.dto.JobListDto;
+import com.nado.rlzy.bean.dto.TaskHireWayDto;
 import com.nado.rlzy.bean.query.JobListQuery;
 import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.db.pojo.HrSignUp;
@@ -69,7 +70,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Date 19:12 2019/7/8
      * @Param []
      **/
-    List<HrSignUp> selectSignUpTable(@Param("signId") Integer signId, @Param("userId") Integer userId);
+    HrSignUp selectSignUpTable(@Param("signId") Integer signId);
 
     /**
      * 查询报名表 概览
@@ -633,6 +634,36 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
 
 
     List<HrSignUp> aaa(@Param("id") String id);
+
+    /**
+     * 完全直录
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:51 2019/9/20
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     **/
+    List<TaskHireWayDto> fullyDirectRecording();
+
+    /**
+     * 不可直录
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:52 2019/9/20
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     **/
+    List<TaskHireWayDto> notDirectlyRecorded();
+
+    /**
+     * 可以直录
+     * @Author lushuaiyu
+     * @Description //TODO
+     * @Date 14:53 2019/9/20
+     * @Param []
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     **/
+    List<TaskHireWayDto> canRecordDirectly();
 
 
 }

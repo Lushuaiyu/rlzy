@@ -173,9 +173,9 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     @Override
     public HrUser personalInformationReferrer(Integer userId) {
         HrUser user = userMapper.personalInformationReferrer(userId);
-        Integer noUpper = user.getRecommendNo();
+        String noUpper = user.getRecommendNumber();
         String number = noUpper + "人";
-        user.setRecommendedNumber(number);
+        user.setRecommendNumber(number);
         HashMap<String, HrUser> map = new HashMap<>();
         map.put("data", user);
         return user;
@@ -313,14 +313,16 @@ public class PersonCenterServiceImpl implements PersonCenterService {
     }
 
     @Override
-    public HrUser selectHeadUserNameIdCard(Integer userId) {
+    public Map<String, Object> selectHeadUserNameIdCard(Integer userId) {
         HrUser user = userMapper.selectHeadUserNameIdCard(userId);
         if (null != user.getIdCard()) {
             String idCard = user.getIdCard();
             String realName = StringUtil.realName(idCard);
             user.setIdCard(realName);
         }
-        return user;
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", user);
+        return map;
     }
 
     @Override
@@ -328,7 +330,7 @@ public class PersonCenterServiceImpl implements PersonCenterService {
         List<HrUser> hrUsers = userMapper.collectReferrer(userId);
         return hrUsers.stream()
                 .map(dto -> {
-                    Integer recommendNo = dto.getRecommendNo();
+                    String recommendNo = dto.getRecommendNumber();
                     dto.setRecommend(recommendNo + "人");
                     return dto;
                 }).collect(Collectors.toList());

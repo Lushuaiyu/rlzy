@@ -95,6 +95,12 @@ public class HrUser {
     @ApiModelProperty(value = "推荐人数")
     private Integer recommendNo;
 
+    @Transient
+    private String recommendNumber;
+
+    @Transient
+    private Integer recommendNoId;
+
     /**
      * 推荐人数
      */
@@ -179,9 +185,15 @@ public class HrUser {
     @Column(name = "education")
     private String education;
 
+    @Transient
+    private Integer educationId;
+
     @ApiModelProperty(value = "专业")
     @Column(name = "profession")
     private String profession;
+
+    @Transient
+    private String professionId;
 
     @ApiModelProperty(value = "毕业时间")
     @Column(name = "graduationTime")
@@ -201,10 +213,6 @@ public class HrUser {
 
     @Transient
     private String groupName;
-
-    @ApiModelProperty(value = "推荐人数")
-    @Transient
-    private String recommendedNumber;
 
     @ApiModelProperty(value = "期望薪资")
     @Transient

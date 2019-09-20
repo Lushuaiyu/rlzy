@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -117,8 +118,11 @@ public class JobSeekingPersonalCenterServiceImpl implements JobSeekingPersonalCe
     }
 
     @Override
-    public List<HrSignUp> selectSignUpTable(Integer signId, Integer userId) {
-        return signUpMapper.selectSignUpTable(signId, userId).stream().collect(Collectors.toList());
+    public HrSignUp selectSignUpTable(Integer signId) {
+        HrSignUp sign = signUpMapper.selectSignUpTable(signId);
+        String s = StringUtil.realName(Optional.ofNullable(sign).orElseGet(HrSignUp::new).getIdCard());
+        sign.setIdCard(s);
+        return sign;
     }
 
 

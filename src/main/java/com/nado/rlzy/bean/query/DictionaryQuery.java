@@ -76,4 +76,6 @@ public class DictionaryQuery {
      */
     private String femaleAge;
 
+    private Integer userId;
+
 }

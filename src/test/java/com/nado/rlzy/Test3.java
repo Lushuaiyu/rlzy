@@ -1,7 +1,6 @@
 package com.nado.rlzy;
 
 import com.nado.rlzy.base.BaseTest;
-import com.nado.rlzy.bean.query.BriefcharpterQuery;
 import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.Collect;
 import com.nado.rlzy.db.pojo.HrSignUp;
@@ -69,17 +68,7 @@ public class Test3 extends BaseTest {
         System.out.println(i);
     }
 
-    @Test
-    public void test3() {
-        BriefcharpterQuery query = new BriefcharpterQuery();
-        mapper.queryBriefcharpterDetileByParams(query).stream().map(
-                dto -> {
-                    System.out.println(dto.getExperienceId());
-                    return dto;
-                }
-        ).collect(Collectors.toList());
 
-    }
     @Test
     public void test5() {
         int interviewed = userMapper.interviewed(2);
