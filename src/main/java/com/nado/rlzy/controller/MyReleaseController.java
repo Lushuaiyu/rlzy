@@ -13,22 +13,12 @@ import com.nado.rlzy.service.JobSearchHomePageService;
 import com.nado.rlzy.service.MyReleaseService;
 import com.nado.rlzy.service.RecruitmentHomePageService;
 import com.nado.rlzy.utils.AssertUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @ClassName 招聘端 我的发布 controller
@@ -122,8 +112,8 @@ public class MyReleaseController extends BaseController {
 
         try {
             List<Province> provinces = service.getPCA();
-            String s = homePageService.subAccountPermission(userId);
-            AssertUtil.isTrue(StringUtils.isNotBlank(s) && ! s.contains("37"), RlzyConstant.PERMISSION);
+            HrUser s = homePageService.subAccountPermission(userId);
+            AssertUtil.isTrue(null != s && ! s.getInterfaceId().contains("37"), RlzyConstant.PERMISSION);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(provinces);
@@ -518,8 +508,8 @@ public class MyReleaseController extends BaseController {
     public ResultJson changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId, Integer userId) {
         ResultJson resultJson = new ResultJson();
         try {
-            String s = homePageService.subAccountPermission(userId);
-            AssertUtil.isTrue(StringUtils.isNotBlank(s) && !s.contains("35"), RlzyConstant.PERMISSION);
+            HrUser s = homePageService.subAccountPermission(userId);
+            AssertUtil.isTrue(null != s && !s.getInterfaceId().contains("35"), RlzyConstant.PERMISSION);
             int jobStatus = service.changeJobStatus(signUpId, status, currentState, briefChapterId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -618,8 +608,8 @@ public class MyReleaseController extends BaseController {
             if (query.getTypp().equals(1)) {
                 //正在招 | 未通过 代招单位
                 Integer count = service.editBriefchapterMyRelease(query);
-                String s = homePageService.subAccountPermission(userId);
-                AssertUtil.isTrue(StringUtils.isNotBlank(s) && !s.contains("36"), RlzyConstant.PERMISSION);
+                HrUser s = homePageService.subAccountPermission(userId);
+                AssertUtil.isTrue(null != s && !s.getInterfaceId().contains("36"), RlzyConstant.PERMISSION);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 map.put("editBriefchapterMyRelease", count);
@@ -655,8 +645,8 @@ public class MyReleaseController extends BaseController {
             BriefcharpterQuery query = new BriefcharpterQuery();
             query.setBriefcharpterId(briefchapterId);
             //子账号拥有的权限
-            String permission = homePageService.subAccountPermission(userId);
-            AssertUtil.isTrue(StringUtils.isNotBlank(permission) && !permission.contains("65"), RlzyConstant.PERMISSION);
+            HrUser permission = homePageService.subAccountPermission(userId);
+            AssertUtil.isTrue(null != permission && !permission.getInterfaceId().contains("65"), RlzyConstant.PERMISSION);
             //查询简章详情
             Map<String, Object> map = jobSearchHomePageService.queryBriefcharpterListDetileByParams(query);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);

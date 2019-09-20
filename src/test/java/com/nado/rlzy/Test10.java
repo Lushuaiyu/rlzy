@@ -51,15 +51,9 @@ public class Test10 extends BaseTest {
         System.out.println(status);
     }
 
-    @Test
-    public void test4() {
-        String s = userMapper.subAccountPermission(47);
-        if (s.contains("16")) {
-            System.out.println("asdf");
-        }
 
 
-    }
+
 
     @Test
     public void test5() {

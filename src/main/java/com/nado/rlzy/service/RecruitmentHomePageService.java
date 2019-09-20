@@ -181,7 +181,7 @@ public interface RecruitmentHomePageService {
      * @Param [userId]
      * @return java.lang.String
      **/
-    String subAccountPermission(Integer userId);
+    HrUser subAccountPermission(Integer userId);
 
 
 }

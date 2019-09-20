@@ -440,7 +440,7 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      * @Param []
      * @return java.lang.String
      **/
-    String subAccountPermission(@Param("userId") Integer userId);
+    HrUser subAccountPermission(@Param("userId") Integer userId);
 
 
 }

@@ -567,7 +567,7 @@
             and Id = #{userId}
         </if>
     </select>
-    <select id="subAccountPermission" resultType="string">
+    <select id="subAccountPermission" resultMap="BaseResultMap">
         select (SELECT GROUP_CONCAT(i.id)
         FROM hr_interface i
         WHERE FIND_IN_SET(i.id, r.power)) as interfaceId,

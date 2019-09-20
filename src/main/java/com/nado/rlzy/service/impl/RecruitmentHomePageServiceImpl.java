@@ -423,7 +423,7 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
 
 
     @Override
-    public String subAccountPermission(Integer userId) {
+    public HrUser subAccountPermission(Integer userId) {
         return userMapper.subAccountPermission(userId);
     }
 
