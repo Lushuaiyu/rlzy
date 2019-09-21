@@ -25,6 +25,8 @@ public class HrSignUp {
     @Column(name = "id")
     private Integer id;
 
+
+
     /**
      * 1 本人 2 推荐人
      */

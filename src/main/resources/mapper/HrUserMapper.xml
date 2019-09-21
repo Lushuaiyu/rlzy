@@ -25,6 +25,7 @@
         <result column="expectedSalaryLower" property="expectedSalaryLower" jdbcType="DECIMAL"/>
         <result column="GroupName" property="groupName" jdbcType="VARCHAR"/>
         <result column="RecommendNo" property="recommendNo" jdbcType="INTEGER"/>
+        <result column="recommendNoString" property="recommendNoString" jdbcType="VARCHAR"/>
         <result column="recommendNumber" property="recommendNumber" jdbcType="INTEGER"/>
         <result column="recommendNoId" property="recommendNoId" jdbcType="INTEGER"/>
         <result column="RecommendInfo" property="recommendInfo" jdbcType="VARCHAR"/>
@@ -341,12 +342,15 @@
     </select>
     <select id="selectReferrer" resultMap="BaseResultMap" parameterType="com.nado.rlzy.bean.query.ReferrerQuery">
         select u.UserName,
-        u.id,
+        u.id as userId,
         (SELECT GROUP_CONCAT(d.name)
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, u.PostIdStr)
         and d.pId = 1) as postName,
-        u.RecommendNo
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, u.RecommendNo)
+        and d.pId = 30) as recommendNoString
         from hr_user u
         left join user_login_quit ulq on u.id = ulq.user_id
         and ulq.delete_flag = 0

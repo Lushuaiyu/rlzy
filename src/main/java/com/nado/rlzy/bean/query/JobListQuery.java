@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @ClassName 查询求职列表query & 新增报名表 query & 我要报名 & 查询推荐人列表
  * @Description TODO
@@ -32,9 +34,12 @@ public class JobListQuery {
 
     @ApiModelProperty(value = "学历")
     private String education;
+    private List<Integer> education1;
 
     @ApiModelProperty(value = "专业")
     private String profession;
+
+    private List<Integer> profession1;
 
     @ApiModelProperty(value = "年龄")
     private String age;

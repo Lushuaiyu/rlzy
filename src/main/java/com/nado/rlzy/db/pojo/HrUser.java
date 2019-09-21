@@ -96,6 +96,9 @@ public class HrUser {
     private Integer recommendNo;
 
     @Transient
+    private String recommendNoString;
+
+    @Transient
     private String recommendNumber;
 
     @Transient

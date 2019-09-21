@@ -3,6 +3,7 @@
 <mapper namespace="com.nado.rlzy.db.mapper.HrSignUpMapper">
     <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrSignUp">
         <id column="id" property="id" jdbcType="INTEGER"/>
+        <id column="signId" property="signId" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
         <result column="group_id" property="groupId" jdbcType="INTEGER"/>
         <result column="brief_chapter_id" property="briefChapterId" jdbcType="INTEGER"/>
@@ -387,7 +388,7 @@
             parameterType="com.nado.rlzy.bean.query.JobListQuery">
 
         select s.user_name,
-        s.id as id,
+        s.id as signId,
         s.age as age,
         u.UserName as commendName,
         u.type,
@@ -400,42 +401,54 @@
         and d.pId = 4) as relation,
         u.Id as user_id,
         s.sex
-        from hr_signup s
-        left join hr_user u on s.user_id = u.Id and u.status = 0
-        left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
-        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0 and br.Status = 1
-        <where>
-            s.delete_flag = 0
-            <if test="null != id">
-                and si.id = #{id}
-            </if>
-            <if test="null != sex">
-                and s.sex = #{sex}
-            </if>
-            <if test="null != education and '' != education">
-                and s.education = #{education}
-            </if>
-            <if test="null != profession and '' != profession">
-                and s.profession = #{profession}
-            </if>
-            <if test="null != age and '' != age">
-                and s.age = #{age}
-            </if>
+        FROM hr_signup s,
+        hr_user u,
+        hr_signup_deliveryrecord sd,
+        hr_briefchapter b
+        where s.user_id = u.id
+        and u.status = 0
+        and s.id = sd.signup_id
+        and sd.delete_flag = 0
+        and sd.brief_chapter_id = b.Id
+        and b.briefChapterStatus = 0
+        and b.Status = 1
+        and s.delete_flag = 0
+        <if test="null != id">
+            and si.id = #{id}
+        </if>
+        <if test="null != sex">
+            and s.sex = #{sex}
+        </if>
+        <if test="null != education1">
+            and s.education in
+            <foreach collection="education1" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
 
-            <if test="null != arrivalTime">
-                and s.arrival_time between now() and adddate(now(), interval #{arrivalTime} day)
-            </if>
-            <if test="null != graduationTime">
-                and YEAR(graduation_time) = YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
-            </if>
+        </if>
+        <if test="null != profession1">
+            and s.profession in
+            <foreach collection="profession1" separator="," item="item" open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="null != age and '' != age">
+            and s.age = #{age}
+        </if>
 
-            <if test="null != graduationTime and graduationTime == 3">
-                and YEAR(graduation_time) &lt;= YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
-            </if>
-            <if test="null != relation">
-                and s.relation = #{relation}
-            </if>
-        </where>
+        <if test="null != arrivalTime">
+            and s.arrival_time between now() and adddate(now(), interval #{arrivalTime} day)
+        </if>
+        <if test="null != graduationTime">
+            and YEAR(graduation_time) = YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
+        </if>
+
+        <if test="null != graduationTime and graduationTime == 3">
+            and YEAR(graduation_time) &lt;= YEAR(DATE_SUB(NOW(), INTERVAL #{graduationTime} YEAR))
+        </if>
+        <if test="null != relation">
+            and s.relation = #{relation}
+        </if>
 
 
     </select>
@@ -463,7 +476,7 @@
         LEFT JOIN hr_signup_deliveryrecord sd
         ON s.id = sd.signup_id and sd.delete_flag = 0
         LEFT JOIN hr_briefchapter b
-        ON b.briefChapterStatus = 0 and br.Status = 1
+        ON b.briefChapterStatus = 0 and b.Status = 1
         where s.delete_flag = 0
         <if test="null != id">
             and s.id = #{id}
@@ -490,7 +503,7 @@
         left join hr_signup s on c.sign_up_id = s.id and s.delete_flag = 0
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
         left join hr_user u on c.user_id = u.Id and u.status = 0
-        left join hr_briefchapter b on c.briefchapter_id = b.Id and b.briefChapterStatus = 0 and br.Status = 1
+        left join hr_briefchapter b on c.briefchapter_id = b.Id and b.briefChapterStatus = 0 and b.Status = 1
         where
         <if test="null != userId">
             u.Id = #{userId}
@@ -653,7 +666,7 @@
         from hr_signup s
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
         left join hr_user u on s.user_id = u.Id and u.status = 0
-        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0 and br.Status = 1
+        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.briefChapterStatus = 0 and b.Status = 1
         left join hr_rebaterecord r on sd.brief_chapter_id = r.BriefChapterId and r.DeleteFlag = 0
         <where>
             s.delete_flag = 0

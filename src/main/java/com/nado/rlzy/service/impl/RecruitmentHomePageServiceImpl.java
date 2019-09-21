@@ -51,11 +51,25 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
 
     @Override
     public List<HrSignUp> selectJobListOverview(JobListQuery query) {
+        if (null != query.getEducation()) {
+        int[] ints = Arrays.stream(query.getEducation().split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
+        List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
+        query.setEducation1(list);
 
+        }
+        if (null != query.getProfession()){
+        int[] array = Arrays.stream(query.getProfession().split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
+        List<Integer> collect1 = Arrays.stream(array).boxed().collect(Collectors.toList());
+        query.setProfession1(collect1);
+
+        }
         List<HrSignUp> listDtos = mapper.selectJobListOverview(query);
         List<HrSignUp> collect = listDtos.stream().map(dto -> {
-            if (dto.getType().equals(1)) {
-                dto.setCommendName("本人");
+
+            if (null != dto.getType()) {
+                if (Optional.ofNullable(dto).orElseGet(HrSignUp::new).getType().compareTo(1) == 0) {
+                    dto.setCommendName("本人");
+                }
             }
             return dto;
         }).collect(Collectors.toList());
@@ -99,7 +113,6 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
             String s6 = StringUtil.decimalFormatByInt(expectedSalaryLower);
             front.setExpectedSalaryLower(s6);
             front.setExpectedSalary(s6 + "k" + "-" + s5 + "k");
-
 
 
             Integer sex1 = dto.getSex();
@@ -363,7 +376,7 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     public List<HrUser> referrer(JobListQuery query) {
         List<HrUser> hrUsers = userMapper.selectReferrer(query);
         List<HrUser> collect = hrUsers.stream().map(dto -> {
-            String recommendNo = dto.getRecommendNumber();
+            String recommendNo = dto.getRecommendNoString();
             dto.setRecommend(recommendNo + "人");
             return dto;
         }).collect(Collectors.toList());
@@ -389,10 +402,10 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
                     dto.setRecommend(recommendNo + "人");
                     dto.setInterviewed("参加面试" + interviewed + "人");
                     dto.setArReported("报道" + arReported + "人");
-                    dto.setNoInterview( "未面试" + noInterview + "人");
+                    dto.setNoInterview("未面试" + noInterview + "人");
                     dto.setNoReported("未报到" + noReported + "人");
 
-                    dto.setJobSeeker( "拥有求职者" +jobSeeker + "人");
+                    dto.setJobSeeker("拥有求职者" + jobSeeker + "人");
                     dto.setViolationRecord("有责未报到" + numberViolations + "次  ");
                     return dto;
                 })
@@ -410,7 +423,6 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
         collectMapper.insertSelective(collect);
         return collect.getId();
     }
-
 
 
     @Override
@@ -449,7 +461,6 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
         collectMapper.insertSelective(collect);
         return collect.getId();
     }
-
 
 
     public static void main(String[] args) {
