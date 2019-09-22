@@ -121,7 +121,7 @@ public interface RecruitmentHomePageService {
      * @Param [query]
      * @return java.util.List<com.nado.rlzy.db.pojo.HrUser>
      **/
-    List<HrUser> referrerDetails(Integer userId);
+    Map<String, Object> referrerDetails(Integer userId);
 
     /**
      * 招聘端求职者列表 添加搜藏

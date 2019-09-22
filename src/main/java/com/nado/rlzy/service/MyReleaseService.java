@@ -147,8 +147,7 @@ public interface MyReleaseService {
      * @Date 13:50 2019/7/19
      * @Param [signUpId]
      **/
-    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer sex,
-                                    Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId);
+    int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer userId, Integer signupDeliveryrecordId);
 
     /**
      * 招聘详情 待报道 未报到
@@ -170,7 +169,7 @@ public interface MyReleaseService {
      * @Date 14:40 2019/7/19
      * @Param [signUpId]
      **/
-    int reported(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId);
+    int reported(Integer signUpId, Integer briefChapterId, Integer userId, Integer signupDeliveryrecordId);
 
 
     /**
@@ -195,16 +194,16 @@ public interface MyReleaseService {
      * @Date 16:01 2019/7/19
      * @Param [userId]
      **/
-    List<HrRebaterecord> rebatee(Integer signUpId, Integer briefchapterId, Integer sex);
+    List<HrRebaterecord> rebatee(Integer signUpId, Integer briefchapterId);
 
     /**
      * 招聘详情 待返佣 不返佣
      *
+     * @param query
      * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:45 2019/7/19
-     * @param query
      **/
     int noRebate(RebateQuery query);
 
@@ -220,19 +219,17 @@ public interface MyReleaseService {
     int rebate(RebateQuery query);
 
 
-
     /**
      * 重置求职者报名状态
      *
-     * @param signUpId     报名id
-     * @param status       求职状态
-     * @param currentState 当前状态
+     * @param hsdId  报名求职id
+     * @param status 求职状态
      * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 10:07 2019/7/22
      **/
-    int changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId);
+    int changeJobStatus(String hsdId, String status, String currentState);
 
     /**
      * 判断报名人数是否满了
@@ -243,7 +240,7 @@ public interface MyReleaseService {
      * @Description //TODO
      * @Date 11:15 2019/7/17
      **/
-    List<HrBriefchapter> numberOfRecruitsFull(Integer briefchapter);
+    Map<String, Object> numberOfRecruitsFull(Integer briefchapter);
 
     /**
      * 招聘端 邀请报名
@@ -282,35 +279,35 @@ public interface MyReleaseService {
      * 直接录取 招聘端
      *
      * @param signUpId 报名id
-     * @param userId   推荐人id
      * @return int
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:12 2019/7/17
      **/
-    int directAdmission(Integer signUpId, Integer userId, Integer sex, Integer briefchapter);
+    int directAdmission(Integer signUpId, Integer briefchapter);
 
 
     /**
      * 根据配置表类型查 内容
      *
+     * @return
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:15 2019/7/8
      * @Param [type]
-     *
-     * @return*/
+     */
     Map<String, Object> selectContentByType(DictionaryQuery query);
 
-     /**
-      * 前台选择页面 通用模板
-      * @Author chengpunan
-      * @Description  lushuaiyu
-      * @Date 09:47 2019-09-09
-      * @Param [type]
-      * @return java.util.List<com.nado.rlzy.db.pojo.HrDictionaryItem>
-      */
-     List<HrDictionaryItem> selectFrontEnd(Integer type);
+    /**
+     * 前台选择页面 通用模板
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrDictionaryItem>
+     * @Author chengpunan
+     * @Description lushuaiyu
+     * @Date 09:47 2019-09-09
+     * @Param [type]
+     */
+    List<HrDictionaryItem> selectFrontEnd(Integer type);
 
     /**
      * 招聘端 我的发布  正在招 编辑简章 代招单位
@@ -325,25 +322,25 @@ public interface MyReleaseService {
 
     /**
      * 招聘端 我的发布  正在招 编辑简章 招聘单位
+     *
+     * @return java.lang.Integer
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:41 2019/9/1
      * @Param [query]
-     * @return java.lang.Integer
      **/
     Integer editBriefchapterMyReleaseRecruitment(EditBriefchapterQuery query);
 
     /**
      * 编辑简章时查询入职返佣 查到的入职返佣信息 随着编辑简章的提交 传到后台 ======== 这个没啥用 入职返佣信息 发布简章时就有了
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.EntryResignation>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:52 2019/8/28
      * @Param [briefchapterId]
-     * @return java.util.List<com.nado.rlzy.db.pojo.EntryResignation>
      **/
     List<EntryResignation> selectEntryRebate(Integer briefchapterId);
-
-
 
 
     /**
@@ -358,22 +355,24 @@ public interface MyReleaseService {
     Map<String, Object> selectGroupName(Integer type, Integer userId, Integer status);
 
     /**
-     *  编辑简章时回显 代招单位
+     * 编辑简章时回显 代招单位
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 16:22 2019/9/18
      * @Param [briefchapter]
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
-    List<HrBriefchapter>  editBriefchapterEcho(Integer briefchapter);
+    List<HrBriefchapter> editBriefchapterEcho(Integer briefchapter);
 
     /**
      * 编辑简章时回显 代招单位
+     *
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      * @Author lushuaiyu
      * @Description //TODO
      * @Date 17:04 2019/9/18
      * @Param [briefchapter]
-     * @return java.util.List<com.nado.rlzy.db.pojo.HrBriefchapter>
      **/
     List<HrBriefchapter> editBriefchapterEchoRecruitment(Integer briefchapter);
 }

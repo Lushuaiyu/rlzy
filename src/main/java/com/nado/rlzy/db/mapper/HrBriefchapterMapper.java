@@ -437,7 +437,7 @@ public interface HrBriefchapterMapper {
      * @param briefchapter
      * @return
      */
-    List<HrBriefchapter> queryRecruitingNo(@Param("briefchapter") Integer briefchapter);
+    Integer queryRecruitingNo(@Param("briefchapter") Integer briefchapter);
 
     /**
      * 招聘端首页简章 代招单位

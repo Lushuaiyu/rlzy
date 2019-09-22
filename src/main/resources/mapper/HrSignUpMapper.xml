@@ -4,6 +4,7 @@
     <resultMap id="BaseResultMap" type="com.nado.rlzy.db.pojo.HrSignUp">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <id column="signId" property="signId" jdbcType="INTEGER"/>
+        <id column="hsdId" property="hsdId" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
         <result column="group_id" property="groupId" jdbcType="INTEGER"/>
         <result column="brief_chapter_id" property="briefChapterId" jdbcType="INTEGER"/>
@@ -46,6 +47,7 @@
         <result column="interviewTime" property="interviewTime" jdbcType="DATE"/>
         <result column="registerTime" property="registerTime" jdbcType="DATE"/>
         <result column="noSingUp" property="noSingUp" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
         <collection property="rebat" resultMap="rebaterecord" ofType="com.nado.rlzy.db.pojo.HrRebaterecord"/>
         <collection property="chapter" resultMap="chapterMap" ofType="com.nado.rlzy.db.pojo.HrBriefchapter"/>
         <collection property="deliveryrecord" resultMap="deliveryrecord"
@@ -55,6 +57,8 @@
     <resultMap id="deliveryrecord" type="com.nado.rlzy.db.pojo.HrSignupDeliveryrecord">
         <result column="job_status" property="jobStatus" jdbcType="INTEGER"/>
         <result column="brief_chapter_id" property="briefChapterId" jdbcType="INTEGER"/>
+        <result column="no_pass_reason" property="noPassReason" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
 
     </resultMap>
     <resultMap id="rebaterecord" type="com.nado.rlzy.db.pojo.HrRebaterecord">
@@ -90,8 +94,9 @@
     <update id="notSuitable">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.status = 8,
+            sd.status = 4,
             sd.job_status = 1,
+            sd.no_pass_reason = 0
             <where>
                 si.delete_flag = 0
                 and sd.delete_flag = 0
@@ -105,7 +110,7 @@
     <update id="invitationInterview">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.status = 7
+            sd.status = 1
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -222,7 +227,8 @@
     <update id="reportNotSuitable">
         update hr_signup_deliveryrecord sd, hr_signup si
         <set>
-            sd.status = 4
+            sd.status = 4,
+            sd.no_pass_reason = 0
             <where>
                 sd.delete_flag = 0
                 and si.delete_flag = 0
@@ -382,7 +388,16 @@
 
         </set>
     </update>
-    <update id="waitingForCommissionToBecomeRebateSIgnUp"></update>
+    <update id="commissionRebate">
+        update hr_rebaterecord re , hr_signup_deliveryrecord hsd
+        set re.status = 3
+        where re.status = 4
+        and hsd.no_pass_reason = 4
+        <if test="null != hsdId">
+            and hsd.id = #{hsdId}
+        </if>
+    </update>
+
 
     <select id="selectJobListOverview" resultMap="BaseResultMap"
             parameterType="com.nado.rlzy.bean.query.JobListQuery">
@@ -401,18 +416,9 @@
         and d.pId = 4) as relation,
         u.Id as user_id,
         s.sex
-        FROM hr_signup s,
-        hr_user u,
-        hr_signup_deliveryrecord sd,
-        hr_briefchapter b
-        where s.user_id = u.id
-        and u.status = 0
-        and s.id = sd.signup_id
-        and sd.delete_flag = 0
-        and sd.brief_chapter_id = b.Id
-        and b.briefChapterStatus = 0
-        and b.Status = 1
-        and s.delete_flag = 0
+        FROM hr_signup s left join hr_user u on s.user_id = u.Id and u.status = 0
+        left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
+        left join hr_briefchapter b on sd.brief_chapter_id = b.Id and b.Status and b.briefChapterStatus = 0
         <if test="null != id">
             and si.id = #{id}
         </if>
@@ -645,24 +651,22 @@
     </select>
     <select id="recruitmentDetailsOverview" resultMap="BaseResultMap">
         select s.user_name,
-        s.user_name as ben_ren,
         s.age,
         s.arrival_time,
-        u.UserName,
-        s.agree_platform_help,
-        b.interviewTime,
-        b.registerTime,
-        sd.brief_chapter_id,
+        u.UserName as userName,
+        b.interviewTime as interviewTime,
+        b.registerTime as registerTime,
         r.RebateTime,
         r.status,
         sd.no_pass_reason,
-        s.id,
+        s.id as signId,
         sd.status,
-        r.CreateTime,
-        s.sex,
-        r.RebateType,
-        s.user_id,
-        sd.status
+        sd.id as hsdId,
+        u.type,
+        (SELECT GROUP_CONCAT(d.name)
+        FROM hr_dictionary_item d
+        WHERE FIND_IN_SET(d.value, s.relation)
+        and d.pId = 4) as relation
         from hr_signup s
         left join hr_signup_deliveryrecord sd on s.id = sd.signup_id and sd.delete_flag = 0
         left join hr_user u on s.user_id = u.Id and u.status = 0
@@ -774,10 +778,12 @@
 
     </select>
     <select id="threeNoInterview" resultMap="BaseResultMap">
-        select hsd.status
+        select hsd.status, hsd.no_pass_reason
         from hr_signup si
         left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
         where si.delete_flag = 0
+        and hsd.status = 4
+        and hsd.no_pass_reason = 1
         <if test="null != signId">
             and si.id = #{signId}
         </if>
@@ -906,5 +912,21 @@
     where si.delete_flag = 0
       and hsd.status = 0
     and br.hireWay = 1
+    </select>
+    <select id="threeNoReported" resultMap="BaseResultMap">
+        select hsd.status, hsd.no_pass_reason
+        from hr_signup si
+        left join hr_signup_deliveryrecord hsd on si.id = hsd.signup_id and hsd.delete_flag = 0
+        where si.delete_flag = 0
+        and hsd.status = 4
+        and hsd.no_pass_reason = 2
+        <if test="null != signId">
+            and si.id = #{signId}
+        </if>
+        order by hsd.create_time desc
+        limit 0, 3
+    </select>
+    <select id="selectSexbySignUp" resultType="int">
+        select sex from hr_signup where delete_flag = 0 and id = #{signId}
     </select>
 </mapper>

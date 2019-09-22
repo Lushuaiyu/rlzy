@@ -1,3 +1,35 @@
+POST http://localhost:8081/rlzy/myRelease/selectEditBriefchapter?briefchapterId=1&userId=10
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-21T041925.200.json
+
+###
+
+POST http://localhost:8081/rlzy/myRelease/selectEditBriefchapter?briefchapterId=1&userId=10
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-21T041851.200.json
+
+###
+
+POST http://localhost:8081/rlzy/myRelease/selectEditBriefchapter?briefchapterId=1&userId=10
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-21T041709.200.json
+
+###
+
+POST http://localhost:8081/rlzy/myRelease/getPCA
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-21T041550.200.json
+
+###
+
 POST http://localhost:8081/rlzy/homepage/queryBriefcharpterDetileByParams?type1=0&briefcharpterId=1
 Accept: */*
 
@@ -337,28 +369,6 @@ Accept: */*
 Cache-Control: no-cache
 
 <> 2019-09-20T082829.404.json
-
-###
-
-POST http://localhost:8081/rlzy
-Accept: */*
-Cache-Control: no-cache
-
-###
-
-POST http://localhost:8081/myRelease/getPCA
-Accept: */*
-Cache-Control: no-cache
-
-<> 2019-09-20T082800.404.html
-
-###
-
-POST http://localhost:8081/myRelease/getPCA
-Accept: */*
-Cache-Control: no-cache
-
-<> 2019-09-20T082755.404.html
 
 ###
 

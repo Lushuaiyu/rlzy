@@ -218,7 +218,7 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      * @Date 10:35 2019/8/15
      * @Param [query]
      **/
-    List<HrUser> selectReferrerDetails(@Param("userId") Integer userId);
+    HrUser selectReferrerDetails(@Param("userId") Integer userId);
 
     /**
      * 招聘端 首页 查询推荐人详情 历史记录 推荐者下的求职者
@@ -306,7 +306,7 @@ public interface HrUserMapper extends Mapper<HrUser>, MySqlMapper<HrUser> {
      * @Date 15:31 2019/8/19
      * @Param [userId]
      **/
-    @Select(value = "select violation_flag from hr_user where DeleteFlag = 0 and Id = #{userId}")
+    @Select(value = "select violation_flag from hr_user where status = 0 and Id = #{userId}")
     List<HrUser> queryVilolationFlag(Integer userId);
 
     /**

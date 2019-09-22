@@ -369,5 +369,9 @@
             where re.DeleteFlag = 0
               and re.RebateType = 2
     </select>
+    <select id="selectInformation" resultMap="BaseResultMap">
+    select RebateMale, RebateFemale from hr_rebaterecord where DeleteFlag = 0 and Id = #{rebateId}
+
+    </select>
 
 </mapper>

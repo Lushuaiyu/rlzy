@@ -384,33 +384,27 @@ public class RecruitmentHomePageServiceImpl implements RecruitmentHomePageServic
     }
 
     @Override
-    public List<HrUser> referrerDetails(Integer userId) {
+    public Map<String, Object> referrerDetails(Integer userId) {
 
-        List<HrUser> list = userMapper.selectReferrerDetails(userId);
+        HrUser list = userMapper.selectReferrerDetails(userId);
         int interviewed = userMapper.interviewed(userId);
         int arReported = userMapper.arReported(userId);
         int noReported = userMapper.noReported(userId);
         int noInterview = userMapper.noInterview(userId);
         int jobSeeker = userMapper.jobSeeker(userId);
         int numberViolations = signupDeliveryrecordMapper.selectNumberViolations(userId);
+                    String recommendNo = list.getRecommendNumber();
+        list.setRecommend(recommendNo + "人");
+        list.setInterviewed("参加面试" + interviewed + "人");
+        list.setArReported("报道" + arReported + "人");
+        list.setNoInterview("未面试" + noInterview + "人");
+        list.setNoReported("未报到" + noReported + "人");
 
-
-        list.stream()
-                .map(dto -> {
-
-                    String recommendNo = dto.getRecommendNumber();
-                    dto.setRecommend(recommendNo + "人");
-                    dto.setInterviewed("参加面试" + interviewed + "人");
-                    dto.setArReported("报道" + arReported + "人");
-                    dto.setNoInterview("未面试" + noInterview + "人");
-                    dto.setNoReported("未报到" + noReported + "人");
-
-                    dto.setJobSeeker("拥有求职者" + jobSeeker + "人");
-                    dto.setViolationRecord("有责未报到" + numberViolations + "次  ");
-                    return dto;
-                })
-                .collect(Collectors.toList());
-        return list;
+        list.setJobSeeker("拥有求职者" + jobSeeker + "人");
+        list.setViolationRecord("有责未报到" + numberViolations + "次  ");
+        Map<String, Object> map = new HashMap<>();
+        map.put("referrer", list);
+        return map;
     }
 
 

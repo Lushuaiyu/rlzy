@@ -136,6 +136,17 @@ public interface HrRebaterecordMapper {
      **/
     int rebateOne(@Param("rebateId") Integer rebateId, @Param("signupDeliveryrecordId") Integer signupDeliveryrecordId);
 
+
+    /**
+     * 查询返佣金额
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 11:29 2019-09-22
+     * @Param [rebateId]
+     * @return com.nado.rlzy.db.pojo.HrRebaterecord
+     */
+    HrRebaterecord selectInformation(@Param("rebateId") Integer rebateId);
+
     /**
      * 招聘详情 待返佣 不返佣
      * @return int
@@ -144,7 +155,7 @@ public interface HrRebaterecordMapper {
      * @Date 16:29 2019/7/19
      * @Param [rebateId]
      **/
-    @Update(value = "update hr_rebaterecord set status = 13 where DeleteFlag = 0 and id = #{rebateId}")
+    @Update(value = "update hr_rebaterecord set status = 2 where DeleteFlag = 0 and id = #{rebateId}")
     int noRebate(@Param("rebateId") Integer rebateId);
 
 

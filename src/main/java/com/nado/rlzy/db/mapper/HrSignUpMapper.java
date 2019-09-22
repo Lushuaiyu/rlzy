@@ -7,6 +7,7 @@ import com.nado.rlzy.bean.query.JobListQuery;
 import com.nado.rlzy.bean.query.RebateQuery;
 import com.nado.rlzy.db.pojo.HrSignUp;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -291,17 +292,6 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     int waitingForCommissionToBecomeARebate();
 
     /**
-     * 定时任务 求职分发表 待返佣变成已返佣
-     *
-     * @return int
-     * @Author lushuaiyu
-     * @Description //TODO
-     * @Date 17:40 2019/8/26
-     * @Param []
-     **/
-    int waitingForCommissionToBecomeRebateSIgnUp();
-
-    /**
      * 招聘详情 已报名 不合适
      *
      * @param signUpId 报名 id
@@ -421,7 +411,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Date 14:31 2019/7/19
      * @Param [signUpId]
      **/
-    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si SET no_pass_reason = 2" +
+    @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si SET sd.no_pass_reason = 2" +
             " WHERE sd.delete_flag = 0 and si.delete_flag = 0 and si.id = sd.signup_id and si.id = #{signUpId} and sd.brief_chapter_id = #{briefChapterId}")
     int notReported(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
 
@@ -437,6 +427,17 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si SET sd.job_status = 7, sd.status = 3" +
             " WHERE sd.delete_flag = 0 and si.delete_flag = 0 and si.id = sd.signup_id and si.id = #{signUpId} and sd.brief_chapter_id = #{briefChapterId}")
     int reported(@Param("signUpId") Integer signUpId, @Param("briefChapterId") Integer briefChapterId);
+
+    /**
+     * 查性别
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 10:36 2019-09-22
+     * @Param [signId]
+     * @return int
+     */
+
+    Integer selectSexbySignUp(@Param("signId") Integer signId);
 
 
     /**
@@ -483,13 +484,12 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signUpId, status]
      **/
     @Update(value = "update hr_signup_deliveryrecord sd, hr_signup si\n" +
-            "SET sd.job_status = #{status}\n" +
+            "SET sd.status = #{status}\n" +
             "WHERE sd.delete_flag = 0\n" +
             "  and si.delete_flag = 0\n" +
             "  and si.id = sd.signup_id\n" +
-            "  and si.id = #{signUpId}\n" +
-            "  and sd.brief_chapter_id = #{briefChapterId}")
-    int changeJobStatus(@Param("signUpId") Integer signUpId, @Param("status") Integer status, @Param("briefChapterId") Integer briefChapterId);
+            "  and sd.id = #{hsdId}")
+    int changeJobStatus(@Param("hsdId") Integer hsdId, @Param("status") Integer status);
 
     /**
      * 返佣中断  未返佣
@@ -500,15 +500,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Date 11:38 2019/7/22
      * @Param [signUpId]
      **/
-    @Update(value = "update hr_rebaterecord re inner join (select id, brief_chapter_id\n" +
-            "                                      from hr_signup\n" +
-            "                                      where delete_flag = 0\n" +
-            "                                        and no_pass_reason = 4\n" +
-            "                                        and id = #{signUpId}) si on re.BriefChapterId = si.brief_chapter_id\n" +
-            "set re.status = 4\n" +
-            "where re.DeleteFlag = 0\n" +
-            "  and re.status = 2")
-    int commissionRebate(@Param("signUpId") Integer signUpId);
+    int commissionRebate(@Param("hsdId") Integer hsdId);
 
     /**
      * 查询 求职端 身份是推荐人 首页 我的求职表 分组下的 被推荐人的报名表
@@ -556,7 +548,7 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
     int confirmRegistration(@Param("briefChapterId") Integer briefChapterId, @Param("id") List<Integer> id);
 
     /**
-     * 查询最近连续三次的求职状态
+     * 查询最近连续三次的求职状态 未面试 这里的求职状态指的是 status = 4 no_pass_reason = 1
      *
      * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
      * @Author lushuaiyu
@@ -565,6 +557,28 @@ public interface HrSignUpMapper extends Mapper<HrSignUp> {
      * @Param [signId]
      **/
     List<HrSignUp> threeNoInterview(@Param("signId") Integer signId);
+
+
+    /**
+     * 查询最近连续三次的求职状态 未报到 这里的求职状态指的是 status = 4 no_pass_reason = 1
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 10:44 2019-09-22
+     * @Param [signId]
+     * @return java.util.List<com.nado.rlzy.db.pojo.HrSignUp>
+     */
+    List<HrSignUp> threeNoReported(@Param("signId") Integer signId);
+    /**
+     * 查询 userId
+     * @Author chengpunan
+     * @Description  lushuaiyu
+     * @Date 10:25 2019-09-22
+     * @Param [signId]
+     * @return int
+     */
+    @Select(value = "select user_id from hr_signup where delete_flag = 0 and id = #{signId}")
+    int selectUserIdBySignUp(@Param("signId") Integer signId);
+
 
     /**
      * 公司主页 历史记录 简章的报名人数 (代招 和招聘单位都是)

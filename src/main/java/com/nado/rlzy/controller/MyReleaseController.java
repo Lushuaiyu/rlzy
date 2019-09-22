@@ -61,9 +61,9 @@ public class MyReleaseController extends BaseController {
     public ResultJson myRelease(Integer userId, Integer status) {
         ResultJson result = new ResultJson();
         try {
-            Map<String, Object> map = service.myRelease(userId, status);
             String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
             AssertUtil.isTrue(s != null && !s.contains("38"), RlzyConstant.PERMISSION);
+            Map<String, Object> map = service.myRelease(userId, status);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
@@ -89,9 +89,9 @@ public class MyReleaseController extends BaseController {
     public ResultJson myReleaseSubAccount(Integer userId, Integer status) {
         ResultJson result = new ResultJson();
         try {
-            Map<String, Object> map = service.myReleaseSubAccount(userId, status);
             String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
             AssertUtil.isTrue(s != null && !s.contains("66"), RlzyConstant.PERMISSION);
+            Map<String, Object> map = service.myReleaseSubAccount(userId, status);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             result.setData(map);
@@ -222,15 +222,15 @@ public class MyReleaseController extends BaseController {
     @RequestMapping(value = "numberOfRecruitsFull")
     @ApiOperation(notes = " 招聘端 查看求职表 判断报名人数是否满了, recruitingNo = 0 就说明满了", value = "招聘端 查看求职表 判断报名人数是否满了, recruitingNo = 0 就说明满了", httpMethod = "POST")
     @ApiImplicitParam(value = "briefchapter", name = "简章id", dataType = "Integer", required = true)
-    public Result<HrBriefchapter> numberOfRecruitsFull(Integer briefchapter, Integer userId) {
-        Result<HrBriefchapter> result = new Result<>();
+    public ResultJson numberOfRecruitsFull(Integer briefchapter, Integer userId) {
+        ResultJson result = new ResultJson();
         try {
             String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
             AssertUtil.isTrue(null != s && s.contains("50"), RlzyConstant.PERMISSION);
-            List<HrBriefchapter> signUpNumberDtos = service.numberOfRecruitsFull(briefchapter);
+            Map<String, Object> map = service.numberOfRecruitsFull(briefchapter);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
-            result.setData(signUpNumberDtos);
+            result.setData(map);
         } catch (AssertException e) {
             e.printStackTrace();
             result.setMessage(e.getMessage());
@@ -292,7 +292,7 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "type", name = "1 邀请报名 2 直接录取", dataType = "Integer", required = true),
             @ApiImplicitParam(value = "briefchapter", name = "简章id", dataType = "Integer", required = true),
     })
-    public ResultJson invitationToRegister(Integer signUpId, Integer userId, Integer sex, Integer type, Integer briefchapter) {
+    public ResultJson invitationToRegister(Integer signUpId, Integer userId, Integer type, Integer briefchapter) {
         ResultJson resultJson = new ResultJson();
         try {
             String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
@@ -305,7 +305,7 @@ public class MyReleaseController extends BaseController {
                 resultJson.setData(invitationToRegister);
             } else {
                 //直接录取
-                int admission = service.directAdmission(signUpId, userId, sex, briefchapter);
+                int admission = service.directAdmission(signUpId, briefchapter);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 resultJson.setData(admission);
@@ -378,16 +378,12 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integet", required = true),
             @ApiImplicitParam(value = "userId", name = "推荐人id | 本人id", dataType = "integet", required = true),
 
-            @ApiImplicitParam(value = "type", name = "1 招聘详情 待面试 已面试 2 未面试 3 已面试 面试未通过 |" +
-                    "招聘详情 待面试 已面试 面试未通过 | 4 招聘详情 待面试 已面试 面试已通过",
+            @ApiImplicitParam(value = "type", name = "1 招聘详情 待面试 已面试 2 未面试 3 招聘详情 待面试 已面试 面试未通过  4 招聘详情 待面试 已面试 面试已通过",
                     dataType = "integet", required = true),
-            @ApiImplicitParam(value = "sex", name = "性别 0 女 1 男 type = 4 时 用得到", dataType = "int", required = true),
-            @ApiImplicitParam(value = "signUpUserId", name = "求职者或者推荐人id", dataType = "int", required = true),
-            @ApiImplicitParam(value = "busInessUserId", name = "企业用户id", dataType = "int", required = true),
             @ApiImplicitParam(value = "signupDeliveryrecordId", name = "报名投递表id", dataType = "int", required = true)
     })
     public ResultJson recruitmentInterviewd(Integer signUpId, Integer type, Integer userId, Integer briefChapterId,
-                                            Integer sex, Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId) {
+                                            Integer signupDeliveryrecordId) {
         ResultJson resultJson = new ResultJson();
         try {
             String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
@@ -412,7 +408,7 @@ public class MyReleaseController extends BaseController {
                 resultJson.setData(count);
             } else if (type.equals(4)) {
                 //招聘详情 待面试 已面试 面试已通过
-                int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, sex, signUpUserId, busInessUserId, signupDeliveryrecordId);
+                int count = service.recruitmentInterviewSuccess(signUpId, briefChapterId, userId, signupDeliveryrecordId);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 resultJson.setData(count);
@@ -439,13 +435,10 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "reason", name = "未报到原因", dataType = "integer", required = true),
             @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "sex", name = "性别 0 女 1 男 type = 2 时 用得到", dataType = "int", required = true),
-            @ApiImplicitParam(value = "signUpUserId", name = "求职者或者推荐人id", dataType = "int", required = true),
-            @ApiImplicitParam(value = "busInessUserId", name = "企业用户id", dataType = "int", required = true),
-            @ApiImplicitParam(value = "signupDeliveryrecordId", name = "报名投递表", dataType = "int", required = true)
+            @ApiImplicitParam(value = "signupDeliveryrecordId", name = "报名投递表Id", dataType = "int", required = true)
     })
     public ResultJson notReported(Integer signUpId, Integer typp, Integer reason, Integer briefChapterId,
-                                  Integer userId, Integer sex, Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId) {
+                                  Integer userId, Integer signupDeliveryrecordId) {
         ResultJson resultJson = new ResultJson();
         try {
             String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
@@ -456,7 +449,7 @@ public class MyReleaseController extends BaseController {
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 resultJson.setData(map);
             } else if (typp.equals(2)) {
-                int count = service.reported(signUpId, briefChapterId, sex, signUpUserId, busInessUserId, signupDeliveryrecordId);
+                int count = service.reported(signUpId, briefChapterId, userId, signupDeliveryrecordId);
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 resultJson.setData(count);
@@ -490,7 +483,7 @@ public class MyReleaseController extends BaseController {
             @ApiImplicitParam(value = "type", name = "1 招聘详情 待返佣 查询返佣 2招聘详情 待返佣 返佣过程 需要signUpId 知道是返佣给哪个报名者", dataType = "integer", required = true),
             @ApiImplicitParam(value = "下面是返佣计划的入参", name = "下面是返佣计划的入参", dataType = "string", required = true),
             @ApiImplicitParam(value = "userId", name = "招聘单位 id", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "addMoney", name = "增加的钱 和 减少的钱 必须保持一致", dataType = "BigDecimal", required = true),
+            @ApiImplicitParam(value = "rebateMon", name = "增加的钱 和 减少的钱 必须保持一致", dataType = "BigDecimal", required = true),
             @ApiImplicitParam(value = "subtraction", name = "减少的钱 和添加的钱必须保持一致", dataType = "BigDecimal", required = true),
             @ApiImplicitParam(value = "rebateId", name = "返佣id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "signUpId", name = "报名表id", dataType = "integer", required = true),
@@ -502,7 +495,7 @@ public class MyReleaseController extends BaseController {
             String s = Optional.ofNullable(homePageService.subAccountPermission(query.getUserId())).orElseGet(HrUser::new).getInterfaceId();
             AssertUtil.isTrue(null != null && !s.contains("43"), RlzyConstant.PERMISSION);
             if (query.getType().equals(1)) {
-                List<HrRebaterecord> list = service.rebatee(query.getSignUpId(), query.getBriefchapterId(), query.getSex());
+                List<HrRebaterecord> list = service.rebatee(query.getSignUpId(), query.getBriefchapterId());
                 resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
                 resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
                 resultJson.setData(list);
@@ -529,17 +522,16 @@ public class MyReleaseController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "重置求职者报名状态", notes = "重置求职者报名状态", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "signUpId", name = "报名id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "hsdId", name = "报名id", dataType = "integer", required = true),
             @ApiImplicitParam(value = "status", name = "重置的状态", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "currentState", name = "当前状态", dataType = "integer", required = true),
-            @ApiImplicitParam(value = "briefChapterId", name = "简章id", dataType = "integer", required = true),
+            @ApiImplicitParam(value = "currentState", name = "当前状态", dataType = "integer", required = true)
     })
-    public ResultJson changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId, Integer userId) {
+    public ResultJson changeJobStatus(String hsdId, String status, String currentState, String userId) {
         ResultJson resultJson = new ResultJson();
         try {
-            String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
+            String s = Optional.ofNullable(homePageService.subAccountPermission(Integer.valueOf(userId))).orElseGet(HrUser::new).getInterfaceId();
             AssertUtil.isTrue(null != s && !s.contains("35"), RlzyConstant.PERMISSION);
-            int jobStatus = service.changeJobStatus(signUpId, status, currentState, briefChapterId);
+            int jobStatus = service.changeJobStatus(hsdId, status, currentState);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(jobStatus);

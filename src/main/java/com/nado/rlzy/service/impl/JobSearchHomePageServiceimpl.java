@@ -583,113 +583,117 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
         HrBriefchapter list = mapper.queryBriefcharpterDetileByParams(query);
         //招聘
         HrBriefchapter hrBriefchapters = mapper.queryBriefcharpterDetileRecruitment(query);
-        //代招单位
+        if (null != list) {
+            //代招单位
 
-        Integer manNum1 = list.getManNum();
-        list.setManNum1(manNum1 + "人");
-        Integer womenNum1 = list.getWomenNum();
-        list.setWomenNum1(womenNum1 + "人");
-        String manAge2 = list.getManAge();
-        String womenAge2 = list.getWomenAge();
-        list.setManAge1(manAge2 + "岁");
-        list.setWomenAge1(womenAge2 + "岁");
-        Integer overtimeTime = list.getOvertimeTimeId();
-        if (overtimeTime == 1) {
-            list.setOvertimeTime1("较少");
-        } else if (overtimeTime == 2) {
-            list.setOvertimeTime1("多");
-        } else if (overtimeTime == 3) {
-            list.setOvertimeTime1("较多");
-        } else {
-            System.out.println("====");
-        }
+            Integer manNum1 = list.getManNum();
+            list.setManNum1(manNum1 + "人");
+            Integer womenNum1 = list.getWomenNum();
+            list.setWomenNum1(womenNum1 + "人");
+            String manAge2 = list.getManAge();
+            String womenAge2 = list.getWomenAge();
+            list.setManAge1(manAge2 + "岁");
+            list.setWomenAge1(womenAge2 + "岁");
+            Integer overtimeTime = list.getOvertimeTimeId();
+            if (overtimeTime == 1) {
+                list.setOvertimeTime1("较少");
+            } else if (overtimeTime == 2) {
+                list.setOvertimeTime1("多");
+            } else if (overtimeTime == 3) {
+                list.setOvertimeTime1("较多");
+            } else {
+                System.out.println("====");
+            }
 
-        //月综合
-        double value = list.getAvgSalary().doubleValue();
-        String format = StringUtil.decimalFormat2(value);
-        list.setAvgSalary1(format + "元起");
-        //计薪
-        double value1 = list.getDetailSalary().doubleValue();
-        String s1 = StringUtil.decimalFormat2(value1);
-        String detailSalaryWay = list.getDetailSalaryWay();
-        list.setDetailSalry1(s1 + "元/" + detailSalaryWay);
+            //月综合
+            double value = list.getAvgSalary().doubleValue();
+            String format = StringUtil.decimalFormat2(value);
+            list.setAvgSalary1(format + "元起");
+            //计薪
+            double value1 = list.getDetailSalary().doubleValue();
+            String s1 = StringUtil.decimalFormat2(value1);
+            String detailSalaryWay = list.getDetailSalaryWay();
+            list.setDetailSalry1(s1 + "元/" + detailSalaryWay);
 
-        String experienceId1 = list.getExperienceId();
-        if (list.getExperienceId().compareTo("1") == 0) {
-            list.setExperience(experienceId1 + "年内");
-        } else if (experienceId1.compareTo("3-5") == 0 ||
-                experienceId1.compareTo("1-3") == 0 ||
-                experienceId1.compareTo("5-10") == 0) {
-            list.setExperience(experienceId1 + "年");
-        } else if (experienceId1.compareTo("10") == 0) {
-            list.setExperience(experienceId1 + "年以上");
-        } else {
-            System.out.println("============");
+            String experienceId1 = list.getExperienceId();
+            if (list.getExperienceId().compareTo("1") == 0) {
+                list.setExperience(experienceId1 + "年内");
+            } else if (experienceId1.compareTo("3-5") == 0 ||
+                    experienceId1.compareTo("1-3") == 0 ||
+                    experienceId1.compareTo("5-10") == 0) {
+                list.setExperience(experienceId1 + "年");
+            } else if (experienceId1.compareTo("10") == 0) {
+                list.setExperience(experienceId1 + "年以上");
+            } else {
+                System.out.println("============");
+            }
+            BigDecimal rebateMaleInterview = list.getRebateMaleInterview();
+            BigDecimal rebateMaleReport = list.getRebateMaleReport();
+            BigDecimal rebateMaleEntry = list.getRebateMaleEntry();
+            BigDecimal rebateFemaleInterview = list.getRebateFemaleInterview();
+            BigDecimal rebateFemaleReport = list.getRebateFemaleReport();
+            BigDecimal rebateFemaleEntry = list.getRebateFemaleEntry();
+            if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
+                    null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
+                list.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
+                list.setRebateMaleReport1("返" + rebateMaleReport + "元");
+                list.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
+                list.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
+                //入职返佣的信息
+                list.setRebateEntryResignation1(list.getRebateEntryResignation1());
+            }
         }
-        BigDecimal rebateMaleInterview = list.getRebateMaleInterview();
-        BigDecimal rebateMaleReport = list.getRebateMaleReport();
-        BigDecimal rebateMaleEntry = list.getRebateMaleEntry();
-        BigDecimal rebateFemaleInterview = list.getRebateFemaleInterview();
-        BigDecimal rebateFemaleReport = list.getRebateFemaleReport();
-        BigDecimal rebateFemaleEntry = list.getRebateFemaleEntry();
-        if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
-                null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-            list.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
-            list.setRebateMaleReport1("返" + rebateMaleReport + "元");
-            list.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
-            list.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
-            //入职返佣的信息
-            list.setRebateEntryResignation1(list.getRebateEntryResignation1());
-        }
-        //招聘单位
-        Integer manNum2 = hrBriefchapters.getManNum();
-        hrBriefchapters.setManNum1(manNum2 + "人");
-        Integer womenNum2 = hrBriefchapters.getWomenNum();
-        hrBriefchapters.setWomenNum1(womenNum2 + "人");
-        String manAge3 = hrBriefchapters.getManAge();
-        String womenAge3 = hrBriefchapters.getWomenAge();
-        hrBriefchapters.setManAge1(manAge3 + "岁");
-        hrBriefchapters.setWomenAge1(womenAge3 + "岁");
-        Integer overtimeTime1 = hrBriefchapters.getOvertimeTimeId();
-        if (overtimeTime1 == 1) {
-            hrBriefchapters.setOvertimeTime1("较少");
-        } else if (overtimeTime1 == 2) {
-            hrBriefchapters.setOvertimeTime1("多");
-        } else if (overtimeTime1 == 3) {
-            hrBriefchapters.setOvertimeTime1("较多");
-        } else {
-            System.out.println("====");
-        }
-        String experienceId2 = hrBriefchapters.getExperienceId();
-        if (experienceId2.compareTo("1") == 0) {
-            hrBriefchapters.setExperience(experienceId2 + "年内");
-            hrBriefchapters.setExperienceId(null);
-        } else if (experienceId2.compareTo("3-5") == 0 ||
-                experienceId2.compareTo("1-3") == 0 ||
-                experienceId2.compareTo("5-10") == 0) {
-            hrBriefchapters.setExperience(experienceId2 + "年");
-            hrBriefchapters.setExperienceId(null);
-        } else if (experienceId2.compareTo("10") == 0) {
-            hrBriefchapters.setExperience(experienceId2 + "年以上");
-            hrBriefchapters.setExperienceId(null);
-        } else {
-            System.out.println("============");
-        }
+        if (null != hrBriefchapters) {
+            //招聘单位
+            Integer manNum2 = hrBriefchapters.getManNum();
+            hrBriefchapters.setManNum1(manNum2 + "人");
+            Integer womenNum2 = hrBriefchapters.getWomenNum();
+            hrBriefchapters.setWomenNum1(womenNum2 + "人");
+            String manAge3 = hrBriefchapters.getManAge();
+            String womenAge3 = hrBriefchapters.getWomenAge();
+            hrBriefchapters.setManAge1(manAge3 + "岁");
+            hrBriefchapters.setWomenAge1(womenAge3 + "岁");
+            Integer overtimeTime1 = hrBriefchapters.getOvertimeTimeId();
+            if (overtimeTime1 == 1) {
+                hrBriefchapters.setOvertimeTime1("较少");
+            } else if (overtimeTime1 == 2) {
+                hrBriefchapters.setOvertimeTime1("多");
+            } else if (overtimeTime1 == 3) {
+                hrBriefchapters.setOvertimeTime1("较多");
+            } else {
+                System.out.println("====");
+            }
+            String experienceId2 = hrBriefchapters.getExperienceId();
+            if (experienceId2.compareTo("1") == 0) {
+                hrBriefchapters.setExperience(experienceId2 + "年内");
+                hrBriefchapters.setExperienceId(null);
+            } else if (experienceId2.compareTo("3-5") == 0 ||
+                    experienceId2.compareTo("1-3") == 0 ||
+                    experienceId2.compareTo("5-10") == 0) {
+                hrBriefchapters.setExperience(experienceId2 + "年");
+                hrBriefchapters.setExperienceId(null);
+            } else if (experienceId2.compareTo("10") == 0) {
+                hrBriefchapters.setExperience(experienceId2 + "年以上");
+                hrBriefchapters.setExperienceId(null);
+            } else {
+                System.out.println("============");
+            }
 
-        BigDecimal rebateMaleInterview1 = hrBriefchapters.getRebateMaleInterview();
-        BigDecimal rebateMaleReport1 = hrBriefchapters.getRebateMaleReport();
-        BigDecimal rebateMaleEntry1 = hrBriefchapters.getRebateMaleEntry();
-        BigDecimal rebateFemaleInterview1 = hrBriefchapters.getRebateFemaleInterview();
-        BigDecimal rebateFemaleReport1 = hrBriefchapters.getRebateFemaleReport();
-        BigDecimal rebateFemaleEntry1 = hrBriefchapters.getRebateFemaleEntry();
-        if (null != rebateMaleInterview1 && null != rebateMaleReport1 && null != rebateMaleEntry1 &&
-                null != rebateFemaleInterview1 && null != rebateFemaleReport1 && null != rebateFemaleEntry1) {
-            hrBriefchapters.setRebateMaleInterview1("返" + rebateMaleInterview1 + "元");
-            hrBriefchapters.setRebateMaleReport1("返" + rebateMaleReport1 + "元");
-            hrBriefchapters.setRebateFemaleInterview1("返" + rebateMaleEntry1 + "元");
-            hrBriefchapters.setRebateFemaleReport1("返" + rebateFemaleReport1 + "元");
-            //入职返佣的信息
-            hrBriefchapters.setRebateEntryResignation1(hrBriefchapters.getRebateEntryResignation1());
+            BigDecimal rebateMaleInterview1 = hrBriefchapters.getRebateMaleInterview();
+            BigDecimal rebateMaleReport1 = hrBriefchapters.getRebateMaleReport();
+            BigDecimal rebateMaleEntry1 = hrBriefchapters.getRebateMaleEntry();
+            BigDecimal rebateFemaleInterview1 = hrBriefchapters.getRebateFemaleInterview();
+            BigDecimal rebateFemaleReport1 = hrBriefchapters.getRebateFemaleReport();
+            BigDecimal rebateFemaleEntry1 = hrBriefchapters.getRebateFemaleEntry();
+            if (null != rebateMaleInterview1 && null != rebateMaleReport1 && null != rebateMaleEntry1 &&
+                    null != rebateFemaleInterview1 && null != rebateFemaleReport1 && null != rebateFemaleEntry1) {
+                hrBriefchapters.setRebateMaleInterview1("返" + rebateMaleInterview1 + "元");
+                hrBriefchapters.setRebateMaleReport1("返" + rebateMaleReport1 + "元");
+                hrBriefchapters.setRebateFemaleInterview1("返" + rebateMaleEntry1 + "元");
+                hrBriefchapters.setRebateFemaleReport1("返" + rebateFemaleReport1 + "元");
+                //入职返佣的信息
+                hrBriefchapters.setRebateEntryResignation1(hrBriefchapters.getRebateEntryResignation1());
+            }
         }
 
         //代招单位
@@ -1696,16 +1700,11 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
         AssertUtil.isTrue(mapper.remainingQuota(count1, deliveryrecord.getBriefChapterId()) < 1, RlzyConstant.OPS_FAILED_MSG);
         //查询简章的招聘人数
-        List<HrBriefchapter> hrBriefchapters = mapper.queryRecruitingNo(deliveryrecord.getBriefChapterId());
-        hrBriefchapters.stream()
-                .map(d -> {
-                    Integer recruitingNo = d.getRecruitingNo();
-                    if (recruitingNo.compareTo(0) <= 0) {
-                        //招聘人数 <= 0 简章已结束(已过期)
-                        mapper.updateBriefchapterStatus(deliveryrecord.getBriefChapterId(), 4);
-                    }
-                    return d;
-                }).collect(Collectors.toList());
+        Integer recruitingNo = mapper.queryRecruitingNo(deliveryrecord.getBriefChapterId());
+        if (recruitingNo.compareTo(0) <= 0) {
+            //招聘人数 <= 0 简章已结束(已过期)
+            mapper.updateBriefchapterStatus(deliveryrecord.getBriefChapterId(), 4);
+        }
         return 1;
     }
 
@@ -1753,16 +1752,12 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
 
         AssertUtil.isTrue(mapper.remainingQuota(count1, briefChapterId) < 1, RlzyConstant.OPS_FAILED_MSG);
         //查询简章的招聘人数
-        List<HrBriefchapter> hrBriefchapters = mapper.queryRecruitingNo(briefChapterId);
-        hrBriefchapters.stream()
-                .map(d -> {
-                    Integer recruitingNo = d.getRecruitingNo();
-                    if (recruitingNo.compareTo(0) <= 0) {
-                        //招聘人数 <= 0 简章已结束(已过期)
-                        mapper.updateBriefchapterStatus(briefChapterId, 4);
-                    }
-                    return d;
-                }).collect(Collectors.toList());
+        Integer recruitingNo = mapper.queryRecruitingNo(briefChapterId);
+
+        if (recruitingNo.compareTo(0) <= 0) {
+            //招聘人数 <= 0 简章已结束(已过期)
+            mapper.updateBriefchapterStatus(briefChapterId, 4);
+        }
         return 1;
     }
 

@@ -7,7 +7,6 @@ import com.nado.rlzy.db.mapper.*;
 import com.nado.rlzy.db.pojo.*;
 import com.nado.rlzy.platform.constants.RlzyConstant;
 import com.nado.rlzy.service.MyReleaseService;
-import com.nado.rlzy.service.PersonCenterService;
 import com.nado.rlzy.utils.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @ClassName 我的发布 service
@@ -69,9 +67,6 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     @Resource
     private MessageMapper messageMapper;
 
-    @Resource
-    private PersonCenterService centerService;
-
 
     @Override
     public Map<String, Object> myReleaseSubAccount(Integer userId, Integer status) {
@@ -90,12 +85,14 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
             if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
                     null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-                dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
-                dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
-                dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
-                dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
-                //入职返佣的信息
                 dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
+                BigDecimal maleMoney = rebateMaleInterview.add(rebateMaleReport).add(rebateMaleEntry);
+                BigDecimal femaleMoney = rebateFemaleInterview.add(rebateFemaleReport).add(rebateFemaleEntry);
+                if (maleMoney.compareTo(femaleMoney) >= 0) {
+                    dto.setRebateRecord("返" + maleMoney + "元");
+                } else {
+                    dto.setRebateRecord("返" + femaleMoney + "元");
+                }
             }
             return dto;
         }).collect(Collectors.toList());
@@ -114,12 +111,14 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
                     if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
                             null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-                        dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
-                        dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
-                        dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
-                        dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
-                        //入职返佣的信息
                         dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
+                        BigDecimal maleMoney = rebateMaleInterview.add(rebateMaleReport).add(rebateMaleEntry);
+                        BigDecimal femaleMoney = rebateFemaleInterview.add(rebateFemaleReport).add(rebateFemaleEntry);
+                        if (maleMoney.compareTo(femaleMoney) >= 0) {
+                            dto.setRebateRecord("返" + maleMoney + "元");
+                        } else {
+                            dto.setRebateRecord("返" + femaleMoney + "元");
+                        }
                     }
                     return dto;
 
@@ -148,12 +147,17 @@ public class MyReleaseServiceImpl implements MyReleaseService {
             BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
             if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
                     null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-                dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
-                dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
-                dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
-                dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
-                //入职返佣的信息
+
                 dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
+                BigDecimal maleMoney = rebateMaleInterview.add(rebateMaleReport).add(rebateMaleEntry);
+                BigDecimal femaleMoney = rebateFemaleInterview.add(rebateFemaleReport).add(rebateFemaleEntry);
+                if (maleMoney.compareTo(femaleMoney) >= 0) {
+                    dto.setRebateRecord("返" + maleMoney + "元");
+                } else {
+                    dto.setRebateRecord("返" + femaleMoney + "元");
+                }
+
+
             }
             return dto;
         }).collect(Collectors.toList());
@@ -172,12 +176,14 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     BigDecimal rebateFemaleEntry = dto.getRebateFemaleEntry();
                     if (null != rebateMaleInterview && null != rebateMaleReport && null != rebateMaleEntry &&
                             null != rebateFemaleInterview && null != rebateFemaleReport && null != rebateFemaleEntry) {
-                        dto.setRebateMaleInterview1("返" + rebateMaleInterview + "元");
-                        dto.setRebateMaleReport1("返" + rebateMaleReport + "元");
-                        dto.setRebateFemaleInterview1("返" + rebateMaleEntry + "元");
-                        dto.setRebateFemaleReport1("返" + rebateFemaleReport + "元");
-                        //入职返佣的信息
                         dto.setRebateEntryResignation1(dto.getRebateEntryResignation1());
+                        BigDecimal maleMoney = rebateMaleInterview.add(rebateMaleReport).add(rebateMaleEntry);
+                        BigDecimal femaleMoney = rebateFemaleInterview.add(rebateFemaleReport).add(rebateFemaleEntry);
+                        if (maleMoney.compareTo(femaleMoney) >= 0) {
+                            dto.setRebateRecord("返" + maleMoney + "元");
+                        } else {
+                            dto.setRebateRecord("返" + femaleMoney + "元");
+                        }
                     }
                     return dto;
 
@@ -312,41 +318,27 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
         //把数组转换成list
         List<HrSignUp> signUps = signUpMapper.recruitmentDetailsOverview(list);
-        //用stream 处理list 集合
-        /*List<HrSignUp> collect = signUps.stream().map(dto -> {
-            //如果状态是待面试 进入这个
-            signUps.stream().filter(s -> s.equals(1)).map(inteview -> {
-
-                //待面试
-                Date time = inteview.getInterviewTime();
-
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                //面试时间
-                String toStr = StringUtil.DateToStr(time);
-                //现在时间
-                String nowTime = format.format(new Date());
-                //现在时间 > 面试时间 返回 -1 前台提示 '面试时间已过，请确认是否面试，当天20：00前不确认默认已面试'
-                if (nowTime.compareTo(toStr) > 0) {
-                    inteview.setInterviewTimeFlag(-1);
-                }
-                return dto;
-            }).collect(Collectors.toList());
-
-            //待报道
-            signUps.stream().filter(t -> t.equals(2)).map(report -> {
-                Date registerTime = report.getRegisterTime();
-                //报到时间
-                String date = StringUtil.DateToStr(registerTime);
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                //现在时间
-                String nowTime = format.format(new Date());
-                if (nowTime.compareTo(date) > 0) {
-                    report.setReportTimeFlag(-1);
-                }
-                return report;
-            }).collect(Collectors.toList());
-            return dto;
-        }).collect(Collectors.toList());*/
+        signUps.stream()
+                .map(dto -> {
+                    if (Optional.ofNullable(dto).orElseGet(HrSignUp::new).getType().equals(1)) {
+                        dto.setUserName("本人");
+                    }
+                    if (Optional.ofNullable(dto).orElseGet(HrSignUp::new).getStatus().equals(6)) {
+                        dto.setStatusString("平台推荐");
+                    }
+                    if (null != dto.getNoPassReason()) {
+                        if (dto.getNoPassReason().equals(1)) {
+                            dto.setNoPassReasonString("未面试");
+                        } else if (dto.getNoPassReason().equals(2)) {
+                            dto.setNoPassReasonString("未报到");
+                        } else if (dto.getNoPassReason().equals(3)) {
+                            dto.setNoPassReasonString("面试未通过");
+                        } else if (dto.getNoPassReason().equals(4)) {
+                            dto.setNoPassReasonString("返佣中断");
+                        }
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
         return signUps;
     }
 
@@ -385,19 +377,15 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         //未面试
         int i = signUpMapper.recruitmentNoInterviewd(signUpId, briefChapterId);
         map.put("recruitmentNoInterviewd", i);
-        //如果连续三次没有面试 停权6个月
+        //如果连续三次没有面试 停权6个月 连续三次未面试 是 hr_signup_deliveryrecord 表的 status = 4 and no_pass_reason = 1
         List<HrSignUp> hrSignUps = signUpMapper.threeNoInterview(signUpId);
-        final boolean[] flag = {false};
-        hrSignUps.stream().map(dto -> {
-            Integer jobStatus = dto.getJobStatus();
-            if (jobStatus != 8) {
-                flag[0] = flag[0];
-            } else {
-                flag[0] = true;
-            }
-            return dto;
-        }).collect(Collectors.toList());
-        if (flag[0] = true) {
+        boolean flag = false;
+        //如果查到的记录有三条, 说明三次未面试 停权
+        if (hrSignUps.size() == 3) {
+            flag = true;
+
+        }
+        if (true == flag) {
             //连续三次没有面试 停权推荐人 | 本人
             HrUser hrUser = new HrUser();
             hrUser.setViolationTime(LocalDateTime.now());
@@ -419,12 +407,14 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId, Integer sex, Integer signUpUserId,
-                                           Integer busInessUserId, Integer signupDeliveryrecordId) {
+    public int recruitmentInterviewSuccess(Integer signUpId, Integer briefChapterId,
+                                           Integer userId, Integer signupDeliveryrecordId) {
         //改变求职状态
         signUpMapper.recruitmentInterviewSuccess(signUpId, briefChapterId);
         // 查询简章表 面试返佣的钱
         List<HrBriefchapter> hrBriefchapters = mapper.interviewRebateOrReportRebate(briefChapterId);
+        Integer uId = signUpMapper.selectUserIdBySignUp(signUpId);
+        Integer sex = signUpMapper.selectSexbySignUp(signUpId);
         hrBriefchapters.stream()
                 .map(dto -> {
                     BigDecimal maleInterview = dto.getRebateMaleInterview();
@@ -434,7 +424,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                     Integer rebate = dto.getRebate();
 
                     //有返佣才进来
-                    if (rebate.equals(1) && (!dto.getHireWay().equals(0) || !dto.getHireWay().equals(1))) {
+                    if (rebate.equals(1) && ((dto.getHireWay().compareTo(0) > 0) || (dto.getHireWay().compareTo(1) > 0))) {
                         if (sex.equals(0)) {
                             //女
                             HrRebaterecord rebaterecord = new HrRebaterecord();
@@ -449,12 +439,12 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             hrRebaterecords.add(rebaterecord);
                             rebaterecordMapper.insertListt(hrRebaterecords);
                             //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
-                            acctMapper.rebateUser(femaleInterview, signUpUserId);
+                            acctMapper.rebateUser(femaleInterview, uId);
                             //企业冻结金额减少 消费金额增加
-                            acctMapper.rebateBusiness(femaleInterview, busInessUserId);
+                            acctMapper.rebateBusiness(femaleInterview, userId);
                             //acctDetail 增加数据 账户余额增加
                             //查询账户id, 账户余额
-                            HrAcct hrAcct = acctMapper.selectAcctIdByUserId(signUpUserId);
+                            HrAcct hrAcct = acctMapper.selectAcctIdByUserId(uId);
                             //账户id
                             Integer acctId = hrAcct.getId();
                             //账户余额
@@ -493,13 +483,13 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             //面试返佣 到返佣记录表
                             rebaterecordMapper.insertListt(hrRebaterecords);
                             //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
-                            acctMapper.rebateUser(maleInterview, signUpUserId);
+                            acctMapper.rebateUser(maleInterview, uId);
                             //企业冻结金额减少 消费金额增加
-                            acctMapper.rebateBusiness(maleInterview, busInessUserId);
+                            acctMapper.rebateBusiness(maleInterview, userId);
 
                             //acctDetail 增加数据 账户余额增加
                             //查询账户id, 账户余额
-                            HrAcct hrAcct = acctMapper.selectAcctIdByUserId(signUpUserId);
+                            HrAcct hrAcct = acctMapper.selectAcctIdByUserId(uId);
                             //账户id
                             Integer acctId = hrAcct.getId();
                             //账户余额
@@ -536,24 +526,21 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     public Map<String, Object> notReported(Integer signUpId, Integer briefChapterId, Integer userId) {
         Map<String, Object> map = new HashMap<>();
         int i = signUpMapper.notReported(signUpId, briefChapterId);
+        //查询求职者或者推荐人的 id
+        int uId = signUpMapper.selectUserIdBySignUp(signUpId);
         map.put("notReported", i);
         //如果连续三次没有报道 停权6个月
-        List<HrSignUp> hrSignUps = signUpMapper.threeNoInterview(signUpId);
-        final boolean[] flag = {false};
-        hrSignUps.stream().map(dto -> {
-            Integer jobStatus = dto.getJobStatus();
-            if (jobStatus != 9) {
-                flag[0] = flag[0];
-            } else {
-                flag[0] = true;
-            }
-            return dto;
-        }).collect(Collectors.toList());
-        if (flag[0] = true) {
+        List<HrSignUp> hrSignUps = signUpMapper.threeNoReported(signUpId);
+        boolean flag = false;
+        if (hrSignUps.size() == 3) {
+            flag = true;
+        }
+
+        if (true == flag) {
             //连续三次没有报道 停权推荐人 | 本人
             HrUser hrUser = new HrUser();
             hrUser.setViolationTime(LocalDateTime.now());
-            userMapper.updateViolationFlag(userId);
+            userMapper.updateViolationFlag(uId);
             //返回违规转态到前台
             List<HrUser> hrUsers = userMapper.queryVilolationFlag(userId);
             map.put("queryVilolationFlag", hrUsers);
@@ -565,10 +552,13 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int reported(Integer signUpId, Integer briefChapterId, Integer sex,
-                        Integer signUpUserId, Integer busInessUserId, Integer signupDeliveryrecordId) {
+    public int reported(Integer signUpId, Integer briefChapterId,
+                        Integer userId, Integer signupDeliveryrecordId) {
 
         signUpMapper.reported(signUpId, briefChapterId);
+
+        Integer sex = signUpMapper.selectSexbySignUp(signUpId);
+        int signUpUserId = signUpMapper.selectUserIdBySignUp(signUpId);
 
 
         // 查询简章表 面试返佣的钱
@@ -596,7 +586,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
                             acctMapper.rebateUser(femaleReport, signUpUserId);
                             //企业冻结金额减少 消费金额增加
-                            acctMapper.rebateBusiness(femaleReport, busInessUserId);
+                            acctMapper.rebateBusiness(femaleReport, userId);
                             //acctDetail 增加数据 账户余额增加
                             //查询账户id, 账户余额
                             HrAcct hrAcct = acctMapper.selectAcctIdByUserId(signUpUserId);
@@ -639,7 +629,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
                             //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
                             acctMapper.rebateUser(maleReport, signUpUserId);
                             //企业冻结金额减少 消费金额增加
-                            acctMapper.rebateBusiness(maleReport, busInessUserId);
+                            acctMapper.rebateBusiness(maleReport, userId);
                             //acctDetail 增加数据 账户余额增加
                             //查询账户id, 账户余额
                             HrAcct hrAcct = acctMapper.selectAcctIdByUserId(signUpUserId);
@@ -683,8 +673,9 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     }
 
     @Override
-    public List<HrRebaterecord> rebatee(Integer signUpId, Integer briefchapterId, Integer sex) {
+    public List<HrRebaterecord> rebatee(Integer signUpId, Integer briefchapterId) {
         List<HrRebaterecord> sign = rebaterecordMapper.rebate(signUpId, briefchapterId);
+        Integer sex = signUpMapper.selectSexbySignUp(signUpId);
         sign.stream().map(rebat -> {
             if (sex.equals(0)) {
                 BigDecimal female = rebat.getRebateFemale() != null ? rebat.getRebateFemale() : BigDecimal.ZERO;
@@ -721,123 +712,118 @@ public class MyReleaseServiceImpl implements MyReleaseService {
     public int rebate(RebateQuery query) {
         // 查询返佣详情
         List<HrRebaterecord> sign = rebaterecordMapper.rebate(query.getSignUpId(), query.getBriefchapterId());
-        sign.stream()
-                .map(dto -> {
-                    if (query.getRebateType().equals(0)) {
-                        //不返佣
-                        rebaterecordMapper.noRebate(query.getId());
-                        Message message = new Message();
-                        message.setUserId(query.getUserId());
-                        message.setSignUpId(query.getSignUpId());
-                        message.setBriefchapterId(query.getBriefchapterId());
-                        message.setCreateTime(LocalDateTime.now());
-                        message.setType(4);
-                        messageMapper.insertSelective(message);
-                    } else {
-                        //更改返佣状态
-                        rebaterecordMapper.rebateOne(query.getRebateId(), dto.getHsdId());
-                        String rebateMon = query.getRebateMon();
-                        String substring = rebateMon.substring(5, 8);
-                        //返佣金额
-                        BigDecimal rebateMoney = StringUtil.decimal(substring) != null ? StringUtil.decimal(substring) : BigDecimal.ZERO;
-                        //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
-                        acctMapper.rebateUser(rebateMoney, query.getUserId());
-                        //企业冻结金额减少 消费金额增加
-                        acctMapper.rebateBusiness(rebateMoney, query.getBusInessUserId());
-                        //acctDetail 增加数据 账户余额增加
-                        //查询账户id, 账户余额
-                        HrAcct hrAcct = acctMapper.selectAcctIdByUserId(query.getUserId());
-                        //账户id
-                        Integer acctId = hrAcct.getId();
-                        //账户余额
-                        BigDecimal acctbalance = hrAcct.getAcctbalance();
-                        //账户详情
-                        HrAcctDetail detail = new HrAcctDetail();
-                        detail.setAcctid(acctId);
-                        detail.setAmount(rebateMoney);
-                        detail.setBeforeamount(acctbalance);
-                        detail.setAfteramount(rebateMoney.add(acctbalance));
-                        detail.setCreatetime(LocalDateTime.now());
-                        detail.setStatus(1);
-                        detail.setType(2);
-                        detail.setBriefchapterid(query.getBriefchapterId());
-                        //增加账户余额
-                        acctDetailMapper.insertSelective(detail);
-                        //每返佣一笔 报名投递表待返佣金额 都减去对应的数目
-                        signupDeliveryrecordMapper.updateWaitingForCommission(rebateMoney, query.getBriefchapterId(), query.getSignUpId());
+        //查询求职者 或者推荐人的 id
+        int uId = signUpMapper.selectUserIdBySignUp(query.getSignUpId());
+        if (sign.size() > 0) {
+            sign.stream()
+                    .map(dto -> {
+                        if (query.getRebateType().equals(0)) {
+                            //不返佣
+                            rebaterecordMapper.noRebate(query.getId());
+                            Message message = new Message();
+                            message.setUserId(query.getUserId());
+                            message.setSignUpId(query.getSignUpId());
+                            message.setBriefchapterId(query.getBriefchapterId());
+                            message.setCreateTime(LocalDateTime.now());
+                            message.setType(4);
+                            messageMapper.insertSelective(message);
+                        } else {
+                            //更改返佣状态
+                            rebaterecordMapper.rebateOne(query.getRebateId(), dto.getHsdId());
 
-                        //如果返佣都完成了就改变返佣状态为已完成
-                        List<Integer> count = rebaterecordMapper.selectNotStatusRebate(query.getUserId());
-                        if (count.size() <= 0) {
-                            count.stream()
-                                    .map(e -> {
-                                        signupDeliveryrecordMapper.updateReba(e);
-                                        return e;
-                                    }).collect(Collectors.toList());
+                            //查询返佣金额
+                            HrRebaterecord hrRebaterecord = rebaterecordMapper.selectInformation(query.getRebateId());
+
+
+                            BigDecimal bigDecimal = hrRebaterecord.getRebateMale() != null ? hrRebaterecord.getRebateMale() : hrRebaterecord.getRebateFemale();
+                            double v = bigDecimal.doubleValue();
+                            String rebateMon = StringUtil.decimalFormat2(v);
+                            String substring = rebateMon.substring(5, 8);
+                            //返佣金额
+                            BigDecimal rebateMoney = StringUtil.decimal(substring) != null ? StringUtil.decimal(substring) : BigDecimal.ZERO;
+                            //钱从企业冻结金额到求职者 或者推荐人余额 这里是求职者或者推荐人钱增加
+                            acctMapper.rebateUser(rebateMoney, uId);
+                            //企业冻结金额减少 消费金额增加
+                            acctMapper.rebateBusiness(rebateMoney, query.getUserId());
+                            //acctDetail 增加数据 账户余额增加
+                            //查询账户id, 账户余额
+                            HrAcct hrAcct = acctMapper.selectAcctIdByUserId(query.getUserId());
+                            //账户id
+                            Integer acctId = hrAcct.getId();
+                            //账户余额
+                            BigDecimal acctbalance = hrAcct.getAcctbalance();
+                            //账户详情
+                            HrAcctDetail detail = new HrAcctDetail();
+                            detail.setAcctid(acctId);
+                            detail.setAmount(rebateMoney);
+                            detail.setBeforeamount(acctbalance);
+                            detail.setAfteramount(rebateMoney.add(acctbalance));
+                            detail.setCreatetime(LocalDateTime.now());
+                            detail.setStatus(1);
+                            detail.setType(2);
+                            detail.setBriefchapterid(query.getBriefchapterId());
+                            //增加账户余额
+                            acctDetailMapper.insertSelective(detail);
+                            //每返佣一笔 报名投递表待返佣金额 都减去对应的数目
+                            signupDeliveryrecordMapper.updateWaitingForCommission(rebateMoney, query.getBriefchapterId(), query.getSignUpId());
+
+                            //如果返佣都完成了就改变返佣状态为已完成
+                            List<Integer> count = rebaterecordMapper.selectNotStatusRebate(uId);
+                            if (count.size() <= 0) {
+                                count.stream()
+                                        .map(e -> {
+                                            signupDeliveryrecordMapper.updateReba(e);
+                                            return e;
+                                        }).collect(Collectors.toList());
+                            }
                         }
-                    }
-                    return dto;
-                }).collect(Collectors.toList());
-
+                        return dto;
+                    }).collect(Collectors.toList());
+        }
 
         return 1;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int changeJobStatus(Integer signUpId, Integer status, Integer currentState, Integer briefChapterId) {
-        Integer signUpStatus = 4;
-        //把integer 转 list
-        List<Integer> list = Stream.of(signUpStatus).collect(Collectors.toList());
-        List<HrSignUp> dtos = signUpMapper.recruitmentDetailsOverview(list);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        //现在时间
-        String nowTime = format.format(new Date());
-
-        // 8 未面试 3 面试未通过
-        if (currentState.equals(8) || currentState.equals(3)) {
-
-            dtos.stream()
-                    .map(u -> {
-                        //报道时间
-                        String registerTime = format.format(u.getRegisterTime());
-                        //报道时间 > 现在时间
-                        if (registerTime.compareTo(nowTime) > 0) {
-                            signUpMapper.changeJobStatus(signUpId, status, briefChapterId);
-
-                            //报到时间 < 现在时间
-                        } else if (registerTime.compareTo(nowTime) < 0) {
-                            signUpMapper.changeJobStatus(signUpId, status, briefChapterId);
-                        }
-                        return u;
-                    }).collect(Collectors.toList());
+    public int changeJobStatus(String hsdId, String status, String currentState) {
+        //面试未通过
+        //重置求职状态
+        if (currentState.compareTo("3") == 0) {
+            signUpMapper.changeJobStatus(Integer.parseInt(hsdId), Integer.parseInt(status));
+        }
+        //w未面试
+        if (currentState.compareTo("3") == 0) {
+            signUpMapper.changeJobStatus(Integer.parseInt(hsdId), Integer.parseInt(status));
         }
         //未报到
-        if (currentState.equals(2)) {
-            signUpMapper.changeJobStatus(signUpId, status, briefChapterId);
+        if (currentState.compareTo("2") == 0) {
+            signUpMapper.changeJobStatus(Integer.parseInt(hsdId), Integer.parseInt(status));
         }
         //返佣中断, 未返佣
-        if (currentState.equals(4)) {
-            signUpMapper.commissionRebate(signUpId);
-            signUpMapper.changeJobStatus(signUpId, status, briefChapterId);
+        if (currentState.compareTo("4") == 0) {
+            signUpMapper.commissionRebate(Integer.parseInt(hsdId));
+            signUpMapper.changeJobStatus(Integer.parseInt(hsdId), Integer.parseInt(status));
         }
-
         return 1;
     }
 
     @Override
-    public List<HrBriefchapter> numberOfRecruitsFull(Integer briefchapter) {
+    public Map<String, Object> numberOfRecruitsFull(Integer briefchapter) {
 
-        return mapper.queryRecruitingNo(briefchapter)
-                .stream()
-                .map(dto -> {
-                    //如果招聘人数为0  说明报名满了
-                    Integer recruitingNo = dto.getRecruitingNo();
-                    if (recruitingNo <= 0) {
-                        dto.setRecruitingNo(0);
-                    }
-                    return dto;
-                }).collect(Collectors.toList());
+        Integer recruitingNo = mapper.queryRecruitingNo(briefchapter);
+        Map<String, Object> map = new HashMap<>();
+
+
+        if (recruitingNo <= 0) {
+            map.put("recruitingNo", 0);
+
+        } else {
+            map.put("recruitingNo", recruitingNo);
+        }
+        return map;
+
+
     }
 
     @Override
@@ -860,12 +846,14 @@ public class MyReleaseServiceImpl implements MyReleaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int directAdmission(Integer signUpId, Integer userId, Integer sex, Integer briefchapter) {
+    public int directAdmission(Integer signUpId, Integer briefchapter) {
+        Integer sex = signUpMapper.selectSexbySignUp(signUpId);
+        int uId = signUpMapper.selectUserIdBySignUp(signUpId);
 
         // 招聘端 直接录取 查询面试的返费金额
         HrSignUp hrSignUp = signUpMapper.SearchdirectAdmission(signUpId, sex, briefchapter);
         //查询账户id hracct 表
-        HrAcct hrAcct = acctMapper.selectAcctIdByUserId(userId);
+        HrAcct hrAcct = acctMapper.selectAcctIdByUserId(uId);
 
         Integer acctId = hrAcct.getId();
         //得到面试时间
@@ -881,7 +869,7 @@ public class MyReleaseServiceImpl implements MyReleaseService {
         //现在时间 < 面试时间
         int i = format.compareTo(date);
         if (i < 0) {
-            AssertUtil.isTrue(acctMapper.directAdmission(userId, value) < 1, RlzyConstant.OPS_FAILED_MSG);
+            AssertUtil.isTrue(acctMapper.directAdmission(uId, value) < 1, RlzyConstant.OPS_FAILED_MSG);
             HrAcctDetail detail = new HrAcctDetail();
             detail.setAcctid(acctId);
             detail.setAmount(value);

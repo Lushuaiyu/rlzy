@@ -39,10 +39,7 @@ public class Test4 extends BaseTest {
     @Resource
     private HrBriefchapterMapper briefchapterMapper;
 
-    @Test
-    public void test1() {
-        signUpMapper.changeJobStatus(4, 2, 4);
-    }
+
 
     @Test
     public void test2() {

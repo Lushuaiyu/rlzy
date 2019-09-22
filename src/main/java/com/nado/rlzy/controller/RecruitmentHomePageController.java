@@ -151,7 +151,7 @@ public class RecruitmentHomePageController extends BaseController {
         try {
             String s = Optional.ofNullable(service.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
             AssertUtil.isTrue(null != s && !s.contains("62"), RlzyConstant.PERMISSION);
-            List<HrUser> hrUsers = service.referrerDetails(userId);
+            Map<String, Object> hrUsers = service.referrerDetails(userId);
             resultJson.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             resultJson.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
             resultJson.setData(hrUsers);

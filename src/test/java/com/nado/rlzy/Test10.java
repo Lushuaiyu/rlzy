@@ -92,6 +92,12 @@ public class Test10 extends BaseTest {
         System.out.println(hrSignUp);
 
     }
+    @Test
+    public void test8(){
+
+        int i = signUpMapper.selectUserIdBySignUp(1);
+        System.out.println(i);
+    }
 
 
 }

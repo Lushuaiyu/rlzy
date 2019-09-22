@@ -120,7 +120,11 @@ public class HrSignUp {
     /**
      * 前端需要的
      */
+    @Column(name = "status")
     private Integer status;
+
+    @Transient
+    private String statusString;
 
 
     @ApiModelProperty(value = "身份类型id")
@@ -130,6 +134,9 @@ public class HrSignUp {
     @ApiModelProperty(value = "0不合适 1未面试 2未报道 3面试未通过")
     @Transient
     private Integer noPassReason;
+
+    @Transient
+    private String noPassReasonString;
 
     @ApiModelProperty(value = "0:未删除  1:已删除")
     @Column(name = "delete_flag")
@@ -145,6 +152,8 @@ public class HrSignUp {
     @ApiModelProperty(value = "年龄")
     @Column(name = "age")
     private Integer age;
+
+
 
     @ApiModelProperty(value = "与推荐人关系")
     @Column(name = "relation")
@@ -177,6 +186,9 @@ public class HrSignUp {
     @ApiModelProperty(value = "求职表id")
     @Transient
     private Integer signId;
+
+    @Transient
+    private Integer hsdId;
 
     @ApiModelProperty(value = "头像")
     @Transient
