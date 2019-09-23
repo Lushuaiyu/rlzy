@@ -418,7 +418,7 @@ public class PersonCenterController extends BaseController {
         ResultJson result = new ResultJson();
         try {
             String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
-            AssertUtil.isTrue(null != s && s.contains("53"), RlzyConstant.PERMISSION);
+            AssertUtil.isTrue(null != s && !s.contains("53"), RlzyConstant.PERMISSION);
             int feedback = service.myFeedback(content, userId, name, phone);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);
@@ -493,12 +493,12 @@ public class PersonCenterController extends BaseController {
             @ApiImplicitParam(value = "status", name = "投诉状态 1, 3 待处理 | 已处理  2 已撤销 ", required = true),
             @ApiImplicitParam(value = "userId", name = "用户id", required = true)
     })
-    public Result<ComplaintDto> creditCenter(Integer[] status, Integer userId) {
+    public Result<ComplaintDto> creditCenter(String status, Integer userId) {
         Result<ComplaintDto> result = new Result<ComplaintDto>();
 
         try {
             String s = Optional.ofNullable(homePageService.subAccountPermission(userId)).orElseGet(HrUser::new).getInterfaceId();
-            AssertUtil.isTrue(null != s && s.contains("56"), RlzyConstant.PERMISSION);
+            AssertUtil.isTrue(null != s && !s.contains("56"), RlzyConstant.PERMISSION);
             List<ComplaintDto> list = jobSearchHomePageService.creditCenter(status, userId);
             result.setCode(RlzyConstant.OPS_SUCCESS_CODE);
             result.setMessage(RlzyConstant.OPS_SUCCESS_MSG);

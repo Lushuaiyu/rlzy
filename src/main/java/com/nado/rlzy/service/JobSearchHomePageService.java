@@ -481,7 +481,7 @@ public interface JobSearchHomePageService {
      * @Param [status]
      * @return java.util.List<com.nado.rlzy.bean.dto.ComplaintDto>
      **/
-    List<ComplaintDto> creditCenter(Integer[] status, Integer userId);
+    List<ComplaintDto> creditCenter(String status, Integer userId);
 
     /** 投诉页面 前端选择内容
      * @Author lushuaiyu

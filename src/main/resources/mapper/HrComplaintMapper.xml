@@ -225,11 +225,6 @@
         FROM hr_dictionary_item d
         WHERE FIND_IN_SET(d.value, co.complaint_type_id)
         and d.pId = 24) as complaintType,
-        co.create_time as createTime,
-        (SELECT GROUP_CONCAT(d.name)
-        FROM hr_dictionary_item d
-        WHERE FIND_IN_SET(d.value, co.complaint_type_id)
-        and d.pId = 25) as status,
         co.create_time as createTime
         from hr_complaint co
         left join hr_briefchapter br on co.brief_chapter_id = br.Id and br.briefChapterStatus = 0
@@ -243,7 +238,7 @@
                 </foreach>
             </if>
             <if test="null != userId">
-                and br.userId = #{userId}
+                and u.Id = #{userId}
             </if>
         </where>
     </select>

@@ -2213,9 +2213,9 @@ public class JobSearchHomePageServiceimpl implements JobSearchHomePageService {
     }
 
     @Override
-    public List<ComplaintDto> creditCenter(Integer[] status, Integer userId) {
-        List<Integer> list = Stream.of(status).collect(Collectors.toList());
-
+    public List<ComplaintDto> creditCenter(String status, Integer userId) {
+        int[] ints = Arrays.stream(status.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
+        List<Integer> list = Arrays.stream(ints).boxed().collect(Collectors.toList());
         return complaintMapper.creditCenter(list, userId)
                 .stream()
                 .collect(Collectors.toList());
